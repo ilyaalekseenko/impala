@@ -5,11 +5,15 @@
                 <div class="col-6 orders_title">
                     Заявки
                 </div>
-                <div class="col-2 offset-4 create_orders_button" v-on:click="create_order()">
-                    <span class="iconify button_menu_block" data-icon="akar-icons:circle-plus" style="color: white;" data-width="24" data-height="24"></span>
-                    <span class="button_menu_block" >Создать заявку</span>
+                <div class="col-6 d-flex justify-content-end">
+                    <div class="create_orders_button" v-on:click="create_order()">
+                        <span class="iconify button_menu_block" data-icon="akar-icons:circle-plus" style="color: white;" data-width="24" data-height="24"></span>
+                        <span class="button_menu_block" >Создать заявку</span>
+                    </div>
                 </div>
+
                 <div class="col-12 coloring_row row">
+                    <div class="col-12 row coloring_row_1">
                     <div class="col-2 row color_title_1 coloring_np">
                         <div class="col-6 coloring_row_text coloring_np">Журнал заявок</div >
                         <div class="col-6 row text-end coloring_np">
@@ -20,10 +24,10 @@
                     </div>
                     <div class="col-2 row color_title_2 coloring_np">
                         <div class="col-4 coloring_row_text coloring_np">Оценка</div >
-                        <div class="col-8 row text-end coloring_np">
-                            <div class="col-12 coloring_np">
+                        <div class="col row text-end coloring_np">
+                            <div class="col coloring_np">
                                 <span class="coloring_integer">100000</span>
-                                <span class="coloring_integer_green">+100</span>
+                                <span class="coloring_integer_green">+1</span>
                             </div>
                         </div>
                     </div>
@@ -32,7 +36,6 @@
                         <div class="col-5 row text-end coloring_np">
                             <div class="col-12 coloring_np ">
                             <span class="coloring_integer">1000</span>
-                            <span class="coloring_integer_green">+1</span>
                             </div>
                         </div>
                     </div>
@@ -41,7 +44,6 @@
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np coloring_np">
                                 <span class="coloring_integer">100000</span>
-                                <span class="coloring_integer_green">+100</span>
                             </div>
                         </div>
                     </div>
@@ -50,7 +52,6 @@
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
                                 <span class="coloring_integer">100000</span>
-                                <span class="coloring_integer_green">+100</span>
                             </div>
                         </div>
                     </div>
@@ -59,10 +60,11 @@
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
                                 <span class="coloring_integer">100000</span>
-                                <span class="coloring_integer_green">+100</span>
                             </div>
                         </div>
                     </div>
+                    </div>
+
                     <div class="col-12 under_col_title_main">
                         <input type="checkbox" id="checkbox" v-on:click="check_all()" v-model="checked_all">
                         <span class="under_colored_title">Объединить</span>
@@ -222,6 +224,29 @@ Vue.filter('formatDate', function(value) {
                         this.delete_arr.push(this.orders_list[i].id)
                     }
                 }
+                //перерисуем массив
+                let imp_arr=[];
+                let not_imp_arr=[];
+                for( let i = 0; i < this.orders_list.length; i++ )
+                {
+                   if(this.orders_list[i].important==1)
+                   {
+                       imp_arr.push(this.orders_list[i])
+                   }
+                   else
+                   {
+                       not_imp_arr.push(this.orders_list[i])
+                   }
+                }
+                this.orders_list=[];
+                for( let i = 0; i < imp_arr.length; i++ )
+                {
+                    this.orders_list.push(imp_arr[i])
+                }
+                for( let i = 0; i < not_imp_arr.length; i++ )
+                {
+                    this.orders_list.push(not_imp_arr[i])
+                }
 
                 axios
                     .post('/mark_as_important',{
@@ -229,6 +254,7 @@ Vue.filter('formatDate', function(value) {
                     })
                 this.delete_arr=[]
             },
+
             delete_orders()
             {
                 for( let i = 0; i < this.orders_list.length; i++ )

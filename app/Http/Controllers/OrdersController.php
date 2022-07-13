@@ -120,7 +120,7 @@ class OrdersController extends Controller
         Orders::where('id', '=', $request['order_id'])->update([
             'nomenklatura' =>$request['file_name'],
         ]);
-        $request['file_xlsx']->move(public_path('/images/orders_xlsx/'), $request['order_id'].'__'.$request['file_name'].'.xlsx');
+       $request['file_xlsx']->move(public_path('/images/orders_xlsx/'), $request['order_id'].'__'.$request['full_name']);
         return response()->json([
             'status' => 'success',
             'message' =>'Файл xlsx успешно сохранён',

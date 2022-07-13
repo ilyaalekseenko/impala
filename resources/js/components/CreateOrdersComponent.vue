@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div @click="openEndDatePicker" class="col-6 orders_create_title">
+                <div  class="col-6 orders_create_title">
                     Заявки: Создание заявки
                 </div>
             </div>
@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-4">
                         <span  class="create_orders_date_title">Логист:</span>
-                        <select v-on:change="update_order()" class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
+                        <select @blur="update_order()" class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
                             <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
                             <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
                             <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
@@ -35,7 +35,7 @@
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                         <div class="datePickerDiv">
-                            <datepicker :format="customFormatter" v-model="rasschitat_do" ref="startDatePicker1"> @closed='openEndDatePicker()'
+                            <datepicker :format="customFormatter1" v-model="rasschitat_do" ref="startDatePicker1"> @closed='openEndDatePicker()'
                             </datepicker>
                         </div>
                     </div>
@@ -45,439 +45,422 @@
                 </div>
             </div>
 
-            <div class="col-6 row">
-                <div class="col cr_ord_left_col">
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Вид перевозки
-                        </div>
-                        <div class="create_orders_bottom">
-                            <select v-on:change="update_order()" class="cr_ord_inp_n_1" v-model="vid_perevozki">
-                                <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                                <option v-bind:value="1" class="sel_cust">Самолётом</option>
-                                <option v-bind:value="2" class="sel_cust">Кораблём</option>
-                                <option v-bind:value="3" class="sel_cust">На верблюде</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="col">
-                        <div class="bold_title_create_orders title_cr_ord_bold_first">
-                            Информация о клиенте:
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders1">
-                            Номер заявки
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="nomer_zayavki" placeholder="Введите номер..." />
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Компания заказчик
-                            <span class="add_button n1">Добавить</span>
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="kompaniya_zakazchik" placeholder="ООО 'Альфа'" />
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Менеджер заказчика
-                            <span class="add_button n2">Добавить</span>
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik" placeholder="Петров Сергей..." />
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Проект ИСД (номер и название)
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD" placeholder="ИСД 5022" />
-                    </div>
-                    <div class="col-12 row">
-                        <div class="col-6">
-                        <div class="little_title_create_orders">
-                            Цена контракта
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta" placeholder="10 000 000р." />
-                        </div>
-                        <div class="col-6">
-                        <div class="little_title_create_orders">
-                            Дата контракта
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta" placeholder="10.03.2022" />
-                         </div>
-                    </div>
-                    <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
-                        <div class="col-6">
+            <div class="container row">
+                <div class="container row">
+                <div class="col-6 row ">
+                    <div class="col cr_ord_left_col">
+                        <div class="col">
                             <div class="little_title_create_orders">
-                                Оплата
-                            </div>
-                            <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].oplata" placeholder="20.03.2022" />
-                        </div>
-                        <div class="col-6">
-                            <div class="little_title_create_orders">
-                                Сумма
-                            </div>
-                            <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].summa" placeholder="10 000 000р." />
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="add_button_plus" v-on:click="dobavit_oplatu()">
-                            +Добавить оплату
-                        </div>
-                    </div>
-                </div>
-                <div class="col row">
-                <div class="col cr_ord_mid_col">
-                    <div class="little_title_create_orders">
-                        Номенклатура
-                    </div>
-                    <div class="create_orders_bottom">
-                        <input class="cr_ord_inp_n_3 border_input" v-model="nomenklatura" placeholder="Добавьте файл.xlsx" />
-                        <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
-                        <span class="excel_set" v-on:click="addFiles()">
-                        <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                       </span>
-                    </div>
-                    <div class="col">
-                        <div class="bold_title_create_orders title_cr_ord_bold_first n1">
-                            Информация о погрузке:
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Адрес погрузки 1
-                            <span class="add_button n3">Добавить</span>
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="adres_pogruzke" placeholder="Тула ул.Гоголя,15" />
-                    </div>
-                    <div class="col big_comment">
-                        <div class="little_title_create_orders">
-                            Комментарий
-                        </div>
-                        <textarea v-on:change="update_order()" v-model="komment_1" rows="4" cols="60" name="text"></textarea>
-                    </div>
-                </div>
-                <div class="col cr_ord_right_col">
-                    <div class="col-12 row no_padding_right">
-                        <div class="col data_pog_dost no_padding_right">
-                            <div class="little_title_create_orders ">
-                                Дата погрузки
-                            </div>
-                            <div class="create_orders_bottom no_padding_right">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki" placeholder="10.03.2022" />
-                            </div>
-                        </div>
-                        <div class="col data_pog_dost data_dost_right no_padding_right">
-                            <div class="little_title_create_orders no_padding_right">
-                                Дата доставки
-                            </div>
-                            <div class="create_orders_bottom no_padding_right">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki" placeholder="10.03.2022" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 row no_padding_right">
-                        <div class="col no_padding_left no_padding_right">
-                            <div class="little_title_create_orders">
-                                Кол-во грузомест
-                            </div>
-                            <div class="create_orders_bottom right_menu_nom row">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big" placeholder="105" />
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small" placeholder="10" readonly />
-                            </div>
-                        </div>
-                        <div class="col no_padding_right arrang_set">
-                            <div class="little_title_create_orders no_padding_right">
-                                Расстояние, км
+                                Вид перевозки
                             </div>
                             <div class="create_orders_bottom">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie" placeholder="100000" />
+                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="vid_perevozki">
+                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
+                                    <option v-bind:value="1" class="sel_cust">Самолётом</option>
+                                    <option v-bind:value="2" class="sel_cust">Кораблём</option>
+                                    <option v-bind:value="3" class="sel_cust">На верблюде</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 row no_padding_right">
-                        <div class="col no_padding_right no_padding_left">
-                            <div class="little_title_create_orders">
-                               Общий вес, кг
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ves" placeholder="1000" />
-                            </div>
-                        </div>
-                        <div class="col cr_ord_obj no_padding_left no_padding_right">
-                            <div class="little_title_create_orders">
-                                Общий объём, м3
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input v-on:change="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ob" placeholder="10.03.2022" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="bold_title_create_orders title_cr_ord_bold_first n2">
-                            Информация о выгрузке:
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Адрес выгрузки 1
-                            <span class="add_button">Добавить</span>
-                        </div>
-                        <input v-on:change="update_order()" class="cr_ord_inp_n_1 border_input" v-model="adres_vygruski" placeholder="Тула ул.Гоголя,15" />
-                    </div>
-                </div>
-                </div>
-            </div>
 
-            <div class="col-6 right_white_block">
-                <div class="col-12 row ">
-                <div class="col-3 create_order_right_title ">
-                    Список ТС
-                </div>
-                <div class="col-9 text-right row justify-content-end ">
-                    <div class="col create_order_right_main_text text_in_header text-end">Общий бюджет:{{ ob_budjet }} р</div>
-                    <div class="col add_ts_button" v-on:click="add_ts_func()">Добавить ТС</div>
-                </div>
-                </div>
-                <div class="col-12 row create_ord_underline"></div>
-                <div class="col-12 row" v-if="spisokTSarr.length>0">
-                    <div class="col row no_padding_right ">
-                        <div class="col right_top_text_0 no_padding_right no_padding_left">
-                            <div class="create_ord_right_lit_text vid_TS text-center">Вид ТС</div>
-                        </div>
-                    </div>
-                    <div class="col right_top_text_1 set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Расстояние, км</div>
-                    </div>
-                    <div class="col no_padding_right set_left_pad right_top_text_2">
-                        <div class="create_ord_right_lit_text">Кол. грузомест</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Общий вес,кг</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Общий объём,м3</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Ставка</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Ставка КП</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_ord_right_lit_text">Маржа</div>
-                    </div>
-                </div>
-
-
-                <span v-for="(elem,key) in spisokTSarr">
-                <div class="col-12 row " >
-                    <div class="col row no_padding_right ">
-                        <div class="col right_top_text_0 no_padding_right no_padding_left">
-                            <div class="create_order_right_main_text vid_TS_text row">
-                                <div class="col-3 no_padding_right ">{{key + 1}}</div>
-                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['ts_list_id']==elem.vid_TS" class="col-9 no_padding_left">{{ one_ts.ts_name }}</div>
-                                <div else class="col-9 no_padding_left"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col right_top_text_1 set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.rasstojanie_TS }}</div>
-                    </div>
-                    <div class="col no_padding_right set_left_pad right_top_text_2">
-                        <div class="create_order_right_main_text">{{ elem.kol_gruz_TS }}</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.ob_ves_TS }}</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.ob_ob_TS }}</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.stavka_TS }}р.</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.stavka_kp_TS }}р.</div>
-                    </div>
-                    <div class="col set_left_pad no_padding_right">
-                        <div class="create_order_right_main_text">{{ elem.marja_TS }}р.</div>
-                    </div>
-                </div>
-                <div class="col-12 second_right_create_orders_text row">
-                    <div class="col right_top_text_1_0" v-on:click="editTs(key)">
-                        <span class="iconify edit_icon_right_menu" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                    </div>
-                    <div class="col right_top_text_1_1">
-                        <div class="create_ord_right_lit_text">Адрес Погрузки</div>
-                        <div class="create_order_right_main_text">{{ elem.adres_pogruzki_TS }}</div>
-                    </div>
-                    <div class="col">
-                        <div class="create_ord_right_lit_text">Адрес Выгрузки</div>
-                        <div class="create_order_right_main_text">{{ elem.adres_vygr_TS }}</div>
-                    </div>
-                </div>
-                <div class="col-12 row right_top_text_1_2">
-                    <div class="col">
-                        <div class="create_ord_right_lit_text">Комментарий</div>
-                        <div v-if="elem.kommentari_TS==''" class="create_order_right_main_text">Нет комментария</div>
-                        <div v-else class="create_order_right_main_text">{{ elem.kommentari_TS }}</div>
-                    </div>
-                </div>
-                                    <div class="col-12 row create_ord_underline"></div>
-                </span>
-
-
-
-<!--                start_ts-->
-                <div v-if="add_ts" class="row">
-                <div class="col spisok_ts_second_title_left">
-                    <div class="little_title_create_orders2">
-                        Вид ТС
-                    </div>
-                    <div class="create_orders_bottom">
-                        <select class="sel_cust" v-model="vid_TS">
-                            <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                            <option v-bind:value="1" class="sel_cust">Тент</option>
-                            <option v-bind:value="2" class="sel_cust">Палатка</option>
-                        </select>
-                    </div>
-                    <div class="col-12 row">
-                        <div class="col-6">
-                            <div class="little_title_create_orders2">
-                                Ставка
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS" placeholder="1 250 000 р." />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="little_title_create_orders2">
-                                Ставка за км
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_za_km" placeholder="1 250 000 р." readonly />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 row">
-                        <div class="col-6">
-                            <div class="little_title_create_orders2">
-                                Ставка КП
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS" placeholder="1 250 000 р." />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="little_title_create_orders2">
-                                Маржа
-                            </div>
-                            <div class="create_orders_bottom">
-                                <input class="cr_ord_inp_n_6 border_input" v-model="marja_TS" placeholder="1 250 000 р." readonly />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col spisok_ts_second_title_center no_padding_right">
-                    <div class="col row no_padding_right no_padding_left">
-                        <div class="col-12 row no_padding_right no_padding_left">
-                            <div class="col cr_ord_lit_left no_padding_right no_padding_left">
-                                <div class="little_title_create_orders2">
-                                    Кол-во грузомест
-                                </div>
-                                <div class="create_orders_bottom">
-                                    <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS" placeholder="1000" />
-                                </div>
-                            </div>
-                            <div class="col cr_ord_lit_center no_padding_right">
-                                <div class="little_title_create_orders2">
-                                    Кол-во ТС
-                                </div>
-                                <div class="create_orders_bottom">
-                                    <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS" placeholder="5" />
-                                </div>
-                            </div>
-                            <div class="col cr_ord_lit_right no_padding_left">
-                                <div class="little_title_create_orders2">
-                                    Расстояние, км
-                                </div>
-                                <div class="create_orders_bottom">
-                                    <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" placeholder="1000" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col no_padding_left">
-                            <div class="little_title_create_orders2">
-                                Адрес погрузки1
-                                <span class="add_button">Добавить</span>
-                            </div>
-                            <div class="create_orders_bottom row">
-                                <input class="cr_ord_inp_n_7 border_input" v-model="adres_pogruzki_TS" placeholder="Тула, ул.Гоголя,15" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <div class="col no_padding_right">
-                        <div class="col-12 row">
-                            <div class="col no_padding_right">
-                                <div class="little_title_create_orders2">
-                                   Общий вес,кг
-                                </div>
-                                <div class="create_orders_bottom row">
-                                    <input class="cr_ord_inp_n_11 border_input" v-model="ob_ves_TS" placeholder="1000" />
-                                </div>
-                            </div>
-                            <div class="col cr_ord_lit_right2 no_padding_left">
-                                <div class="little_title_create_orders2">
-                                    Общий объём,м3
-                                </div>
-                                <div class="create_orders_bottom row">
-                                    <input class="cr_ord_inp_n_11 border_input" v-model="ob_ob_TS" placeholder="1000" />
-                                </div>
+                        <div class="col">
+                            <div class="bold_title_create_orders title_cr_ord_bold_first">
+                                Информация о клиенте:
                             </div>
                         </div>
                         <div class="col">
-                            <div class="little_title_create_orders2">
-                                Адрес выгрузки1
-                                <span class="add_button">Добавить</span>
+                            <div class="little_title_create_orders1">
+                                Номер заявки
                             </div>
-                            <div class="create_orders_bottom row">
-                                <input class="cr_ord_inp_n_7 border_input" v-model="adres_vygr_TS" placeholder="Тула, ул.Гоголя,15" />
+                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="nomer_zayavki"  />
+                        </div>
+                        <div class="col">
+                            <div class="little_title_create_orders">
+                                Компания заказчик
+                                <span class="add_button n1">Добавить</span>
+                            </div>
+                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="kompaniya_zakazchik"  />
+                        </div>
+                        <div class="col">
+                            <div class="little_title_create_orders">
+                                Менеджер заказчика
+                                <span class="add_button n2">Добавить</span>
+                            </div>
+                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />
+                        </div>
+                        <div class="col">
+                            <div class="little_title_create_orders">
+                                Проект ИСД (номер и название)
+                            </div>
+                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD"  />
+                        </div>
+                        <div class="col-12 row">
+                            <div class="col-6">
+                                <div class="little_title_create_orders">
+                                    Цена контракта
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
+                            </div>
+                            <div class="col-6">
+                                <div class="little_title_create_orders">
+                                    Дата контракта
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />
+                            </div>
+                        </div>
+                        <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
+                            <div class="col-6">
+                                <div class="little_title_create_orders">
+                                    Оплата
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].oplata"  />
+                            </div>
+                            <div class="col-6">
+                                <div class="little_title_create_orders">
+                                    Сумма
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].summa"  />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="add_button_plus" v-on:click="dobavit_oplatu()">
+                                +Добавить оплату
                             </div>
                         </div>
                     </div>
+                    <div class="col fit_height row ">
+                        <div class="col cr_ord_mid_col">
+                            <div class="little_title_create_orders">
+                                Номенклатура
+                            </div>
+                            <div class="create_orders_bottom">
+                                <input class="cr_ord_inp_n_3 border_input" v-model="nomenklatura" placeholder="Добавьте файл.xlsx" />
+                                <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
+                                <span class="excel_set" v-on:click="addFiles()">
+                                        <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                       </span>
+                            </div>
 
-                <div class="col">
-                    <div class="little_title_create_orders2">
-                        Комментарий
-                    </div>
-                    <textarea v-model="kommentari_TS" rows="4" cols="60" name="text"></textarea>
-                </div>
-                <div class="col right_comments">
-                    <div class="col-6 row">
-                        <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
-                        <div class="col">На терминале</div>
-                    </div>
-                    <div class="col">
-                        <div class="little_title_create_orders">
-                            Терминал
-                            <span class="add_button">Добавить</span>
+                            <div class="col">
+                                <div class="little_title_create_orders">
+                                    Адрес погрузки 1
+                                    <span class="add_button n3">Добавить</span>
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="adres_pogruzke"  />
+                            </div>
+
                         </div>
-                        <div class="create_orders_bottom row">
-                            <input class="cr_ord_inp_n_12 border_input" v-model="terminal_TS" placeholder="Тула, ул.Гоголя,15" />
+                        <div class="col cr_ord_right_col">
+                            <div class="col-12 row no_padding_right">
+                                <div class="col-5 data_pog_dost no_padding_right">
+                                    <div class="little_title_create_orders ">
+                                        Дата погрузки
+                                    </div>
+                                    <div class="create_orders_bottom no_padding_right">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
+                                    </div>
+                                </div>
+                                <div class=" offset-1 col-6  data_pog_dost  no_padding_right">
+                                    <div class="little_title_create_orders no_padding_right">
+                                        Дата доставки
+                                    </div>
+                                    <div class="create_orders_bottom no_padding_right">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row no_padding_right">
+                                <div class="col-6 no_padding_left no_padding_right">
+                                    <div class="little_title_create_orders">
+                                        Кол-во грузомест
+                                    </div>
+                                    <div class="create_orders_bottom right_menu_nom row">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
+                                        <input @blur="update_order()" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
+                                    </div>
+                                </div>
+                                <div class=" col-6 no_padding_right no_padding_left">
+                                    <div class="little_title_create_orders no_padding_right">
+                                        Расстояние, км
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row no_padding_right">
+                                <div class="col-5 no_padding_right no_padding_left">
+                                    <div class="little_title_create_orders">
+                                        Общий вес, кг
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
+                                    </div>
+                                </div>
+                                <div class="offset-1 col-6  no_padding_left no_padding_right">
+                                    <div class="little_title_create_orders">
+                                        Общий объём, м3
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="little_title_create_orders no_padding_right">
+                                    Адрес выгрузки 1
+                                    <span class="add_button">Добавить</span>
+                                </div>
+                                <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="adres_vygruski"  />
+                            </div>
+                        </div>
+                        <div class="big_comment">
+                            <div class="little_title_create_orders">
+                                Комментарий
+                            </div>
+                            <textarea class="comm_settings" @blur="update_order()" v-model="komment_1" rows="6"  name="text"></textarea>
                         </div>
                     </div>
                 </div>
-                    <div class="col-11 save_buttons justify-content-end row">
-                        <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
-                        <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
+                <div class="col-6 fit_height right_white_block">
+                    <div class="col-12 row ">
+                        <div class="col-3 create_order_right_title ">
+                            Список ТС
+                        </div>
+                        <div class="col-9 text-right row justify-content-end ">
+                            <div class="col create_order_right_main_text text_in_header text-end">Общий бюджет:{{ ob_budjet }} р</div>
+                            <div class="col add_ts_button" v-on:click="add_ts_func()">Добавить ТС</div>
+                        </div>
                     </div>
+                    <div class="col-12 row create_ord_underline"></div>
+
+                    <span v-for="(elem,key) in spisokTSarr">
+                                <div class="col row" >
+                                    <div class="col-1 no_padding_right create_order_right_main_text">{{key + 1}}</div>
+                                    <div class="col-2 no_padding_right ">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text  ">Вид ТС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right">
+                                            <div class="create_order_right_main_text">
+                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['ts_list_id']==elem.vid_TS" class="col-9 no_padding_left">{{ one_ts.ts_name }}</div>
+                                                <div else class="col-9 no_padding_left"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Расстояние,км</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.rasstojanie_TS }}</div>
+                                    </div>
+                                    <div class="col-2 no_padding_right  ">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Кол.грузомест</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.kol_gruz_TS }}</div>
+                                    </div>
+                                    <div class="col-2 no_padding_right  ">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Кол.ТС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.kol_TS_TS }}</div>
+                                    </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Общий вес,кг</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.ob_ves_TS }}</div>
+                                    </div>
+
+                                    <div class="offset-1 col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text text_line">Общий объём,м3</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.ob_ob_TS }}</div>
+                                    </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Ставка</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.stavka_TS }}р.</div>
+                                    </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Ставка КП</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.stavka_kp_TS }}р.</div>
+                                    </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text">Маржа</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.marja_TS }}р.</div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 second_right_create_orders_text row">
+                                    <div class="col right_top_text_1_0" v-on:click="editTs(key)">
+                                        <span class="iconify edit_icon_right_menu" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
+                                    </div>
+                                    <div class="col right_top_text_1_1">
+                                        <div class="create_ord_right_lit_text">Адрес Погрузки</div>
+                                        <div class="create_order_right_main_text">{{ elem.adres_pogruzki_TS }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="create_ord_right_lit_text">Адрес Выгрузки</div>
+                                        <div class="create_order_right_main_text">{{ elem.adres_vygr_TS }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-12 row right_top_text_1_2">
+                                    <div class="col">
+                                        <div class="create_ord_right_lit_text">Комментарий</div>
+                                        <div v-if="elem.kommentari_TS==''" class="create_order_right_main_text">Нет комментария</div>
+                                        <div v-else class="create_order_right_main_text">{{ elem.kommentari_TS }}</div>
+                                    </div>
+                                </div>
+                                                    <div class="col-12 row create_ord_underline"></div>
+                                </span>
+
+
+
+                    <!--                start_ts-->
+                    <div v-if="add_ts" class="row">
+                        <div class="col spisok_ts_second_title_left">
+                            <div class="little_title_create_orders2">
+                                Вид ТС
+                            </div>
+                            <div class="create_orders_bottom">
+                                <select class="sel_cust" v-model="vid_TS">
+                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
+                                    <option v-bind:value="1" class="sel_cust">Тент</option>
+                                    <option v-bind:value="2" class="sel_cust">Палатка</option>
+                                </select>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS"  />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка за км
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_za_km" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка КП
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Маржа
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="marja_TS"  readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col row">
+                            <div class="col spisok_ts_second_title_center ">
+                                <div class="col row no_padding_right no_padding_left">
+                                    <div class="col-12 row no_padding_right no_padding_left">
+                                        <div class="col cr_ord_lit_left no_padding_right no_padding_left">
+                                            <div class="little_title_create_orders2">
+                                                Кол-во грузомест
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS"  />
+                                            </div>
+                                        </div>
+                                        <div class="col cr_ord_lit_center no_padding_right">
+                                            <div class="little_title_create_orders2">
+                                                Кол-во ТС
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS"  />
+                                            </div>
+                                        </div>
+                                        <div class="col cr_ord_lit_right no_padding_left">
+                                            <div class="little_title_create_orders2">
+                                                Расстояние, км
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col no_padding_left">
+                                        <div class="little_title_create_orders2">
+                                            Адрес погрузки1
+                                            <span class="add_button">Добавить</span>
+                                        </div>
+                                        <div class="create_orders_bottom row">
+                                            <input class="cr_ord_inp_n_7 border_input" v-model="adres_pogruzki_TS"  />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col no_padding_right">
+                                <div class="col-12 row">
+                                    <div class="col-6 cr_ord_inp_n_11 ob_ves">
+                                        <div class="little_title_create_orders2">
+                                            Общий вес,кг
+                                        </div>
+                                        <div class="create_orders_bottom row">
+                                            <input class=" border_input" v-model="ob_ves_TS"  />
+                                        </div>
+                                    </div>
+                                    <div class="col-6 cr_ord_inp_n_11 ob_ves">
+                                        <div class="little_title_create_orders2 ob_ob_width">
+                                            Общий объём,м3
+                                        </div>
+                                        <div class="create_orders_bottom row">
+                                            <input class=" border_input" v-model="ob_ob_TS"  />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-8">
+                                    <div class="little_title_create_orders2 ob_ob_width">
+                                        Адрес выгрузки1
+                                        <span class="add_button">Добавить</span>
+                                    </div>
+                                    <div class="create_orders_bottom row">
+                                        <input class="border_input ob_ob_width" v-model="adres_vygr_TS"  />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col">
+                            <div class="little_title_create_orders2">
+                                Комментарий
+                            </div>
+                            <textarea v-model="kommentari_TS" rows="4" cols="60" name="text"></textarea>
+                        </div>
+                        <div class="col right_comments">
+                            <div class="col-6 row">
+                                <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
+                                <div class="col">На терминале</div>
+                            </div>
+                            <div class="col">
+                                <div class="little_title_create_orders">
+                                    Терминал
+                                    <span class="add_button">Добавить</span>
+                                </div>
+                                <div class="create_orders_bottom row">
+                                    <input class="cr_ord_inp_n_12 border_input" v-model="terminal_TS"  />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-11 save_buttons justify-content-end row">
+                            <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
+                            <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
+                        </div>
+                    </div>
+                    <!--                end_ts-->
+
                 </div>
-<!--                end_ts-->
+                </div>
 
             </div>
-
         </div>
     </div>
 </template>
@@ -936,6 +919,20 @@
             openEndDatePicker1: function() {
                 this.$refs.startDatePicker1.showCalendar();
             },
+            customFormatter1(date) {
+                //первичная загрузка
+                if(!this.start_flag)
+                {
+                    this.start_flag=true
+                }
+                //все последующие загрузки и изменения
+                else
+                {
+                    this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
+                    this.update_order()
+                }
+                return moment(date).format('D MM YYYY');
+            },
             customFormatter(date) {
                 //первичная загрузка
                 if(!this.start_flag)
@@ -946,7 +943,6 @@
                 else
                 {
                     this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString();
-                    this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
                     this.update_order()
                 }
                 return moment(date).format('D MM YYYY');
@@ -957,15 +953,17 @@
             handleFilesUpload(){
                 let flag = 0;
                 let uploadedFiles = this.$refs.files.files;
-                        if ( /\.(xlsx)$/i.test( uploadedFiles[0].name ) ) {
+                        if ( /\.(xlsx?)$/i.test( uploadedFiles[0].name ) ) {
                             let reg ='';
-                           reg=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(xlsx)/))
+                           reg=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(xlsx?)/))
                             this.nomenklatura=reg[1];
+                            this.nomenklatura=reg[0];
                             let formData = new FormData();
                                 let file = uploadedFiles;
                                 formData.append('file_xlsx', file[0]);
                                 formData.append('file_name',this.nomenklatura);
                                 formData.append('order_id',this.order_id);
+                                formData.append('full_name',reg[0]);
                             axios.post( '/store_xlsx',
                                 formData,
                                 {
@@ -984,3 +982,4 @@
         }
     }
 </script>
+

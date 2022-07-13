@@ -5838,23 +5838,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 Vue.filter('formatDate', function (value) {
@@ -6250,6 +6233,18 @@ Vue.filter('formatDate', function (value) {
     openEndDatePicker1: function openEndDatePicker1() {
       this.$refs.startDatePicker1.showCalendar();
     },
+    customFormatter1: function customFormatter1(date) {
+      //первичная загрузка
+      if (!this.start_flag) {
+        this.start_flag = true;
+      } //все последующие загрузки и изменения
+      else {
+        this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString();
+        this.update_order();
+      }
+
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('D MM YYYY');
+    },
     customFormatter: function customFormatter(date) {
       //первичная загрузка
       if (!this.start_flag) {
@@ -6257,7 +6252,6 @@ Vue.filter('formatDate', function (value) {
       } //все последующие загрузки и изменения
       else {
         this.data_vneseniya = new Date(this.data_vneseniya).toLocaleDateString();
-        this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString();
         this.update_order();
       }
 
@@ -6270,15 +6264,17 @@ Vue.filter('formatDate', function (value) {
       var flag = 0;
       var uploadedFiles = this.$refs.files.files;
 
-      if (/\.(xlsx)$/i.test(uploadedFiles[0].name)) {
+      if (/\.(xlsx?)$/i.test(uploadedFiles[0].name)) {
         var reg = '';
-        reg = uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(xlsx)/);
+        reg = uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(xlsx?)/);
         this.nomenklatura = reg[1];
+        this.nomenklatura = reg[0];
         var formData = new FormData();
         var file = uploadedFiles;
         formData.append('file_xlsx', file[0]);
         formData.append('file_name', this.nomenklatura);
         formData.append('order_id', this.order_id);
+        formData.append('full_name', reg[0]);
         axios.post('/store_xlsx', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -6339,6 +6335,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -6549,6 +6566,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 Vue.filter('formatDate', function (value) {
   if (value) {
@@ -6615,6 +6634,28 @@ Vue.filter('formatDate', function (value) {
 
           this.delete_arr.push(this.orders_list[i].id);
         }
+      } //перерисуем массив
+
+
+      var imp_arr = [];
+      var not_imp_arr = [];
+
+      for (var _i = 0; _i < this.orders_list.length; _i++) {
+        if (this.orders_list[_i].important == 1) {
+          imp_arr.push(this.orders_list[_i]);
+        } else {
+          not_imp_arr.push(this.orders_list[_i]);
+        }
+      }
+
+      this.orders_list = [];
+
+      for (var _i2 = 0; _i2 < imp_arr.length; _i2++) {
+        this.orders_list.push(imp_arr[_i2]);
+      }
+
+      for (var _i3 = 0; _i3 < not_imp_arr.length; _i3++) {
+        this.orders_list.push(not_imp_arr[_i3]);
       }
 
       axios.post('/mark_as_important', {
@@ -6727,9 +6768,9 @@ Vue.filter('formatDate', function (value) {
 
         if (this.current_page == 2) {
           if (g > 2) {
-            for (var _i = 1; _i <= 3; _i++) {
+            for (var _i4 = 1; _i4 <= 3; _i4++) {
               this.pagination_numb.push({
-                'id': _i
+                'id': _i4
               });
             }
 
@@ -6740,9 +6781,9 @@ Vue.filter('formatDate', function (value) {
               'id': g
             });
           } else {
-            for (var _i2 = 1; _i2 <= 2; _i2++) {
+            for (var _i5 = 1; _i5 <= 2; _i5++) {
               this.pagination_numb.push({
-                'id': _i2
+                'id': _i5
               });
             }
           }
@@ -51236,20 +51277,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-12" }, [
-        _c(
-          "div",
-          {
-            staticClass: "col-6 orders_create_title",
-            on: { click: _vm.openEndDatePicker },
-          },
-          [
-            _vm._v(
-              "\n                    Заявки: Создание заявки\n                "
-            ),
-          ]
-        ),
-      ]),
+      _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "col-12 second_header_cr_order" }, [
         _c("div", { staticClass: "col-10 create_orders_second_title row" }, [
@@ -51293,7 +51321,7 @@ var render = function () {
                   },
                   [
                     _vm._v(
-                      " @closed='openEndDatePicker()'\n                        "
+                      " @closed='openEndDatePicker()'\n                    "
                     ),
                   ]
                 ),
@@ -51320,24 +51348,22 @@ var render = function () {
                 ],
                 staticClass: "create_orders_date_title_int cr_ord_inp_n_1",
                 on: {
-                  change: [
-                    function ($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function (o) {
-                          return o.selected
-                        })
-                        .map(function (o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.logist = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    },
-                    function ($event) {
-                      return _vm.update_order()
-                    },
-                  ],
+                  blur: function ($event) {
+                    return _vm.update_order()
+                  },
+                  change: function ($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function (o) {
+                        return o.selected
+                      })
+                      .map(function (o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.logist = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
                 },
               },
               [
@@ -51397,7 +51423,7 @@ var render = function () {
                   "datepicker",
                   {
                     ref: "startDatePicker1",
-                    attrs: { format: _vm.customFormatter },
+                    attrs: { format: _vm.customFormatter1 },
                     model: {
                       value: _vm.rasschitat_do,
                       callback: function ($$v) {
@@ -51408,7 +51434,7 @@ var render = function () {
                   },
                   [
                     _vm._v(
-                      " @closed='openEndDatePicker()'\n                            "
+                      " @closed='openEndDatePicker()'\n                        "
                     ),
                   ]
                 ),
@@ -51417,1092 +51443,21 @@ var render = function () {
             ),
           ]),
           _vm._v(" "),
-          _vm._m(0),
+          _vm._m(1),
         ]),
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-6 row" }, [
-        _c(
-          "div",
-          { staticClass: "col cr_ord_left_col" },
-          [
-            _c("div", { staticClass: "col" }, [
-              _c("div", { staticClass: "little_title_create_orders" }, [
-                _vm._v(
-                  "\n                            Вид перевозки\n                        "
-                ),
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "create_orders_bottom" }, [
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.vid_perevozki,
-                        expression: "vid_perevozki",
-                      },
-                    ],
-                    staticClass: "cr_ord_inp_n_1",
-                    on: {
-                      change: [
-                        function ($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function (o) {
-                              return o.selected
-                            })
-                            .map(function (o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.vid_perevozki = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        function ($event) {
-                          return _vm.update_order()
-                        },
-                      ],
-                    },
-                  },
-                  [
-                    _c(
-                      "option",
-                      { staticClass: "sel_cust", domProps: { value: 0 } },
-                      [_vm._v("Автоперевозка")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "option",
-                      { staticClass: "sel_cust", domProps: { value: 1 } },
-                      [_vm._v("Самолётом")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "option",
-                      { staticClass: "sel_cust", domProps: { value: 2 } },
-                      [_vm._v("Кораблём")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "option",
-                      { staticClass: "sel_cust", domProps: { value: 3 } },
-                      [_vm._v("На верблюде")]
-                    ),
-                  ]
-                ),
-              ]),
-            ]),
-            _vm._v(" "),
-            _vm._m(1),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _c("div", { staticClass: "little_title_create_orders1" }, [
-                _vm._v(
-                  "\n                            Номер заявки\n                        "
-                ),
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.nomer_zayavki,
-                    expression: "nomer_zayavki",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "Введите номер..." },
-                domProps: { value: _vm.nomer_zayavki },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.nomer_zayavki = $event.target.value
-                  },
-                },
-              }),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _vm._m(2),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.kompaniya_zakazchik,
-                    expression: "kompaniya_zakazchik",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "ООО 'Альфа'" },
-                domProps: { value: _vm.kompaniya_zakazchik },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.kompaniya_zakazchik = $event.target.value
-                  },
-                },
-              }),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _vm._m(3),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.menedzer_zakazchik,
-                    expression: "menedzer_zakazchik",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "Петров Сергей..." },
-                domProps: { value: _vm.menedzer_zakazchik },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.menedzer_zakazchik = $event.target.value
-                  },
-                },
-              }),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _c("div", { staticClass: "little_title_create_orders" }, [
-                _vm._v(
-                  "\n                            Проект ИСД (номер и название)\n                        "
-                ),
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.ISD,
-                    expression: "ISD",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "ИСД 5022" },
-                domProps: { value: _vm.ISD },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.ISD = $event.target.value
-                  },
-                },
-              }),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-12 row" }, [
-              _c("div", { staticClass: "col-6" }, [
-                _c("div", { staticClass: "little_title_create_orders" }, [
-                  _vm._v(
-                    "\n                            Цена контракта\n                        "
-                  ),
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.cena_kontrakta,
-                      expression: "cena_kontrakta",
-                    },
-                  ],
-                  staticClass: "cr_ord_inp_n_2 border_input",
-                  attrs: { placeholder: "10 000 000р." },
-                  domProps: { value: _vm.cena_kontrakta },
-                  on: {
-                    change: function ($event) {
-                      return _vm.update_order()
-                    },
-                    input: function ($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.cena_kontrakta = $event.target.value
-                    },
-                  },
-                }),
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-6" }, [
-                _c("div", { staticClass: "little_title_create_orders" }, [
-                  _vm._v(
-                    "\n                            Дата контракта\n                        "
-                  ),
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.data_kontrakta,
-                      expression: "data_kontrakta",
-                    },
-                  ],
-                  staticClass: "cr_ord_inp_n_2 border_input",
-                  attrs: { placeholder: "10.03.2022" },
-                  domProps: { value: _vm.data_kontrakta },
-                  on: {
-                    change: function ($event) {
-                      return _vm.update_order()
-                    },
-                    input: function ($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.data_kontrakta = $event.target.value
-                    },
-                  },
-                }),
-              ]),
-            ]),
-            _vm._v(" "),
-            _vm._l(_vm.oplata_arr, function (oplata, key) {
-              return _c("div", { staticClass: "col-12 row" }, [
-                _c("div", { staticClass: "col-6" }, [
-                  _c("div", { staticClass: "little_title_create_orders" }, [
-                    _vm._v(
-                      "\n                                Оплата\n                            "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.oplata_arr[key].oplata,
-                        expression: "oplata_arr[key].oplata",
-                      },
-                    ],
-                    staticClass: "cr_ord_inp_n_2 border_input",
-                    attrs: { placeholder: "20.03.2022" },
-                    domProps: { value: _vm.oplata_arr[key].oplata },
-                    on: {
-                      change: function ($event) {
-                        return _vm.update_order()
-                      },
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(
-                          _vm.oplata_arr[key],
-                          "oplata",
-                          $event.target.value
-                        )
-                      },
-                    },
-                  }),
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-6" }, [
-                  _c("div", { staticClass: "little_title_create_orders" }, [
-                    _vm._v(
-                      "\n                                Сумма\n                            "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.oplata_arr[key].summa,
-                        expression: "oplata_arr[key].summa",
-                      },
-                    ],
-                    staticClass: "cr_ord_inp_n_2 border_input",
-                    attrs: { placeholder: "10 000 000р." },
-                    domProps: { value: _vm.oplata_arr[key].summa },
-                    on: {
-                      change: function ($event) {
-                        return _vm.update_order()
-                      },
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.$set(
-                          _vm.oplata_arr[key],
-                          "summa",
-                          $event.target.value
-                        )
-                      },
-                    },
-                  }),
-                ]),
-              ])
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _c(
-                "div",
-                {
-                  staticClass: "add_button_plus",
-                  on: {
-                    click: function ($event) {
-                      return _vm.dobavit_oplatu()
-                    },
-                  },
-                },
-                [
-                  _vm._v(
-                    "\n                            +Добавить оплату\n                        "
-                  ),
-                ]
-              ),
-            ]),
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "col row" }, [
-          _c("div", { staticClass: "col cr_ord_mid_col" }, [
-            _c("div", { staticClass: "little_title_create_orders" }, [
-              _vm._v(
-                "\n                        Номенклатура\n                    "
-              ),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "create_orders_bottom" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.nomenklatura,
-                    expression: "nomenklatura",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_3 border_input",
-                attrs: { placeholder: "Добавьте файл.xlsx" },
-                domProps: { value: _vm.nomenklatura },
-                on: {
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.nomenklatura = $event.target.value
-                  },
-                },
-              }),
-              _vm._v(" "),
-              _c("input", {
-                ref: "files",
-                attrs: { hidden: "true", type: "file", id: "files" },
-                on: {
-                  change: function ($event) {
-                    return _vm.handleFilesUpload()
-                  },
-                },
-              }),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  staticClass: "excel_set",
-                  on: {
-                    click: function ($event) {
-                      return _vm.addFiles()
-                    },
-                  },
-                },
-                [
-                  _c("span", {
-                    staticClass: "iconify",
-                    staticStyle: { color: "#4d4d4d" },
-                    attrs: {
-                      "data-icon": "file-icons:microsoft-excel",
-                      "data-width": "24",
-                      "data-height": "24",
-                    },
-                  }),
-                ]
-              ),
-            ]),
-            _vm._v(" "),
-            _vm._m(4),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _vm._m(5),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.adres_pogruzke,
-                    expression: "adres_pogruzke",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "Тула ул.Гоголя,15" },
-                domProps: { value: _vm.adres_pogruzke },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.adres_pogruzke = $event.target.value
-                  },
-                },
-              }),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col big_comment" }, [
-              _c("div", { staticClass: "little_title_create_orders" }, [
-                _vm._v(
-                  "\n                            Комментарий\n                        "
-                ),
-              ]),
-              _vm._v(" "),
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.komment_1,
-                    expression: "komment_1",
-                  },
-                ],
-                attrs: { rows: "4", cols: "60", name: "text" },
-                domProps: { value: _vm.komment_1 },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.komment_1 = $event.target.value
-                  },
-                },
-              }),
-            ]),
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col cr_ord_right_col" }, [
-            _c("div", { staticClass: "col-12 row no_padding_right" }, [
-              _c("div", { staticClass: "col data_pog_dost no_padding_right" }, [
-                _c("div", { staticClass: "little_title_create_orders " }, [
-                  _vm._v(
-                    "\n                                Дата погрузки\n                            "
-                  ),
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "create_orders_bottom no_padding_right" },
-                  [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.data_pogruzki,
-                          expression: "data_pogruzki",
-                        },
-                      ],
-                      staticClass: "cr_ord_inp_n_2 border_input",
-                      attrs: { placeholder: "10.03.2022" },
-                      domProps: { value: _vm.data_pogruzki },
-                      on: {
-                        change: function ($event) {
-                          return _vm.update_order()
-                        },
-                        input: function ($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.data_pogruzki = $event.target.value
-                        },
-                      },
-                    }),
-                  ]
-                ),
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "col data_pog_dost data_dost_right no_padding_right",
-                },
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass:
-                        "little_title_create_orders no_padding_right",
-                    },
-                    [
-                      _vm._v(
-                        "\n                                Дата доставки\n                            "
-                      ),
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "create_orders_bottom no_padding_right" },
-                    [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.data_dostavki,
-                            expression: "data_dostavki",
-                          },
-                        ],
-                        staticClass: "cr_ord_inp_n_2 border_input",
-                        attrs: { placeholder: "10.03.2022" },
-                        domProps: { value: _vm.data_dostavki },
-                        on: {
-                          change: function ($event) {
-                            return _vm.update_order()
-                          },
-                          input: function ($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.data_dostavki = $event.target.value
-                          },
-                        },
-                      }),
-                    ]
-                  ),
-                ]
-              ),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-12 row no_padding_right" }, [
-              _c(
-                "div",
-                { staticClass: "col no_padding_left no_padding_right" },
-                [
-                  _c("div", { staticClass: "little_title_create_orders" }, [
-                    _vm._v(
-                      "\n                                Кол-во грузомест\n                            "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "create_orders_bottom right_menu_nom row" },
-                    [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.gruzomesta_big,
-                            expression: "gruzomesta_big",
-                          },
-                        ],
-                        staticClass: "cr_ord_inp_n_4 border_input",
-                        attrs: { placeholder: "105" },
-                        domProps: { value: _vm.gruzomesta_big },
-                        on: {
-                          change: function ($event) {
-                            return _vm.update_order()
-                          },
-                          input: function ($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.gruzomesta_big = $event.target.value
-                          },
-                        },
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.gruzomesta_small,
-                            expression: "gruzomesta_small",
-                          },
-                        ],
-                        staticClass: "cr_ord_inp_n_5 nom_margin border_input",
-                        attrs: { placeholder: "10", readonly: "" },
-                        domProps: { value: _vm.gruzomesta_small },
-                        on: {
-                          change: function ($event) {
-                            return _vm.update_order()
-                          },
-                          input: function ($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.gruzomesta_small = $event.target.value
-                          },
-                        },
-                      }),
-                    ]
-                  ),
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col no_padding_right arrang_set" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "little_title_create_orders no_padding_right",
-                  },
-                  [
-                    _vm._v(
-                      "\n                                Расстояние, км\n                            "
-                    ),
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "create_orders_bottom" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.rasstojanie,
-                        expression: "rasstojanie",
-                      },
-                    ],
-                    staticClass: "cr_ord_inp_n_2 border_input",
-                    attrs: { placeholder: "100000" },
-                    domProps: { value: _vm.rasstojanie },
-                    on: {
-                      change: function ($event) {
-                        return _vm.update_order()
-                      },
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.rasstojanie = $event.target.value
-                      },
-                    },
-                  }),
-                ]),
-              ]),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-12 row no_padding_right" }, [
-              _c(
-                "div",
-                { staticClass: "col no_padding_right no_padding_left" },
-                [
-                  _c("div", { staticClass: "little_title_create_orders" }, [
-                    _vm._v(
-                      "\n                               Общий вес, кг\n                            "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "create_orders_bottom" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.ob_ves,
-                          expression: "ob_ves",
-                        },
-                      ],
-                      staticClass: "cr_ord_inp_n_2 border_input",
-                      attrs: { placeholder: "1000" },
-                      domProps: { value: _vm.ob_ves },
-                      on: {
-                        change: function ($event) {
-                          return _vm.update_order()
-                        },
-                        input: function ($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.ob_ves = $event.target.value
-                        },
-                      },
-                    }),
-                  ]),
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "col cr_ord_obj no_padding_left no_padding_right",
-                },
-                [
-                  _c("div", { staticClass: "little_title_create_orders" }, [
-                    _vm._v(
-                      "\n                                Общий объём, м3\n                            "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "create_orders_bottom" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.ob_ob,
-                          expression: "ob_ob",
-                        },
-                      ],
-                      staticClass: "cr_ord_inp_n_2 border_input",
-                      attrs: { placeholder: "10.03.2022" },
-                      domProps: { value: _vm.ob_ob },
-                      on: {
-                        change: function ($event) {
-                          return _vm.update_order()
-                        },
-                        input: function ($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.ob_ob = $event.target.value
-                        },
-                      },
-                    }),
-                  ]),
-                ]
-              ),
-            ]),
-            _vm._v(" "),
-            _vm._m(6),
-            _vm._v(" "),
-            _c("div", { staticClass: "col" }, [
-              _vm._m(7),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.adres_vygruski,
-                    expression: "adres_vygruski",
-                  },
-                ],
-                staticClass: "cr_ord_inp_n_1 border_input",
-                attrs: { placeholder: "Тула ул.Гоголя,15" },
-                domProps: { value: _vm.adres_vygruski },
-                on: {
-                  change: function ($event) {
-                    return _vm.update_order()
-                  },
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.adres_vygruski = $event.target.value
-                  },
-                },
-              }),
-            ]),
-          ]),
-        ]),
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-6 right_white_block" },
-        [
-          _c("div", { staticClass: "col-12 row " }, [
-            _c("div", { staticClass: "col-3 create_order_right_title " }, [
-              _vm._v("\n                    Список ТС\n                "),
-            ]),
-            _vm._v(" "),
+      _c("div", { staticClass: "container row" }, [
+        _c("div", { staticClass: "container row" }, [
+          _c("div", { staticClass: "col-6 row " }, [
             _c(
               "div",
-              { staticClass: "col-9 text-right row justify-content-end " },
+              { staticClass: "col cr_ord_left_col" },
               [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "col create_order_right_main_text text_in_header text-end",
-                  },
-                  [_vm._v("Общий бюджет:" + _vm._s(_vm.ob_budjet) + " р")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "col add_ts_button",
-                    on: {
-                      click: function ($event) {
-                        return _vm.add_ts_func()
-                      },
-                    },
-                  },
-                  [_vm._v("Добавить ТС")]
-                ),
-              ]
-            ),
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "col-12 row create_ord_underline" }),
-          _vm._v(" "),
-          _vm.spisokTSarr.length > 0
-            ? _c("div", { staticClass: "col-12 row" }, [
-                _vm._m(8),
-                _vm._v(" "),
-                _vm._m(9),
-                _vm._v(" "),
-                _vm._m(10),
-                _vm._v(" "),
-                _vm._m(11),
-                _vm._v(" "),
-                _vm._m(12),
-                _vm._v(" "),
-                _vm._m(13),
-                _vm._v(" "),
-                _vm._m(14),
-                _vm._v(" "),
-                _vm._m(15),
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm._l(_vm.spisokTSarr, function (elem, key) {
-            return _c("span", [
-              _c("div", { staticClass: "col-12 row " }, [
-                _c("div", { staticClass: "col row no_padding_right " }, [
-                  _c(
-                    "div",
-                    {
-                      staticClass:
-                        "col right_top_text_0 no_padding_right no_padding_left",
-                    },
-                    [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "create_order_right_main_text vid_TS_text row",
-                        },
-                        [
-                          _c(
-                            "div",
-                            { staticClass: "col-3 no_padding_right " },
-                            [_vm._v(_vm._s(key + 1))]
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.ts_list_names, function (one_ts, key1) {
-                            return one_ts["ts_list_id"] == elem.vid_TS
-                              ? _c(
-                                  "div",
-                                  { staticClass: "col-9 no_padding_left" },
-                                  [_vm._v(_vm._s(one_ts.ts_name))]
-                                )
-                              : _vm._e()
-                          }),
-                          _vm._v(" "),
-                          _c("div", {
-                            staticClass: "col-9 no_padding_left",
-                            attrs: { else: "" },
-                          }),
-                        ],
-                        2
-                      ),
-                    ]
-                  ),
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "col right_top_text_1 set_left_pad no_padding_right",
-                  },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.rasstojanie_TS)),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "col no_padding_right set_left_pad right_top_text_2",
-                  },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.kol_gruz_TS)),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col set_left_pad no_padding_right" },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.ob_ves_TS)),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col set_left_pad no_padding_right" },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.ob_ob_TS)),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col set_left_pad no_padding_right" },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.stavka_TS) + "р."),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col set_left_pad no_padding_right" },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.stavka_kp_TS) + "р."),
-                    ]),
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col set_left_pad no_padding_right" },
-                  [
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.marja_TS) + "р."),
-                    ]),
-                  ]
-                ),
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "col-12 second_right_create_orders_text row" },
-                [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "col right_top_text_1_0",
-                      on: {
-                        click: function ($event) {
-                          return _vm.editTs(key)
-                        },
-                      },
-                    },
-                    [
-                      _c("span", {
-                        staticClass: "iconify edit_icon_right_menu",
-                        staticStyle: { color: "#a6a6a6" },
-                        attrs: {
-                          "data-icon": "akar-icons:edit",
-                          "data-width": "20",
-                          "data-height": "20",
-                        },
-                      }),
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col right_top_text_1_1" }, [
-                    _c("div", { staticClass: "create_ord_right_lit_text" }, [
-                      _vm._v("Адрес Погрузки"),
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.adres_pogruzki_TS)),
-                    ]),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col" }, [
-                    _c("div", { staticClass: "create_ord_right_lit_text" }, [
-                      _vm._v("Адрес Выгрузки"),
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "create_order_right_main_text" }, [
-                      _vm._v(_vm._s(elem.adres_vygr_TS)),
-                    ]),
-                  ]),
-                ]
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-12 row right_top_text_1_2" }, [
                 _c("div", { staticClass: "col" }, [
-                  _c("div", { staticClass: "create_ord_right_lit_text" }, [
-                    _vm._v("Комментарий"),
-                  ]),
-                  _vm._v(" "),
-                  elem.kommentari_TS == ""
-                    ? _c(
-                        "div",
-                        { staticClass: "create_order_right_main_text" },
-                        [_vm._v("Нет комментария")]
-                      )
-                    : _c(
-                        "div",
-                        { staticClass: "create_order_right_main_text" },
-                        [_vm._v(_vm._s(elem.kommentari_TS))]
-                      ),
-                ]),
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-12 row create_ord_underline" }),
-            ])
-          }),
-          _vm._v(" "),
-          _vm.add_ts
-            ? _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col spisok_ts_second_title_left" }, [
-                  _c("div", { staticClass: "little_title_create_orders2" }, [
+                  _c("div", { staticClass: "little_title_create_orders" }, [
                     _vm._v(
-                      "\n                        Вид ТС\n                    "
+                      "\n                            Вид перевозки\n                        "
                     ),
                   ]),
                   _vm._v(" "),
@@ -52514,12 +51469,15 @@ var render = function () {
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.vid_TS,
-                            expression: "vid_TS",
+                            value: _vm.vid_perevozki,
+                            expression: "vid_perevozki",
                           },
                         ],
-                        staticClass: "sel_cust",
+                        staticClass: "cr_ord_inp_n_1",
                         on: {
+                          blur: function ($event) {
+                            return _vm.update_order()
+                          },
                           change: function ($event) {
                             var $$selectedVal = Array.prototype.filter
                               .call($event.target.options, function (o) {
@@ -52529,7 +51487,7 @@ var render = function () {
                                 var val = "_value" in o ? o._value : o.value
                                 return val
                               })
-                            _vm.vid_TS = $event.target.multiple
+                            _vm.vid_perevozki = $event.target.multiple
                               ? $$selectedVal
                               : $$selectedVal[0]
                           },
@@ -52545,100 +51503,595 @@ var render = function () {
                         _c(
                           "option",
                           { staticClass: "sel_cust", domProps: { value: 1 } },
-                          [_vm._v("Тент")]
+                          [_vm._v("Самолётом")]
                         ),
                         _vm._v(" "),
                         _c(
                           "option",
                           { staticClass: "sel_cust", domProps: { value: 2 } },
-                          [_vm._v("Палатка")]
+                          [_vm._v("Кораблём")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "option",
+                          { staticClass: "sel_cust", domProps: { value: 3 } },
+                          [_vm._v("На верблюде")]
                         ),
                       ]
                     ),
                   ]),
+                ]),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _c("div", { staticClass: "little_title_create_orders1" }, [
+                    _vm._v(
+                      "\n                            Номер заявки\n                        "
+                    ),
+                  ]),
                   _vm._v(" "),
-                  _c("div", { staticClass: "col-12 row" }, [
-                    _c("div", { staticClass: "col-6" }, [
-                      _c(
-                        "div",
-                        { staticClass: "little_title_create_orders2" },
-                        [
-                          _vm._v(
-                            "\n                                Ставка\n                            "
-                          ),
-                        ]
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.nomer_zayavki,
+                        expression: "nomer_zayavki",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.nomer_zayavki },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.nomer_zayavki = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.kompaniya_zakazchik,
+                        expression: "kompaniya_zakazchik",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.kompaniya_zakazchik },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.kompaniya_zakazchik = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.menedzer_zakazchik,
+                        expression: "menedzer_zakazchik",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.menedzer_zakazchik },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.menedzer_zakazchik = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _c("div", { staticClass: "little_title_create_orders" }, [
+                    _vm._v(
+                      "\n                            Проект ИСД (номер и название)\n                        "
+                    ),
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.ISD,
+                        expression: "ISD",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.ISD },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.ISD = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 row" }, [
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("div", { staticClass: "little_title_create_orders" }, [
+                      _vm._v(
+                        "\n                                Цена контракта\n                            "
                       ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "create_orders_bottom" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.stavka_TS,
-                              expression: "stavka_TS",
-                            },
-                          ],
-                          staticClass: "cr_ord_inp_n_6 border_input",
-                          attrs: { placeholder: "1 250 000 р." },
-                          domProps: { value: _vm.stavka_TS },
-                          on: {
-                            input: function ($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.stavka_TS = $event.target.value
-                            },
-                          },
-                        }),
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.cena_kontrakta,
+                          expression: "cena_kontrakta",
+                        },
+                      ],
+                      staticClass: "cr_ord_inp_n_2 border_input",
+                      domProps: { value: _vm.cena_kontrakta },
+                      on: {
+                        blur: function ($event) {
+                          return _vm.update_order()
+                        },
+                        input: function ($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.cena_kontrakta = $event.target.value
+                        },
+                      },
+                    }),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("div", { staticClass: "little_title_create_orders" }, [
+                      _vm._v(
+                        "\n                                Дата контракта\n                            "
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.data_kontrakta,
+                          expression: "data_kontrakta",
+                        },
+                      ],
+                      staticClass: "cr_ord_inp_n_2 border_input",
+                      domProps: { value: _vm.data_kontrakta },
+                      on: {
+                        blur: function ($event) {
+                          return _vm.update_order()
+                        },
+                        input: function ($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.data_kontrakta = $event.target.value
+                        },
+                      },
+                    }),
+                  ]),
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.oplata_arr, function (oplata, key) {
+                  return _c("div", { staticClass: "col-12 row" }, [
+                    _c("div", { staticClass: "col-6" }, [
+                      _c("div", { staticClass: "little_title_create_orders" }, [
+                        _vm._v(
+                          "\n                                Оплата\n                            "
+                        ),
                       ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.oplata_arr[key].oplata,
+                            expression: "oplata_arr[key].oplata",
+                          },
+                        ],
+                        staticClass: "cr_ord_inp_n_2 border_input",
+                        domProps: { value: _vm.oplata_arr[key].oplata },
+                        on: {
+                          blur: function ($event) {
+                            return _vm.update_order()
+                          },
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.oplata_arr[key],
+                              "oplata",
+                              $event.target.value
+                            )
+                          },
+                        },
+                      }),
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-6" }, [
-                      _c(
-                        "div",
-                        { staticClass: "little_title_create_orders2" },
-                        [
-                          _vm._v(
-                            "\n                                Ставка за км\n                            "
-                          ),
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "create_orders_bottom" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.stavka_TS_za_km,
-                              expression: "stavka_TS_za_km",
-                            },
-                          ],
-                          staticClass: "cr_ord_inp_n_6 border_input",
-                          attrs: { placeholder: "1 250 000 р.", readonly: "" },
-                          domProps: { value: _vm.stavka_TS_za_km },
-                          on: {
-                            input: function ($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.stavka_TS_za_km = $event.target.value
-                            },
-                          },
-                        }),
+                      _c("div", { staticClass: "little_title_create_orders" }, [
+                        _vm._v(
+                          "\n                                Сумма\n                            "
+                        ),
                       ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.oplata_arr[key].summa,
+                            expression: "oplata_arr[key].summa",
+                          },
+                        ],
+                        staticClass: "cr_ord_inp_n_2 border_input",
+                        domProps: { value: _vm.oplata_arr[key].summa },
+                        on: {
+                          blur: function ($event) {
+                            return _vm.update_order()
+                          },
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.oplata_arr[key],
+                              "summa",
+                              $event.target.value
+                            )
+                          },
+                        },
+                      }),
                     ]),
-                  ]),
+                  ])
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "add_button_plus",
+                      on: {
+                        click: function ($event) {
+                          return _vm.dobavit_oplatu()
+                        },
+                      },
+                    },
+                    [
+                      _vm._v(
+                        "\n                            +Добавить оплату\n                        "
+                      ),
+                    ]
+                  ),
+                ]),
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "col fit_height row " }, [
+              _c("div", { staticClass: "col cr_ord_mid_col" }, [
+                _c("div", { staticClass: "little_title_create_orders" }, [
+                  _vm._v(
+                    "\n                            Номенклатура\n                        "
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "create_orders_bottom" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.nomenklatura,
+                        expression: "nomenklatura",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_3 border_input",
+                    attrs: { placeholder: "Добавьте файл.xlsx" },
+                    domProps: { value: _vm.nomenklatura },
+                    on: {
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.nomenklatura = $event.target.value
+                      },
+                    },
+                  }),
                   _vm._v(" "),
-                  _c("div", { staticClass: "col-12 row" }, [
-                    _c("div", { staticClass: "col-6" }, [
+                  _c("input", {
+                    ref: "files",
+                    attrs: { hidden: "true", type: "file", id: "files" },
+                    on: {
+                      change: function ($event) {
+                        return _vm.handleFilesUpload()
+                      },
+                    },
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    {
+                      staticClass: "excel_set",
+                      on: {
+                        click: function ($event) {
+                          return _vm.addFiles()
+                        },
+                      },
+                    },
+                    [
+                      _c("span", {
+                        staticClass: "iconify",
+                        staticStyle: { color: "#4d4d4d" },
+                        attrs: {
+                          "data-icon": "file-icons:microsoft-excel",
+                          "data-width": "24",
+                          "data-height": "24",
+                        },
+                      }),
+                    ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col" }, [
+                  _vm._m(5),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.adres_pogruzke,
+                        expression: "adres_pogruzke",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.adres_pogruzke },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.adres_pogruzke = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col cr_ord_right_col" }, [
+                _c("div", { staticClass: "col-12 row no_padding_right" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-5 data_pog_dost no_padding_right" },
+                    [
                       _c(
                         "div",
-                        { staticClass: "little_title_create_orders2" },
+                        { staticClass: "little_title_create_orders " },
                         [
                           _vm._v(
-                            "\n                                Ставка КП\n                            "
+                            "\n                                    Дата погрузки\n                                "
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "create_orders_bottom no_padding_right",
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.data_pogruzki,
+                                expression: "data_pogruzki",
+                              },
+                            ],
+                            staticClass: "cr_ord_inp_n_2 border_input",
+                            domProps: { value: _vm.data_pogruzki },
+                            on: {
+                              blur: function ($event) {
+                                return _vm.update_order()
+                              },
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.data_pogruzki = $event.target.value
+                              },
+                            },
+                          }),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        " offset-1 col-6  data_pog_dost  no_padding_right",
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "little_title_create_orders no_padding_right",
+                        },
+                        [
+                          _vm._v(
+                            "\n                                    Дата доставки\n                                "
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "create_orders_bottom no_padding_right",
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.data_dostavki,
+                                expression: "data_dostavki",
+                              },
+                            ],
+                            staticClass: "cr_ord_inp_n_2 border_input",
+                            domProps: { value: _vm.data_dostavki },
+                            on: {
+                              blur: function ($event) {
+                                return _vm.update_order()
+                              },
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.data_dostavki = $event.target.value
+                              },
+                            },
+                          }),
+                        ]
+                      ),
+                    ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 row no_padding_right" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-6 no_padding_left no_padding_right" },
+                    [
+                      _c("div", { staticClass: "little_title_create_orders" }, [
+                        _vm._v(
+                          "\n                                    Кол-во грузомест\n                                "
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "create_orders_bottom right_menu_nom row",
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.gruzomesta_big,
+                                expression: "gruzomesta_big",
+                              },
+                            ],
+                            staticClass: "cr_ord_inp_n_4 border_input",
+                            domProps: { value: _vm.gruzomesta_big },
+                            on: {
+                              blur: function ($event) {
+                                return _vm.update_order()
+                              },
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.gruzomesta_big = $event.target.value
+                              },
+                            },
+                          }),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.gruzomesta_small,
+                                expression: "gruzomesta_small",
+                              },
+                            ],
+                            staticClass:
+                              "cr_ord_inp_n_5 nom_margin border_input",
+                            attrs: { readonly: "" },
+                            domProps: { value: _vm.gruzomesta_small },
+                            on: {
+                              blur: function ($event) {
+                                return _vm.update_order()
+                              },
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.gruzomesta_small = $event.target.value
+                              },
+                            },
+                          }),
+                        ]
+                      ),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: " col-6 no_padding_right no_padding_left" },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "little_title_create_orders no_padding_right",
+                        },
+                        [
+                          _vm._v(
+                            "\n                                    Расстояние, км\n                                "
                           ),
                         ]
                       ),
@@ -52649,35 +52102,39 @@ var render = function () {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.stavka_kp_TS,
-                              expression: "stavka_kp_TS",
+                              value: _vm.rasstojanie,
+                              expression: "rasstojanie",
                             },
                           ],
-                          staticClass: "cr_ord_inp_n_6 border_input",
-                          attrs: { placeholder: "1 250 000 р." },
-                          domProps: { value: _vm.stavka_kp_TS },
+                          staticClass: "cr_ord_inp_n_2 border_input",
+                          domProps: { value: _vm.rasstojanie },
                           on: {
+                            blur: function ($event) {
+                              return _vm.update_order()
+                            },
                             input: function ($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.stavka_kp_TS = $event.target.value
+                              _vm.rasstojanie = $event.target.value
                             },
                           },
                         }),
                       ]),
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-6" }, [
-                      _c(
-                        "div",
-                        { staticClass: "little_title_create_orders2" },
-                        [
-                          _vm._v(
-                            "\n                                Маржа\n                            "
-                          ),
-                        ]
-                      ),
+                    ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 row no_padding_right" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-5 no_padding_right no_padding_left" },
+                    [
+                      _c("div", { staticClass: "little_title_create_orders" }, [
+                        _vm._v(
+                          "\n                                    Общий вес, кг\n                                "
+                        ),
+                      ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "create_orders_bottom" }, [
                         _c("input", {
@@ -52685,202 +52142,1023 @@ var render = function () {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.marja_TS,
-                              expression: "marja_TS",
+                              value: _vm.ob_ves,
+                              expression: "ob_ves",
                             },
                           ],
-                          staticClass: "cr_ord_inp_n_6 border_input",
-                          attrs: { placeholder: "1 250 000 р.", readonly: "" },
-                          domProps: { value: _vm.marja_TS },
+                          staticClass: "cr_ord_inp_n_2 border_input",
+                          domProps: { value: _vm.ob_ves },
                           on: {
+                            blur: function ($event) {
+                              return _vm.update_order()
+                            },
                             input: function ($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.marja_TS = $event.target.value
+                              _vm.ob_ves = $event.target.value
                             },
                           },
                         }),
                       ]),
-                    ]),
-                  ]),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "offset-1 col-6  no_padding_left no_padding_right",
+                    },
+                    [
+                      _c("div", { staticClass: "little_title_create_orders" }, [
+                        _vm._v(
+                          "\n                                    Общий объём, м3\n                                "
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "create_orders_bottom" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.ob_ob,
+                              expression: "ob_ob",
+                            },
+                          ],
+                          staticClass: "cr_ord_inp_n_2 border_input",
+                          domProps: { value: _vm.ob_ob },
+                          on: {
+                            blur: function ($event) {
+                              return _vm.update_order()
+                            },
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.ob_ob = $event.target.value
+                            },
+                          },
+                        }),
+                      ]),
+                    ]
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-12 row" }, [
+                  _vm._m(6),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.adres_vygruski,
+                        expression: "adres_vygruski",
+                      },
+                    ],
+                    staticClass: "cr_ord_inp_n_1 border_input",
+                    domProps: { value: _vm.adres_vygruski },
+                    on: {
+                      blur: function ($event) {
+                        return _vm.update_order()
+                      },
+                      input: function ($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.adres_vygruski = $event.target.value
+                      },
+                    },
+                  }),
+                ]),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "big_comment" }, [
+                _c("div", { staticClass: "little_title_create_orders" }, [
+                  _vm._v(
+                    "\n                            Комментарий\n                        "
+                  ),
+                ]),
+                _vm._v(" "),
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.komment_1,
+                      expression: "komment_1",
+                    },
+                  ],
+                  staticClass: "comm_settings",
+                  attrs: { rows: "6", name: "text" },
+                  domProps: { value: _vm.komment_1 },
+                  on: {
+                    blur: function ($event) {
+                      return _vm.update_order()
+                    },
+                    input: function ($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.komment_1 = $event.target.value
+                    },
+                  },
+                }),
+              ]),
+            ]),
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "col-6 fit_height right_white_block" },
+            [
+              _c("div", { staticClass: "col-12 row " }, [
+                _c("div", { staticClass: "col-3 create_order_right_title " }, [
+                  _vm._v(
+                    "\n                        Список ТС\n                    "
+                  ),
                 ]),
                 _vm._v(" "),
                 _c(
                   "div",
-                  {
-                    staticClass:
-                      "col spisok_ts_second_title_center no_padding_right",
-                  },
+                  { staticClass: "col-9 text-right row justify-content-end " },
                   [
                     _c(
                       "div",
                       {
-                        staticClass: "col row no_padding_right no_padding_left",
+                        staticClass:
+                          "col create_order_right_main_text text_in_header text-end",
                       },
+                      [_vm._v("Общий бюджет:" + _vm._s(_vm.ob_budjet) + " р")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "col add_ts_button",
+                        on: {
+                          click: function ($event) {
+                            return _vm.add_ts_func()
+                          },
+                        },
+                      },
+                      [_vm._v("Добавить ТС")]
+                    ),
+                  ]
+                ),
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-12 row create_ord_underline" }),
+              _vm._v(" "),
+              _vm._l(_vm.spisokTSarr, function (elem, key) {
+                return _c("span", [
+                  _c("div", { staticClass: "col row" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "col-1 no_padding_right create_order_right_main_text",
+                      },
+                      [_vm._v(_vm._s(key + 1))]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2 no_padding_right " }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text  ",
+                        },
+                        [_vm._v("Вид ТС")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right",
+                        },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "create_order_right_main_text" },
+                            [
+                              _vm._l(
+                                _vm.ts_list_names,
+                                function (one_ts, key1) {
+                                  return one_ts["ts_list_id"] == elem.vid_TS
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass: "col-9 no_padding_left",
+                                        },
+                                        [_vm._v(_vm._s(one_ts.ts_name))]
+                                      )
+                                    : _vm._e()
+                                }
+                              ),
+                              _vm._v(" "),
+                              _c("div", {
+                                staticClass: "col-9 no_padding_left",
+                                attrs: { else: "" },
+                              }),
+                            ],
+                            2
+                          ),
+                        ]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2 no_padding_right" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Расстояние,км")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.rasstojanie_TS))]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2 no_padding_right  " }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Кол.грузомест")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.kol_gruz_TS))]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2 no_padding_right  " }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Кол.ТС")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.kol_TS_TS))]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2  no_padding_right" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Общий вес,кг")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.ob_ves_TS))]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "offset-1 col-2  no_padding_right" },
                       [
                         _c(
                           "div",
                           {
                             staticClass:
-                              "col-12 row no_padding_right no_padding_left",
+                              "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text text_line",
                           },
+                          [_vm._v("Общий объём,м3")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                          },
+                          [_vm._v(_vm._s(elem.ob_ob_TS))]
+                        ),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2  no_padding_right" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Ставка")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.stavka_TS) + "р.")]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2  no_padding_right" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Ставка КП")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.stavka_kp_TS) + "р.")]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-2  no_padding_right" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text",
+                        },
+                        [_vm._v("Маржа")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text",
+                        },
+                        [_vm._v(_vm._s(elem.marja_TS) + "р.")]
+                      ),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass: "col-12 second_right_create_orders_text row",
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "col right_top_text_1_0",
+                          on: {
+                            click: function ($event) {
+                              return _vm.editTs(key)
+                            },
+                          },
+                        },
+                        [
+                          _c("span", {
+                            staticClass: "iconify edit_icon_right_menu",
+                            staticStyle: { color: "#a6a6a6" },
+                            attrs: {
+                              "data-icon": "akar-icons:edit",
+                              "data-width": "20",
+                              "data-height": "20",
+                            },
+                          }),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col right_top_text_1_1" }, [
+                        _c(
+                          "div",
+                          { staticClass: "create_ord_right_lit_text" },
+                          [_vm._v("Адрес Погрузки")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "create_order_right_main_text" },
+                          [_vm._v(_vm._s(elem.adres_pogruzki_TS))]
+                        ),
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col" }, [
+                        _c(
+                          "div",
+                          { staticClass: "create_ord_right_lit_text" },
+                          [_vm._v("Адрес Выгрузки")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          { staticClass: "create_order_right_main_text" },
+                          [_vm._v(_vm._s(elem.adres_vygr_TS))]
+                        ),
+                      ]),
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-12 row right_top_text_1_2" }, [
+                    _c("div", { staticClass: "col" }, [
+                      _c("div", { staticClass: "create_ord_right_lit_text" }, [
+                        _vm._v("Комментарий"),
+                      ]),
+                      _vm._v(" "),
+                      elem.kommentari_TS == ""
+                        ? _c(
+                            "div",
+                            { staticClass: "create_order_right_main_text" },
+                            [_vm._v("Нет комментария")]
+                          )
+                        : _c(
+                            "div",
+                            { staticClass: "create_order_right_main_text" },
+                            [_vm._v(_vm._s(elem.kommentari_TS))]
+                          ),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-12 row create_ord_underline" }),
+                ])
+              }),
+              _vm._v(" "),
+              _vm.add_ts
+                ? _c("div", { staticClass: "row" }, [
+                    _c(
+                      "div",
+                      { staticClass: "col spisok_ts_second_title_left" },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "little_title_create_orders2" },
                           [
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "col cr_ord_lit_left no_padding_right no_padding_left",
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "little_title_create_orders2",
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                                    Кол-во грузомест\n                                "
-                                    ),
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "create_orders_bottom" },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.kol_gruz_TS,
-                                          expression: "kol_gruz_TS",
-                                        },
-                                      ],
-                                      staticClass:
-                                        "cr_ord_inp_n_8 border_input",
-                                      attrs: { placeholder: "1000" },
-                                      domProps: { value: _vm.kol_gruz_TS },
-                                      on: {
-                                        input: function ($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.kol_gruz_TS = $event.target.value
-                                        },
-                                      },
-                                    }),
-                                  ]
-                                ),
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "col cr_ord_lit_center no_padding_right",
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "little_title_create_orders2",
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                                    Кол-во ТС\n                                "
-                                    ),
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "create_orders_bottom" },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.kol_TS_TS,
-                                          expression: "kol_TS_TS",
-                                        },
-                                      ],
-                                      staticClass:
-                                        "cr_ord_inp_n_9 border_input",
-                                      attrs: { placeholder: "5" },
-                                      domProps: { value: _vm.kol_TS_TS },
-                                      on: {
-                                        input: function ($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.kol_TS_TS = $event.target.value
-                                        },
-                                      },
-                                    }),
-                                  ]
-                                ),
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "col cr_ord_lit_right no_padding_left",
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "little_title_create_orders2",
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                                    Расстояние, км\n                                "
-                                    ),
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "create_orders_bottom" },
-                                  [
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.rasstojanie_TS,
-                                          expression: "rasstojanie_TS",
-                                        },
-                                      ],
-                                      staticClass:
-                                        "cr_ord_inp_n_10 border_input",
-                                      attrs: { placeholder: "1000" },
-                                      domProps: { value: _vm.rasstojanie_TS },
-                                      on: {
-                                        input: function ($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.rasstojanie_TS =
-                                            $event.target.value
-                                        },
-                                      },
-                                    }),
-                                  ]
-                                ),
-                              ]
+                            _vm._v(
+                              "\n                            Вид ТС\n                        "
                             ),
                           ]
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col no_padding_left" }, [
-                          _vm._m(16),
+                        _c("div", { staticClass: "create_orders_bottom" }, [
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.vid_TS,
+                                  expression: "vid_TS",
+                                },
+                              ],
+                              staticClass: "sel_cust",
+                              on: {
+                                change: function ($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function (o) {
+                                      return o.selected
+                                    })
+                                    .map(function (o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.vid_TS = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                },
+                              },
+                            },
+                            [
+                              _c(
+                                "option",
+                                {
+                                  staticClass: "sel_cust",
+                                  domProps: { value: 0 },
+                                },
+                                [_vm._v("Автоперевозка")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "option",
+                                {
+                                  staticClass: "sel_cust",
+                                  domProps: { value: 1 },
+                                },
+                                [_vm._v("Тент")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "option",
+                                {
+                                  staticClass: "sel_cust",
+                                  domProps: { value: 2 },
+                                },
+                                [_vm._v("Палатка")]
+                              ),
+                            ]
+                          ),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-12 row" }, [
+                          _c("div", { staticClass: "col-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "little_title_create_orders2" },
+                              [
+                                _vm._v(
+                                  "\n                                    Ставка\n                                "
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "create_orders_bottom" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.stavka_TS,
+                                    expression: "stavka_TS",
+                                  },
+                                ],
+                                staticClass: "cr_ord_inp_n_6 border_input",
+                                domProps: { value: _vm.stavka_TS },
+                                on: {
+                                  input: function ($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.stavka_TS = $event.target.value
+                                  },
+                                },
+                              }),
+                            ]),
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "little_title_create_orders2" },
+                              [
+                                _vm._v(
+                                  "\n                                    Ставка за км\n                                "
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "create_orders_bottom" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.stavka_TS_za_km,
+                                    expression: "stavka_TS_za_km",
+                                  },
+                                ],
+                                staticClass: "cr_ord_inp_n_6 border_input",
+                                attrs: { readonly: "" },
+                                domProps: { value: _vm.stavka_TS_za_km },
+                                on: {
+                                  input: function ($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.stavka_TS_za_km = $event.target.value
+                                  },
+                                },
+                              }),
+                            ]),
+                          ]),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-12 row" }, [
+                          _c("div", { staticClass: "col-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "little_title_create_orders2" },
+                              [
+                                _vm._v(
+                                  "\n                                    Ставка КП\n                                "
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "create_orders_bottom" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.stavka_kp_TS,
+                                    expression: "stavka_kp_TS",
+                                  },
+                                ],
+                                staticClass: "cr_ord_inp_n_6 border_input",
+                                domProps: { value: _vm.stavka_kp_TS },
+                                on: {
+                                  input: function ($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.stavka_kp_TS = $event.target.value
+                                  },
+                                },
+                              }),
+                            ]),
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-6" }, [
+                            _c(
+                              "div",
+                              { staticClass: "little_title_create_orders2" },
+                              [
+                                _vm._v(
+                                  "\n                                    Маржа\n                                "
+                                ),
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "create_orders_bottom" }, [
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.marja_TS,
+                                    expression: "marja_TS",
+                                  },
+                                ],
+                                staticClass: "cr_ord_inp_n_6 border_input",
+                                attrs: { readonly: "" },
+                                domProps: { value: _vm.marja_TS },
+                                on: {
+                                  input: function ($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.marja_TS = $event.target.value
+                                  },
+                                },
+                              }),
+                            ]),
+                          ]),
+                        ]),
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col row" }, [
+                      _c(
+                        "div",
+                        { staticClass: "col spisok_ts_second_title_center " },
+                        [
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "col row no_padding_right no_padding_left",
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "col-12 row no_padding_right no_padding_left",
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "col cr_ord_lit_left no_padding_right no_padding_left",
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "little_title_create_orders2",
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                            Кол-во грузомест\n                                        "
+                                          ),
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "create_orders_bottom" },
+                                        [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.kol_gruz_TS,
+                                                expression: "kol_gruz_TS",
+                                              },
+                                            ],
+                                            staticClass:
+                                              "cr_ord_inp_n_8 border_input",
+                                            domProps: {
+                                              value: _vm.kol_gruz_TS,
+                                            },
+                                            on: {
+                                              input: function ($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.kol_gruz_TS =
+                                                  $event.target.value
+                                              },
+                                            },
+                                          }),
+                                        ]
+                                      ),
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "col cr_ord_lit_center no_padding_right",
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "little_title_create_orders2",
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                            Кол-во ТС\n                                        "
+                                          ),
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "create_orders_bottom" },
+                                        [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.kol_TS_TS,
+                                                expression: "kol_TS_TS",
+                                              },
+                                            ],
+                                            staticClass:
+                                              "cr_ord_inp_n_9 border_input",
+                                            domProps: { value: _vm.kol_TS_TS },
+                                            on: {
+                                              input: function ($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.kol_TS_TS =
+                                                  $event.target.value
+                                              },
+                                            },
+                                          }),
+                                        ]
+                                      ),
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "col cr_ord_lit_right no_padding_left",
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "little_title_create_orders2",
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                            Расстояние, км\n                                        "
+                                          ),
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "create_orders_bottom" },
+                                        [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: _vm.rasstojanie_TS,
+                                                expression: "rasstojanie_TS",
+                                              },
+                                            ],
+                                            staticClass:
+                                              "cr_ord_inp_n_10 border_input",
+                                            domProps: {
+                                              value: _vm.rasstojanie_TS,
+                                            },
+                                            on: {
+                                              input: function ($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.rasstojanie_TS =
+                                                  $event.target.value
+                                              },
+                                            },
+                                          }),
+                                        ]
+                                      ),
+                                    ]
+                                  ),
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col no_padding_left" },
+                                [
+                                  _vm._m(7),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    { staticClass: "create_orders_bottom row" },
+                                    [
+                                      _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.adres_pogruzki_TS,
+                                            expression: "adres_pogruzki_TS",
+                                          },
+                                        ],
+                                        staticClass:
+                                          "cr_ord_inp_n_7 border_input",
+                                        domProps: {
+                                          value: _vm.adres_pogruzki_TS,
+                                        },
+                                        on: {
+                                          input: function ($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.adres_pogruzki_TS =
+                                              $event.target.value
+                                          },
+                                        },
+                                      }),
+                                    ]
+                                  ),
+                                ]
+                              ),
+                            ]
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col no_padding_right" }, [
+                        _c("div", { staticClass: "col-12 row" }, [
+                          _c(
+                            "div",
+                            { staticClass: "col-6 cr_ord_inp_n_11 ob_ves" },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "little_title_create_orders2" },
+                                [
+                                  _vm._v(
+                                    "\n                                        Общий вес,кг\n                                    "
+                                  ),
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "create_orders_bottom row" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.ob_ves_TS,
+                                        expression: "ob_ves_TS",
+                                      },
+                                    ],
+                                    staticClass: " border_input",
+                                    domProps: { value: _vm.ob_ves_TS },
+                                    on: {
+                                      input: function ($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.ob_ves_TS = $event.target.value
+                                      },
+                                    },
+                                  }),
+                                ]
+                              ),
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "col-6 cr_ord_inp_n_11 ob_ves" },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "little_title_create_orders2 ob_ob_width",
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                        Общий объём,м3\n                                    "
+                                  ),
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "create_orders_bottom row" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.ob_ob_TS,
+                                        expression: "ob_ob_TS",
+                                      },
+                                    ],
+                                    staticClass: " border_input",
+                                    domProps: { value: _vm.ob_ob_TS },
+                                    on: {
+                                      input: function ($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.ob_ob_TS = $event.target.value
+                                      },
+                                    },
+                                  }),
+                                ]
+                              ),
+                            ]
+                          ),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-8" }, [
+                          _vm._m(8),
                           _vm._v(" "),
                           _c(
                             "div",
@@ -52891,81 +53169,109 @@ var render = function () {
                                   {
                                     name: "model",
                                     rawName: "v-model",
-                                    value: _vm.adres_pogruzki_TS,
-                                    expression: "adres_pogruzki_TS",
+                                    value: _vm.adres_vygr_TS,
+                                    expression: "adres_vygr_TS",
                                   },
                                 ],
-                                staticClass: "cr_ord_inp_n_7 border_input",
-                                attrs: { placeholder: "Тула, ул.Гоголя,15" },
-                                domProps: { value: _vm.adres_pogruzki_TS },
+                                staticClass: "border_input ob_ob_width",
+                                domProps: { value: _vm.adres_vygr_TS },
                                 on: {
                                   input: function ($event) {
                                     if ($event.target.composing) {
                                       return
                                     }
-                                    _vm.adres_pogruzki_TS = $event.target.value
+                                    _vm.adres_vygr_TS = $event.target.value
                                   },
                                 },
                               }),
                             ]
                           ),
                         ]),
-                      ]
-                    ),
-                  ]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "col no_padding_right" }, [
-                  _c("div", { staticClass: "col-12 row" }, [
-                    _c("div", { staticClass: "col no_padding_right" }, [
+                      ]),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col" }, [
                       _c(
                         "div",
                         { staticClass: "little_title_create_orders2" },
                         [
                           _vm._v(
-                            "\n                                   Общий вес,кг\n                                "
+                            "\n                            Комментарий\n                        "
                           ),
                         ]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "create_orders_bottom row" }, [
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.kommentari_TS,
+                            expression: "kommentari_TS",
+                          },
+                        ],
+                        attrs: { rows: "4", cols: "60", name: "text" },
+                        domProps: { value: _vm.kommentari_TS },
+                        on: {
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.kommentari_TS = $event.target.value
+                          },
+                        },
+                      }),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col right_comments" }, [
+                      _c("div", { staticClass: "col-6 row" }, [
                         _c("input", {
                           directives: [
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.ob_ves_TS,
-                              expression: "ob_ves_TS",
+                              value: _vm.checked2,
+                              expression: "checked2",
                             },
                           ],
-                          staticClass: "cr_ord_inp_n_11 border_input",
-                          attrs: { placeholder: "1000" },
-                          domProps: { value: _vm.ob_ves_TS },
+                          staticClass:
+                            "col-2 checkbox_create_orders2 border_input",
+                          attrs: { type: "checkbox", id: "checkbox1" },
+                          domProps: {
+                            checked: Array.isArray(_vm.checked2)
+                              ? _vm._i(_vm.checked2, null) > -1
+                              : _vm.checked2,
+                          },
                           on: {
-                            input: function ($event) {
-                              if ($event.target.composing) {
-                                return
+                            change: function ($event) {
+                              var $$a = _vm.checked2,
+                                $$el = $event.target,
+                                $$c = $$el.checked ? true : false
+                              if (Array.isArray($$a)) {
+                                var $$v = null,
+                                  $$i = _vm._i($$a, $$v)
+                                if ($$el.checked) {
+                                  $$i < 0 && (_vm.checked2 = $$a.concat([$$v]))
+                                } else {
+                                  $$i > -1 &&
+                                    (_vm.checked2 = $$a
+                                      .slice(0, $$i)
+                                      .concat($$a.slice($$i + 1)))
+                                }
+                              } else {
+                                _vm.checked2 = $$c
                               }
-                              _vm.ob_ves_TS = $event.target.value
                             },
                           },
                         }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col" }, [
+                          _vm._v("На терминале"),
+                        ]),
                       ]),
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "col cr_ord_lit_right2 no_padding_left" },
-                      [
-                        _c(
-                          "div",
-                          { staticClass: "little_title_create_orders2" },
-                          [
-                            _vm._v(
-                              "\n                                    Общий объём,м3\n                                "
-                            ),
-                          ]
-                        ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col" }, [
+                        _vm._m(9),
                         _vm._v(" "),
                         _c("div", { staticClass: "create_orders_bottom row" }, [
                           _c("input", {
@@ -52973,200 +53279,80 @@ var render = function () {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.ob_ob_TS,
-                                expression: "ob_ob_TS",
+                                value: _vm.terminal_TS,
+                                expression: "terminal_TS",
                               },
                             ],
-                            staticClass: "cr_ord_inp_n_11 border_input",
-                            attrs: { placeholder: "1000" },
-                            domProps: { value: _vm.ob_ob_TS },
+                            staticClass: "cr_ord_inp_n_12 border_input",
+                            domProps: { value: _vm.terminal_TS },
                             on: {
                               input: function ($event) {
                                 if ($event.target.composing) {
                                   return
                                 }
-                                _vm.ob_ob_TS = $event.target.value
+                                _vm.terminal_TS = $event.target.value
                               },
                             },
                           }),
                         ]),
+                      ]),
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "col-11 save_buttons justify-content-end row",
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "col add_ts_button2 text-center",
+                            on: {
+                              click: function ($event) {
+                                return _vm.save_TS()
+                              },
+                            },
+                          },
+                          [_vm._v("Сохранить")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "col add_ts_button3 text-center",
+                            on: {
+                              click: function ($event) {
+                                return _vm.deleteTs()
+                              },
+                            },
+                          },
+                          [_vm._v("Удалить")]
+                        ),
                       ]
                     ),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col" }, [
-                    _vm._m(17),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "create_orders_bottom row" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.adres_vygr_TS,
-                            expression: "adres_vygr_TS",
-                          },
-                        ],
-                        staticClass: "cr_ord_inp_n_7 border_input",
-                        attrs: { placeholder: "Тула, ул.Гоголя,15" },
-                        domProps: { value: _vm.adres_vygr_TS },
-                        on: {
-                          input: function ($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.adres_vygr_TS = $event.target.value
-                          },
-                        },
-                      }),
-                    ]),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col" }, [
-                  _c("div", { staticClass: "little_title_create_orders2" }, [
-                    _vm._v(
-                      "\n                        Комментарий\n                    "
-                    ),
-                  ]),
-                  _vm._v(" "),
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.kommentari_TS,
-                        expression: "kommentari_TS",
-                      },
-                    ],
-                    attrs: { rows: "4", cols: "60", name: "text" },
-                    domProps: { value: _vm.kommentari_TS },
-                    on: {
-                      input: function ($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.kommentari_TS = $event.target.value
-                      },
-                    },
-                  }),
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col right_comments" }, [
-                  _c("div", { staticClass: "col-6 row" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.checked2,
-                          expression: "checked2",
-                        },
-                      ],
-                      staticClass: "col-2 checkbox_create_orders2 border_input",
-                      attrs: { type: "checkbox", id: "checkbox1" },
-                      domProps: {
-                        checked: Array.isArray(_vm.checked2)
-                          ? _vm._i(_vm.checked2, null) > -1
-                          : _vm.checked2,
-                      },
-                      on: {
-                        change: function ($event) {
-                          var $$a = _vm.checked2,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = null,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.checked2 = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.checked2 = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
-                          } else {
-                            _vm.checked2 = $$c
-                          }
-                        },
-                      },
-                    }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col" }, [_vm._v("На терминале")]),
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col" }, [
-                    _vm._m(18),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "create_orders_bottom row" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.terminal_TS,
-                            expression: "terminal_TS",
-                          },
-                        ],
-                        staticClass: "cr_ord_inp_n_12 border_input",
-                        attrs: { placeholder: "Тула, ул.Гоголя,15" },
-                        domProps: { value: _vm.terminal_TS },
-                        on: {
-                          input: function ($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.terminal_TS = $event.target.value
-                          },
-                        },
-                      }),
-                    ]),
-                  ]),
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "col-11 save_buttons justify-content-end row",
-                  },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass: "col add_ts_button2 text-center",
-                        on: {
-                          click: function ($event) {
-                            return _vm.save_TS()
-                          },
-                        },
-                      },
-                      [_vm._v("Сохранить")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass: "col add_ts_button3 text-center",
-                        on: {
-                          click: function ($event) {
-                            return _vm.deleteTs()
-                          },
-                        },
-                      },
-                      [_vm._v("Удалить")]
-                    ),
-                  ]
-                ),
-              ])
-            : _vm._e(),
-        ],
-        2
-      ),
+                  ])
+                : _vm._e(),
+            ],
+            2
+          ),
+        ]),
+      ]),
     ]),
   ])
 }
 var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("div", { staticClass: "col-6 orders_create_title" }, [
+        _vm._v("\n                Заявки: Создание заявки\n            "),
+      ]),
+    ])
+  },
   function () {
     var _vm = this
     var _h = _vm.$createElement
@@ -53219,25 +53405,9 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
-      _c(
-        "div",
-        { staticClass: "bold_title_create_orders title_cr_ord_bold_first n1" },
-        [
-          _vm._v(
-            "\n                            Информация о погрузке:\n                        "
-          ),
-        ]
-      ),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                            Адрес погрузки 1\n                            "
+        "\n                                Адрес погрузки 1\n                                "
       ),
       _c("span", { staticClass: "add_button n3" }, [_vm._v("Добавить")]),
     ])
@@ -53246,47 +53416,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
-      _c(
-        "div",
-        { staticClass: "bold_title_create_orders title_cr_ord_bold_first n2" },
-        [
-          _vm._v(
-            "\n                            Информация о выгрузке:\n                        "
-          ),
-        ]
-      ),
-    ])
+    return _c(
+      "div",
+      { staticClass: "little_title_create_orders no_padding_right" },
+      [
+        _vm._v(
+          "\n                                Адрес выгрузки 1\n                                "
+        ),
+        _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
+      ]
+    )
   },
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "little_title_create_orders" }, [
+    return _c("div", { staticClass: "little_title_create_orders2" }, [
       _vm._v(
-        "\n                            Адрес выгрузки 1\n                            "
+        "\n                                        Адрес погрузки1\n                                        "
       ),
       _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col row no_padding_right " }, [
-      _c(
-        "div",
-        {
-          staticClass: "col right_top_text_0 no_padding_right no_padding_left",
-        },
-        [
-          _c(
-            "div",
-            { staticClass: "create_ord_right_lit_text vid_TS text-center" },
-            [_vm._v("Вид ТС")]
-          ),
-        ]
-      ),
     ])
   },
   function () {
@@ -53295,99 +53444,14 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c(
       "div",
-      { staticClass: "col right_top_text_1 set_left_pad no_padding_right" },
+      { staticClass: "little_title_create_orders2 ob_ob_width" },
       [
-        _c("div", { staticClass: "create_ord_right_lit_text" }, [
-          _vm._v("Расстояние, км"),
-        ]),
+        _vm._v(
+          "\n                                    Адрес выгрузки1\n                                    "
+        ),
+        _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
       ]
     )
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "col no_padding_right set_left_pad right_top_text_2" },
-      [
-        _c("div", { staticClass: "create_ord_right_lit_text" }, [
-          _vm._v("Кол. грузомест"),
-        ]),
-      ]
-    )
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col set_left_pad no_padding_right" }, [
-      _c("div", { staticClass: "create_ord_right_lit_text" }, [
-        _vm._v("Общий вес,кг"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col set_left_pad no_padding_right" }, [
-      _c("div", { staticClass: "create_ord_right_lit_text" }, [
-        _vm._v("Общий объём,м3"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col set_left_pad no_padding_right" }, [
-      _c("div", { staticClass: "create_ord_right_lit_text" }, [
-        _vm._v("Ставка"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col set_left_pad no_padding_right" }, [
-      _c("div", { staticClass: "create_ord_right_lit_text" }, [
-        _vm._v("Ставка КП"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col set_left_pad no_padding_right" }, [
-      _c("div", { staticClass: "create_ord_right_lit_text" }, [
-        _vm._v("Маржа"),
-      ]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "little_title_create_orders2" }, [
-      _vm._v(
-        "\n                                Адрес погрузки1\n                                "
-      ),
-      _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "little_title_create_orders2" }, [
-      _vm._v(
-        "\n                                Адрес выгрузки1\n                                "
-      ),
-      _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
-    ])
   },
   function () {
     var _vm = this
@@ -53395,7 +53459,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                            Терминал\n                            "
+        "\n                                Терминал\n                                "
       ),
       _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
     ])
@@ -53473,59 +53537,35 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center header_settings" }, [
-      _c("div", { staticClass: "col-6" }, [
-        _c("a", { staticClass: "menu_block", attrs: { href: "/" } }, [
-          _c("img", {
-            staticClass: "logo_settings",
-            attrs: { src: "/images/logo.png", alt: "" },
-          }),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Заявки\n            "),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Справочник компаний\n            "),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Меню-4\n            "),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Меню-5\n            "),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Меню-6\n            "),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "menu_block top_menu_words" }, [
-          _vm._v("\n                Меню-7\n            "),
-        ]),
+      _c("a", { staticClass: "col-1", attrs: { href: "/" } }, [
+        _c("img", {
+          staticClass: "logo_settings",
+          attrs: { src: "/images/logo.png", alt: "" },
+        }),
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-5" }, [
-        _c("div", { staticClass: "menu_block right_menu_block_height" }),
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-5 row" }, [
+        _vm._m(1),
         _vm._v(" "),
-        _vm._m(0),
-        _vm._v(" "),
-        _c("img", {
-          staticClass: "menu_block top_menu_right_words new_head_user_icon ",
-          attrs: { src: "/images/ava.jpg" },
-        }),
+        _c("div", { staticClass: "col align-self-center top_menu_3" }, [
+          _c("img", {
+            staticClass: "col  new_head_user_icon ",
+            attrs: { src: "/images/ava.jpg" },
+          }),
+        ]),
         _vm._v(" "),
         _c(
           "div",
           {
-            staticClass: "menu_block  top_menu_right_words top_menu_user_name",
+            staticClass: "col align-self-center  top_menu_user_name no_wrap  ",
           },
           [_vm._v("Константин Константинопольский")]
         ),
       ]),
       _vm._v(" "),
-      _vm._m(1),
+      _vm._m(2),
     ]),
   ])
 }
@@ -53534,25 +53574,68 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "menu_block top_menu_right_words" }, [
-      _c("input", {
-        staticClass: "inp_search ",
-        attrs: { type: "text", placeholder: "Поиск", name: "search" },
-      }),
+    return _c("div", { staticClass: "col-5 row" }, [
+      _c(
+        "div",
+        {
+          staticClass: "col top_menu_words align-self-center d-flex top_menu_1",
+        },
+        [_vm._v("\n                    Справочник компаний\n                ")]
+      ),
       _vm._v(" "),
-      _c("i", {
-        staticClass: "fa fa-search search_set",
-        staticStyle: { "font-size": "20px" },
-      }),
+      _c(
+        "div",
+        { staticClass: "col top_menu_words  align-self-center d-flex" },
+        [_vm._v("\n                    Меню-4\n                ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col top_menu_words  align-self-center d-flex" },
+        [_vm._v("\n                    Меню-5\n                ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col top_menu_words  align-self-center d-flex" },
+        [_vm._v("\n                    Меню-6\n                ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col top_menu_words  align-self-center d-flex" },
+        [_vm._v("\n                    Меню-7\n                ")]
+      ),
     ])
   },
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-1" }, [
-      _c("div", { staticClass: "menu_block right_menu_block_height" }),
-      _vm._v(" "),
+    return _c(
+      "div",
+      {
+        staticClass:
+          "col align-self-center row top_menu_right_words top_menu_2",
+      },
+      [
+        _c("input", {
+          staticClass: "col inp_search ",
+          attrs: { type: "text", placeholder: "Поиск", name: "search" },
+        }),
+        _vm._v(" "),
+        _c("i", {
+          staticClass: "col align-self-center fa fa-search search_set",
+          staticStyle: { "font-size": "20px" },
+        }),
+      ]
+    )
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col align-self-center" }, [
       _c("span", {
         staticClass: "iconify",
         staticStyle: { color: "#020e49" },
@@ -53604,57 +53687,63 @@ var render = function () {
           _vm._v("\n                    Заявки\n                "),
         ]),
         _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "col-2 offset-4 create_orders_button",
-            on: {
-              click: function ($event) {
-                return _vm.create_order()
+        _c("div", { staticClass: "col-6 d-flex justify-content-end" }, [
+          _c(
+            "div",
+            {
+              staticClass: "create_orders_button",
+              on: {
+                click: function ($event) {
+                  return _vm.create_order()
+                },
               },
             },
-          },
-          [
-            _c("span", {
-              staticClass: "iconify button_menu_block",
-              staticStyle: { color: "white" },
-              attrs: {
-                "data-icon": "akar-icons:circle-plus",
-                "data-width": "24",
-                "data-height": "24",
-              },
-            }),
-            _vm._v(" "),
-            _c("span", { staticClass: "button_menu_block" }, [
-              _vm._v("Создать заявку"),
-            ]),
-          ]
-        ),
+            [
+              _c("span", {
+                staticClass: "iconify button_menu_block",
+                staticStyle: { color: "white" },
+                attrs: {
+                  "data-icon": "akar-icons:circle-plus",
+                  "data-width": "24",
+                  "data-height": "24",
+                },
+              }),
+              _vm._v(" "),
+              _c("span", { staticClass: "button_menu_block" }, [
+                _vm._v("Создать заявку"),
+              ]),
+            ]
+          ),
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "col-12 coloring_row row" }, [
-          _c("div", { staticClass: "col-2 row color_title_1 coloring_np" }, [
-            _c("div", { staticClass: "col-6 coloring_row_text coloring_np" }, [
-              _vm._v("Журнал заявок"),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-6 row text-end coloring_np" }, [
-              _c("div", { staticClass: "col-12 coloring_np" }, [
-                _c("span", { staticClass: "coloring_integer" }, [
-                  _vm._v(_vm._s(_vm.orders_total_numb)),
+          _c("div", { staticClass: "col-12 row coloring_row_1" }, [
+            _c("div", { staticClass: "col-2 row color_title_1 coloring_np" }, [
+              _c(
+                "div",
+                { staticClass: "col-6 coloring_row_text coloring_np" },
+                [_vm._v("Журнал заявок")]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-6 row text-end coloring_np" }, [
+                _c("div", { staticClass: "col-12 coloring_np" }, [
+                  _c("span", { staticClass: "coloring_integer" }, [
+                    _vm._v(_vm._s(_vm.orders_total_numb)),
+                  ]),
                 ]),
               ]),
             ]),
+            _vm._v(" "),
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2),
+            _vm._v(" "),
+            _vm._m(3),
+            _vm._v(" "),
+            _vm._m(4),
           ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _vm._m(2),
-          _vm._v(" "),
-          _vm._m(3),
-          _vm._v(" "),
-          _vm._m(4),
           _vm._v(" "),
           _c("div", { staticClass: "col-12 under_col_title_main" }, [
             _c("input", {
@@ -54017,13 +54106,11 @@ var staticRenderFns = [
         _vm._v("Оценка"),
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-8 row text-end coloring_np" }, [
-        _c("div", { staticClass: "col-12 coloring_np" }, [
+      _c("div", { staticClass: "col row text-end coloring_np" }, [
+        _c("div", { staticClass: "col coloring_np" }, [
           _c("span", { staticClass: "coloring_integer" }, [_vm._v("100000")]),
           _vm._v(" "),
-          _c("span", { staticClass: "coloring_integer_green" }, [
-            _vm._v("+100"),
-          ]),
+          _c("span", { staticClass: "coloring_integer_green" }, [_vm._v("+1")]),
         ]),
       ]),
     ])
@@ -54040,8 +54127,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "col-5 row text-end coloring_np" }, [
         _c("div", { staticClass: "col-12 coloring_np " }, [
           _c("span", { staticClass: "coloring_integer" }, [_vm._v("1000")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "coloring_integer_green" }, [_vm._v("+1")]),
         ]),
       ]),
     ])
@@ -54058,10 +54143,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "col-8 row text-end coloring_np" }, [
         _c("div", { staticClass: "col-12 coloring_np coloring_np" }, [
           _c("span", { staticClass: "coloring_integer" }, [_vm._v("100000")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "coloring_integer_green" }, [
-            _vm._v("+100"),
-          ]),
         ]),
       ]),
     ])
@@ -54078,10 +54159,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "col-8 row text-end coloring_np" }, [
         _c("div", { staticClass: "col-12 coloring_np" }, [
           _c("span", { staticClass: "coloring_integer" }, [_vm._v("100000")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "coloring_integer_green" }, [
-            _vm._v("+100"),
-          ]),
         ]),
       ]),
     ])
@@ -54098,10 +54175,6 @@ var staticRenderFns = [
       _c("div", { staticClass: "col-8 row text-end coloring_np" }, [
         _c("div", { staticClass: "col-12 coloring_np" }, [
           _c("span", { staticClass: "coloring_integer" }, [_vm._v("100000")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "coloring_integer_green" }, [
-            _vm._v("+100"),
-          ]),
         ]),
       ]),
     ])

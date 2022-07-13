@@ -18,12 +18,12 @@
 
 .inp_search {
     font-size: 17px;
-    width: 271px;
+    min-width: 171px;
     background: #FFFFFF;
     height: 36px;
     border: 1px solid #CED8DF;
     border-radius: 4px;
-    margin-right: -30px;
+    /*margin-right: -30px;*/
 }
 .main_search {
     vertical-align: middle;
@@ -84,6 +84,9 @@
     width: 40px;
     border-radius: 100px;
 }
+.top_menu_3 {
+    max-width: 60px;
+}
 .top_menu_user_name {
     font-family: 'Roboto', sans-serif;
     font-style: normal;
@@ -117,6 +120,7 @@
     padding-top: 8px;
     padding-left: 35px;
     cursor: pointer;
+    margin-right: 30px;
 }
 .plus_butt {
     border-radius: 100px;
@@ -204,7 +208,7 @@
     justify-content: flex-end;
 }
 .coloring_np {
-    padding-right: 0px;
+    padding-right: 5px;
 }
 .under_colored_title {
     font-family: 'Roboto', sans-serif;
@@ -351,7 +355,7 @@
     margin-top: 10px;
 }
 .excel_set {
-    margin-left: 10px;
+    margin-left: 4px;
     border: 1px solid #CED8DF;
     border-radius: 4px;
     padding: 6px 6px 6px 6px;
@@ -527,7 +531,7 @@
     width: 51px;
 }
 .cr_ord_inp_n_6 {
-    width: 114px;
+    width: 100%;
 }
 .cr_ord_inp_n_7 {
     width: 269px;
@@ -542,7 +546,8 @@
     width: 92px;
 }
 .cr_ord_inp_n_11 {
-    width: 131px;
+    min-width: 131px;
+    /*width: 100%;*/
 }
 .cr_ord_inp_n_12 {
     width: 261px;
@@ -563,6 +568,7 @@
 .cr_ord_right_col {
     max-width: 306px;
     padding-right: 0px;
+    padding-left: 24px;
 }
 .data_pog_dost {
     max-width: 124px;
@@ -610,7 +616,7 @@
 }
 .right_top_text_1 {
     padding-left: 14px;
-    margin-left: 30px;
+    /*margin-left: 30px;*/
 }
 .right_top_text_2 {
     margin-left: 10px;
@@ -636,7 +642,8 @@
 }
 .spisok_ts_second_title_center {
     max-width: 292px;
-    padding-left:20px
+    padding-left:20px;
+    margin-right: 10px;
 }
 .cr_ord_lit_left {
     min-width: 100px;
@@ -709,4 +716,43 @@
 }
 .important_back {
     background-color: #4D93F9;
+}
+.comm_settings {
+    width: 100%;
+}
+.ob_ves {
+    padding-right: 40px;
+}
+.ob_ob_width {
+    min-width: 100px;
+}
+
+.box{
+
+    background-color:grey;
+    margin:5px;
+}
+.fit_height {
+    height: fit-content;
+}
+.top_menu_1 {
+    white-space: nowrap;
+    /*min-width: 194px;*/
+}
+.no_wrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.top_menu_2 {
+    min-width: 240px;
+}
+.text_line {
+    white-space: nowrap;
+}
+.coloring_row_1 {
+    padding-right: 0px;
+    margin-right: 0px;
+    padding-left: 0px;
+    margin-left: 0px;
 }
