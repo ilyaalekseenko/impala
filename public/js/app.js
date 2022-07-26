@@ -6267,9 +6267,8 @@ Vue.filter('formatDate', function (value) {
       } //все последующие загрузки и изменения
       else {
         this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString(); //   this.update_order()
-      }
+      } //  return moment(date);
 
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date);
     },
     customFormatter: function customFormatter(date) {
       //первичная загрузка
@@ -6280,9 +6279,8 @@ Vue.filter('formatDate', function (value) {
         this.data_vneseniya = new Date(this.data_vneseniya).toLocaleDateString(); //  this.update_order()
       } // console.log(this.data_vneseniya);
       // console.log(moment(date).format('D MM YYYY'));
+      // return moment(date);
 
-
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date);
     },
     addFiles: function addFiles() {
       this.$refs.files.click();

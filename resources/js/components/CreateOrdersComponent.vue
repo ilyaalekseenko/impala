@@ -962,7 +962,7 @@
                     this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
                  //   this.update_order()
                 }
-                return moment(date);
+              //  return moment(date);
             },
             customFormatter(date) {
                 //первичная загрузка
@@ -978,7 +978,7 @@
                 }
                 // console.log(this.data_vneseniya);
                 // console.log(moment(date).format('D MM YYYY'));
-                return moment(date);
+               // return moment(date);
             },
             addFiles(){
                 this.$refs.files.click();
