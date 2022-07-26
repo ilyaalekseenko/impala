@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\OplataOrders;
 use App\Models\Orders;
 use App\Models\TS;
+use App\Models\LogistName;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -85,7 +86,6 @@ class OrdersController extends Controller
     {
         $id = $request->input('id');
         $orders_list = Orders::where('id', '=', $id) ->get();
-
         $oplata_list= OplataOrders::where('order_id', '=', $id) ->get();
         $arr_to_add=[];
        foreach ($oplata_list as $oplata)
@@ -93,6 +93,16 @@ class OrdersController extends Controller
            array_push($arr_to_add, $oplata);
        }
         $orders_list[0]['oplata']=$arr_to_add;
+       
+        $log_name= LogistName::where('id', '=', $orders_list[0]['logist'])->get('logist_name');
+       
+       if (!$log_name->isEmpty()) {
+        $orders_list[0]['logist_name']=$log_name[0]['logist_name'];
+            }
+            else
+            {
+                $orders_list[0]['logist_name']='Логист не выбран';
+            }
        //получаем список ТС
         $TS_list= TS::where('order_id', '=', $id)->get();
         return response()->json([

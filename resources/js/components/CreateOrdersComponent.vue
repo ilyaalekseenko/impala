@@ -15,18 +15,22 @@
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                         <div class="datePickerDiv">
-                        <datepicker :format="customFormatter"  v-model="data_vneseniya" ref="startDatePicker"> @closed='openEndDatePicker()'
+                        <datepicker :format="customFormatter"  v-model="data_vneseniya" ref="startDatePicker" >
                         </datepicker>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 ">
                         <span  class="create_orders_date_title">Логист:</span>
-                        <select @blur="update_order()" class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
+                        <select @change="handleChange" v-if="logist_list" @update="update_order()" class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
                             <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
                             <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
                             <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
                             <option v-bind:value="3" class="sel_cust">Путин В.В.</option>
                         </select>
+                        <span v-if="!logist_list" class="create_orders_date_title_int">{{ logist_name }}</span>
+                        <span @click="logist_show">
+                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
+                       </span>
                     </div>
                     <div class="col-3">
                         <span  class="create_orders_date_title">Рассчитать до:</span>
@@ -35,7 +39,7 @@
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                         <div class="datePickerDiv">
-                            <datepicker :format="customFormatter1" v-model="rasschitat_do" ref="startDatePicker1"> @closed='openEndDatePicker()'
+                            <datepicker :format="customFormatter1" v-model="rasschitat_do" ref="startDatePicker1">
                             </datepicker>
                         </div>
                     </div>
@@ -528,11 +532,13 @@
                 //НОМЕР В МАССИВЕ, ЭТО НЕ id редактируемого объекта
                 edit_number:'',
                 id_ts:'',
-                ts_list_names:[]
+                ts_list_names:[],
+                logist_list:false,
+                logist_name:'Логист не выбран'
 
             }
         },
-        created()
+        mounted()
         {
             this.get_ts_list(this.ts_list_names);
             let adress=window.location.href;
@@ -550,8 +556,7 @@
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
             }
         },
-        mounted() {
-        },
+
         computed: {
             stavka_TS_za_km: function () {
                 if(this.stavka_TS==''||this.rasstojanie_TS=='')
@@ -591,6 +596,16 @@
             },
         },
         methods: {
+                handleChange(e) {
+                var name = e.target.options[e.target.options.selectedIndex].text;
+                this.logist_name=name ;
+                this.logist_show();
+                this.update_order();
+             },
+            logist_show()
+            {
+                this.logist_list=!this.logist_list
+            },
             get_ts_list(inp)
             {
                 axios
@@ -659,6 +674,7 @@
                             this.adres_vygruski=data.data[0]['adres_vygruski'],
                             this.komment_1=data.data[0]['komment_1'],
                             this.logist=data.data[0]['logist'],
+                            this.logist_name=data.data[0]['logist_name'],
                             this.gruzomesta_big=data.data[0]['gruzomesta_big'],
                             this.rasstojanie=data.data[0]['rasstojanie'],
                             this.ob_ves=data.data[0]['ob_ves'],
@@ -690,6 +706,7 @@
                                 })
                         )
                     )
+
             },
             //если новая заявка
             start_new_order()
@@ -914,9 +931,23 @@
                 this.oplata_arr.push(objToPush);
             },
             openEndDatePicker: function() {
-                this.$refs.startDatePicker.showCalendar();
+
+            this.$refs.startDatePicker.showCalendar();
+            if(document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none')
+            {
+                 this.$refs.startDatePicker1.showCalendar();
+            }
+            document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
+
+
+//баг оплата сумма
             },
             openEndDatePicker1: function() {
+            if(document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display !== 'none')
+            {
+                 this.$refs.startDatePicker.showCalendar();
+            }
+                document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display = 'none';
                 this.$refs.startDatePicker1.showCalendar();
             },
             customFormatter1(date) {

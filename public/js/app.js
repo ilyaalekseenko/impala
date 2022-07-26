@@ -5838,6 +5838,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 Vue.filter('formatDate', function (value) {
@@ -5900,10 +5904,12 @@ Vue.filter('formatDate', function (value) {
       //НОМЕР В МАССИВЕ, ЭТО НЕ id редактируемого объекта
       edit_number: '',
       id_ts: '',
-      ts_list_names: []
+      ts_list_names: [],
+      logist_list: false,
+      logist_name: 'Логист не выбран'
     };
   },
-  created: function created() {
+  mounted: function mounted() {
     this.get_ts_list(this.ts_list_names);
     var adress = window.location.href;
     adress = adress.split("/")[4]; //если новая заявка
@@ -5917,7 +5923,6 @@ Vue.filter('formatDate', function (value) {
       this.start_get_old_order(adress, this.oplata_arr, this.spisokTSarr);
     }
   },
-  mounted: function mounted() {},
   computed: {
     stavka_TS_za_km: function stavka_TS_za_km() {
       if (this.stavka_TS == '' || this.rasstojanie_TS == '') {
@@ -5953,6 +5958,15 @@ Vue.filter('formatDate', function (value) {
     }
   },
   methods: {
+    handleChange: function handleChange(e) {
+      var name = e.target.options[e.target.options.selectedIndex].text;
+      this.logist_name = name;
+      this.logist_show();
+      this.update_order();
+    },
+    logist_show: function logist_show() {
+      this.logist_list = !this.logist_list;
+    },
     get_ts_list: function get_ts_list(inp) {
       axios.post('/get_ts_list', {}).then(function (_ref) {
         var data = _ref.data;
@@ -6000,7 +6014,7 @@ Vue.filter('formatDate', function (value) {
         id: adress
       }).then(function (_ref2) {
         var data = _ref2.data;
-        return _this.data_vneseniya = data.data[0]['data_vneseniya'], _this.rasschitat_do = data.data[0]['rasschitat_do'], _this.nomenklatura = data.data[0]['nomenklatura'], _this.nomer_zayavki = data.data[0]['nomer_zayavki'], _this.kompaniya_zakazchik = data.data[0]['kompaniya_zakazchik'], _this.menedzer_zakazchik = data.data[0]['menedzer_zakazchik'], _this.ISD = data.data[0]['ISD'], _this.cena_kontrakta = data.data[0]['cena_kontrakta'], _this.data_kontrakta = data.data[0]['data_kontrakta'], _this.adres_pogruzke = data.data[0]['adres_pogruzke'], _this.data_pogruzki = data.data[0]['data_pogruzki'], _this.data_dostavki = data.data[0]['data_dostavki'], _this.adres_vygruski = data.data[0]['adres_vygruski'], _this.komment_1 = data.data[0]['komment_1'], _this.logist = data.data[0]['logist'], _this.gruzomesta_big = data.data[0]['gruzomesta_big'], _this.rasstojanie = data.data[0]['rasstojanie'], _this.ob_ves = data.data[0]['ob_ves'], _this.ob_ob = data.data[0]['ob_ob'], _this.vid_perevozki = data.data[0]['vid_perevozki'], data.data[0].oplata.forEach(function (entry) {
+        return _this.data_vneseniya = data.data[0]['data_vneseniya'], _this.rasschitat_do = data.data[0]['rasschitat_do'], _this.nomenklatura = data.data[0]['nomenklatura'], _this.nomer_zayavki = data.data[0]['nomer_zayavki'], _this.kompaniya_zakazchik = data.data[0]['kompaniya_zakazchik'], _this.menedzer_zakazchik = data.data[0]['menedzer_zakazchik'], _this.ISD = data.data[0]['ISD'], _this.cena_kontrakta = data.data[0]['cena_kontrakta'], _this.data_kontrakta = data.data[0]['data_kontrakta'], _this.adres_pogruzke = data.data[0]['adres_pogruzke'], _this.data_pogruzki = data.data[0]['data_pogruzki'], _this.data_dostavki = data.data[0]['data_dostavki'], _this.adres_vygruski = data.data[0]['adres_vygruski'], _this.komment_1 = data.data[0]['komment_1'], _this.logist = data.data[0]['logist'], _this.logist_name = data.data[0]['logist_name'], _this.gruzomesta_big = data.data[0]['gruzomesta_big'], _this.rasstojanie = data.data[0]['rasstojanie'], _this.ob_ves = data.data[0]['ob_ves'], _this.ob_ob = data.data[0]['ob_ob'], _this.vid_perevozki = data.data[0]['vid_perevozki'], data.data[0].oplata.forEach(function (entry) {
           inp.push(entry);
         }), data.TS_list.forEach(function (entry) {
           TSinp.push({
@@ -6229,8 +6243,19 @@ Vue.filter('formatDate', function (value) {
     },
     openEndDatePicker: function openEndDatePicker() {
       this.$refs.startDatePicker.showCalendar();
+
+      if (document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none') {
+        this.$refs.startDatePicker1.showCalendar();
+      }
+
+      document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none'; //баг оплата сумма
     },
     openEndDatePicker1: function openEndDatePicker1() {
+      if (document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display !== 'none') {
+        this.$refs.startDatePicker.showCalendar();
+      }
+
+      document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display = 'none';
       this.$refs.startDatePicker1.showCalendar();
     },
     customFormatter1: function customFormatter1(date) {
@@ -51306,92 +51331,107 @@ var render = function () {
               "div",
               { staticClass: "datePickerDiv" },
               [
-                _c(
-                  "datepicker",
-                  {
-                    ref: "startDatePicker",
-                    attrs: { format: _vm.customFormatter },
-                    model: {
-                      value: _vm.data_vneseniya,
-                      callback: function ($$v) {
-                        _vm.data_vneseniya = $$v
-                      },
-                      expression: "data_vneseniya",
+                _c("datepicker", {
+                  ref: "startDatePicker",
+                  attrs: { format: _vm.customFormatter },
+                  model: {
+                    value: _vm.data_vneseniya,
+                    callback: function ($$v) {
+                      _vm.data_vneseniya = $$v
                     },
+                    expression: "data_vneseniya",
                   },
-                  [
-                    _vm._v(
-                      " @closed='openEndDatePicker()'\n                    "
-                    ),
-                  ]
-                ),
+                }),
               ],
               1
             ),
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "col-4" }, [
+          _c("div", { staticClass: "col-4 " }, [
             _c("span", { staticClass: "create_orders_date_title" }, [
               _vm._v("Логист:"),
             ]),
             _vm._v(" "),
-            _c(
-              "select",
-              {
-                directives: [
+            _vm.logist_list
+              ? _c(
+                  "select",
                   {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.logist,
-                    expression: "logist",
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.logist,
+                        expression: "logist",
+                      },
+                    ],
+                    staticClass: "create_orders_date_title_int cr_ord_inp_n_1",
+                    on: {
+                      change: [
+                        function ($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function (o) {
+                              return o.selected
+                            })
+                            .map(function (o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.logist = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        _vm.handleChange,
+                      ],
+                      update: function ($event) {
+                        return _vm.update_order()
+                      },
+                    },
                   },
-                ],
-                staticClass: "create_orders_date_title_int cr_ord_inp_n_1",
-                on: {
-                  blur: function ($event) {
-                    return _vm.update_order()
-                  },
-                  change: function ($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function (o) {
-                        return o.selected
-                      })
-                      .map(function (o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.logist = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
+                  [
+                    _c(
+                      "option",
+                      { staticClass: "sel_cust", domProps: { value: 0 } },
+                      [_vm._v("Константин Константинович")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "option",
+                      { staticClass: "sel_cust", domProps: { value: 1 } },
+                      [_vm._v("Иван Иванович")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "option",
+                      { staticClass: "sel_cust", domProps: { value: 2 } },
+                      [_vm._v("Джек Воробей")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "option",
+                      { staticClass: "sel_cust", domProps: { value: 3 } },
+                      [_vm._v("Путин В.В.")]
+                    ),
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.logist_list
+              ? _c("span", { staticClass: "create_orders_date_title_int" }, [
+                  _vm._v(_vm._s(_vm.logist_name)),
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("span", { on: { click: _vm.logist_show } }, [
+              _c("span", {
+                staticClass: "iconify edit_icon",
+                staticStyle: { color: "#a6a6a6" },
+                attrs: {
+                  "data-icon": "akar-icons:edit",
+                  "data-width": "20",
+                  "data-height": "20",
                 },
-              },
-              [
-                _c(
-                  "option",
-                  { staticClass: "sel_cust", domProps: { value: 0 } },
-                  [_vm._v("Константин Константинович")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "option",
-                  { staticClass: "sel_cust", domProps: { value: 1 } },
-                  [_vm._v("Иван Иванович")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "option",
-                  { staticClass: "sel_cust", domProps: { value: 2 } },
-                  [_vm._v("Джек Воробей")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "option",
-                  { staticClass: "sel_cust", domProps: { value: 3 } },
-                  [_vm._v("Путин В.В.")]
-                ),
-              ]
-            ),
+              }),
+            ]),
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "col-3" }, [
@@ -51419,25 +51459,17 @@ var render = function () {
               "div",
               { staticClass: "datePickerDiv" },
               [
-                _c(
-                  "datepicker",
-                  {
-                    ref: "startDatePicker1",
-                    attrs: { format: _vm.customFormatter1 },
-                    model: {
-                      value: _vm.rasschitat_do,
-                      callback: function ($$v) {
-                        _vm.rasschitat_do = $$v
-                      },
-                      expression: "rasschitat_do",
+                _c("datepicker", {
+                  ref: "startDatePicker1",
+                  attrs: { format: _vm.customFormatter1 },
+                  model: {
+                    value: _vm.rasschitat_do,
+                    callback: function ($$v) {
+                      _vm.rasschitat_do = $$v
                     },
+                    expression: "rasschitat_do",
                   },
-                  [
-                    _vm._v(
-                      " @closed='openEndDatePicker()'\n                        "
-                    ),
-                  ]
-                ),
+                }),
               ],
               1
             ),
