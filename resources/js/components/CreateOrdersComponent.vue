@@ -941,8 +941,6 @@
             }
             document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
 
-
-//баг оплата сумма
             },
             openEndDatePicker1: function() {
             if(document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display !== 'none')
@@ -978,6 +976,8 @@
                     this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString();
                     this.update_order()
                 }
+                // console.log(this.data_vneseniya);
+                // console.log(moment(date).format('D MM YYYY'));
                 return moment(date).format('D MM YYYY');
             },
             addFiles(){

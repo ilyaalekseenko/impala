@@ -6250,7 +6250,7 @@ Vue.filter('formatDate', function (value) {
         this.$refs.startDatePicker1.showCalendar();
       }
 
-      document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none'; //баг оплата сумма
+      document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
     },
     openEndDatePicker1: function openEndDatePicker1() {
       if (document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display !== 'none') {
@@ -6280,7 +6280,9 @@ Vue.filter('formatDate', function (value) {
       else {
         this.data_vneseniya = new Date(this.data_vneseniya).toLocaleDateString();
         this.update_order();
-      }
+      } // console.log(this.data_vneseniya);
+      // console.log(moment(date).format('D MM YYYY'));
+
 
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('D MM YYYY');
     },
