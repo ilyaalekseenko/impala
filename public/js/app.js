@@ -6269,7 +6269,7 @@ Vue.filter('formatDate', function (value) {
         this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString(); //   this.update_order()
       }
 
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('D MM YYYY');
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date);
     },
     customFormatter: function customFormatter(date) {
       //первичная загрузка
@@ -6282,7 +6282,7 @@ Vue.filter('formatDate', function (value) {
       // console.log(moment(date).format('D MM YYYY'));
 
 
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('D MM YYYY');
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()(date);
     },
     addFiles: function addFiles() {
       this.$refs.files.click();
