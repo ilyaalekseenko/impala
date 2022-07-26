@@ -935,11 +935,11 @@
             openEndDatePicker: function() {
 
             this.$refs.startDatePicker.showCalendar();
-            // if(document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none')
-            // {
-            //      this.$refs.startDatePicker1.showCalendar();
-            // }
-            // document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
+            if(document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none')
+            {
+                 this.$refs.startDatePicker1.showCalendar();
+            }
+            document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
 
             },
             openEndDatePicker1: function() {
@@ -962,7 +962,7 @@
                     this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
                  //   this.update_order()
                 }
-              //  return moment(date);
+                return moment(date).format('D MM YYYY');
             },
             customFormatter(date) {
                 //первичная загрузка
@@ -978,7 +978,7 @@
                 }
                 // console.log(this.data_vneseniya);
                 // console.log(moment(date).format('D MM YYYY'));
-               // return moment(date);
+               return moment(date).format('D MM YYYY');
             },
             addFiles(){
                 this.$refs.files.click();
