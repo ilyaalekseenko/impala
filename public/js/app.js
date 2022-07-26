@@ -6244,13 +6244,11 @@ Vue.filter('formatDate', function (value) {
       this.oplata_arr.push(objToPush);
     },
     openEndDatePicker: function openEndDatePicker() {
-      this.$refs.startDatePicker.showCalendar();
-
-      if (document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none') {
-        this.$refs.startDatePicker1.showCalendar();
-      }
-
-      document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
+      this.$refs.startDatePicker.showCalendar(); // if(document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display !== 'none')
+      // {
+      //      this.$refs.startDatePicker1.showCalendar();
+      // }
+      // document.getElementsByClassName('vdp-datepicker__calendar')[3].style.display = 'none';
     },
     openEndDatePicker1: function openEndDatePicker1() {
       if (document.getElementsByClassName('vdp-datepicker__calendar')[0].style.display !== 'none') {
