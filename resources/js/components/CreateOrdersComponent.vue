@@ -960,7 +960,7 @@
                 else
                 {
                     this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
-                    this.update_order()
+                 //   this.update_order()
                 }
                 return moment(date).format('D MM YYYY');
             },
@@ -974,7 +974,7 @@
                 else
                 {
                     this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString();
-                    this.update_order()
+                  //  this.update_order()
                 }
                 // console.log(this.data_vneseniya);
                 // console.log(moment(date).format('D MM YYYY'));

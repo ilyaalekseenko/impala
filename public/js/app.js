@@ -6266,8 +6266,7 @@ Vue.filter('formatDate', function (value) {
         this.start_flag = true;
       } //все последующие загрузки и изменения
       else {
-        this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString();
-        this.update_order();
+        this.rasschitat_do = new Date(this.rasschitat_do).toLocaleDateString(); //   this.update_order()
       }
 
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format('D MM YYYY');
@@ -6278,8 +6277,7 @@ Vue.filter('formatDate', function (value) {
         this.start_flag = true;
       } //все последующие загрузки и изменения
       else {
-        this.data_vneseniya = new Date(this.data_vneseniya).toLocaleDateString();
-        this.update_order();
+        this.data_vneseniya = new Date(this.data_vneseniya).toLocaleDateString(); //  this.update_order()
       } // console.log(this.data_vneseniya);
       // console.log(moment(date).format('D MM YYYY'));
 
