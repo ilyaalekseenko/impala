@@ -10,7 +10,8 @@
                 <div class="col-10 create_orders_second_title row">
                     <div class="col-3">
                         <span  class="create_orders_date_title">Дата внесения:</span>
-                        <span class="create_orders_date_title_int">{{data_vneseniya| formatDate }}</span>
+                        <span class="create_orders_date_title_int">{{ data_vneseniya }}</span>
+<!--                        <span class="create_orders_date_title_int">{{data_vneseniya| formatDate }}</span>-->
                        <span @click="openEndDatePicker">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
@@ -34,7 +35,8 @@
                     </div>
                     <div class="col-3">
                         <span  class="create_orders_date_title">Рассчитать до:</span>
-                        <span class="create_orders_date_title_int">{{rasschitat_do| formatDate }}</span>
+                        <span class="create_orders_date_title_int">{{ rasschitat_do }}</span>
+<!--                        <span class="create_orders_date_title_int">{{rasschitat_do| formatDate }}</span>-->
                         <span @click="openEndDatePicker1">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>

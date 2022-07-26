@@ -5842,6 +5842,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 Vue.filter('formatDate', function (value) {
@@ -51312,7 +51314,7 @@ var render = function () {
             ]),
             _vm._v(" "),
             _c("span", { staticClass: "create_orders_date_title_int" }, [
-              _vm._v(_vm._s(_vm._f("formatDate")(_vm.data_vneseniya))),
+              _vm._v(_vm._s(_vm.data_vneseniya)),
             ]),
             _vm._v(" "),
             _c("span", { on: { click: _vm.openEndDatePicker } }, [
@@ -51440,7 +51442,7 @@ var render = function () {
             ]),
             _vm._v(" "),
             _c("span", { staticClass: "create_orders_date_title_int" }, [
-              _vm._v(_vm._s(_vm._f("formatDate")(_vm.rasschitat_do))),
+              _vm._v(_vm._s(_vm.rasschitat_do)),
             ]),
             _vm._v(" "),
             _c("span", { on: { click: _vm.openEndDatePicker1 } }, [
@@ -51489,7 +51491,7 @@ var render = function () {
                 _c("div", { staticClass: "col" }, [
                   _c("div", { staticClass: "little_title_create_orders" }, [
                     _vm._v(
-                      "\n                            Вид перевозки\n                        "
+                      "\n                                Вид перевозки\n                            "
                     ),
                   ]),
                   _vm._v(" "),
@@ -51559,7 +51561,7 @@ var render = function () {
                 _c("div", { staticClass: "col" }, [
                   _c("div", { staticClass: "little_title_create_orders1" }, [
                     _vm._v(
-                      "\n                            Номер заявки\n                        "
+                      "\n                                Номер заявки\n                            "
                     ),
                   ]),
                   _vm._v(" "),
@@ -51647,7 +51649,7 @@ var render = function () {
                 _c("div", { staticClass: "col" }, [
                   _c("div", { staticClass: "little_title_create_orders" }, [
                     _vm._v(
-                      "\n                            Проект ИСД (номер и название)\n                        "
+                      "\n                                Проект ИСД (номер и название)\n                            "
                     ),
                   ]),
                   _vm._v(" "),
@@ -51680,7 +51682,7 @@ var render = function () {
                   _c("div", { staticClass: "col-6" }, [
                     _c("div", { staticClass: "little_title_create_orders" }, [
                       _vm._v(
-                        "\n                                Цена контракта\n                            "
+                        "\n                                    Цена контракта\n                                "
                       ),
                     ]),
                     _vm._v(" "),
@@ -51712,7 +51714,7 @@ var render = function () {
                   _c("div", { staticClass: "col-6" }, [
                     _c("div", { staticClass: "little_title_create_orders" }, [
                       _vm._v(
-                        "\n                                Дата контракта\n                            "
+                        "\n                                    Дата контракта\n                                "
                       ),
                     ]),
                     _vm._v(" "),
@@ -51747,7 +51749,7 @@ var render = function () {
                     _c("div", { staticClass: "col-6" }, [
                       _c("div", { staticClass: "little_title_create_orders" }, [
                         _vm._v(
-                          "\n                                Оплата\n                            "
+                          "\n                                    Оплата\n                                "
                         ),
                       ]),
                       _vm._v(" "),
@@ -51783,7 +51785,7 @@ var render = function () {
                     _c("div", { staticClass: "col-6" }, [
                       _c("div", { staticClass: "little_title_create_orders" }, [
                         _vm._v(
-                          "\n                                Сумма\n                            "
+                          "\n                                    Сумма\n                                "
                         ),
                       ]),
                       _vm._v(" "),
@@ -51831,7 +51833,7 @@ var render = function () {
                     },
                     [
                       _vm._v(
-                        "\n                            +Добавить оплату\n                        "
+                        "\n                                +Добавить оплату\n                            "
                       ),
                     ]
                   ),
@@ -51844,7 +51846,7 @@ var render = function () {
               _c("div", { staticClass: "col cr_ord_mid_col" }, [
                 _c("div", { staticClass: "little_title_create_orders" }, [
                   _vm._v(
-                    "\n                            Номенклатура\n                        "
+                    "\n                                Номенклатура\n                            "
                   ),
                 ]),
                 _vm._v(" "),
@@ -51945,7 +51947,7 @@ var render = function () {
                         { staticClass: "little_title_create_orders " },
                         [
                           _vm._v(
-                            "\n                                    Дата погрузки\n                                "
+                            "\n                                        Дата погрузки\n                                    "
                           ),
                         ]
                       ),
@@ -51999,7 +52001,7 @@ var render = function () {
                         },
                         [
                           _vm._v(
-                            "\n                                    Дата доставки\n                                "
+                            "\n                                        Дата доставки\n                                    "
                           ),
                         ]
                       ),
@@ -52046,7 +52048,7 @@ var render = function () {
                     [
                       _c("div", { staticClass: "little_title_create_orders" }, [
                         _vm._v(
-                          "\n                                    Кол-во грузомест\n                                "
+                          "\n                                        Кол-во грузомест\n                                    "
                         ),
                       ]),
                       _vm._v(" "),
@@ -52123,7 +52125,7 @@ var render = function () {
                         },
                         [
                           _vm._v(
-                            "\n                                    Расстояние, км\n                                "
+                            "\n                                        Расстояние, км\n                                    "
                           ),
                         ]
                       ),
@@ -52164,7 +52166,7 @@ var render = function () {
                     [
                       _c("div", { staticClass: "little_title_create_orders" }, [
                         _vm._v(
-                          "\n                                    Общий вес, кг\n                                "
+                          "\n                                        Общий вес, кг\n                                    "
                         ),
                       ]),
                       _vm._v(" "),
@@ -52205,7 +52207,7 @@ var render = function () {
                     [
                       _c("div", { staticClass: "little_title_create_orders" }, [
                         _vm._v(
-                          "\n                                    Общий объём, м3\n                                "
+                          "\n                                        Общий объём, м3\n                                    "
                         ),
                       ]),
                       _vm._v(" "),
@@ -52270,7 +52272,7 @@ var render = function () {
               _c("div", { staticClass: "big_comment" }, [
                 _c("div", { staticClass: "little_title_create_orders" }, [
                   _vm._v(
-                    "\n                            Комментарий\n                        "
+                    "\n                                Комментарий\n                            "
                   ),
                 ]),
                 _vm._v(" "),
@@ -52309,7 +52311,7 @@ var render = function () {
               _c("div", { staticClass: "col-12 row " }, [
                 _c("div", { staticClass: "col-3 create_order_right_title " }, [
                   _vm._v(
-                    "\n                        Список ТС\n                    "
+                    "\n                            Список ТС\n                        "
                   ),
                 ]),
                 _vm._v(" "),
@@ -52662,7 +52664,7 @@ var render = function () {
                           { staticClass: "little_title_create_orders2" },
                           [
                             _vm._v(
-                              "\n                            Вид ТС\n                        "
+                              "\n                                Вид ТС\n                            "
                             ),
                           ]
                         ),
@@ -52735,7 +52737,7 @@ var render = function () {
                               { staticClass: "little_title_create_orders2" },
                               [
                                 _vm._v(
-                                  "\n                                    Ставка\n                                "
+                                  "\n                                        Ставка\n                                    "
                                 ),
                               ]
                             ),
@@ -52770,7 +52772,7 @@ var render = function () {
                               { staticClass: "little_title_create_orders2" },
                               [
                                 _vm._v(
-                                  "\n                                    Ставка за км\n                                "
+                                  "\n                                        Ставка за км\n                                    "
                                 ),
                               ]
                             ),
@@ -52808,7 +52810,7 @@ var render = function () {
                               { staticClass: "little_title_create_orders2" },
                               [
                                 _vm._v(
-                                  "\n                                    Ставка КП\n                                "
+                                  "\n                                        Ставка КП\n                                    "
                                 ),
                               ]
                             ),
@@ -52843,7 +52845,7 @@ var render = function () {
                               { staticClass: "little_title_create_orders2" },
                               [
                                 _vm._v(
-                                  "\n                                    Маржа\n                                "
+                                  "\n                                        Маржа\n                                    "
                                 ),
                               ]
                             ),
@@ -52910,7 +52912,7 @@ var render = function () {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                            Кол-во грузомест\n                                        "
+                                            "\n                                                Кол-во грузомест\n                                            "
                                           ),
                                         ]
                                       ),
@@ -52963,7 +52965,7 @@ var render = function () {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                            Кол-во ТС\n                                        "
+                                            "\n                                                Кол-во ТС\n                                            "
                                           ),
                                         ]
                                       ),
@@ -53014,7 +53016,7 @@ var render = function () {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                            Расстояние, км\n                                        "
+                                            "\n                                                Расстояние, км\n                                            "
                                           ),
                                         ]
                                       ),
@@ -53108,7 +53110,7 @@ var render = function () {
                                 { staticClass: "little_title_create_orders2" },
                                 [
                                   _vm._v(
-                                    "\n                                        Общий вес,кг\n                                    "
+                                    "\n                                            Общий вес,кг\n                                        "
                                   ),
                                 ]
                               ),
@@ -53154,7 +53156,7 @@ var render = function () {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                        Общий объём,м3\n                                    "
+                                    "\n                                            Общий объём,м3\n                                        "
                                   ),
                                 ]
                               ),
@@ -53228,7 +53230,7 @@ var render = function () {
                         { staticClass: "little_title_create_orders2" },
                         [
                           _vm._v(
-                            "\n                            Комментарий\n                        "
+                            "\n                                Комментарий\n                            "
                           ),
                         ]
                       ),
@@ -53381,7 +53383,9 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-12" }, [
       _c("div", { staticClass: "col-6 orders_create_title" }, [
-        _vm._v("\n                Заявки: Создание заявки\n            "),
+        _vm._v(
+          "\n                    Заявки: Создание заявки\n                "
+        ),
       ]),
     ])
   },
@@ -53405,7 +53409,7 @@ var staticRenderFns = [
         { staticClass: "bold_title_create_orders title_cr_ord_bold_first" },
         [
           _vm._v(
-            "\n                            Информация о клиенте:\n                        "
+            "\n                                Информация о клиенте:\n                            "
           ),
         ]
       ),
@@ -53417,7 +53421,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                            Компания заказчик\n                            "
+        "\n                                Компания заказчик\n                                "
       ),
       _c("span", { staticClass: "add_button n1" }, [_vm._v("Добавить")]),
     ])
@@ -53428,7 +53432,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                            Менеджер заказчика\n                            "
+        "\n                                Менеджер заказчика\n                                "
       ),
       _c("span", { staticClass: "add_button n2" }, [_vm._v("Добавить")]),
     ])
@@ -53439,7 +53443,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                                Адрес погрузки 1\n                                "
+        "\n                                    Адрес погрузки 1\n                                    "
       ),
       _c("span", { staticClass: "add_button n3" }, [_vm._v("Добавить")]),
     ])
@@ -53453,7 +53457,7 @@ var staticRenderFns = [
       { staticClass: "little_title_create_orders no_padding_right" },
       [
         _vm._v(
-          "\n                                Адрес выгрузки 1\n                                "
+          "\n                                    Адрес выгрузки 1\n                                    "
         ),
         _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
       ]
@@ -53465,7 +53469,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders2" }, [
       _vm._v(
-        "\n                                        Адрес погрузки1\n                                        "
+        "\n                                            Адрес погрузки1\n                                            "
       ),
       _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
     ])
@@ -53479,7 +53483,7 @@ var staticRenderFns = [
       { staticClass: "little_title_create_orders2 ob_ob_width" },
       [
         _vm._v(
-          "\n                                    Адрес выгрузки1\n                                    "
+          "\n                                        Адрес выгрузки1\n                                        "
         ),
         _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
       ]
@@ -53491,7 +53495,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "little_title_create_orders" }, [
       _vm._v(
-        "\n                                Терминал\n                                "
+        "\n                                    Терминал\n                                    "
       ),
       _c("span", { staticClass: "add_button" }, [_vm._v("Добавить")]),
     ])
