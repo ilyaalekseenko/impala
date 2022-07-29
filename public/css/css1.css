@@ -242,18 +242,24 @@
     padding-bottom: 20px;
     /*background-color: #0dcaf0;*/
 }
-.orders_title_table {
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
+.head_font {
+    font-size: 0.875rem;
+    font-family: Montserrat, "Open Sans", Helvetica, Arial, sans-serif;
     font-weight: 400;
-    font-size: 16px;
-    line-height: 100%;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+}
+.orders_title_table {
+    font-size: 0.875rem;
+    font-family: Montserrat, "Open Sans", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+
     margin-top: 3px;
     color:#202020;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    /*border-top:1px solid #CED8DF;*/
-    /*background-color: #0b7dda;*/
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 .border_in_orders {
     border: 1px solid #CED8DF;

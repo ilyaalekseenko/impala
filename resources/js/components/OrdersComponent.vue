@@ -15,7 +15,7 @@
                 <div class="col-12 coloring_row row">
                     <div class="col-12 row coloring_row_1">
                     <div class="col-2 row color_title_1 coloring_np">
-                        <div class="col-6 coloring_row_text coloring_np">Журнал заявок</div >
+                        <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
                         <div class="col-6 row text-end coloring_np">
                             <div class="col-12 coloring_np">
                                 <span class="coloring_integer">{{ orders_total_numb }}</span>
@@ -23,43 +23,43 @@
                         </div>
                     </div>
                     <div class="col-2 row color_title_2 coloring_np">
-                        <div class="col-4 coloring_row_text coloring_np">Оценка</div >
+                        <div class="col-4 coloring_row_text coloring_np head_font">Оценка</div >
                         <div class="col row text-end coloring_np">
                             <div class="col coloring_np">
-                                <span class="coloring_integer">100000</span>
+                                <span class="coloring_integer head_font">100000</span>
                                 <span class="coloring_integer_green">+1</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-2 row color_title_3 coloring_np">
-                        <div class="col-7 coloring_row_text coloring_np">Назначение ставки</div >
+                        <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
                             <div class="col-12 coloring_np ">
-                            <span class="coloring_integer">1000</span>
+                            <span class="coloring_integer head_font">1000</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-2 row color_title_4 coloring_np">
-                        <div class="col-4 coloring_row_text coloring_np">В работе</div >
+                        <div class="col-4 coloring_row_text coloring_np head_font">В работе</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np coloring_np">
-                                <span class="coloring_integer">100000</span>
+                                <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-2 row color_title_5 coloring_np">
-                        <div class="col-4 coloring_row_text coloring_np">Контроль</div >
+                        <div class="col-4 coloring_row_text coloring_np head_font">Контроль</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer">100000</span>
+                                <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-2 row color_title_6 coloring_np">
-                        <div class="col-4 coloring_row_text coloring_np">Завершён</div >
+                        <div class="col-4 coloring_row_text coloring_np head_font">Завершён</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer">100000</span>
+                                <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
                     </div>
@@ -67,29 +67,29 @@
 
                     <div class="col-12 under_col_title_main">
                         <input type="checkbox" id="checkbox" v-on:click="check_all()" v-model="checked_all">
-                        <span class="under_colored_title">Объединить</span>
-                        <span class="under_colored_title" v-on:click="delete_orders()">Удалить</span>
-                        <span class="under_colored_title">Переместить</span>
-                        <span class="under_colored_title" v-on:click="mark_as_important()" >Важное</span>
+                        <span class="under_colored_title head_font">Объединить</span>
+                        <span class="under_colored_title head_font" v-on:click="delete_orders()">Удалить</span>
+                        <span class="under_colored_title head_font">Переместить</span>
+                        <span class="under_colored_title head_font" v-on:click="mark_as_important()" >Важное</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
                             <div class="col-2 orders_title_table_main text-start row">
                                 <div class="col-2"></div>
-                                <div class="col-10">Номер заявки</div>
+                                <div class="col-10 head_font">Номер заявки</div>
                             </div>
-                            <div class="col-2 orders_title_table_main">Дата внесения</div>
-                            <div class="col-2 orders_title_table_main">Тип перевозки</div>
-                            <div class="col-2 orders_title_table_main">Откуда</div>
-                            <div class="col-2 orders_title_table_main">Куда</div>
-                            <div class="col-2 orders_title_table_main">Заказчик</div>
+                            <div class="col-2 orders_title_table_main head_font">Дата внесения</div>
+                            <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
+                            <div class="col-2 orders_title_table_main head_font">Откуда</div>
+                            <div class="col-2 orders_title_table_main head_font">Куда</div>
+                            <div class="col-2 orders_title_table_main head_font">Заказчик</div>
                         </div>
                         <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: order.important==1 }">
                         <div class="col-2 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="order.checked_order">
                             <div class="col-10">№ {{ order.id }}</div>
                         </div>
-                        <div class="col-2 orders_title_table">{{ order.data_vneseniya| formatDate }}</div>
+                        <div class="col-2 orders_title_table">{{ order.data_vneseniya }}</div>
                         <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
                         <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
                         <div class="col-2 orders_title_table">{{ order.adres_pogruzke }}</div>

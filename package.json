@@ -30,6 +30,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@livelybone/vue-datepicker": "^4.1.0",
         "moment": "^2.29.3",
+        "vue2-datepicker": "^3.11.0",
         "vuejs-datepicker": "^1.6.2"
     }
 }

@@ -33,5 +33,5 @@ Vue.component('create-orders-component', require('./components/CreateOrdersCompo
 
 const app = new Vue({
     el: '#app',
-    // components:{ Datepicker, Timepicker, DatetimePicker, DateRangePicker }
+    // components: { DatePicker },
 });

@@ -10,15 +10,13 @@
                 <div class="col-10 create_orders_second_title row">
                     <div class="col-3">
                         <span  class="create_orders_date_title">Дата внесения:</span>
+<!--                        <date-picker  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open="openDP"></date-picker>-->
                         <span class="create_orders_date_title_int">{{ data_vneseniya }}</span>
-<!--                        <span class="create_orders_date_title_int">{{data_vneseniya| formatDate }}</span>-->
-                       <span @click="openEndDatePicker">
+                        <span @click="openDB0">
+<!--                       <span @click="openEndDatePicker">-->
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <div class="datePickerDiv">
-                        <datepicker :format="customFormatter"  v-model="data_vneseniya" ref="startDatePicker" >
-                        </datepicker>
-                        </div>
+                        <date-picker ref="datepicker0"  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" @change="handleChange0"></date-picker>
                     </div>
                     <div class="col-4 ">
                         <span  class="create_orders_date_title">Логист:</span>
@@ -36,14 +34,10 @@
                     <div class="col-3">
                         <span  class="create_orders_date_title">Рассчитать до:</span>
                         <span class="create_orders_date_title_int">{{ rasschitat_do }}</span>
-<!--                        <span class="create_orders_date_title_int">{{rasschitat_do| formatDate }}</span>-->
-                        <span @click="openEndDatePicker1">
+                        <span @click="openDB1">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <div class="datePickerDiv">
-                            <datepicker :format="customFormatter1" v-model="rasschitat_do" ref="startDatePicker1">
-                            </datepicker>
-                        </div>
+                        <date-picker ref="datepicker1"  v-model="rasschitat_do" valueType="format" format="DD.MM.YYYY"  :open.sync="openDP1" @change="handleChange1"></date-picker>
                     </div>
                     <div class="col-2 justify-content-end">
                         <div class="col add_ts_button4 text-center">Утверждение</div>
@@ -112,7 +106,8 @@
                                 <div class="little_title_create_orders">
                                     Дата контракта
                                 </div>
-                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />
+                                <input @click="openDB4" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />
+                                <date-picker ref="datepicker4"  v-model="data_kontrakta" valueType="format" format="DD.MM.YYYY" :open.sync="openDP4" @change="handleChange0"></date-picker>
                             </div>
                         </div>
                         <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
@@ -164,7 +159,8 @@
                                         Дата погрузки
                                     </div>
                                     <div class="create_orders_bottom no_padding_right">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
+                                        <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
+                                        <date-picker ref="datepicker2"  v-model="data_pogruzki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP2" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                                 <div class=" offset-1 col-6  data_pog_dost  no_padding_right">
@@ -172,7 +168,8 @@
                                         Дата доставки
                                     </div>
                                     <div class="create_orders_bottom no_padding_right">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
+                                        <input @click="openDB3" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
+                                        <date-picker ref="datepicker3"  v-model="data_dostavki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP3" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -474,6 +471,10 @@
 <script>
     import datepicker from 'vuejs-datepicker';
     import moment from 'moment'
+
+    import DatePicker from 'vue2-datepicker';
+    import 'vue2-datepicker/index.css';
+
     Vue.filter('formatDate', function(value) {
         if (value) {
             return moment(String(value)).format('DD.MM.YYYY')
@@ -481,7 +482,8 @@
     });
     export default {
         components: {
-            datepicker
+            datepicker,
+            DatePicker
         },
         data() {
             return {
@@ -536,12 +538,20 @@
                 id_ts:'',
                 ts_list_names:[],
                 logist_list:false,
-                logist_name:'Логист не выбран'
-
+                logist_name:'Логист не выбран',
+                openDP:false,
+                openDP1:false,
+                openDP2:false,
+                openDP3:false,
+                openDP4:false,
             }
         },
         mounted()
         {
+            for (let i = document.getElementsByClassName('mx-input-wrapper').length; i > 0 ; i--) {
+                let m = i - 1
+                document.getElementsByClassName('mx-input-wrapper')[m].remove();
+            }
             this.get_ts_list(this.ts_list_names);
             let adress=window.location.href;
             adress=(adress.split("/")[4])
@@ -560,6 +570,7 @@
         },
 
         computed: {
+
             stavka_TS_za_km: function () {
                 if(this.stavka_TS==''||this.rasstojanie_TS=='')
                 {
@@ -598,6 +609,32 @@
             },
         },
         methods: {
+            handleChange0(){
+                this.update_order()
+            },
+            handleChange1(){
+                this.update_order()
+            },
+            openDB0()
+            {
+                this.openDP=true
+            },
+            openDB1()
+            {
+                this.openDP1=true;
+            },
+            openDB2()
+            {
+                this.openDP2=true
+            },
+            openDB3()
+            {
+                this.openDP3=true
+            },
+            openDB4()
+            {
+                this.openDP4=true
+            },
                 handleChange(e) {
                 var name = e.target.options[e.target.options.selectedIndex].text;
                 this.logist_name=name ;
