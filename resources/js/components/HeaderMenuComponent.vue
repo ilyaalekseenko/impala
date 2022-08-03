@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row justify-content-center header_settings">
-            <a href="/" class="col-1">
+            <a href="/orders" class="col-1">
                 <img class="logo_settings" :src="'/images/logo.png'" alt="">
             </a>
 

@@ -910,7 +910,7 @@
             },
             deleteTs()
             {
-                if(this.edit_flag=false)
+                if(this.edit_flag==false)
                 {
                 this.id_ts='';
                 this.vid_TS='';

@@ -6224,7 +6224,7 @@ Vue.filter('formatDate', function (value) {
       this.terminal_TS = this.spisokTSarr[key]['terminal_TS'];
     },
     deleteTs: function deleteTs() {
-      if (this.edit_flag = false) {
+      if (this.edit_flag == false) {
         this.id_ts = '';
         this.vid_TS = '';
         this.stavka_TS = '';
@@ -54824,7 +54824,7 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row justify-content-center header_settings" }, [
-      _c("a", { staticClass: "col-1", attrs: { href: "/" } }, [
+      _c("a", { staticClass: "col-1", attrs: { href: "/orders" } }, [
         _c("img", {
           staticClass: "logo_settings",
           attrs: { src: "/images/logo.png", alt: "" },
