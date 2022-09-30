@@ -57,7 +57,6 @@ class TSController extends Controller
         $kommentari_TS=$request->input('kommentari_TS');
         $checked2=$request->input('checked2');
         $terminal_TS=$request->input('terminal_TS');
-
 //        return dd($adres_pogruzki_TS);
 
 //если создаём новое ТС
