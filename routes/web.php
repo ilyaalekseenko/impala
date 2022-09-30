@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 Route::get('/orders',  [App\Http\Controllers\OrdersController::class, 'main_orders'])->name('main_orders');
 Route::get('/create_orders/{id?}',  [App\Http\Controllers\OrdersController::class, 'create_orders'])->name('create_orders');
+Route::get('/grade/{id?}',  [App\Http\Controllers\GradeController::class, 'show_grade'])->name('show_grade');
 Route::post('/start_new_order',  [App\Http\Controllers\OrdersController::class, 'start_new_order'])->name('start_new_order');
 Route::post('/start_get_old_order',  [App\Http\Controllers\OrdersController::class, 'start_get_old_order'])->name('start_get_old_order');
 Route::post('/update_order',  [App\Http\Controllers\OrdersController::class, 'update_order'])->name('update_order');
@@ -28,4 +29,19 @@ Route::post('/save_ts',  [App\Http\Controllers\TSController::class, 'save_ts'])-
 Route::post('/delete_TS',  [App\Http\Controllers\TSController::class, 'delete_TS'])->name('delete_TS');
 Route::post('/get_ts_list',  [App\Http\Controllers\TSController::class, 'get_ts_list'])->name('get_ts_list');
 Route::post('/get_type_per_list',  [App\Http\Controllers\TSController::class, 'get_type_per_list'])->name('get_type_per_list');
+Route::post('/get_terminal_list',  [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
 Route::post('/get_orders_list_new',  [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
+Route::post('/get_start_data_grade',  [App\Http\Controllers\GradeController::class, 'get_start_data_grade'])->name('get_start_data_grade');
+Route::post('/update_final_grade',  [App\Http\Controllers\GradeController::class, 'update_final_grade'])->name('update_final_grade');
+Route::post('/add_pogruzka_grade',  [App\Http\Controllers\GradeController::class, 'add_pogruzka_grade'])->name('add_pogruzka_grade');
+Route::post('/save_start_summa',  [App\Http\Controllers\GradeController::class, 'save_start_summa'])->name('save_start_summa');
+Route::post('/add_new_adres_pogruzka',  [App\Http\Controllers\GradeController::class, 'add_new_adres_pogruzka'])->name('add_new_adres_pogruzka');
+Route::post('/add_summ',  [App\Http\Controllers\GradeController::class, 'add_summ'])->name('add_summ');
+Route::post('/get_final_grades_data',  [App\Http\Controllers\GradeController::class, 'get_final_grades_data'])->name('get_final_grades_data');
+Route::post('/update_one_data',  [App\Http\Controllers\GradeController::class, 'update_one_data'])->name('update_one_data');
+Route::post('/update_one_data_pogruzka',  [App\Http\Controllers\GradeController::class, 'update_one_data_pogruzka'])->name('update_one_data_pogruzka');
+Route::post('/update_one_data_summa',  [App\Http\Controllers\GradeController::class, 'update_one_data_summa'])->name('update_one_data_summa');
+Route::post('/store_grade_file',  [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
+Route::post('/delete_file_grade',  [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
+Route::post('/get_ob_budzet_down',  [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
+Route::get('/download_all_doc_grade/{grade_id}/{ts_id}',  [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OplataOrders;
 use App\Models\Orders;
+use App\Models\PogruzkaTS;
 use App\Models\TS;
 use App\Models\LogistName;
 use Illuminate\Http\Request;
@@ -93,9 +94,9 @@ class OrdersController extends Controller
            array_push($arr_to_add, $oplata);
        }
         $orders_list[0]['oplata']=$arr_to_add;
-       
+
         $log_name= LogistName::where('id', '=', $orders_list[0]['logist'])->get('logist_name');
-       
+
        if (!$log_name->isEmpty()) {
         $orders_list[0]['logist_name']=$log_name[0]['logist_name'];
             }
@@ -105,11 +106,22 @@ class OrdersController extends Controller
             }
        //получаем список ТС
         $TS_list= TS::where('order_id', '=', $id)->get();
+        //получаем список адресов погрузки и выгрузки
+        foreach ($TS_list as $ts)
+        {
+          //  return dd($ts['id_ts']);
+            $TS_list_pogruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '1')->where('id_ts', $ts['id_ts'])->get();
+            $TS_list_vygruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '2')->where('id_ts', $ts['id_ts'])->get();
+            $ts['adres_pogruzki_TS']=$TS_list_pogruzka;
+            $ts['adres_vygr_TS']=$TS_list_vygruzka;
+        }
         return response()->json([
             'status' => 'success',
             'message' =>'Заявка успешно получена',
             'data' =>$orders_list,
             'TS_list' =>$TS_list,
+            'TS_list_pogruzka' =>$TS_list_pogruzka,
+            'TS_list_vygruzka' =>$TS_list_vygruzka,
         ], 200);
     }
     //если новая заявка

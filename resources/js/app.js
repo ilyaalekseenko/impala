@@ -23,7 +23,20 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('header-menu-component', require('./components/HeaderMenuComponent.vue').default);
 Vue.component('orders-component', require('./components/OrdersComponent.vue').default);
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
+Vue.component('grade-component', require('./components/GradeComponent').default);
+Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
 // import { Datepicker, Timepicker, DatetimePicker, DateRangePicker } from '@livelybone/vue-datepicker';
+
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+
+// Import Bootstrap and BootstrapVue CSS files (order is important)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+// Make BootstrapVue available throughout your project
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
