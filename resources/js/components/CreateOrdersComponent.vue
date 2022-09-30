@@ -942,10 +942,11 @@
             },
             editTs(key)
             {
+                console.log(this.spisokTSarr[key]['adres_pogruzki_TS'])
                 this.edit_number=key;
                 this.edit_flag=true;
                 this.add_ts=true;
-                this.id_ts=this.spisokTSarr[key]['id_ts'];;
+                this.id_ts=this.spisokTSarr[key]['id_ts'];
                 this.vid_TS=this.spisokTSarr[key]['vid_TS'];
                 this.stavka_TS=this.spisokTSarr[key]['stavka_TS'];
                 this.stavka_kp_TS=this.spisokTSarr[key]['stavka_kp_TS'];
@@ -955,11 +956,22 @@
 
              //   this.adres_pogruzki_TS=this.spisokTSarr[key]['adres_pogruzki_TS'];
                 this.ad_pogruzki_arr_temp=this.spisokTSarr[key]['adres_pogruzki_TS'];
+                if(this.spisokTSarr[key]['adres_pogruzki_TS'].length==0)
+                {
+                    let objToPush= {};
+                    objToPush['adres_pogruzki'] ='';
+                    this.ad_pogruzki_arr_temp.push(objToPush);
+                }
                 this.ob_ves_TS=this.spisokTSarr[key]['ob_ves_TS'];
                 this.ob_ob_TS=this.spisokTSarr[key]['ob_ob_TS'];
-                console.log(this.spisokTSarr[key]['adres_vygr_TS'])
               //  this.adres_vygr_TS=this.spisokTSarr[key]['adres_vygr_TS'];
                 this.ad_vygruz_arr_temp=this.spisokTSarr[key]['adres_vygr_TS'];
+                if(this.spisokTSarr[key]['adres_vygr_TS'].length==0)
+                {
+                    let objToPush1= {};
+                    objToPush1['adres_pogruzki'] ='';
+                    this.ad_vygruz_arr_temp.push(objToPush1);
+                }
                 this.kommentari_TS=this.spisokTSarr[key]['kommentari_TS'];
                 this.checked2=this.spisokTSarr[key]['checked2'];
                 this.terminal_TS=this.spisokTSarr[key]['terminal_TS'];
