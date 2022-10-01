@@ -169,9 +169,10 @@ class GradeController extends Controller
     {
         $elem_arr = $request->input('elem');
         $name = $request->input('name');
+        $grade_id = $request->input('grade_id');
 
         $grade_list = FinalGrade::
-        where('grade_id', '=', $elem_arr['grade_id'])
+        where('grade_id', '=', $grade_id)
             -> where('id_ts', '=', $elem_arr['id_ts'])
             ->update(
                 [

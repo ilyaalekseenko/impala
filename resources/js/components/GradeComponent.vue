@@ -941,11 +941,11 @@
             },
             update_one_data(elem,name)
             {
-                console.log(name)
                 axios
                     .post('/update_one_data',{
                         elem:elem,
-                        name:name
+                        name:name,
+                        grade_id:this.grade_id
                     })
             },
             get_final_grades_data(spisokTShead)

@@ -120,8 +120,6 @@ class OrdersController extends Controller
             'message' =>'Заявка успешно получена',
             'data' =>$orders_list,
             'TS_list' =>$TS_list,
-            'TS_list_pogruzka' =>$TS_list_pogruzka,
-            'TS_list_vygruzka' =>$TS_list_vygruzka,
         ], 200);
     }
     //если новая заявка
