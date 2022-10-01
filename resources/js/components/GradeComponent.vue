@@ -941,11 +941,12 @@
             },
             update_one_data(elem,name)
             {
+
                 axios
                     .post('/update_one_data',{
                         elem:elem,
                         name:name,
-                        grade_id:this.grade_id
+                        grade_id:this.order_id
                     })
             },
             get_final_grades_data(spisokTShead)

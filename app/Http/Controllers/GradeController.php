@@ -172,13 +172,14 @@ class GradeController extends Controller
         $grade_id = $request->input('grade_id');
 
         $grade_list = FinalGrade::
-        where('grade_id', '=', $grade_id)
+                where('grade_id', '=', $grade_id)
             -> where('id_ts', '=', $elem_arr['id_ts'])
             ->update(
                 [
                     $name => $elem_arr[$name]
                 ],
             );
+        return $grade_list;
     }
     public function update_one_data_summa(Request $request)
     {
