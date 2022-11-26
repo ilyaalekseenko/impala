@@ -8,12 +8,27 @@ use App\Models\GradePogruzka;
 use App\Models\GradeSumma;
 use App\Models\Orders;
 use App\Models\PogruzkaTS;
+use App\Models\TemplateVar;
 use App\Models\TS;
 use Illuminate\Http\Request;
 use ZipArchive;
 
 class GradeController extends Controller
 {
+    public function get_template_vars()
+    {
+        $data1=TemplateVar::where('doc_type', '1')->get();
+        $data2=TemplateVar::where('doc_type', '2')->get();
+        $data3=TemplateVar::where('doc_type', '3')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'templ_vars1'   => $data1,
+            'templ_vars2'   => $data2,
+            'templ_vars3'   => $data3,
+            'success'   => 'yes',
+        ], 200);
+    }
     public function show_grade(Request $request)
     {
         return view('front.grade');
@@ -520,5 +535,9 @@ class GradeController extends Controller
                 'count' =>$count,
             ], 200);
         }
+    }
+    public function docs_setting()
+    {
+        return view('front.docs');
     }
 }

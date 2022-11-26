@@ -38,7 +38,7 @@
                 <div class="col align-self-center  top_menu_user_name no_wrap  ">Константин Константинопольский</div>
             </div>
             <div class="col align-self-center">
-            <span class="iconify" data-icon="ci:settings-filled" style="color: #020e49;" data-width="32" data-height="32"></span>
+           <span class="gear_settings" v-on:click="go_to_docs_setting()"> <span class="iconify" data-icon="ci:settings-filled" style="color: #020e49;" data-width="32" data-height="32" ></span></span>
             <span class="iconify top_menu_icon_right" data-icon="majesticons:door-exit" style="color: #020e49;" data-width="32" data-height="32"></span>
             </div>
 
@@ -68,6 +68,12 @@
     export default {
         mounted() {
             console.log('Component mounted.')
+        },
+        methods: {
+            go_to_docs_setting()
+            {
+                window.location.href =('/docs_setting')
+            }
         }
     }
 </script>

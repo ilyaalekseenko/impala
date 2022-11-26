@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="scroll_block">
         <div class="row">
             <div class="col-12">
                 <modal-pogruzka-component></modal-pogruzka-component>
@@ -235,14 +235,15 @@
                         </div>
                         <div class="col-9 text-right row justify-content-end ">
                             <div class="col create_order_right_main_text text_in_header text-end">Общий бюджет:{{ ob_budjet }} р</div>
-                            <div class="col add_ts_button" v-on:click="add_ts_func()">Добавить ТС</div>
+                            <div class="col add_ts_button" v-on:click="add_ts_func()" id="box">Добавить ТС</div>
                         </div>
                     </div>
                     <div class="col-12 row create_ord_underline"></div>
 
                     <!--                        список старых ТС-->
                     <span v-for="(elem,key) in spisokTSarr">
-                                <div class="col row" >
+                        <span v-if="add_ts!==key">
+                        <div class="col row" >
                                     <div class="col-1 no_padding_right create_order_right_main_text">{{key + 1}}</div>
                                     <div class="col-2 no_padding_right ">
                                         <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text ">Вид ТС</div>
@@ -315,12 +316,12 @@
                                     </div>
                                 </div>
                                                     <div class="col-12 row create_ord_underline"></div>
-                                </span>
+                        </span>
                     <!--             конец список старых ТС-->
 
 
                     <!--  Добавление нового ТС или редактирование старого-->
-                    <div v-if="add_ts" class="row">
+                    <div v-if="add_ts===key" class="row add_ts_class">
                         <div class="col spisok_ts_second_title_left">
                             <div class="little_title_create_orders2">
                                 Вид ТС
@@ -470,12 +471,170 @@
                             </div>
 
                         </div>
-                        <div class="col-11 save_buttons justify-content-end row">
-                            <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
+                        <div class="col-11 save_buttons justify-content-end row ">
+                            <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
                         </div>
                     </div>
-                    <!--                end_ts-->
+                    <div v-if="add_ts===key" class="col-12 row create_ord_underline"></div>
+
+                        <!--                end_ts-->
+ </span>
+                    <div v-if="add_new_ts" class="row add_ts_class">
+                        <div class="col spisok_ts_second_title_left">
+                            <div class="little_title_create_orders2">
+                                Вид ТС
+                            </div>
+                            <div class="create_orders_bottom">
+                                <select class="sel_cust" v-model="vid_TS">
+                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
+                                    <option v-bind:value="1" class="sel_cust">Тент</option>
+                                    <option v-bind:value="2" class="sel_cust">Палатка</option>
+                                </select>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS"  />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка за км
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_za_km" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка КП
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Маржа
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="marja_TS"  readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col row">
+                            <div class="col ">
+                                <div class="col row no_padding_right no_padding_left">
+                                    <div class="col-12 row no_padding_right no_padding_left">
+                                        <div class="col cr_ord_lit_left no_padding_right no_padding_left">
+                                            <div class="little_title_create_orders2 no_wrap">
+                                                Кол-во грузомест
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS"  />
+                                            </div>
+                                        </div>
+                                        <div class="col cr_ord_lit_center no_padding_right">
+                                            <div class="little_title_create_orders2">
+                                                Кол-во ТС
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS"  />
+                                            </div>
+                                        </div>
+                                        <div class="col cr_ord_lit_right no_padding_left">
+                                            <div class="little_title_create_orders2">
+                                                Расстояние, км
+                                            </div>
+                                            <div class="create_orders_bottom">
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS"  />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 row">
+                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
+                                            <div class="little_title_create_orders2">
+                                                Общий вес,кг
+                                            </div>
+                                            <div class="create_orders_bottom row">
+                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />
+                                            </div>
+                                        </div>
+                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
+                                            <div class="little_title_create_orders2 ob_ob_width">
+                                                Общий объём,м3
+                                            </div>
+                                            <div class="create_orders_bottom row">
+                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
+                                        <div class="little_title_create_orders2 ob_ob_width">
+                                            Адрес погрузки
+                                            <span class="add_button" v-b-modal.modal-xl variant="primary">Добавить</span>
+                                        </div>
+                                        <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />
+                                        <span v-on:click="add_empty_adres_pogr()">+</span>
+                                    </div>
+
+                                </div>
+
+                                <div class="col no_padding_right">
+                                    <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
+                                        <div class="little_title_create_orders2 ob_ob_width">
+                                            Адрес выгрузки
+                                            <span class="add_button" v-b-modal.modal-xl variant="primary">Добавить</span>
+                                        </div>
+                                        <div class="create_orders_bottom">
+                                            <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />
+                                            <span v-on:click="add_empty_adres_vygruz()">+</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12">
+                            <div class="little_title_create_orders2">
+                                Комментарий
+                            </div>
+                            <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
+                        </div>
+                        <div class="col-12 right_comments">
+
+                            <div class="col-6 row checkbox2_row">
+                                <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
+                                <div class="col">На терминале</div>
+                            </div>
+                            <div class="col-6 terminal_cr_ord">
+                                <div class="little_title_create_orders">
+                                    Терминал
+                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>
+                                </div>
+                                <div class="create_orders_bottom row">
+                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">
+                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-11 save_buttons justify-content-end row">
+                            <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
+                            <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
+                        </div>
+                    </div>
 
                 </div>
                 </div>
@@ -532,7 +691,8 @@
                 adres_vygruski:'',
                 komment_1:'',
                 // ob_budjet:0,
-                add_ts:false,
+                add_ts:'',
+                add_new_ts:false,
                 vid_TS:'',
                 stavka_TS:'',
                 // stavka_TS_za_km:'',
@@ -819,12 +979,8 @@
                     {
                         let last_id_ts=this.spisokTSarr.slice(-1);
                         this.id_ts=Number(last_id_ts[0]['id_ts'])+Number(1);
-                        console.log('last id ts');
-                        console.log(last_id_ts[0]['id_ts']);
                     }
                 let objToPush= {};
-                    console.log('this.ad_pogruzki_arr_temp');
-                    console.log(this.ad_pogruzki_arr_temp);
                 objToPush['id_ts'] = this.id_ts;
                 objToPush['vid_TS'] = this.vid_TS;
                 objToPush['stavka_TS'] = this.stavka_TS;
@@ -881,7 +1037,8 @@
                 this.kommentari_TS='';
                 this.checked2='';
                 this.terminal_TS='';
-                this.add_ts=false;
+                this.add_ts='';
+                this.add_new_ts=false;
                 }
                 //редактируем существующее ТС
                 else
@@ -935,17 +1092,17 @@
                     this.terminal_TS='';
                     this.edit_number='';
                     this.edit_flag=false;
-                    this.add_ts=false;
+                    this.add_ts='';
                     this.ad_pogruzki_arr_temp=[];
                     this.ad_vygruz_arr_temp=[];
                 }
             },
             editTs(key)
             {
-                console.log(this.spisokTSarr[key]['adres_pogruzki_TS'])
+                this.add_new_ts=false;
                 this.edit_number=key;
                 this.edit_flag=true;
-                this.add_ts=true;
+                this.add_ts=key;
                 this.id_ts=this.spisokTSarr[key]['id_ts'];
                 this.vid_TS=this.spisokTSarr[key]['vid_TS'];
                 this.stavka_TS=this.spisokTSarr[key]['stavka_TS'];
@@ -996,7 +1153,8 @@
                 this.terminal_TS='';
                 this.edit_number='';
                 this.edit_flag=false;
-                this.add_ts=false;
+                this.add_ts='';
+                this.add_new_ts=false;
                     this.ad_vygruz_arr_temp=[];
                     this.ad_pogruzki_arr_temp=[];
                 }
@@ -1026,19 +1184,18 @@
                     this.terminal_TS='';
                     this.edit_number='';
                     this.edit_flag=false;
-                    this.add_ts=false;
-
+                    this.add_ts='';
+                    this.add_new_ts=false;
                 }
             },
             add_ts_func()
             {
-                // console.log(this.spisokTSarr);
-                // this.add_ts=!this.add_ts;
-                if(!this.add_ts)
+                this.add_ts='';
+                if(!this.add_new_ts)
                 {
-                    this.add_ts=!this.add_ts;
+                    this.add_new_ts=!this.add_new_ts;
                 }
-                if(this.add_ts)
+                if(this.add_new_ts)
                 {
                     this.id_ts='';
                     this.vid_TS='';
@@ -1064,7 +1221,6 @@
                     objToPush1['adres_pogruzki'] ='';
                     this.ad_vygruz_arr_temp.push(objToPush1);
 
-
                 if(this.edit_flag==false) {
                     //проверка, были ли вообще хоть одно ТС
                     if (this.spisokTSarr.length == 0) {
@@ -1074,14 +1230,20 @@
                         this.id_ts = Number(last_id_ts[0]['id_ts']) + Number(1);
                     }
                 }
-
-                // let objToPush= {};
-                // objToPush['checked2'] = '';
-                // objToPush['terminal_TS'] = '';
-                // this.terminal_act_list[this.id_ts]=[];
-                // this.terminal_act_list[this.id_ts].push(objToPush);
-                // console.log(this.terminal_act_list);
                 }
+                setTimeout(() => {
+                    this.scroll_to_end();
+                }, 200);
+
+            },
+            scroll_to_end()
+            {
+                let block = document.getElementsByClassName("right_white_block");
+                let offsetPosition = block[0].scrollHeight;
+                window.scrollBy({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
             },
             add_empty_adres_vygr_to_old()
             {

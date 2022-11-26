@@ -115,9 +115,11 @@
                             Список ТС:
                         </div>
                         <div  class="col-6 row justify-content-end trio_but">
-                            <div class="col add_ts_button5 text-center" v-on:click="deleteTs()">ТН</div>
-                            <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="deleteTs()">Доверенность</div>
-                            <div class="col add_ts_button5 text-center" v-on:click="deleteTs()">Заявка</div>
+                            <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('1')">ТН</div>
+                            <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
+
+                            <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="get_finall_doc_pdf('2')">Доверенность</div>
+                            <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('3')">Заявка</div>
                         </div>
                     </div>
 
@@ -463,6 +465,7 @@
                 </div>
 
         </div>
+        <iframe style="display:none;" name="hiddenIframe" id="hiddenIframe"></iframe>
     </div>
 </template>
 
@@ -557,6 +560,7 @@
                 current_id_doc_type:'',
                 openDP4:false,
                 oplacheno:0,
+                current_doc:''
 
 
 
@@ -658,6 +662,62 @@
         },
 
         methods: {
+            get_finall_doc_pdf(doc_type)
+            {
+                this.current_doc=doc_type
+                // window.location.href = '/get_finall_doc_pdf/'+doc_type;
+                axios
+                    .post('/get_finall_doc_pdf',{
+                         doc_type:this.current_doc,
+                         id:this.order_id,
+
+                    })
+                    .then(response => {
+                        // console.log(response.data.file)
+                        window.location.assign('/get_finall_doc_pdf_file/templates/'+response.data.file) ;
+
+                    })
+
+            },
+            set_doc()
+            {
+                axios
+                    .post('/set_doc',{
+                    })
+            },
+            store_doc()
+            {
+                this.$refs.files_doc.click();
+            },
+            handleFilesUploadDoc(){
+                let flag = 0;
+                let uploadedFiles = this.$refs.files_doc.files;
+                // if ( /\.(xlsx?)$/i.test( uploadedFiles[0].name ) ) {
+                    let reg ='';
+                    reg=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(txt?)/))
+                    this.nomenklatura=reg[1];
+                    this.nomenklatura=reg[0];
+                    let formData = new FormData();
+                    let file = uploadedFiles;
+                    formData.append('file_xlsx', file[0]);
+                    formData.append('file_name',this.nomenklatura);
+                    formData.append('order_id',this.order_id);
+                    formData.append('full_name',reg[0]);
+                    axios.post( '/store_doc',
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        }
+                    )
+                // }
+                // else
+                // {
+                //     alert('Не верный формат файла')
+                // }
+            },
+
             get_ob_budzet_down()
             {
                 axios

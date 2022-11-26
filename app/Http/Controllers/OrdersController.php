@@ -2,13 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocsTemplate;
+use App\Models\FinalGrade;
 use App\Models\OplataOrders;
 use App\Models\Orders;
 use App\Models\PogruzkaTS;
+use App\Models\TemplateVar;
 use App\Models\TS;
 use App\Models\LogistName;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Gotenberg\Gotenberg;
+use Gotenberg\Stream;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+//use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
+use PhpOffice\PhpWord\PhpWord;
+use Silverslice\ExcelTemplate\Template;
+use Dompdf\Dompdf;
 
 class OrdersController extends Controller
 {
@@ -146,7 +160,201 @@ class OrdersController extends Controller
             'message' =>'Файл xlsx успешно сохранён',
         ], 200);
     }
+    public function store_doc(Request $request)
+    {
+        $request['file_xlsx']->move(public_path('/grade_doc/'), $request['order_id'].'__'.$request['full_name']);
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Файл xlsx успешно сохранён',
+        ], 200);
+    }
+    public function store_doc_templ(Request $request)
+    {
+        $doc_type= $request->input('doc_type');
+        $full_name= $request->input('full_name');
 
+            $isset = DocsTemplate::where('doc_type', $doc_type)->first();
+
+            if ($isset !== null) {
+                $path_to_del = public_path() . "/templates/" . $isset['doc_name'];
+                try {
+                unlink($path_to_del);
+                }
+                catch (\Throwable $e)
+                {
+
+                }
+                $isset->update(
+                [
+                'doc_name' =>$request['full_name'],
+                ]
+            );
+            }
+            else{
+                DocsTemplate::create(
+                    [
+                        'doc_type' =>$doc_type,
+                        'doc_name' =>$request['full_name'],
+                    ]
+                );
+            }
+
+        $request['file_xlsx']->move(public_path('/templates/'), $full_name);
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Файл успешно сохранён',
+        ], 200);
+    }
+    public function get_templ_names(Request $request)
+    {
+        $TH = DocsTemplate::where('doc_type','TH')->get();
+        $DOV = DocsTemplate::where('doc_type','DOV')->get();
+        $ZAI = DocsTemplate::where('doc_type','ZAI')->get();
+        if ($TH->isEmpty()) {
+            $TH='';
+        }
+        else
+        {
+            $TH=$TH[0]['doc_name'];
+        }
+        if ($DOV->isEmpty()) {
+            $DOV='';
+        }
+        else
+        {
+            $DOV=$DOV[0]['doc_name'];
+        }
+        if ($ZAI->isEmpty()) {
+            $ZAI='';
+        }
+        else
+        {
+            $ZAI=$ZAI[0]['doc_name'];
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'TH' =>$TH,
+            'DOV' =>$DOV,
+            'ZAI' =>$ZAI,
+        ], 200);
+    }
+    public function get_finall_doc_pdf_file($filename)
+    {
+        return response()->download(public_path('templates/'.$filename));
+
+    }
+    public function get_finall_doc_pdf(Request $request)
+    {
+        ini_set('max_execution_time', 180);
+
+//            return response()->download(public_path('templates/отчёт.txt'))
+
+        $id = $request->input('id');
+        $doc_type = $request->input('doc_type');
+        $orders_list = Orders::where('id', '=', $id) ->get();
+        $grade_list = FinalGrade::where('grade_id', '=', $id) ->get();
+
+        if($doc_type=='1')
+        {
+            $TH = DocsTemplate::where('doc_type','TH')->get();
+            $TH=$TH[0]['doc_name'];
+            $template = new Template();
+            $template->open(public_path('templates/'.$TH))
+                ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
+                ->replace('por_nomer', $orders_list[0]['id'])
+                ->replace('adres_pogruzki', $orders_list[0]['adres_pogruzke'])
+                ->replace('adres_vygruzki', $orders_list[0]['adres_vygruski'])
+                ->replace('kol_gruzomest', $orders_list[0]['gruzomesta_big'])
+                ->replace('data_dostavki', $orders_list[0]['data_dostavki'])
+                ->replace('gruzootpravitel', 'Грузоотправитель')
+                ->replace('mesto_pogruzki', $orders_list[0]['adres_pogruzke'])
+                ->replace('voditel', $grade_list[0]['voditel'])
+                ->save(public_path('templates/fin_TH.xlsx'));
+
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+            $phpWord = $reader->load(public_path('templates/fin_TH.xlsx'));
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
+            $writer->save(public_path('templates/TH.pdf'));
+
+            return response()->json([
+                'status' => 'success',
+                'file' =>'TH.pdf',
+            ], 200);
+        }
+        if($doc_type=='2')
+        {
+            $TH = DocsTemplate::where('doc_type','DOV')->get();
+            $TH=$TH[0]['doc_name'];
+            $template = new Template();
+            $template->open(public_path('templates/'.$TH))
+//                ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
+                ->save(public_path('templates/fin_DOV.xlsx'));
+
+            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+            $phpWord = $reader->load(public_path('templates/fin_DOV.xlsx'));
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
+            $writer->save(public_path('templates/DOV.pdf'));
+
+            return response()->json([
+                'status' => 'success',
+                'file' =>'DOV.pdf',
+            ], 200);
+        }
+        if($doc_type=='3')
+        {
+            $TH = DocsTemplate::where('doc_type','ZAI')->get();
+            $TH=$TH[0]['doc_name'];
+
+            $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('templates/'.$TH));
+            $templateProcessor->
+            setValue(array('{{company}}'), array('Developer'));
+            $templateProcessor->saveAs(public_path('templates/fin_ZAI.docx'));
+
+            $domPdfPath = base_path('vendor/mpdf/mpdf');
+            \PhpOffice\PhpWord\Settings::setPdfRendererPath($domPdfPath);
+            \PhpOffice\PhpWord\Settings::setPdfRendererName('MPDF');
+            $wordPdf = \PhpOffice\PhpWord\IOFactory::load(public_path('templates/fin_ZAI.docx'));
+            $pdfWriter = \PhpOffice\PhpWord\IOFactory::createWriter($wordPdf , 'PDF');
+            $pdfWriter->save(public_path('templates/ZAI.pdf'));
+
+
+            return response()->json([
+                'status' => 'success',
+                'file' =>'ZAI.pdf',
+            ], 200);
+        }
+    }
+    public function set_doc(Request $request)
+    {
+        $phpWord = new PhpWord();
+//        $phpWord = \PhpOffice\PhpWord\IOFactory::load(public_path('grade_doc/2.txt'));
+
+
+        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('grade_doc/Документ для редактирования.docx'));
+        $templateProcessor->setValue(array('{{company}}'), array('Developer'));
+        $templateProcessor->saveAs(public_path('grade_doc/3.docx'));
+
+        $template = new Template();
+        $template->open(public_path('grade_doc/Книга1.xlsx'))
+        ->replace('one', 'two')
+        ->save(public_path('grade_doc/test.xlsx'));
+
+//        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('grade_doc/Книга1.xlsx'));
+//        $templateProcessor->setValue(array('{{company}}'), array('Developer'));
+//        $templateProcessor->saveAs(public_path('grade_doc/3.xlsx'));
+
+//        $section = $phpWord->addSection();
+//        $section->addText(
+//            '"Learn from yesterday, live for today, hope for tomorrow. '
+//            . 'The important thing is not to stop questioning." '
+//            . '(Albert Einstein)'
+//        );
+//        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+//        $objWriter->save(public_path('grade_doc/2.txt'));
+
+    }
     public function get_orders_list_new(Request $request)
     {
         $offset =  $request->input('offset');

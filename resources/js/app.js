@@ -25,6 +25,7 @@ Vue.component('orders-component', require('./components/OrdersComponent.vue').de
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
+Vue.component('docs-settings-component', require('./components/DocsSettingsComponent').default);
 // import { Datepicker, Timepicker, DatetimePicker, DateRangePicker } from '@livelybone/vue-datepicker';
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'

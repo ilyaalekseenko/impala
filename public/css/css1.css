@@ -984,6 +984,10 @@
 }
 .save_buttons {
     margin-top: 24px;
+    margin-bottom: 20px;
+}
+.add_ts_class {
+   background-color:#ece1be;
 }
 .right_white_block {
     background-color:#FFFFFF ;
@@ -1282,4 +1286,14 @@
 }
 .pogr_marg_grade {
     margin-top: 10px;
+}
+.gear_settings {
+    cursor:pointer
+}
+.doc_set_marg {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.doc_set_button {
+    margin-top: 10px!important;
 }

@@ -19,10 +19,14 @@ Route::get('/', function () {
 Route::get('/orders',  [App\Http\Controllers\OrdersController::class, 'main_orders'])->name('main_orders');
 Route::get('/create_orders/{id?}',  [App\Http\Controllers\OrdersController::class, 'create_orders'])->name('create_orders');
 Route::get('/grade/{id?}',  [App\Http\Controllers\GradeController::class, 'show_grade'])->name('show_grade');
+Route::get('/docs_setting',  [App\Http\Controllers\GradeController::class, 'docs_setting'])->name('docs_setting');
 Route::post('/start_new_order',  [App\Http\Controllers\OrdersController::class, 'start_new_order'])->name('start_new_order');
 Route::post('/start_get_old_order',  [App\Http\Controllers\OrdersController::class, 'start_get_old_order'])->name('start_get_old_order');
 Route::post('/update_order',  [App\Http\Controllers\OrdersController::class, 'update_order'])->name('update_order');
 Route::post('/store_xlsx',  [App\Http\Controllers\OrdersController::class, 'store_xlsx'])->name('store_xlsx');
+Route::post('/set_doc',  [App\Http\Controllers\OrdersController::class, 'set_doc'])->name('set_doc');
+Route::post('/store_doc',  [App\Http\Controllers\OrdersController::class, 'store_doc'])->name('store_doc');
+Route::post('/store_doc_templ',  [App\Http\Controllers\OrdersController::class, 'store_doc_templ'])->name('store_doc_templ');
 Route::post('/delete_orders',  [App\Http\Controllers\OrdersController::class, 'delete_orders'])->name('delete_orders');
 Route::post('/mark_as_important',  [App\Http\Controllers\OrdersController::class, 'mark_as_important'])->name('mark_as_important');
 Route::post('/save_ts',  [App\Http\Controllers\TSController::class, 'save_ts'])->name('save_ts');
@@ -44,4 +48,8 @@ Route::post('/update_one_data_summa',  [App\Http\Controllers\GradeController::cl
 Route::post('/store_grade_file',  [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
 Route::post('/delete_file_grade',  [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
 Route::post('/get_ob_budzet_down',  [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
+Route::post('/get_templ_names',  [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
 Route::get('/download_all_doc_grade/{grade_id}/{ts_id}',  [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');
+Route::post('/get_template_vars',  [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');
+Route::post('/get_finall_doc_pdf',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
+Route::get('/get_finall_doc_pdf_file/templates/{filename}',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
