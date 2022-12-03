@@ -53,3 +53,4 @@ Route::get('/download_all_doc_grade/{grade_id}/{ts_id}',  [App\Http\Controllers\
 Route::post('/get_template_vars',  [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');
 Route::post('/get_finall_doc_pdf',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
 Route::get('/get_finall_doc_pdf_file/templates/{filename}',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
+Route::post('/download_current_doc',  [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');

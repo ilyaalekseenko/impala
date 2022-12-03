@@ -34,6 +34,16 @@ class OrdersController extends Controller
     {
         return view('front.create_orders');
     }
+    public function download_current_doc(Request $request)
+    {
+        $doc_type=$request->input('doc_type');
+        $doc= DocsTemplate::where('doc_type','=',$doc_type)->get();
+        return response()->json([
+            'status' => 'success',
+            'file' =>$doc[0]['doc_name'],
+        ], 200);
+
+    }
     public function update_order(Request $request)
     {
         $id=$request->input('id');
@@ -276,6 +286,7 @@ class OrdersController extends Controller
             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
             $phpWord = $reader->load(public_path('templates/fin_TH.xlsx'));
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
+            $writer->writeAllSheets();
             $writer->save(public_path('templates/TH.pdf'));
 
             return response()->json([

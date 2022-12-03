@@ -14,55 +14,71 @@
 
                 <div class="col-12 coloring_row row">
                     <div class="col-12 row coloring_row_1">
-                    <div class="col-2 row color_title_1 coloring_np">
-                        <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
-                        <div class="col-6 row text-end coloring_np">
-                            <div class="col-12 coloring_np">
-                                <span class="coloring_integer">{{ orders_total_numb }}</span>
+
+                        <div class="col-2  color_title_1 coloring_np">
+                            <span class="col-12 row">
+                            <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
+                            <div class="col-6 row text-end coloring_np">
+                                <div class="col-12 coloring_np">
+                                    <span class="coloring_integer">{{ orders_total_numb }}</span>
+                                </div>
                             </div>
+                            </span>
                         </div>
-                    </div>
-                    <div class="col-2 row color_title_2 coloring_np">
-                        <div class="col-4 coloring_row_text coloring_np head_font">Оценка</div >
-                        <div class="col row text-end coloring_np">
-                            <div class="col coloring_np">
-                                <span class="coloring_integer head_font">100000</span>
-                                <span class="coloring_integer_green">+1</span>
+
+                        <div class="col-2  color_title_2 coloring_np">
+                            <span class="col-12 row">
+                            <div class="col-4 coloring_row_text coloring_np head_font">Оценка</div >
+                            <div class="col row text-end coloring_np">
+                                <div class="col coloring_np">
+                                    <span class="coloring_integer head_font">100000</span>
+                                    <span class="coloring_integer_green">+1</span>
+                                </div>
                             </div>
+                            </span>
                         </div>
-                    </div>
-                    <div class="col-2 row color_title_3 coloring_np">
+
+                    <div class="col-2 color_title_3 coloring_np">
+                        <span class="col-12 row">
                         <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
                             <div class="col-12 coloring_np ">
                             <span class="coloring_integer head_font">1000</span>
                             </div>
                         </div>
+                            </span>
                     </div>
-                    <div class="col-2 row color_title_4 coloring_np">
+                    <div class="col-2 color_title_4 coloring_np">
+                        <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">В работе</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np coloring_np">
                                 <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
+                            </span>
                     </div>
-                    <div class="col-2 row color_title_5 coloring_np">
+                    <div class="col-2 color_title_5 coloring_np">
+                        <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Контроль</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
                                 <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
+                            </span>
                     </div>
-                    <div class="col-2 row color_title_6 coloring_np">
+                    <div class="col-2 color_title_6 coloring_np">
+                        <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Завершён</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
                                 <span class="coloring_integer head_font">100000</span>
                             </div>
                         </div>
+                            </span>
                     </div>
+
                     </div>
 
                     <div class="col-12 under_col_title_main">
@@ -257,20 +273,27 @@ Vue.filter('formatDate', function(value) {
 
             delete_orders()
             {
+                console.log(this.orders_list)
+                let temp_arr=[];
                 for( let i = 0; i < this.orders_list.length; i++ )
                 {
                         if(this.orders_list[i].checked_order==true)
                         {
                             this.delete_arr.push(this.orders_list[i].id)
-                            this.orders_list.splice(i, 1);
+                            // this.orders_list.splice(i, 1);
+                            // console.log(this.delete_arr)
+                        }
+                        else
+                        {
+                            temp_arr.push(this.orders_list[i])
                         }
                 }
-
-                axios
-                    .post('/delete_orders',{
-                        orders_id:this.delete_arr,
-                    })
-                this.delete_arr=[]
+                this.orders_list=temp_arr
+               axios
+                   .post('/delete_orders',{
+                       orders_id:this.delete_arr,
+                   })
+               this.delete_arr=[]
             },
             show_by(int)
             {

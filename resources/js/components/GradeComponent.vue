@@ -174,38 +174,30 @@
                         </div>
                        </div>
                         <div class="col-12 row create_ord_underline_1"></div>
-                        </span>
+
 
                         <!--                        правая колонка низ начало-->
-<!--                        <span>-->
-<!--                                                                <input hidden="true" type="file" id="files" ref="files"/>-->
-<!--                        </span>-->
 
-<!--                        <input @click="openDP" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />-->
-<!--                        <date-picker   v-model="data_kontrakta" valueType="format" type="time"-->
-<!--                                     format=" H:m" :open.sync="openDP" @change="handleChange0"></date-picker>-->
-
-
-                        <div v-if="right_col_down_show" class="no_margin_left no_margin_right no_padding_left no_padding_right ">
-                            <div class="col-12 row"   v-for="(elem,key) in spisokTShead" v-if="elem.id_ts==right_current_TS">
+                        <div v-for="(elem1,key) in spisokTShead" v-if="(right_col_down_show)&&(elem.id_ts==right_current_TS)" class="no_margin_left no_margin_right no_padding_left no_padding_right ">
+                            <div class="col-12 row"    v-if="elem1.id_ts==right_current_TS">
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Данные о перевозчике</div>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Тип ТС:</div>
-                                    <select  @blur="update_one_data(elem,'vid_TS')" class="create_orders_date_title_int_1 grade_marg_bot" v-model="elem.vid_TS">
+                                    <select  @blur="update_one_data(elem1,'vid_TS')" class="create_orders_date_title_int_1 grade_marg_bot" v-model="elem.vid_TS">
                                         <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
                                         <option v-bind:value="1" class="sel_cust">Самолётом</option>
                                         <option v-bind:value="2" class="sel_cust">Кораблём</option>
                                         <option v-bind:value="3" class="sel_cust">На верблюде</option>
                                     </select>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                    <input @blur="update_one_data(elem,'perevozchik')" class="border_input grade_marg_bot" v-model="elem.perevozchik"  />
+                                    <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Водитель:</div>
-                                    <input @blur="update_one_data(elem,'voditel')" class="border_input grade_marg_bot" v-model="elem.voditel"  />
+                                    <input @blur="update_one_data(elem1,'voditel')" class="border_input grade_marg_bot" v-model="elem1.voditel"  />
 
                                     <div class="col-12 row grade_marg_bot">
                                     <div class="col-6 min_ts min_ts_marg ">
                                         <div  class="create_orders_date_title_1 lit_marg_grade">Номер ТС:</div>
-                                        <select  @blur="update_one_data(elem,'nomer_TS')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem.nomer_TS">
+                                        <select  @blur="update_one_data(elem1,'nomer_TS')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem1.nomer_TS">
                                             <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
                                             <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
                                             <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
@@ -215,7 +207,7 @@
                                     </div>
                                     <div class="col-6 min_ts">
                                         <div  class="create_orders_date_title_1 lit_marg_grade">Номер ПП:</div>
-                                        <select  @blur="update_one_data(elem,'nomer_PP')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem.nomer_PP">
+                                        <select  @blur="update_one_data(elem1,'nomer_PP')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem1.nomer_PP">
                                             <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
                                             <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
                                             <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
@@ -229,13 +221,13 @@
                                             <div class="little_title_grade ">
                                                 Кол-во грузомест
                                             </div>
-                                            <input @blur="update_one_data(elem,'kol_gruz_TS')" class="border_input" v-model="elem.kol_gruz_TS"  />
+                                            <input @blur="update_one_data(elem1,'kol_gruz_TS')" class="border_input" v-model="elem1.kol_gruz_TS"  />
                                         </div>
                                         <div class="col-6">
                                             <div class="little_title_grade">
                                                 Расстояние, км
                                             </div>
-                                            <input @blur="update_one_data(elem,'rasstojanie_TS')" class="border_input" v-model="elem.rasstojanie_TS"  />
+                                            <input @blur="update_one_data(elem1,'rasstojanie_TS')" class="border_input" v-model="elem1.rasstojanie_TS"  />
                                         </div>
                                 </div>
 
@@ -243,7 +235,7 @@
                                 <div class="col-3">
 <!--                                        {{ adres_pogr }}-->
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата погрузки</div>
-                                    <span v-for="(adres_pogr,key1) in elem.adres_pogruzki_TS">
+                                    <span v-for="(adres_pogr,key1) in elem1.adres_pogruzki_TS">
                                     <div class="col-12 row">
                                         <div class="col-6 little_title_grade pogr_marg_grade">
                                             Адрес погрузки {{ key1 + 1 }}
@@ -253,7 +245,7 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary">Добавить адрес</span>
                                         </div>
                                     </div>
-                                        <input @blur="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')"
+                                        <input @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')"
                                                class="col border_input grade_adr" v-model="adres_pogr.adres_pogruzki"  />
                                     <div class="col-12 row">
                                         <div class="col-6 date_width">
@@ -262,7 +254,7 @@
 <!--                        ДАТА ЗАГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
                         <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="date"
-                        format="DD.MM.YYYY" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
+                        format="DD.MM.YYYY" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
                                         <div class="col-6">
@@ -273,7 +265,7 @@
 <!--                        ВРЕМЯ ПОГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,2,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.time_ts"  />
                         <date-picker   v-model="adres_pogr.time_ts" valueType="format" type="time"
-                        format=" H:m" :open.sync=adres_pogr.show_DP_time @change="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"></date-picker>
+                        format=" H:m" :open.sync=adres_pogr.show_DP_time @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"></date-picker>
 
                                         </div>
                                     </div>
@@ -298,7 +290,7 @@
 <!--                                третья колонка-->
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата выгрузки</div>
-                                    <span v-for="(adres_vygr,key2) in elem.adres_vygr_TS">
+                                    <span v-for="(adres_vygr,key2) in elem1.adres_vygr_TS">
 
                                     <div class="col-12 row">
                                         <div class="col-12 little_title_grade pogr_marg_grade">
@@ -309,7 +301,7 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary">Добавить адрес</span>
                                         </div>
                                     </div>
-                                    <input @blur="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')"
+                                    <input @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')"
                                            class="col border_input grade_adr" v-model="adres_vygr.adres_pogruzki"  />
                                     <div class="col-12 row">
                                         <div class="col-6 date_width">
@@ -321,7 +313,7 @@
 
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
                         <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
-                                     format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
+                                     format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
 
 
                                         </div>
@@ -349,7 +341,7 @@
                                     </span>
 
                                     <div class="col-12 row grade_underline"></div>
-                                    <input type="checkbox" id="checkbox" @blur="update_one_data(elem,'checked2')" v-model="elem.checked2">
+                                    <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
                                     <span class="head_font_grade">На терминале</span>
                                     <div class="col-12 row">
                                         <div class="col-12 little_title_grade">
@@ -360,7 +352,7 @@
                                             <span class="col add_button_grade no_wrap_text">Добавить адрес</span>
                                         </div>
                                     </div>
-                                    <select @blur="update_one_data(elem,'terminal_TS')" class="col border_input grade_adr" v-model="elem.terminal_TS">
+                                    <select @blur="update_one_data(elem1,'terminal_TS')" class="col border_input grade_adr" v-model="elem1.terminal_TS">
                                         <option v-for="(elem2) in termList" v-bind:value=elem2.id  class="sel_cust">{{ elem2.name }}</option>
                                     </select>
 
@@ -371,14 +363,14 @@
                                      <div class="col-12 row">
                                     <div class="col-8">
                                         <div class="little_title_grade">Сумма</div>
-                                        <input readonly class="border_input inp_date" v-model="elem.ob_summa"  />
-                                        <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem,'NDS_check')" v-model="elem.NDS_check">
+                                        <input readonly class="border_input inp_date" v-model="elem1.ob_summa"  />
+                                        <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
                                            НДС
                                         </span>
                                     </div>
                                     <div class="col-4">
                                         <div class="little_title_grade">Предоплата,%</div>
-                                        <input @blur="update_one_data(elem,'predoplata')" class="border_input inp_time" v-model="elem.predoplata"  />
+                                        <input @blur="update_one_data(elem1,'predoplata')" class="border_input inp_time" v-model="elem1.predoplata"  />
                                     </div>
                                      </div>
                                     <div class="col-12 not_paid_marg">
@@ -387,15 +379,15 @@
                                     </div>
                                     <div class="col-12 little_title_grade">Оплата:</div>
 
-                                    <div class="col-12 row" v-for="(sum,key2) in elem.summa_list">
+                                    <div class="col-12 row" v-for="(sum,key2) in elem1.summa_list">
                                     <div class="col little_title_grade_1">
                                         Сумма {{ key2 +1 }}
                                     </div>
                                         <div class="col add_button_grade no_wrap_text" v-on:click="add_summ(key)">Добавить сумму</div>
                                      <div class="col-12">
-                                        <input @blur="update_one_data_summa(elem,sum.id_summa,'summa',sum.summa)"
+                                        <input @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
                                                class=" border_input add_summ_grade_inp" v-model="sum.summa"  />
-                                        <input @blur="update_one_data_summa(elem,sum.id_summa,'data',sum.data)"
+                                        <input @blur="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)"
                                                class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
                                      </div>
                                     </div>
@@ -405,17 +397,17 @@
                                     <div class="col-6">
                                     <div class="little_title_grade">Подписанная</div>
                                         <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                        <span v-if="elem.podpisannaya_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,3)">{{ elem.podpisannaya_doc_name }}
+                                        <span v-if="elem1.podpisannaya_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,3)">{{ elem1.podpisannaya_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
-                                        <div v-if="!elem.podpisannaya_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,3)">Загрузить</div>
+                                        <div v-if="!elem1.podpisannaya_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,3)">Загрузить</div>
                                     </div>
                                     <div class="col-6">
                                         <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
                                         <div class="little_title_grade">Счёт</div>
                                         <div class="col-12 add_button_grade">
                                             <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem.schet_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,4)">{{ elem.schet_doc_name }}
+                                            <span v-if="elem1.schet_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,4)">{{ elem1.schet_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
                                             <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,4)">Загрузить</div>
@@ -426,7 +418,7 @@
                                         <div class="col-6">
                                             <div class="little_title_grade">Счёт фактура или УПД</div>
                                             <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem.faktura_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,5)">{{ elem.faktura_doc_name }}
+                                            <span v-if="elem1.faktura_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,5)">{{ elem1.faktura_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
                                             <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,5)">Загрузить</div>
@@ -439,14 +431,14 @@
                                     <div class="col-12 row">
                                         <div class="col-12">
                                             <div class="little_title_grade col-12">Оригиналы</div>
-                                                <input type="checkbox" id="checkbox" @blur="update_one_data(elem,'predoplata')" v-model="elem.TN_check">
+                                                <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'predoplata')" v-model="elem1.TN_check">
                                                 <span class="TH_grade">ТН</span>
-                                            <span v-if="elem.TN_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,6)">{{ elem.TN_doc_name }}
+                                            <span v-if="elem1.TN_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,6)">{{ elem1.TN_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                             </span>
                                             <input  hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
 
-                                            <div v-if="!elem.TN_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,6)">Загрузить</div>
+                                            <div v-if="!elem1.TN_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,6)">Загрузить</div>
                                         </div>
                                     </div>
                                 </div>
@@ -454,9 +446,9 @@
                             </div>
                             <!--                                конец четвёртой колонки -->
                         </div>
-
+                        <!--                    правая колонка низ конец-->
+                        </span>
                     </div>
-<!--                    правая колонка низ конец-->
                 </div>
                 <!--конец правой колонки-->
 
@@ -1310,8 +1302,8 @@
                     })
             },
             download_all_doc_grade (){
-             //   window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;
-                console.log(this.spisokTShead)
+                window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;
+                // console.log(this.spisokTShead)
 
 
             },

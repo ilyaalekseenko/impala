@@ -209,6 +209,7 @@
 }
 .coloring_np {
     padding-right: 5px;
+    margin-right: 0px!important;
 }
 .under_colored_title {
     font-family: 'Roboto', sans-serif;
@@ -1296,4 +1297,11 @@
 }
 .doc_set_button {
     margin-top: 10px!important;
+}
+.doc_header {
+    margin-top: 20px!important;
+    margin-bottom: 10px;
+}
+.nav_menu_pointer {
+    cursor: pointer;
 }

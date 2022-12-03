@@ -1,15 +1,42 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <div  class="col-6 row justify-content-end trio_but">
-                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('TH')">загрузить шаблон ТН</div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link nav_menu_pointer" aria-current="page" v-bind:class="{ active : nav_menu_0}" v-on:click="nav_menu_show(0)">Документы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav_menu_pointer"  v-bind:class="{ active : nav_menu_1}" v-on:click="nav_menu_show(1)">Ещё чего-то</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav_menu_pointer"  v-bind:class="{ active : nav_menu_2}" v-on:click="nav_menu_show(2)">И ещё чего-то</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav_menu_pointer"  v-bind:class="{ active : nav_menu_3}" v-on:click="nav_menu_show(3)">Ну и тут чего-то</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="row justify-content-center" v-if="nav_menu_0">
+            <div  class="col-10 row justify-content-end trio_but">
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('TH')">Загрузить шаблон ТН</div>
                     <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('TH')">Показать переменные ТН</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('TH')">Скачать шаблон ТН</div>
                 <div class="doc_set_marg">{{ TH_name }}</div>
-                    <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="store_doc('DOV')">загрузить шаблон Доверенность</div>
-                    <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="show_vars_func('DOV')">Показать переменные Доверенность</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('DOV')">Загрузить шаблон Доверенность</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('DOV')">Показать переменные Доверенность</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('DOV')">Скачать шаблон Доверенность</div>
                 <div class="doc_set_marg">{{ DOV_name }}</div>
-                <div class="col add_ts_button5 text-center" v-on:click="store_doc('ZAI')">загрузить шаблон Заявка</div>
-                <div class="col add_ts_button5 text-center" v-on:click="show_vars_func('ZAI')">Показать переменные Заявка</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('ZAI')">Загрузить шаблон Заявка</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Показать переменные Заявка</div>
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Заявка</div>
                 <div class="doc_set_marg">{{ ZAI_name }}</div>
                 <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
             </div>
@@ -17,7 +44,7 @@
                 В формате xlsx переменную указывать в виде {переменная} без пробелов в скобках. Формат xlsx обязателен, xls устаревший и приводит к не корректной работе. Перевеодить прямо в excel редакторе, без посторонних сайтов.
             </div>
             <div>
-                В формате docx переменную указывать в виде, двойная скобка{ переменная двойная скобка }  без пробелов в двойных скобках.
+                В формате docx переменную указывать в виде { переменная } .
             </div>
             <div class="col-12" v-if="show_TH_vars">
                 <table class="table">
@@ -99,9 +126,59 @@
                 show_TH_vars:false,
                 show_DOV_vars:false,
                 show_ZAI_vars:false,
+                nav_menu_0:false,
+                nav_menu_1:false,
+                nav_menu_2:false,
+                nav_menu_3:false,
             }
         },
         methods: {
+            download_current_doc(doc_type)
+            {
+                this.current_doc=doc_type
+
+                axios
+                    .post('/download_current_doc',{
+                        doc_type:this.current_doc
+
+                    })
+                    .then(response => {
+
+                        window.location.assign('/get_finall_doc_pdf_file/templates/'+response.data.file) ;
+
+                    })
+            },
+            nav_menu_show(numb)
+            {
+               if(numb==0)
+               {
+                 this.all_nav_false()
+                 this.nav_menu_0=true
+               }
+                if(numb==1)
+                {
+                    this.all_nav_false()
+                    this.nav_menu_1=true
+                }
+                if(numb==2)
+                {
+                    this.all_nav_false()
+                    this.nav_menu_2=true
+                }
+                if(numb==3)
+                {
+                    this.all_nav_false()
+                    this.nav_menu_3=true
+                }
+
+            },
+            all_nav_false()
+            {
+                this.nav_menu_0=false,
+                this.nav_menu_1=false,
+                this.nav_menu_2=false,
+                this.nav_menu_3=false
+            },
             show_vars_func(type)
             {
                 if(type=='TH')
