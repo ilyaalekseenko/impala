@@ -54,3 +54,14 @@ Route::post('/get_template_vars',  [App\Http\Controllers\GradeController::class,
 Route::post('/get_finall_doc_pdf',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
 Route::get('/get_finall_doc_pdf_file/templates/{filename}',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
 Route::post('/download_current_doc',  [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');
+
+Route::get('/users_list',  [App\Http\Controllers\AdminController::class, 'users_list'])->name('users_list');
+Route::post('/get_users_list', [App\Http\Controllers\AdminController::class, 'get_users_list'])->name('get_users_list');
+Route::post('/change_permission', [App\Http\Controllers\AdminController::class, 'change_permission'])->name('change_permission');
+Route::get('/add_user_view',  [App\Http\Controllers\AdminController::class, 'add_user_view'])->name('add_user_view');
+Route::post('/add_user',  [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
