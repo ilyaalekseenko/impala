@@ -16,9 +16,10 @@ class RegisterMail extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($pass,$log)
     {
-        //
+        $this->pass=$pass;
+        $this->log=$log;
     }
 
     /**
@@ -28,6 +29,10 @@ class RegisterMail extends Mailable
      */
     public function build()
     {
-        return $this->view('email.email_body');
+        return $this->view('email.email_body')->with([
+            'pass' => $this->pass,
+            'log' => $this->log,
+
+        ]);
     }
 }

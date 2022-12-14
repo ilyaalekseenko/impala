@@ -27,7 +27,7 @@
                         @csrf
 
                         <div class="row mb-3">
-                            <div>Добавление нового пользователя</div>
+                            <div class="col-12 mail_header">Добавление нового пользователя</div>
 
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Никнейм') }}</label>
 

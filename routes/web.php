@@ -54,6 +54,16 @@ Route::post('/get_template_vars',  [App\Http\Controllers\GradeController::class,
 Route::post('/get_finall_doc_pdf',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
 Route::get('/get_finall_doc_pdf_file/templates/{filename}',  [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
 Route::post('/download_current_doc',  [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');
+Route::post('/download_xlsx_orders',  [App\Http\Controllers\OrdersController::class, 'download_xlsx_orders'])->name('download_xlsx_orders');
+Route::get('/get_xlsx_file/images/orders_xlsx/{filename}',  [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
+Route::post('/get_gruzootpravitel_modal',  [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_modal'])->name('get_gruzootpravitel_modal');
+Route::post('/save_gruzootpravitel',  [App\Http\Controllers\GruzootpravitelController::class, 'save_gruzootpravitel'])->name('save_gruzootpravitel');
+Route::post('/store_modal_file_temp',  [App\Http\Controllers\GruzootpravitelController::class, 'store_modal_file_temp'])->name('store_modal_file_temp');
+Route::post('/delete_files_modal',  [App\Http\Controllers\GruzootpravitelController::class, 'delete_files_modal'])->name('delete_files_modal');
+Route::post('/delete_one_file_modal',  [App\Http\Controllers\GruzootpravitelController::class, 'delete_one_file_modal'])->name('delete_one_file_modal');
+Route::get('/download_modal_file/{doc}',  [App\Http\Controllers\GruzootpravitelController::class, 'download_modal_file'])->name('download_modal_file');
+
+
 
 Route::get('/users_list',  [App\Http\Controllers\AdminController::class, 'users_list'])->name('users_list');
 Route::post('/get_users_list', [App\Http\Controllers\AdminController::class, 'get_users_list'])->name('get_users_list');

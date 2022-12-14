@@ -138,11 +138,17 @@
                                 Номенклатура
                             </div>
                             <div class="create_orders_bottom">
-                                <input class="cr_ord_inp_n_3 border_input" v-model="nomenklatura" placeholder="Добавьте файл.xlsx" />
+<!--                                <input class="cr_ord_inp_n_3 border_input" v-model="nomenklatura" placeholder="Добавьте файл.xlsx" />-->
+                                <div class="cr_ord_div_nomenklatura">{{ nomenklatura }}</div>
                                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
                                 <span class="excel_set" v-on:click="addFiles()">
-                                        <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                       </span>
+                                <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                </span>
+
+                                <span class="excel_set" v-on:click="DownloadFiles()">
+                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                </span>
+
                             </div>
 
                             <div class="col ad_pogr_marg">
@@ -365,7 +371,7 @@
                                         Маржа
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="marja_TS"  readonly />
+                                        <div>{{ marja_TS }} р.</div>
                                     </div>
                                 </div>
                             </div>
@@ -426,6 +432,7 @@
                                         </div>
                                         <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />
                                         <span v-on:click="add_empty_adres_pogr()">+</span>
+                                        <span v-on:click="delete_adres_pogr(key)">-</span>
                                     </div>
 
                                 </div>
@@ -439,6 +446,7 @@
                                     <div class="create_orders_bottom">
                                         <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />
                                         <span v-on:click="add_empty_adres_vygruz()">+</span>
+                                        <span v-on:click="delete_adres_vygruz(key)">-</span>
                                     </div>
                                 </div>
                             </div>
@@ -458,7 +466,7 @@
                                 <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
                                 <div class="col">На терминале</div>
                             </div>
-                            <div class="col-6 terminal_cr_ord">
+                            <div v-if="checked2" class="col-6 terminal_cr_ord">
                                 <div class="little_title_create_orders">
                                     Терминал
                                     <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>
@@ -585,6 +593,7 @@
                                         </div>
                                         <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />
                                         <span v-on:click="add_empty_adres_pogr()">+</span>
+                                        <span v-on:click="delete_adres_pogr(key)">-</span>
                                     </div>
 
                                 </div>
@@ -598,6 +607,7 @@
                                         <div class="create_orders_bottom">
                                             <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />
                                             <span v-on:click="add_empty_adres_vygruz()">+</span>
+                                            <span v-on:click="delete_adres_vygruz(key)">-</span>
                                         </div>
                                     </div>
                                 </div>
@@ -617,7 +627,7 @@
                                 <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
                                 <div class="col">На терминале</div>
                             </div>
-                            <div class="col-6 terminal_cr_ord">
+                            <div v-if="checked2" class="col-6 terminal_cr_ord">
                                 <div class="little_title_create_orders">
                                     Терминал
                                     <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>
@@ -1245,9 +1255,13 @@
                     behavior: 'smooth'
                 });
             },
-            add_empty_adres_vygr_to_old()
+            delete_adres_pogr(key)
             {
-
+                this.ad_pogruzki_arr_temp.splice(key,1)
+            },
+            delete_adres_vygruz(key)
+            {
+                this.ad_vygruz_arr_temp.splice(key,1)
             },
             add_empty_adres_pogr_to_old(elem1, key)
             {
@@ -1331,6 +1345,17 @@
             },
             addFiles(){
                 this.$refs.files.click();
+            },
+            DownloadFiles()
+            {
+                axios
+                    .post('/download_xlsx_orders',{
+                        id:this.order_id,
+                    })
+                    .then(response => {
+                        window.location.assign('/get_xlsx_file/images/orders_xlsx/'+response.data.file) ;
+
+                    })
             },
             handleFilesUpload(){
                 let flag = 0;

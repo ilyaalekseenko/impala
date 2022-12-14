@@ -47,8 +47,9 @@ class AdminController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
         ]);
         $password=Str::random(10);
-
-        Mail::to('ogniemimechem@gmail.com')->send(new RegisterMail());
+        $pass=$password;
+        $log=$email;
+        Mail::to($email)->send(new RegisterMail($pass,$log));
 
          User::create([
             'name' => $name,
@@ -56,7 +57,7 @@ class AdminController extends Controller
             'password' => Hash::make($password),
         ]);
 
-        return back()->with('success','Successfully registered a new student!');
+        return back()->with('success','Новый пользователь успешно добавлен!');
     }
     public function get_users_list(Request $request)
     {

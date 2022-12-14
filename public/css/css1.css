@@ -1305,3 +1305,10 @@
 .nav_menu_pointer {
     cursor: pointer;
 }
+.mail_header{
+    text-align: center;
+    margin-bottom: 10px;
+}
+.cr_ord_div_nomenklatura {
+    margin-bottom: 6px;
+}

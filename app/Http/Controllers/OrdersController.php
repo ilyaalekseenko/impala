@@ -250,9 +250,24 @@ class OrdersController extends Controller
             'ZAI' =>$ZAI,
         ], 200);
     }
+    public function get_xlsx_file($filename)
+    {
+        return response()->download(public_path('images/orders_xlsx/'.$filename));
+    }
     public function get_finall_doc_pdf_file($filename)
     {
         return response()->download(public_path('templates/'.$filename));
+
+    }
+    public function download_xlsx_orders(Request $request)
+    {
+        $id = $request->input('id');
+        $order = Orders::where('id', '=', $id) ->get();
+        $file=$id.'__'.$order[0]['nomenklatura'];
+        return response()->json([
+            'status' => 'success',
+            'file' =>$file,
+        ], 200);
 
     }
     public function get_finall_doc_pdf(Request $request)

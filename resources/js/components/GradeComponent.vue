@@ -612,7 +612,7 @@
                 for(var i = 0; i < this.spisokTShead.length; i++)
                 {
                     gruzomesta=(Number(gruzomesta)+Number(this.spisokTShead[i]['kol_gruz_TS']));
-                    console.log(gruzomesta)
+                    // console.log(gruzomesta)
                 }
                 return this.gruzomesta_big-gruzomesta;
             },
@@ -866,7 +866,6 @@
                let full_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)/))
                let file_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)\./))
                let extension=(uploadedFiles[0].name.slice((Math.max(0, (uploadedFiles[0].name.lastIndexOf(".")) || Infinity) + 1)));
-                console.log(extension)
                     let formData = new FormData();
                     let file = uploadedFiles;
                     formData.append('file', file[0]);
