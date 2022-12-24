@@ -25,7 +25,8 @@
 
         <div class="container-fluid container_header_align">
             <div class="row">
-                    @yield('content')
+                <header-menu-component></header-menu-component>
+                @yield('content')
             </div>
         </div>
 

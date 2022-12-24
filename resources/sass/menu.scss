@@ -1,0 +1,119 @@
+
+
+.flag_1 {
+    background-color: #0dcaf0;
+}
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+
+/*demo styles above*/
+
+$navigationbg :#e5e5e5;
+$level1bg     :#e5e5e5;
+$level2bg     :#e5e5e5;
+$verticalnavlinkcolor :#333;
+$verticalnavlinkcolor-hover :#000;
+$arrowcolor:#53c0ad;
+
+aside{
+    width:250px;
+    margin-top: 20px;
+}
+.dropmenu{
+    width:200px;
+}
+.nav--vertical{
+    list-style-type:none;
+    margin: 0;
+    padding: 0;
+
+    a{
+        color:$verticalnavlinkcolor;
+        &:hover{
+            color:$verticalnavlinkcolor-hover;
+        }
+    }
+    li{
+        position: relative;
+        display:block;
+        &.dropmenu{
+            ul{
+                display:none;
+            }
+        }
+        &.dropmenu:hover{
+            > ul{
+                display:block;
+            }
+        }
+        &.dropmenu:after{
+            content: "";
+            position: absolute;
+            right: 10px;
+            top: 40%;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid $arrowcolor;
+        }
+    }
+    >li{
+        a{
+            text-decoration:none;
+            padding:7px 10px;
+            display:block;
+            margin-bottom: 1px;;
+        }
+        ul{
+            list-style-type:none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left:100%;
+            &.level1, &.level2{
+                min-width:150px;
+                top:0;
+                border-left: 1px solid #fff;
+            }
+
+        }
+    }
+}
+
+.nav--vertical{
+    li{
+        a{
+            @include transition (all 0.2s ease-in-out);
+        }
+    }
+    > li{
+        > a{
+            background: $navigationbg;
+        }
+        .level1{
+            >li{
+                a{
+                    background: $level1bg;
+                }
+            }
+        }
+        .level2{
+            >li{
+                a{
+                    background: $level2bg;
+                }
+            }
+        }
+    }
+}
+.nav--vertical{
+    li:hover{
+        a{
+            background: #ccc;
+        }
+        li:hover{
+            > a{
+                background: #ccc;
+            }
+        }
+
+    }
+}

@@ -18,6 +18,14 @@ class AdminController extends Controller
         return view('admin.users_list');
     }
 
+    public function is_admin_settings()
+    {
+        if (auth()->user()->roles[0]->id == '1') {
+            return response()->json([
+                'status' => 'success',
+            ], 201);
+        }
+    }
     public function change_permission(Request $request)
     {
         $user_id =  $request->input('user_id');
@@ -25,19 +33,13 @@ class AdminController extends Controller
 
         $perm = Role::where('slug',$user_perm)->get();
         $list_users = User::where('id', $user_id)->get();
-//        $list_users[0]->roles()->sync(
-//            [1,3]
-//        );
-        $list_users[0]->roles()->attach(
-            [2]
+        $list_users[0]->roles()->sync(
+            [$perm[0]['id']]
         );
 
     }
 
-    public function add_user_view(Request $request)
-    {
-        return view('admin.add_user');
-    }
+
     public function add_user(Request $request)
     {
         $name = $request->input('name');
@@ -51,13 +53,16 @@ class AdminController extends Controller
         $log=$email;
         Mail::to($email)->send(new RegisterMail($pass,$log));
 
-         User::create([
+        $user= User::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
 
-        return back()->with('success','Новый пользователь успешно добавлен!');
+        $user->roles()->attach([3]);
+        return response()->json([
+            'status' => 'success',
+        ], 201);
     }
     public function get_users_list(Request $request)
     {
@@ -69,9 +74,21 @@ class AdminController extends Controller
             ->get();
         foreach ($list_users as $key=>$one_user)
         {
-            //если у юзера не будет статуса по умолчанию то добавить проверку
-                $perm=$one_user->roles()->get();
-                $one_user->perm=$perm[0]['slug'];
+            $perm=$one_user->roles()->get();
+            if ($perm->isEmpty()) {
+                $one_user->roles()->attach(
+                    [2]
+                );
+            }
+        }
+        $list_users = User::where('id', '>', '0')
+            ->offset($offset)
+            ->limit(12)
+            ->get();
+        foreach ($list_users as $key=>$one_user)
+        {
+            $perm=$one_user->roles()->get();
+            $one_user->perm=$perm[0]['slug'];
         }
 
         $count = User::where('id', '>', '0')

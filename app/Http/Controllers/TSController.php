@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormaModal;
 use App\Models\PogruzkaTS;
 use App\Models\Terminal;
 use App\Models\TS;
@@ -32,6 +33,15 @@ class TSController extends Controller
     public function get_ts_list(Request $request)
     {
         $TS_list= VidTS::all();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Список названий ТС получен',
+            'ts' =>$TS_list,
+        ], 200);
+    }
+    public function get_forma_list(Request $request)
+    {
+        $TS_list= FormaModal::all();
         return response()->json([
             'status' => 'success',
             'message' =>'Список названий ТС получен',

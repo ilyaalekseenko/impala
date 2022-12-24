@@ -26,7 +26,12 @@ Vue.component('orders-component', require('./components/OrdersComponent.vue').de
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
-Vue.component('users-list-component', require('./components/admin/UsersListComponent').default);
+Vue.component('users-list-component', require('./components/Settings/UsersListComponent').default);
+Vue.component('main-settings-component', require('./components/Settings/MainSettingsComponent').default);
+Vue.component('docs-settings-component', require('./components/Settings/DocsSettingsComponent').default);
+Vue.component('perevozka-settings-component', require('./components/Settings/PerevozkaSettingsComponent').default);
+Vue.component('forma-gruzootpravitel-settings-component', require('./components/Settings/FormaGruzootpravitelSettingsComponent').default);
+Vue.component('add-users-settings-component', require('./components/Settings/AddUsersSettingsComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -42,6 +47,15 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
+// import VueSidebarMenu from 'vue-sidebar-menu'
+ //import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+ //Vue.use(VueSidebarMenu)
+import  vueClickOutsideElement from 'vue-click-outside-element'
+Vue.use(vueClickOutsideElement);
+
+import vClickOutside from 'v-click-outside'
+
+Vue.use(vClickOutside)
 
 const app = new Vue({
     el: '#app',

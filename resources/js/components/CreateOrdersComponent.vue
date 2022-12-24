@@ -57,10 +57,7 @@
                             </div>
                             <div class="create_orders_bottom">
                                 <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="vid_perevozki">
-                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                                    <option v-bind:value="1" class="sel_cust">Самолётом</option>
-                                    <option v-bind:value="2" class="sel_cust">Кораблём</option>
-                                    <option v-bind:value="3" class="sel_cust">На верблюде</option>
+                                    <option v-for="(perevozka) in perevozka_arr" v-bind:value=perevozka.id  class="sel_cust">{{ perevozka.perevozka_name }}</option>
                                 </select>
                             </div>
                         </div>
@@ -333,12 +330,12 @@
                                 Вид ТС
                             </div>
                             <div class="create_orders_bottom">
-                                <select class="sel_cust" v-model="vid_TS">
-                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                                    <option v-bind:value="1" class="sel_cust">Тент</option>
-                                    <option v-bind:value="2" class="sel_cust">Палатка</option>
+
+                                <select  class="sel_cust" v-model="vid_TS">
+                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
                                 </select>
                             </div>
+
                             <div class="col-12 row">
                                 <div class="col-6">
                                     <div class="little_title_create_orders2">
@@ -353,7 +350,7 @@
                                         Ставка за км
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_za_km" readonly />
+                                        <div class="cr_ord_inp_n_6">{{ stavka_TS_za_km }} р.</div>
                                     </div>
                                 </div>
                             </div>
@@ -431,8 +428,10 @@
                                             <span class="add_button" v-b-modal.modal-xl variant="primary">Добавить</span>
                                         </div>
                                         <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />
-                                        <span v-on:click="add_empty_adres_pogr()">+</span>
-                                        <span v-on:click="delete_adres_pogr(key)">-</span>
+                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
+<!--                                        <span v-on:click="add_empty_adres_pogr()">+</span>-->
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_pogr(key)">-</button>
+<!--                                        <span v-on:click="delete_adres_pogr(key)">-</span>-->
                                     </div>
 
                                 </div>
@@ -445,8 +444,9 @@
                                     </div>
                                     <div class="create_orders_bottom">
                                         <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />
-                                        <span v-on:click="add_empty_adres_vygruz()">+</span>
-                                        <span v-on:click="delete_adres_vygruz(key)">-</span>
+                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_vygruz(key)">-</button>
+
                                     </div>
                                 </div>
                             </div>
@@ -494,10 +494,9 @@
                                 Вид ТС
                             </div>
                             <div class="create_orders_bottom">
-                                <select class="sel_cust" v-model="vid_TS">
-                                    <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                                    <option v-bind:value="1" class="sel_cust">Тент</option>
-                                    <option v-bind:value="2" class="sel_cust">Палатка</option>
+
+                                <select  class="sel_cust" v-model="vid_TS">
+                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
                                 </select>
                             </div>
                             <div class="col-12 row">
@@ -514,7 +513,7 @@
                                         Ставка за км
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_za_km" readonly />
+                                        <div class="cr_ord_inp_n_6">{{ stavka_TS_za_km }} р.</div>
                                     </div>
                                 </div>
                             </div>
@@ -592,8 +591,10 @@
                                             <span class="add_button" v-b-modal.modal-xl variant="primary">Добавить</span>
                                         </div>
                                         <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />
-                                        <span v-on:click="add_empty_adres_pogr()">+</span>
-                                        <span v-on:click="delete_adres_pogr(key)">-</span>
+
+                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_pogr(key)">-</button>
+
                                     </div>
 
                                 </div>
@@ -606,8 +607,9 @@
                                         </div>
                                         <div class="create_orders_bottom">
                                             <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />
-                                            <span v-on:click="add_empty_adres_vygruz()">+</span>
-                                            <span v-on:click="delete_adres_vygruz(key)">-</span>
+                                            <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
+                                            <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_vygruz(key)">-</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -734,12 +736,14 @@
                 termList:[],
                 terminal_act_list:[],
                 ad_pogruzki_arr_temp:[],
-                ad_vygruz_arr_temp:[]
+                ad_vygruz_arr_temp:[],
+                perevozka_arr:[]
             }
         },
         mounted()
         {
             this.get_terminal_list(this.termList);
+            this.get_perevozka_list(this.perevozka_arr)
             for (let i = document.getElementsByClassName('mx-input-wrapper').length; i > 0 ; i--) {
                 let m = i - 1
                 document.getElementsByClassName('mx-input-wrapper')[m].remove();
@@ -801,9 +805,21 @@
             },
         },
         methods: {
-            add_adres_pogr()
+            get_perevozka_list(inp)
             {
-
+                axios
+                    .post('/get_perevozka_list',{
+                    })
+                    .then(({ data }) => (
+                            data.perevozka_list.forEach(function(entry) {
+                                inp.push({
+                                    id:entry.id,
+                                    perevozka_id:entry.perevozka_id,
+                                    perevozka_name:entry.perevozka_name
+                                });
+                            })
+                        )
+                    );
             },
             get_terminal_list(inp)
             {
@@ -1223,7 +1239,8 @@
                     this.terminal_TS='';
                     this.edit_number='';
                     this.edit_flag=false;
-
+                    this.ad_pogruzki_arr_temp=[];
+                    this.ad_vygruz_arr_temp=[];
                     let objToPush= {};
                     objToPush['adres_pogruzki'] ='';
                     this.ad_pogruzki_arr_temp.push(objToPush);

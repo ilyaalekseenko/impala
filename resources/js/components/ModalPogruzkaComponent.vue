@@ -24,13 +24,11 @@
                                 <div class="col-12 row">
                                     <div class="col-3 no_padding_left_form">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Форма</div>
-                                        <select v-model="forma"
-                                                class="col-12 create_orders_date_title_int_1 grade_marg_bot">
-                                            <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
-                                            <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
-                                            <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
-                                            <option v-bind:value="3" class="sel_cust">Путин В.В.</option>
-                                        </select>
+                                        <input class="border_input col-12"
+                                               v-model="forma"/>
+<!--                                        <select v-model="forma" class="col-12 create_orders_date_title_int_1 grade_marg_bot">-->
+<!--                                            <option v-for="(forma_one) in forma_list" v-bind:value=forma_one.id  class="sel_cust">{{ forma_one.forma_name }}</option>-->
+<!--                                        </select>-->
                                     </div>
                                     <div class="col-5 grade_naz">
                                         <div class="create_orders_date_title_1 lit_marg_grade col-12">Название</div>
@@ -49,8 +47,8 @@
                             <div class="container-fluid ">
                                 <div class="col-12 row">
                                     <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade ">ИНН</div>
-                                        <input  class="col-12 border_input inn_width"
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade ">ИНН {{ founded }}</div>
+                                        <input @blur="get_INN_api()" class="col-12 border_input inn_width"
                                                v-model="INN"/>
                                     </div>
                                     <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
@@ -107,9 +105,10 @@
                                         <input  class="col-12 border_input inn_width"
                                                v-model="kontakty[key].email"/>
                                     </div>
+                                    <button type="button" class="col-1 btn btn-danger btn_del_in_ord1" v-on:click="delete_adres_pogr(key)">-</button>
                                 </div>
                             </div>
-                            <div class="col-12 add_cont_grade" v-on:click="dobavit_kontank()">Добавить контакт</div>
+                            <div class="col-12"><span v-on:click="dobavit_kontank()" class="add_cont_grade">Добавить контакт</span></div>
                         </div>
                         <!--                        конец левой колонки модалка-->
                         <!--                        начало правой колонки модалка-->
@@ -130,7 +129,9 @@
                                 <div class="col-6 grade_marg_bot">
                                     <div class="col create_orders_date_title_1 lit_marg_grade">БИК банка:</div>
                                     <input  class="col-12 border_input"
-                                           v-model="bank_arr[key].BIK"/>
+                                           v-model="bank_arr[key].BIK"
+                                            @blur="get_BIK_BANK_api(key)"
+                                    />
                                 </div>
                                 <div class="col-6 bank_grade_marg grade_marg_bot">
                                     <span class="bank_grade ">Банк:</span>
@@ -143,8 +144,10 @@
                                     <input  class="col-12 border_input grade_marg_bot"
                                            v-model="bank_arr[key].raschetnyi"/>
                                     <div class="col create_orders_date_title_1 lit_marg_grade">Корсчёт:</div>
-                                    <input  class="col-12 border_input"
-                                           v-model="bank_arr[key].korschet"/>
+                                    <div  class="col-12 ">
+                                        {{ bank_arr[key].korschet }}
+                                    </div>
+                                <button type="button" class="col-1 btn btn-danger btn_del_in_ord1" v-on:click="delete_bank(key)">-</button>
                                 </div>
                                 <div class="col-6 grade_marg_bot">
                                     <span class="bank_grade ">Комментарий:</span>
@@ -153,31 +156,32 @@
                                 </div>
                             </div>
                                 </span>
-                            <div class="col-12 add_cont_grade" v-on:click="dobavit_bank()">Добавить счёт</div>
+                            <div class="col-12 " ><span v-on:click="dobavit_bank()" class="add_cont_grade">Добавить банковские реквизиты</span> </div>
+                            <div class="col-12 row modal_underline_right"></div>
 
                             <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
-
-                            <span v-for="(loc_file,key) in doc_files">
                             <div class="col-12 grade_title_lit cont_header_1">Файлы:</div>
-                            <div class="col-12 row">
-                                <div class="col-2 lit_marg_grade">Документ {{ key+1 }}</div>
-                                <div class="col-10 lit_marg_grade add_button_grade no_wrap_text">{{ loc_file.file_name }}.{{ loc_file.ext }}
+                            <div class="cont_header_2" v-for="(loc_file,key) in doc_files">
+                            <div class="col-12 row" v-if="loc_file.file_name">
+                                <div class="col-12 lit_marg_grade add_button_grade_modal no_wrap_text"><span v-on:click="show_inp_doc(key)">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
                                     <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20"
                                                   v-if="loc_file.file_name"    height="20" v-on:click="delete_one_file_modal(key)"></iconify-icon>
                                 </div>
                             </div>
                             <div class="col-12 row">
-                                <div class="col-6">
-                                    <input class="col-12 lit_marg_grade border_input"
-                                           v-if="loc_file.file_name" v-model="loc_file.file_name"/>
+                                <div class="col-6" v-if="loc_file.show_inp">
+                                    <input v-click-outside="focus_out_from_inp" class="col-12 lit_marg_grade border_input"
+                                            v-model="loc_file.file_name"/>
                                 </div>
-                                <div class="col-6" >
+                                <div class="col-6">
                                     <span class="choose_file_grade " v-on:click="addFiles(key)">Загрузить файл</span>
-                                    <span class="choose_file_grade " v-if="loc_file.file_name" v-on:click="download_modal_file(key)">Скачать файл</span>
+                                    <span class="excel_set" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
+                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                </span>
                                 </div>
                             </div>
-                            </span>
-                            <div class="col-12 add_cont_grade" v-on:click="dobavit_doc()">Добавить документ</div>
+                            </div>
+                            <div class="col-12 add_cont_grade cont_header_2" v-on:click="dobavit_doc()">Добавить документ</div>
                         </div>
                     </div>
                 </b-modal>
@@ -188,15 +192,26 @@
 </template>
 
 <script>
+
+import vClickOutside from 'v-click-outside'
+
     export default {
+        directives: {
+            // clickOutside: vClickOutside.directive
+            vClickOutside: vClickOutside.directive
+        },
         mounted() {
             // this.get_gruzootpravitel_modal();
             // this.dobavit_kontank();
             // this.dobavit_bank();
+           // this.get_BIK_BANK_api();
+            this.get_forma_list(this.forma_list);
+
         },
         data() {
             return {
                 forma:'',
+                forma_list:[],
                 nazvanie:'',
                 data_registracii:'',
                 INN:'',
@@ -216,10 +231,42 @@
                 alert_arr:[],
                 alert:false,
                 //совпадает с ключём в массиве,аккуратно
-                temp_file_id:''
+                temp_file_id:'',
+                current_opened_inp:'',
+                founded:''
 
             }},
         methods: {
+            get_INN_api()
+            {
+                this.founded=''
+                axios
+                    .post('/get_INN_api',{
+                        INN:this.INN
+                    })
+                    .then(response => {
+                        // console.log(response.data.status);
+                        if (response.data.status === 'success') {
+                            this.forma=response.data.forma,
+                            this.nazvanie=response.data.nazvanie,
+                            this.data_registracii=response.data.data_registracii,
+                            this.OGRN=response.data.ogrn,
+                            this.telefon=response.data.telefon,
+                            this.email=response.data.email,
+                            this.generalnii_direktor=response.data.generalnii_direktor,
+                            this.yridicheskii_adres=response.data.yridicheskii_adres,
+                            this.pochtovyi_adres=response.data.pochtovyi_adres
+
+                        }
+                        else
+                        {
+                            console.log(response.data.status);
+
+                            this.founded='Юр лицо не найдено'
+                              //  this.bank_arr[key]['korschet']=''
+                        }
+                    })
+            },
             hideModal() {
                 this.clear_data_modal()
                 this.$refs['my-modal'].hide()
@@ -228,6 +275,40 @@
             {
                 this.delete_files_modal()
                 this.hideModal()
+            },
+            get_forma_list(inp)
+            {
+                axios
+                    .post('/get_forma_list',{
+                    })
+                    .then(({ data }) => (
+                            data.ts.forEach(function(entry) {
+                                inp.push({
+                                    id:entry.id,
+                                    forma_name:entry.forma_name,
+                                });
+                            })
+                        )
+                    );
+            },
+            get_BIK_BANK_api(key)
+            {
+                axios
+                    .post('/get_BIK_BANK_api',{
+                            bank:this.bank_arr[key]['BIK']
+                    })
+                    .then(response => {
+                        // console.log(response.data.status);
+                        if (response.data.status === 'success') {
+                            this.bank_arr[key]['bank']=response.data.bank_name,
+                            this.bank_arr[key]['korschet']=response.data.korschet
+                        }
+                        else
+                        {
+                            this.bank_arr[key]['bank']='Банк не найден',
+                            this.bank_arr[key]['korschet']=''
+                        }
+                    })
             },
             clear_data_modal()
             {
@@ -250,7 +331,8 @@
                 this.doc_files=[],
                 this.alert_arr=[],
                 this.alert=false,
-                this.temp_file_id=''
+                this.temp_file_id='',
+                this.current_opened_inp=''
             },
             delete_one_file_modal(key)
             {
@@ -286,6 +368,14 @@
             {
                 this.openDP=true
             },
+            delete_adres_pogr(key)
+            {
+                this.kontakty.splice(key,1)
+            },
+            delete_bank(key)
+            {
+                this.bank_arr.splice(key,1)
+            },
             dobavit_kontank()
             {
                 let objToPush= {};
@@ -305,6 +395,16 @@
                 objToPush['bank'] = '';
                 this.bank_arr.push(objToPush);
             },
+            show_inp_doc(key)
+            {
+                this.current_opened_inp=key
+                this.doc_files[key]['show_inp']=true
+            },
+            focus_out_from_inp()
+            {
+                this.doc_files[this.current_opened_inp]['show_inp']=false
+                this.current_opened_inp=''
+            },
             dobavit_doc()
             {
 
@@ -313,6 +413,7 @@
                 objToPush['doc_path'] = '';
                 objToPush['file_name'] = '';
                 objToPush['ext'] = '';
+                objToPush['show_inp'] = false;
                 if(this.doc_files.length==0)
                 {
                     objToPush['doc_id'] = 0;

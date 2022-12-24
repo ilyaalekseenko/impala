@@ -10,6 +10,78 @@ use Illuminate\Http\Request;
 
 class GruzootpravitelController extends Controller
 {
+    public function get_BIK_BANK_api(Request $request)
+    {
+        $bank_bik = $request->input('bank');
+        $token = "24607c06c1aa996d811b3c6f4c82533b2cfcf544";
+        $dadata = new \Dadata\DadataClient($token, null);
+        $result = $dadata->findById("bank", $bank_bik, 1);
+        if($result)
+        {
+            return response()->json([
+                'status' => 'success',
+                'bank_name' => $result[0]['value'],
+                'korschet' => $result[0]['data']['correspondent_account'],
+                'message' =>'Банк получен'
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+            ], 200);
+        }
+
+    }
+    public function get_INN_api(Request $request)
+    {
+        $INN= $request->input('INN');
+        $token = "24607c06c1aa996d811b3c6f4c82533b2cfcf544";
+        $dadata = new \Dadata\DadataClient($token, null);
+        $result = $dadata->findById("party", $INN, 1);
+        if($result)
+        {
+            //вытаскиваем отсюда все нужные значения  https://dadata.ru/api/find-party/
+            //название
+            $nazvanie = $result[0]['value'] ?? "";
+            //форма
+            $forma = $result[0]['data']['opf']['full'] ?? "";
+            //дата регистрации
+            $data_registracii = date("d.m.y",($result[0]['data']['state']['registration_date'])/1000) ?? "";
+            //ogrn
+            $ogrn = $result[0]['data']['ogrn'] ?? "";
+            //телефон, только в премиум
+            $telefon = $result[0]['data']['phones'][0]['value'] ?? "";
+            //email, только в премиум
+            $email = $result[0]['data']['emails'][0]['value'] ?? "";
+            //гендир
+            $generalnii_direktor = $result[0]['data']['management']['name'] ?? "";
+            //юр адрес
+            $yridicheskii_adres = $result[0]['data']['address']['value'] ?? "";
+            //почтовый адрес
+            $pochtovyi_adres = $result[0]['data']['address']['unrestricted_value'] ?? "";
+            return response()->json([
+                'status' => 'success',
+                'nazvanie' => $nazvanie,
+                'forma' => $forma,
+                'data_registracii' => $data_registracii,
+                'ogrn' => $ogrn,
+                'telefon' => $telefon,
+                'email' => $email,
+                'generalnii_direktor' => $generalnii_direktor,
+                'yridicheskii_adres' => $yridicheskii_adres,
+                'pochtovyi_adres' => $pochtovyi_adres,
+                'res' => $result,
+                'message' =>'Юр лицо получено'
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'error',
+            ], 200);
+        }
+    }
     public function get_gruzootpravitel_modal()
     {
         $gruzootpravitel = Gruzootpravitel::where('id', '=', 1)->get();

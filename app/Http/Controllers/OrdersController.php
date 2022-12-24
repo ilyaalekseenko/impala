@@ -6,6 +6,7 @@ use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\OplataOrders;
 use App\Models\Orders;
+use App\Models\Perevozka;
 use App\Models\PogruzkaTS;
 use App\Models\TemplateVar;
 use App\Models\TS;
@@ -33,6 +34,14 @@ class OrdersController extends Controller
     public function create_orders()
     {
         return view('front.create_orders');
+    }
+    public function get_perevozka_list()
+    {
+        $perevozka = Perevozka::all();
+        return response()->json([
+            'status' => 'success',
+            'perevozka_list' =>$perevozka,
+        ], 200);
     }
     public function download_current_doc(Request $request)
     {
