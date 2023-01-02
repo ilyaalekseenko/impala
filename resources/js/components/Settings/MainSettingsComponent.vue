@@ -55,7 +55,7 @@
                 </li>
                 <li class="dropmenu"><a href="#">Грузоотправитель</a>
                     <ul class="level1">
-                        <li v-on:click="nav_menu_show(3)"><a href="#">Форма</a>
+                        <li v-on:click="nav_menu_show(3)"><a href="#">Список</a>
 <!--                        <li class="dropmenu"><a href="#">Trades</a>-->
 <!--                            <ul class="level2">-->
 <!--                                <li><a href="#">lorem iklor</a></li>-->

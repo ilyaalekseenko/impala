@@ -194,10 +194,9 @@
 <script>
 
 import vClickOutside from 'v-click-outside'
-
     export default {
+        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel'],
         directives: {
-            // clickOutside: vClickOutside.directive
             vClickOutside: vClickOutside.directive
         },
         mounted() {
@@ -205,8 +204,15 @@ import vClickOutside from 'v-click-outside'
             // this.dobavit_kontank();
             // this.dobavit_bank();
            // this.get_BIK_BANK_api();
-            this.get_forma_list(this.forma_list);
+           //  this.get_forma_list(this.forma_list);
+           //  console.log(this.edit_flag)
 
+        },
+        created() {
+            // if(this.edit_flag)
+            // {
+
+            // }
         },
         data() {
             return {
@@ -233,10 +239,98 @@ import vClickOutside from 'v-click-outside'
                 //совпадает с ключём в массиве,аккуратно
                 temp_file_id:'',
                 current_opened_inp:'',
-                founded:''
+                founded:'',
+                //переменные редактирования
+                current_gruzootpravitel_id:''
 
             }},
         methods: {
+            //методы редактирования
+            //общий метод загрузки тартовы данны
+            //передаем из предыде ида
+            get_modal_edit_data(id)
+            {
+                if(this.edit_flag)
+                {
+                        this.forma='',
+                        this.nazvanie='',
+                        this.data_registracii='',
+                        this.INN='',
+                        this.OGRN='',
+                        this.telefon='',
+                        this.email='',
+                        this.generalnii_direktor='',
+                        this.telefon_gen_dir='',
+                        this.yridicheskii_adres='',
+                        this.pochtovyi_adres='',
+                        this.menedzer_zakazchik='',
+                        this.kontakty=[],
+                        this.openDP=false,
+                        this.bank_arr=[],
+                        this.files=[],
+                        this.doc_files=[],
+                        this.alert_arr=[],
+                        this.alert=false,
+                        this.temp_file_id='',
+                        this.current_opened_inp=''
+
+                    this.current_gruzootpravitel_id=id
+                    this.get_gruzootpravitel_modal(this.kontakty, this.bank_arr, this.doc_files)
+
+                }
+            },
+            //получаем стартовые данные
+            get_gruzootpravitel_modal(kontakty,bank_arr,doc_files) {
+                axios
+                    .post('/get_gruzootpravitel_modal',{
+                        id:this.current_gruzootpravitel_id
+                    })
+                 .then(({ data }) => (
+                         this.forma=data.gruzootpravitel.forma_id,
+                         this.nazvanie=data.gruzootpravitel.nazvanie,
+                         this.data_registracii=data.gruzootpravitel.data_registracii,
+                         this.INN=data.gruzootpravitel.INN,
+                         this.OGRN=data.gruzootpravitel.OGRN,
+                         this.telefon=data.gruzootpravitel.telefon,
+                         this.email=data.gruzootpravitel.email,
+                         this.generalnii_direktor=data.gruzootpravitel.generalnii_direktor,
+                         this.telefon_gen_dir=data.gruzootpravitel.telefon_gen_dir,
+                         this.yridicheskii_adres=data.gruzootpravitel.YR_adres,
+                         this.pochtovyi_adres=data.gruzootpravitel.pochtovyi_adres,
+
+                             data.gruzootpravitel_contact.forEach(function(entry) {
+                                     kontakty.push({
+                                         dolznost:entry.dolznost,
+                                         FIO : entry.FIO,
+                                         telefon : entry.telefon,
+                                         email : entry.email,
+                                 });
+                             }),
+                             data.gruzootpravitel_banks.forEach(function(entry) {
+                                 bank_arr.push({
+                                     BIK:entry.BIK,
+                                     raschetnyi : entry.raschetnyi,
+                                     korschet : entry.korschet,
+                                     kommentarii : entry.kommentarii,
+                                     bank : entry.bank,
+
+                                 });
+                             }),
+                             data.gruzootpravitel_files.forEach(function(entry) {
+                                 doc_files.push({
+                                     id:entry.id,
+                                     doc_name : entry.doc_name,
+                                     doc_path : entry.server_name,
+                                     file_name : entry.file_name,
+                                     ext : entry.ext,
+                                     show_inp : entry.show_inp
+                                 });
+                             })
+
+                     )
+                 );
+            },
+            //конец методы редактирования
             get_INN_api()
             {
                 this.founded=''
@@ -336,10 +430,10 @@ import vClickOutside from 'v-click-outside'
             },
             delete_one_file_modal(key)
             {
-                axios
-                    .post('/delete_one_file_modal',{
-                        doc:this.doc_files[key]
-                    })
+                // axios
+                //     .post('/delete_one_file_modal',{
+                //         doc:this.doc_files[key]
+                //     })
                 this.doc_files.splice(key, 1);
 
             },
@@ -350,20 +444,7 @@ import vClickOutside from 'v-click-outside'
                         doc_files:this.doc_files
                     })
             },
-            get_gruzootpravitel_modal() {
-                axios
-                    .post('/get_gruzootpravitel_modal',{
-                    })
-                    // .then(({ data }) => (
-                    //         data.terminal.forEach(function(entry) {
-                    //             inp.push({
-                    //                 id:entry.id,
-                    //                 name:entry.ts_name
-                    //             });
-                    //         })
-                    //     )
-                    // );
-            },
+
             openDB0()
             {
                 this.openDP=true
@@ -379,6 +460,7 @@ import vClickOutside from 'v-click-outside'
             dobavit_kontank()
             {
                 let objToPush= {};
+                objToPush['id'] = '';
                 objToPush['dolznost'] = '';
                 objToPush['FIO'] = '';
                 objToPush['telefon'] = '';
@@ -405,22 +487,27 @@ import vClickOutside from 'v-click-outside'
                 this.doc_files[this.current_opened_inp]['show_inp']=false
                 this.current_opened_inp=''
             },
+
+
+            // работа с файлами
             dobavit_doc()
             {
 
                 let objToPush= {};
+                objToPush['id'] = '';
                 objToPush['doc_name'] = '';
                 objToPush['doc_path'] = '';
                 objToPush['file_name'] = '';
                 objToPush['ext'] = '';
                 objToPush['show_inp'] = false;
-                if(this.doc_files.length==0)
-                {
-                    objToPush['doc_id'] = 0;
-                }
-                else{
-                    objToPush['doc_id'] =Number( this.doc_files[this.doc_files.length-1]['doc_id'])+Number(1)
-                    }
+
+                // if(this.doc_files.length==0)
+                // {
+                //     objToPush['doc_id'] = 0;
+                // }
+                // else{
+                //     objToPush['doc_id'] =Number( this.doc_files[this.doc_files.length-1]['doc_id'])+Number(1)
+                //     }
                 this.doc_files.push(objToPush);
 
             },
@@ -454,6 +541,7 @@ import vClickOutside from 'v-click-outside'
                 )
                     .then(response => {
                         if (response.data.status === 'success') {
+                            //server_name
                             this.doc_files[this.temp_file_id].doc_path=response.data.path
                             this.doc_files[this.temp_file_id].doc_name=full_name[0]
                             this.doc_files[this.temp_file_id].file_name=file_name[1]
@@ -470,6 +558,9 @@ import vClickOutside from 'v-click-outside'
                 //     alert('Не верный формат файла')
                 // }
             },
+            // конец работа с файлами
+
+
             save_gruzootpravitel()
             {
                 this.alert_arr=[];
@@ -483,6 +574,7 @@ import vClickOutside from 'v-click-outside'
                 {
                 axios
                     .post('/save_gruzootpravitel',{
+                        current_gruzootpravitel_id:this.current_gruzootpravitel_id,
                         forma:this.forma,
                         nazvanie:this.nazvanie,
                         data_registracii:this.data_registracii,
@@ -499,7 +591,16 @@ import vClickOutside from 'v-click-outside'
                         bank_arr:this.bank_arr,
                         doc_files:this.doc_files
                     })
-                    this.hideModal()
+                    .then(response => {
+                        if(this.get_gruzootpravitel_list)
+                        {
+                            this.get_gruzootpravitel_list()
+                            this.select_gruzootpravitel()
+                        }
+
+                        this.hideModal()
+                    })
+
                 }
             }
         }

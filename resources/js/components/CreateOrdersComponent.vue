@@ -2,7 +2,7 @@
     <div class="container" id="scroll_block">
         <div class="row">
             <div class="col-12">
-                <modal-pogruzka-component></modal-pogruzka-component>
+                <modal-pogruzka-component :get_gruzootpravitel_list='get_gruzootpravitel_list' :select_gruzootpravitel='select_gruzootpravitel'></modal-pogruzka-component>
                 <div  class="col-6 orders_create_title">
                     Заявки: Создание заявки
                 </div>
@@ -153,7 +153,9 @@
                                    <div class="col no_wrap">Адрес погрузки 1</div>
                                    <div class="col add_button" v-b-modal.modal-xl variant="primary">Добавить</div>
                                 </div>
-                                <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="adres_pogruzke"  />
+                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_pogruzke">
+                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
+                                </select>
                             </div>
 
                         </div>
@@ -737,13 +739,15 @@
                 terminal_act_list:[],
                 ad_pogruzki_arr_temp:[],
                 ad_vygruz_arr_temp:[],
-                perevozka_arr:[]
+                perevozka_arr:[],
+                gruzootpravitel_arr: []
             }
         },
         mounted()
         {
             this.get_terminal_list(this.termList);
             this.get_perevozka_list(this.perevozka_arr)
+            this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
             for (let i = document.getElementsByClassName('mx-input-wrapper').length; i > 0 ; i--) {
                 let m = i - 1
                 document.getElementsByClassName('mx-input-wrapper')[m].remove();
@@ -819,6 +823,38 @@
                                 });
                             })
                         )
+                    );
+            },
+            get_gruzootpravitel_list()
+            {
+                let inp_temp =[];
+                axios
+                    .post('/get_gruzootpravitel_list',{
+                    })
+                    .then(({ data }) => (
+                            data.gruzootpravitel.forEach(function(entry) {
+                                inp_temp.push({
+                                    id:entry.id,
+                                    nazvanie:entry.nazvanie
+                                });
+                            })
+                        ),
+                        this.gruzootpravitel_arr=inp_temp,
+
+                        console.log(this.gruzootpravitel_arr)
+
+                    );
+            },
+            select_gruzootpravitel()
+            {
+                axios
+                    .post('/select_gruzootpravitel',{
+                    })
+                    .then(({ data }) => (
+                        this.adres_pogruzke=data.gruzootpravitel.id,
+                            this.update_order()
+                        )
+
                     );
             },
             get_terminal_list(inp)

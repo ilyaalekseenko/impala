@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FormaModal;
+use App\Models\Gruzootpravitel;
 use App\Models\Perevozka;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class SettingsController extends Controller
     }
     public function get_forma_gruzootpravitel_list()
     {
-        $forma = FormaModal::all();
+        $forma = Gruzootpravitel::all();
         return response()->json([
             'status' => 'success',
             'forma_list' =>$forma,

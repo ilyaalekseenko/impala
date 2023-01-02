@@ -82,18 +82,26 @@ class GruzootpravitelController extends Controller
             ], 200);
         }
     }
-    public function get_gruzootpravitel_modal()
+    public function get_gruzootpravitel_modal(Request $request)
     {
-        $gruzootpravitel = Gruzootpravitel::where('id', '=', 1)->get();
+        $id = $request->input('id');
+        $gruzootpravitel = Gruzootpravitel::where('id', '=', $id)->get();
+        $gruzootpravitel_contact = GruzootpravitelContact::where('gruzootpravitel_id', '=', $id)->get();
+        $gruzootpravitel_banks = GruzootpravitelBank::where('gruzootpravitel_id', '=', $id)->get();
+        $gruzootpravitel_files = GruzootpravitelFile::where('gruzootpravitel_id', '=', $id)->get();
 
         return response()->json([
             'status' => 'success',
             'message' =>'Грузоотправитель успешно получен',
-            'data' =>$gruzootpravitel->forma_select,
+            'gruzootpravitel' =>$gruzootpravitel[0],
+            'gruzootpravitel_banks' =>$gruzootpravitel_banks,
+            'gruzootpravitel_contact' =>$gruzootpravitel_contact,
+            'gruzootpravitel_files' =>$gruzootpravitel_files,
         ], 200);
     }
     public function save_gruzootpravitel(Request $request)
     {
+        $current_gruzootpravitel_id = $request->input('current_gruzootpravitel_id');
         $forma = $request->input('forma');
         $nazvanie = $request->input('nazvanie');
         $data_registracii = $request->input('data_registracii');
@@ -108,62 +116,188 @@ class GruzootpravitelController extends Controller
         $kontakty = $request->input('kontakty');
         $bank_arr = $request->input('bank_arr');
         $doc_files = $request->input('doc_files');
-              $gruz_main= Gruzootpravitel::create([
-            'forma_id' => $forma,
-            'nazvanie' => $nazvanie,
-            'data_registracii' => $data_registracii,
-            'INN' => $INN,
-            'OGRN' => $OGRN,
-            'telefon' => $telefon,
-            'email' => $email,
-            'generalnii_direktor' => $generalnii_direktor,
-            'telefon_gen_dir' => $telefon_gen_dir,
-            'YR_adres' => $yridicheskii_adres,
-            'pochtovyi_adres' => $pochtovyi_adres,
-        ]);
-        if($kontakty)
-        {
-           foreach ($kontakty as $kontakt)
-           {
-             GruzootpravitelContact::create([
-            'gruzootpravitel_id' => $gruz_main['id'],
-            'dolznost' => $kontakt['dolznost'],
-            'FIO' => $kontakt['FIO'],
-            'telefon' => $kontakt['telefon'],
-            'email' => $kontakt['email'],
-        ]);
-           }
-        }
-        if($bank_arr)
-        {
-            foreach ($bank_arr as $bank)
-            {
-                GruzootpravitelBank::create([
-                    'gruzootpravitel_id' => $gruz_main['id'],
-                    'BIK' => $bank['BIK'],
-                    'raschetnyi' => $bank['raschetnyi'],
-                    'korschet' => $bank['korschet'],
-                    'kommentarii' => $bank['kommentarii'],
-                    'bank' => $bank['bank'],
-                ]);
-            }
-        }
-        if($doc_files)
-        {
-            foreach ($doc_files as $doc)
-            {
-                GruzootpravitelFile::create([
-                    'gruzootpravitel_id' => $gruz_main['id'],
-                    'file_name' => $doc['file_name'].'.'.$doc['ext'],
-                    'server_name' => $doc['doc_path'],
-                ]);
-            }
-        }
-        return response()->json([
-            'status' => 'success',
-            'message' =>'Успешно сохранено',
-        ], 200);
+        //если новое модальное окно
+             if($current_gruzootpravitel_id=='')
+             {
+                 $gruz_main= Gruzootpravitel::create([
+                     'forma_id' => $forma,
+                     'nazvanie' => $nazvanie,
+                     'data_registracii' => $data_registracii,
+                     'INN' => $INN,
+                     'OGRN' => $OGRN,
+                     'telefon' => $telefon,
+                     'email' => $email,
+                     'generalnii_direktor' => $generalnii_direktor,
+                     'telefon_gen_dir' => $telefon_gen_dir,
+                     'YR_adres' => $yridicheskii_adres,
+                     'pochtovyi_adres' => $pochtovyi_adres,
+                 ]);
+                 if($kontakty)
+                 {
+                     foreach ($kontakty as $kontakt)
+                     {
+                         GruzootpravitelContact::create([
+                             'gruzootpravitel_id' => $gruz_main['id'],
+                             'dolznost' => $kontakt['dolznost'],
+                             'FIO' => $kontakt['FIO'],
+                             'telefon' => $kontakt['telefon'],
+                             'email' => $kontakt['email'],
+                         ]);
+                     }
+                 }
+                 if($bank_arr)
+                 {
+                     foreach ($bank_arr as $bank)
+                     {
+                         GruzootpravitelBank::create([
+                             'gruzootpravitel_id' => $gruz_main['id'],
+                             'BIK' => $bank['BIK'],
+                             'raschetnyi' => $bank['raschetnyi'],
+                             'korschet' => $bank['korschet'],
+                             'kommentarii' => $bank['kommentarii'],
+                             'bank' => $bank['bank'],
+                         ]);
+                     }
+                 }
+                 if($doc_files)
+                 {
+                     foreach ($doc_files as $doc)
+                     {
+                         GruzootpravitelFile::create([
+                             'gruzootpravitel_id' => $gruz_main['id'],
+                             'file_name' => $doc['file_name'].'.'.$doc['ext'],
+                             'server_name' => $doc['doc_path'],
+                         ]);
+                     }
+                 }
+                 return response()->json([
+                     'status' => 'success',
+                     'message' =>'Успешно сохранено',
+                 ], 200);
+             }
+             //если редактируем уже существуюющие модальное окно
+             else
+             {
+//                 return dd($current_gruzootpravitel_id);
+                 Gruzootpravitel::where('id', '=',$current_gruzootpravitel_id)->update([
+                     'forma_id' => $forma,
+                     'nazvanie' => $nazvanie,
+                     'data_registracii' => $data_registracii,
+                     'INN' => $INN,
+                     'OGRN' => $OGRN,
+                     'telefon' => $telefon,
+                     'email' => $email,
+                     'generalnii_direktor' => $generalnii_direktor,
+                     'telefon_gen_dir' => $telefon_gen_dir,
+                     'YR_adres' => $yridicheskii_adres,
+                     'pochtovyi_adres' => $pochtovyi_adres,
+                 ]);
+                 if($kontakty)
+                 {
+                     foreach ($kontakty as $kontakt)
+                     {
+                         GruzootpravitelContact::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->update([
+                             'dolznost' => $kontakt['dolznost'],
+                             'FIO' => $kontakt['FIO'],
+                             'telefon' => $kontakt['telefon'],
+                             'email' => $kontakt['email'],
+                         ]);
+                     }
+                 }
+                 if($bank_arr)
+                 {
+                     foreach ($bank_arr as $bank)
+                     {
+                         GruzootpravitelBank::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->update([
+                             'BIK' => $bank['BIK'],
+                             'raschetnyi' => $bank['raschetnyi'],
+                             'korschet' => $bank['korschet'],
+                             'kommentarii' => $bank['kommentarii'],
+                             'bank' => $bank['bank'],
+                         ]);
+                     }
+                 }
+//                 GruzootpravitelFile::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
+
+                 if($doc_files)
+                 {
+                     //удаляем все старые документы которых нет в массиве приходящего с фронта
+                     $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->get();
+                     //старый массив в БД который
+                     foreach ($old_docs as $old_doc)
+                     {
+                         $flag=false;
+                         //приходящий массив
+                         foreach ($doc_files as $doc)
+                         {
+                             if($doc['id']!=null)
+                             {
+                                 if($old_doc['id']==$doc['id'])
+                                 {
+                                     $flag=true;
+                                 }
+                             }
+                         }
+
+                         //если нету в новом массиве тогда удаляем и файл и из БД
+                         if($flag==false)
+                         {
+                             try {
+                                 $path_to_del = public_path() . "/modal/" . $old_doc['server_name'];
+                                 unlink($path_to_del);
+                                 GruzootpravitelFile::where('id', '=',$old_doc['id'])->delete();
+                             }
+                             catch (\Throwable $e)
+                             {
+
+                             }
+                         }
+                     }
+                     foreach ($doc_files as $doc)
+                     {
+                         //если новый док и не пустой
+                         if(($doc['id']==null)&&($doc['doc_path']!=null))
+                         {
+                             GruzootpravitelFile::create([
+                                 'gruzootpravitel_id' => $current_gruzootpravitel_id,
+                                 'file_name' => $doc['file_name'].'.'.$doc['ext'],
+                                 'server_name' => $doc['doc_path'],
+                             ]);
+                         }
+                         if($doc['id']!=null)
+                         {
+                             GruzootpravitelFile::where('id', '=',$doc['id'])->update([
+                                 'file_name' => $doc['file_name'],
+                             ]);
+                         }
+
+                     }
+                 }
+                 //если массив приходящий пустой но там в БД лежали старые файлы, то их нужно удалить
+                 else
+                 {
+                     $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->get();
+                     foreach ($old_docs as $old_doc)
+                     {
+                         try {
+                             $path_to_del = public_path() . "/modal/" . $old_doc['server_name'];
+                             unlink($path_to_del);
+                             GruzootpravitelFile::where('id', '=',$old_doc['id'])->delete();
+                         }
+                         catch (\Throwable $e)
+                         {
+
+                         }
+                     }
+                 }
+                 return response()->json([
+                     'status' => 'success',
+                     'message' =>'Успешно сохранено',
+                 ], 200);
+             }
+
     }
+    //пока не используется этот метод
     public function delete_one_file_modal(Request $request)
     {
         $doc = $request->input('doc');
@@ -171,6 +305,7 @@ class GruzootpravitelController extends Controller
         try {
             $path_to_del = public_path() . "/modal/" . $doc['doc_path'];
             unlink($path_to_del);
+
         }
         catch (\Throwable $e)
         {
@@ -235,4 +370,45 @@ class GruzootpravitelController extends Controller
         ], 200);
     }
 
+    public function get_gruzootpravitel_list()
+    {
+        $gruzootpravitel = Gruzootpravitel::all();
+        return response()->json([
+            'status' => 'success',
+            'gruzootpravitel' =>$gruzootpravitel,
+        ], 200);
+    }
+    public function delete_gruzootpravitel(Request $request)
+    {
+        $gruzootpravitel_id = $request->input('id');
+        $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->get();
+        foreach ($old_docs as $old_doc)
+        {
+            try {
+                $path_to_del = public_path() . "/modal/" . $old_doc['server_name'];
+                unlink($path_to_del);
+                GruzootpravitelFile::where('id', '=',$old_doc['id'])->delete();
+            }
+            catch (\Throwable $e)
+            {
+
+            }
+        }
+        GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
+        GruzootpravitelBank::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
+        Gruzootpravitel::where('id', '=',$gruzootpravitel_id)->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Грузоотправитель удалён',
+        ], 200);
+    }
+    public function select_gruzootpravitel()
+    {
+        $gruzootpravitel=  Gruzootpravitel::latest('id')->first();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Грузоотправитель получен',
+            'gruzootpravitel' =>$gruzootpravitel,
+        ], 200);
+    }
 }
