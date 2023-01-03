@@ -108,8 +108,8 @@
                         <div class="col-2 orders_title_table">{{ order.data_vneseniya }}</div>
                         <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
                         <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
-                        <div class="col-2 orders_title_table">{{ order.adres_pogruzke }}</div>
-                        <div class="col-2 orders_title_table">{{ order.adres_vygruski }}</div>
+                            <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_pogruzke">{{ gruz.nazvanie }}</div>
+                        <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_vygruski">{{ gruz.nazvanie }}</div>
                         <div class="col-2 orders_title_table">{{ order.kompaniya_zakazchik }}</div>
                         </div>
                     </div>
@@ -169,7 +169,7 @@ Vue.filter('formatDate', function(value) {
 });
     export default {
         mounted() {
-            console.log('Component mounted.')
+            this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
         },
         data() {
             return {
@@ -185,7 +185,8 @@ Vue.filter('formatDate', function(value) {
                 //конец пагинации
                 orders_total_numb:0,
                 delete_arr:[],
-                type_per_list:[]
+                type_per_list:[],
+                gruzootpravitel_arr: [],
             }
         },
         created()
@@ -198,6 +199,24 @@ Vue.filter('formatDate', function(value) {
             go_to_order(id)
             {
                 window.location.href =('/create_orders/'+id)
+            },
+            get_gruzootpravitel_list()
+            {
+                let inp_temp =[];
+                axios
+                    .post('/get_gruzootpravitel_list',{
+                    })
+                    .then(({ data }) => (
+                            data.gruzootpravitel.forEach(function(entry) {
+                                inp_temp.push({
+                                    id:entry.id,
+                                    nazvanie:entry.nazvanie
+                                });
+                            })
+                        ),
+                        this.gruzootpravitel_arr=inp_temp
+
+                    );
             },
             get_type_per_list(inp)
             {
@@ -318,7 +337,6 @@ Vue.filter('formatDate', function(value) {
                         limit:this.limit
                     })
                     .then(({ data }) => (
-                        console.log(data),
                             this.pagination_all=data.tipes_count,
                                 this.orders_total_numb=data.tipes_count,
                                 data.list_colored.forEach(function(entry) {

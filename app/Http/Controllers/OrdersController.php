@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
+use App\Models\Gruzootpravitel;
 use App\Models\OplataOrders;
 use App\Models\Orders;
 use App\Models\Perevozka;
@@ -450,10 +451,15 @@ class OrdersController extends Controller
 
         $count = Orders::where('id', '>=', 0)
             ->count();
+        //получаем имя грузоотправителя
+        $gruzootpravitel = Gruzootpravitel::all();
+
+
         return response()->json([
             'status' => 'success',
             'list_colored' => $res_arr,
-            'tipes_count' => $count
+            'tipes_count' => $count,
+            'gruzootpravitel' => $gruzootpravitel
 //            'res'=>$list_colored_imp_old,
 //            'res1'=>$old_imp['id']
         ], 201);
