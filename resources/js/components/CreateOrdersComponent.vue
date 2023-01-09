@@ -142,7 +142,7 @@
                                 <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
                                 </span>
 
-                                <span class="excel_set" v-on:click="DownloadFiles()">
+                                <span class="excel_set" v-if="nomenklatura" v-on:click="DownloadFiles()">
                                 <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
                                 </span>
 
