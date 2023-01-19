@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add_forma_settings', [App\Http\Controllers\SettingsController::class, 'add_forma_settings'])->name('add_forma_settings');
     Route::post('/get_forma_gruzootpravitel_list', [App\Http\Controllers\SettingsController::class, 'get_forma_gruzootpravitel_list'])->name('get_forma_gruzootpravitel_list');
     Route::post('/update_forma_settings', [App\Http\Controllers\SettingsController::class, 'update_forma_settings'])->name('update_forma_settings');
+    Route::post('/logout', [App\Http\Controllers\ProfileController::class, 'logout'])->name('logout');
 
 
     Route::get('/users_list', [App\Http\Controllers\AdminController::class, 'users_list'])->name('users_list');

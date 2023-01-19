@@ -56,13 +56,24 @@
     vertical-align: middle;
 }
 .top_menu_words {
-    margin-left: 20px;
+    /*margin-left: 20px;*/
     font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 100%;
     color: #020E49;
+    cursor: pointer;
+}
+.top_menu_words_settings:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.top_menu_words_settings {
+    margin-left: 40px;
+}
+.top_menu_head_set {
+    padding-top: 20px;
 }
 .search_set {
     color: #A1A9A9;

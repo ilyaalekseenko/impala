@@ -21,6 +21,13 @@ aside{
 .dropmenu{
     width:200px;
 }
+.drop_menu_selected {
+    background: #ccc;
+}
+.drop_menu_block{
+
+        display:block;
+}
 .nav--vertical{
     list-style-type:none;
     margin: 0;
@@ -31,20 +38,22 @@ aside{
         &:hover{
             color:$verticalnavlinkcolor-hover;
         }
+
     }
     li{
         position: relative;
         display:block;
+
         &.dropmenu{
             ul{
                 display:none;
             }
         }
-        &.dropmenu:hover{
-            > ul{
-                display:block;
-            }
-        }
+        //&.ul:hover{
+        //    > a{
+        //        background: #ccc;
+        //    }
+        //}
         &.dropmenu:after{
             content: "";
             position: absolute;
@@ -111,7 +120,7 @@ aside{
         }
         li:hover{
             > a{
-                background: #ccc;
+                background: #ccc!important;
             }
         }
 

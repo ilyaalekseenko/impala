@@ -10935,6 +10935,14 @@ aside {
   width: 200px;
 }
 
+.drop_menu_selected {
+  background: #ccc;
+}
+
+.drop_menu_block {
+  display: block;
+}
+
 .nav--vertical {
   list-style-type: none;
   margin: 0;
@@ -10952,9 +10960,6 @@ aside {
 }
 .nav--vertical li.dropmenu ul {
   display: none;
-}
-.nav--vertical li.dropmenu:hover > ul {
-  display: block;
 }
 .nav--vertical li.dropmenu:after {
   content: "";
@@ -11006,5 +11011,5 @@ aside {
   background: #ccc;
 }
 .nav--vertical li:hover li:hover > a {
-  background: #ccc;
+  background: #ccc !important;
 }
