@@ -36,6 +36,26 @@ class OrdersController extends Controller
     {
         return view('front.create_orders');
     }
+    public function check_if_order_isset(Request $request)
+    {
+        $id=$request->input('id');
+        $isset = Orders::where('id', $id)->first();
+
+        if ($isset !== null) {
+            return response()->json([
+                'status' => 'success',
+                'data' =>'isset',
+            ], 200);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 'success',
+                'data' =>'not',
+            ], 200);
+        }
+
+    }
     public function get_perevozka_list()
     {
         $perevozka = Perevozka::all();

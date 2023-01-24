@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row">
+        <div class="row main_grade_div">
             <div class="col-12 row grade_head_row " >
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
 
@@ -95,19 +95,7 @@
                     <modal-pogruzka-component :get_gruzootpravitel_list='get_gruzootpravitel_list' :select_gruzootpravitel='select_gruzootpravitel'></modal-pogruzka-component>
 <!--                    конец модалочки-->
 
-                    <!--                    нижняя строка-->
-                    <div class="col-10 row down_streak_grade">
-                        <div class="down_grade_text col-5">
-                            Общий бюджет: {{ ob_budzet_down }} рубля
-                        </div>
-                        <div class="down_grade_text col-4">
-                            Оплачено: {{ oplacheno }} рублей
-                        </div>
-                        <div class="down_grade_text col-3">
-                            Долг: {{ dolg }} рублей
-                        </div>
-                    </div>
-                    <!--                    конец нижней строки-->
+
 
 <!--                    начало правой строки основного вида-->
                     <div class="col-12 row">
@@ -149,7 +137,7 @@
 <!--                        перебор в шапке-->
                         <div class="col-12 row create_ord_underline_1"></div>
                         <span v-for="(elem,key) in spisokTShead" class="ts_grade_margin">
-                        <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem)" v-bind:class="{ ts_podsvet: elem.id_ts==right_current_TS }">
+                        <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem)" v-bind:class="{ ts_podsvet: elem.id_ts===right_current_TS }">
                              <div class="col-12 row no_padding_left no_padding_right">
                             <div class="col-2 grade_header_col">
                                 <iconify-icon class="truck_grade no_padding_right no_padding_left" icon="carbon:delivery-truck" width="20" height="20"></iconify-icon>
@@ -245,9 +233,7 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить адрес</span>
                                         </div>
                                     </div>
-<!--                                        <input @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')"-->
-<!--                                               class="col border_input grade_adr" v-model="adres_pogr.adres_pogruzki"  />-->
-                                        <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_1" v-model="adres_pogr.adres_pogruzki">
+                                        <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">
                                             <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
                                         </select>
                                     <div class="col-12 row">
@@ -294,22 +280,19 @@
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата выгрузки</div>
                                     <span v-for="(adres_vygr,key2) in elem1.adres_vygr_TS">
-
-                                    <div class="col-12 row">
-                                        <div class="col-12 little_title_grade pogr_marg_grade">
+                                        <div class="col-12 row">
+                                        <div class="col-6 little_title_grade pogr_marg_grade">
                                             Адрес выгрузки {{ key2 + 1 }}
                                         </div>
-                                        <div class="col-12 row">
+                                        <div class="col-6 row">
                                             <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый адрес</span>
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить адрес</span>
                                         </div>
                                     </div>
-<!--                                    <input @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')"-->
-<!--                                           class="col border_input grade_adr" v-model="adres_vygr.adres_pogruzki"  />-->
-                                         <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_1" v-model="adres_vygr.adres_pogruzki">
+                                         <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">
                                             <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
                                         </select>
-                                    <div class="col-12 row">
+                                        <div class="col-12 row">
                                         <div class="col-6 date_width">
                                             <div class="little_title_grade">Дата</div>
 
@@ -349,7 +332,7 @@
                                     <div class="col-12 row grade_underline"></div>
                                     <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
                                     <span class="head_font_grade">На терминале</span>
-                                    <div class="col-12 row">
+                                    <div v-if="elem1.checked2" class="col-12 row">
                                         <div class="col-12 little_title_grade">
                                             Терминал
                                         </div>
@@ -358,7 +341,7 @@
                                             <span class="col add_button_grade no_wrap_text">Добавить адрес</span>
                                         </div>
                                     </div>
-                                    <select @blur="update_one_data(elem1,'terminal_TS')" class="col border_input grade_adr" v-model="elem1.terminal_TS">
+                                    <select v-if="elem1.checked2" @blur="update_one_data(elem1,'terminal_TS')" class="col border_input grade_adr" v-model="elem1.terminal_TS">
                                         <option v-for="(elem2) in termList" v-bind:value=elem2.id  class="sel_cust">{{ elem2.name }}</option>
                                     </select>
 
@@ -369,7 +352,8 @@
                                      <div class="col-12 row">
                                     <div class="col-8">
                                         <div class="little_title_grade">Сумма</div>
-                                        <input readonly class="border_input inp_date" v-model="elem1.ob_summa"  />
+<!--                                        <input class="border_input inp_date" v-model="elem1.ob_summa"/>-->
+                                        <input @blur="update_one_data(elem1,'stavka_summa')" class="border_input inp_date" v-model="elem1.stavka_summa"/>
                                         <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
                                            НДС
                                         </span>
@@ -381,7 +365,7 @@
                                      </div>
                                     <div class="col-12 not_paid_marg">
                                         <span class="not_paid">Не оплачено:</span>
-                                        <span class="grade_bold_dark_1">10 250 000р.</span>
+                                        <span class="grade_bold_dark_1">{{ elem1.ne_oplacheno }}р.</span>
                                     </div>
                                     <div class="col-12 little_title_grade">Оплата:</div>
 
@@ -393,8 +377,11 @@
                                      <div class="col-12">
                                         <input @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
                                                class=" border_input add_summ_grade_inp" v-model="sum.summa"  />
-                                        <input @blur="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)"
-                                               class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
+                                            <input @click="openDPsumma(key2)"
+                                                   class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
+                                         <date-picker   v-model="sum.data" valueType="format" type="time"
+                                                        format=" H:m" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
+                                         </date-picker>
                                      </div>
                                     </div>
 
@@ -462,6 +449,21 @@
 
                 </div>
 
+            <!--                    нижняя строка-->
+
+            <!--                    конец нижней строки-->
+
+        </div>
+        <div class="offset-1 col-10 row down_streak_grade">
+            <div class="down_grade_text col-5">
+                Общий бюджет: {{ ob_budzet_down }} рубля
+            </div>
+            <div class="down_grade_text col-4">
+                Оплачено: {{ oplacheno }} рублей
+            </div>
+            <div class="down_grade_text col-3">
+                Долг: {{ dolg }} рублей
+            </div>
         </div>
         <iframe style="display:none;" name="hiddenIframe" id="hiddenIframe"></iframe>
     </div>
@@ -632,9 +634,65 @@
                 }
                 return this.gruzomesta_big-gruzomesta;
             },
+            neOplachenoFlagList()
+            {
+                //указываешь что должно поменяться
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+
+                    if(this.right_current_TS==this.spisokTShead[i].id_ts)
+                    {
+                        return this.spisokTShead[i].summa_list;
+                    }
+                }
+            },
+            neOplachenoFlag()
+            {
+                //указываешь что должно поменяться
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+
+                    if(this.right_current_TS==this.spisokTShead[i].id_ts)
+                    {
+                        return this.spisokTShead[i].stavka_summa;
+                    }
+                }
+            }
         },
         watch:{
 
+            neOplachenoFlagList:{
+                deep: true,
+                handler(){
+                    for (let i = 0; i < this.spisokTShead.length; i++) {
+                        // if(this.right_current_TS==this.spisokTShead[i].id_ts)
+                        // {
+                        this.spisokTShead[i].ne_oplacheno=0;
+                        this.spisokTShead[i].ob_summa=0;
+                        for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
+                            let sum=Number(this.spisokTShead[i].summa_list[j].summa);
+                            this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
+                        }
+                        this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+                        // }
+                    }
+                }
+            },
+            neOplachenoFlag:{
+                deep: true,
+                handler(){
+                    for (let i = 0; i < this.spisokTShead.length; i++) {
+                        // if(this.right_current_TS==this.spisokTShead[i].id_ts)
+                        // {
+                        this.spisokTShead[i].ne_oplacheno=0;
+                        this.spisokTShead[i].ob_summa=0;
+                        for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
+                            let sum=Number(this.spisokTShead[i].summa_list[j].summa);
+                            this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
+                        }
+                        this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+                        // }
+                    }
+                }
+            },
             spisokTSheadFlag: {
                  deep: true,
                 handler(){
@@ -827,6 +885,10 @@
                         this.spisokTShead[this.right_current_TS].adres_vygr_TS[id_pogruzka].show_DP_time=true;
                     }
                 }
+            },
+            openDPsumma(summa_numb_in_arr)
+            {
+                    this.spisokTShead[this.right_current_TS].summa_list[summa_numb_in_arr].show_DP_date=true
             },
             handleChange0()
             {
@@ -1058,24 +1120,20 @@
                         elem:elem,
                         id_summa:id_summa,
                         data_to_up:data_to_up,
-                        name:name
+                        name:name,
+                        grade_id:this.order_id
                     })
             },
             update_one_data_pogruzka(elem,id_pogr,pogr_or_vygr,data_to_up,name)
             {
-                console.log('FLAG!!!')
-                console.log(elem)
-                console.log(id_pogr)
-                console.log(pogr_or_vygr)
-                console.log(data_to_up)
-                console.log(name)
                 axios
                     .post('/update_one_data_pogruzka',{
                         elem:elem,
                         id_pogr:id_pogr,
                         pogr_or_vygr:pogr_or_vygr,
                         data_to_up:data_to_up,
-                        name:name
+                        name:name,
+                        grade_id:this.order_id
                     })
             },
             update_one_data(elem,name)
@@ -1119,6 +1177,8 @@
                                         schet_doc_name:entry.schet_doc_name,
                                         faktura_doc_name:entry.faktura_doc_name,
                                         TN_doc_name:entry.TN_doc_name,
+                                        ne_oplacheno:0,
+                                        stavka_summa:entry.stavka_summa,
                                     });
                                 })
                         )
@@ -1197,6 +1257,8 @@
                     objToPush['summa_list'] = [];
                     //общая сумма для данного ТС
                     objToPush['ob_summa'] = 0;
+                    objToPush['ne_oplacheno'] = 0;
+                    objToPush['stavka_summa'] = 0;
                     objToPush['NDS_check'] = 0;
 
                     //это общий список со всей информацией а не только для шапки
@@ -1205,6 +1267,8 @@
                     let objToPush1= {};
                     objToPush1['summa'] = '';
                     objToPush1['data'] = '';
+                    //добавить дату в сумму
+                    objToPush1['show_DP_date'] =false;
                     objToPush1['id_summa'] = 0;
 
                     objToPush1['podpisannaya_doc_name'] = '';
@@ -1315,12 +1379,20 @@
             },
             click_on_right_col(elem)
             {
-                this.right_current_TS=elem.id_ts
-                if(this.right_col_down_show==true)
+                if(this.right_current_TS===elem.id_ts)
                 {
                     this.right_col_down_show=false;
+                    this.right_current_TS=''
                 }
-                this.right_col_down_show=true;
+                else
+                {
+                    this.right_current_TS=elem.id_ts
+                    if(this.right_col_down_show==true)
+                    {
+                        this.right_col_down_show=false;
+                    }
+                    this.right_col_down_show=true;
+                }
 
             },
             add_new_adres_pogruzka(key,pogruzka_or_vygruzka)
@@ -1369,8 +1441,8 @@
                 let objToPush1= {};
                 objToPush1['summa'] = '';
                 objToPush1['data'] = '';
-
-               // console.log(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)
+                objToPush1['show_DP_date'] =false;
+                // console.log(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)
                 objToPush1['id_summa'] =Number(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)+Number(1);
                 this.spisokTShead[key].summa_list.push(objToPush1);
                 axios

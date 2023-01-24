@@ -5,25 +5,31 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">Почта</th>
-                    <th scope="col">Статус</th>
+                    <th scope="col" v-on:click="sort_by('id')">id</th>
+                    <th scope="col" v-on:click="sort_by('email')">Почта</th>
+                    <th scope="col" v-on:click="sort_by('last_name')">Фамилия</th>
+                    <th scope="col" v-on:click="sort_by('first_name')">Имя</th>
+                    <th scope="col" v-on:click="sort_by('patronymic')">Отчество</th>
+                    <th scope="col" v-on:click="sort_by('dolznost')">Должность</th>
+                    <th scope="col" v-on:click="sort_by('telefon')">Телефон</th>
+                    <th scope="col" v-on:click="sort_by('data_rozdenia')">Дата рождения</th>
+                    <th scope="col" v-on:click="sort_by('status')">Статус</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(user,index) in users_list">
                     <th scope="row">{{ user.id }}</th>
                     <td>{{ user.email }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.patronymic }}</td>
+                    <td>{{ user.dolznost }}</td>
+                    <td>{{ user.telefon }}</td>
+                    <td>{{ user.data_rozdenia }}</td>
                     <td>
-                        <input type="radio" value="admin" v-model="user.perm" :checked="user.perm=='admin'" v-on:change="change_permission(user.id,user.perm)">
-                        <label>Админ</label>
-                        <br>
-                        <input type="radio" value="logist" v-model="user.perm" :checked="user.perm=='logist'" v-on:change="change_permission(user.id,user.perm)">
-                        <label>Редактор</label>
-                        <br>
-                        <input type="radio" value="manager" v-model="user.perm" :checked="user.perm=='manager'" v-on:change="change_permission(user.id,user.perm)">
-                        <label>Юзер</label>
-                        <br>
+                        <select @blur="change_permission(user.id,user.perm)" class="cr_ord_inp_n_1" v-model="user.perm">
+                            <option v-for="(elem,key) in roles_list" v-bind:value=elem.slug  class="sel_cust">{{ elem.name }}</option>
+                        </select>
                     </td>
                 </tr>
                 </tbody>
@@ -65,10 +71,14 @@ export default {
             //ниже массив в который добавляем страницы пагинации 1 2 3 и т.д.
             pagination_numb:[],
             isModalVisible: false,
+            roles_list:[],
+            sort_by_item:'',
+            asc_desc:''
         };
     },
     mounted() {
         this.get_users_list(this.users_list);
+        this.get_roles(this.roles_list);
     },
     methods: {
         change_permission(user_id,user_perm)
@@ -79,12 +89,43 @@ export default {
                     user_perm:user_perm,
                 })
         },
+        sort_by(sort_item)
+        {
+            this.current_page=1
+            this.users_list=[];
+            this.pagination_all=0;
+            this.pagination_numb=[]
+            if(this.asc_desc=='')
+            {
+                this.asc_desc='desc'
+            }
+            else
+            {
+                if(this.asc_desc=='desc')
+                {
+                    this.asc_desc='asc'
+                }
+                else
+                {
+                    this.asc_desc='desc'
+                }
+                if(this.sort_by_item!==sort_item)
+                {
+                    this.asc_desc='asc'
+                }
+            }
+
+            this.sort_by_item=sort_item;
+            this.get_users_list(this.users_list)
+        },
         get_users_list(inp)
         {
             let offset_from_start=(this.current_page-1)*this.offset
             axios
                 .post('/get_users_list',{
                     offset:offset_from_start,
+                    sort_by_item:this.sort_by_item,
+                    asc_desc:this.asc_desc,
                 })
                 .then(({ data }) => (
                         this.pagination_all=data.tipes_count,
@@ -93,10 +134,32 @@ export default {
                                 id:entry.id,
                                 name:entry.name,
                                 email:entry.email,
-                                perm:entry.perm
+                                perm:entry.perm,
+                                first_name:entry.first_name,
+                                last_name:entry.last_name,
+                                patronymic:entry.patronymic,
+                                dolznost:entry.dolznost,
+                                telefon:entry.telefon,
+                                data_rozdenia:entry.data_rozdenia,
                             });
                         }),
                         this.pagination_counter()
+                    )
+                );
+        },
+        get_roles(inp)
+        {
+            axios
+                .post('/get_roles',{
+                })
+                .then(({ data }) => (
+                        data.roles_list.forEach(function(entry) {
+                            inp.push({
+                                id:entry.id,
+                                name:entry.name,
+                                slug:entry.slug
+                            });
+                        })
                     )
                 );
         },

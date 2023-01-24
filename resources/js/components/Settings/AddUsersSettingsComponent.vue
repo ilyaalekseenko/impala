@@ -12,10 +12,26 @@
             <div v-if="success" class="alert alert-success" role="alert">
                 Пользователь успешно добавлен
             </div>
-            <div class="col-6">Никнейм</div>
-            <input class="col-6"  v-model="name"  />
+            <div class="col-6">Имя</div>
+            <input class="col-6" v-model="first_name"  />
+            <div class="col-6">Фамилия</div>
+            <input class="col-6" v-model="last_name"  />
+            <div class="col-6">Отчество</div>
+            <input class="col-6" v-model="patronymic"  />
+            <div class="col-6">Должность</div>
+            <input class="col-6" v-model="dolznost"  />
             <div class="col-6">Почта</div>
             <input class="col-6" type="email" v-model="email"  />
+            <div class="col-6">Номер телефона</div>
+            <input class="col-6" v-model="telefon"  />
+            <div class="col-6">Роль</div>
+            <select class="cr_ord_inp_n_1" v-model="role">
+                <option v-for="(elem,key) in roles_list" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>
+            </select>
+            <div class="col-6">Дата рождения</div>
+            <input class="col-6" v-model="data_rozdenia" @click="openDB0"/>
+            <date-picker ref="datepicker0"  v-model="data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
+
             <div class="col-3">
             <button type="button" class=" btn btn-primary add_new_user_button" v-on:click="add_new_user()">Добавить нового пользователя</button>
             </div>
@@ -24,16 +40,43 @@
 </template>
 
 <script>
+
+import datepicker from 'vuejs-datepicker';
+import moment from 'moment'
+
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        return moment(String(value)).format('DD.MM.YYYY')
+    }
+});
+
     export default {
+        components: {
+            datepicker,
+            DatePicker
+        },
         mounted() {
+            this.get_roles(this.roles_list);
         },
         data() {
             return {
-                name:'',
+                name:'user',
                 email:'',
                 alert_arr:[],
                 alert:false,
-                success:''
+                success:'',
+                first_name:'',
+                last_name:'',
+                patronymic:'',
+                dolznost:'',
+                telefon:'',
+                data_rozdenia:'',
+                openDP:false,
+                role:3,
+                roles_list:[],
             }
         },
         methods: {
@@ -58,13 +101,27 @@
                         {
                             name:this.name,
                             email:this.email,
-                        }
+                            first_name:this.first_name,
+                            last_name:this.last_name,
+                            patronymic:this.patronymic,
+                            dolznost:this.dolznost,
+                            telefon:this.telefon,
+                            data_rozdenia:this.data_rozdenia,
+                            role:this.role,
+                                                    }
                     )
                         .then(response => {
                             if (response.data.status === 'success') {
                                     this.success=true,
-                                    this.name='',
-                                    this.email=''
+                                    this.email='',
+                                    this.first_name='',
+                                    this.last_name='',
+                                    this.patronymic='',
+                                    this.dolznost='',
+                                    this.telefon='',
+                                    this.data_rozdenia='',
+                                    this.role=3,
+                                    this.openDP=false
 
                             }
                         })
@@ -84,8 +141,28 @@
                 }
                 this.alert_arr=temp_arr;
             },
+            openDB0()
+            {
+                this.openDP=true
+            },
+            get_roles(inp)
+            {
+                axios
+                    .post('/get_roles',{
+                    })
+                    .then(({ data }) => (
+                            data.roles_list.forEach(function(entry) {
+                                inp.push({
+                                    id:entry.id,
+                                    name:entry.name,
+                                    slug:entry.slug
+                                });
+                            })
+                        )
+                    );
+            },
+        },
 
-        }
 
     }
 </script>

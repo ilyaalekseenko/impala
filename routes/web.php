@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [App\Http\Controllers\OrdersController::class, 'main_orders'])->name('main_orders');
     Route::get('/create_orders/{id?}', [App\Http\Controllers\OrdersController::class, 'create_orders'])->name('create_orders');
+    Route::post('/check_if_order_isset', [App\Http\Controllers\OrdersController::class, 'check_if_order_isset'])->name('check_if_order_isset');
     Route::get('/grade/{id?}', [App\Http\Controllers\GradeController::class, 'show_grade'])->name('show_grade');
     Route::get('/docs_setting', [App\Http\Controllers\GradeController::class, 'docs_setting'])->name('docs_setting');
     Route::post('/start_new_order', [App\Http\Controllers\OrdersController::class, 'start_new_order'])->name('start_new_order');
@@ -86,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_users_list', [App\Http\Controllers\AdminController::class, 'get_users_list'])->name('get_users_list');
     Route::post('/change_permission', [App\Http\Controllers\AdminController::class, 'change_permission'])->name('change_permission');
     Route::post('/is_admin_settings', [App\Http\Controllers\AdminController::class, 'is_admin_settings'])->name('is_admin_settings');
+    Route::post('/get_roles', [App\Http\Controllers\AdminController::class, 'get_roles'])->name('get_roles');
 
     Route::post('/add_user', [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
 

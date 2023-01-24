@@ -646,6 +646,7 @@
     font-weight: 400;
     font-size: 16px;
     color: #202020;
+    /*word-wrap: break-word;*/
 }
 .add_ts_button {
     max-width: 124px;
@@ -850,7 +851,12 @@
     height: 16px;
     width: 16px;
     border: 2px solid #636F6F;
-
+}
+.checkbox_create_orders2_height {
+    margin-top: 5px!important;
+}
+.checkbox_create_orders2_height_d {
+    margin-top: 4px!important;
 }
 .checkbox2_row {
     margin-top: 10px!important;
@@ -858,6 +864,9 @@
 .terminal_cr_ord {
     margin-bottom: 10px;
     margin-left: 26px;
+}
+.cr_ord_inp_n_0 {
+    width: 90%;
 }
 .cr_ord_inp_n_1 {
     width: 272px!important;
@@ -908,6 +917,7 @@
 }
 .cr_ord_left_col {
     max-width: 296px;
+    padding-right: 0px!important;
 }
 .cr_ord_mid_col {
     max-width: 302px;
@@ -926,6 +936,9 @@
 }
 .right_menu_nom {
     margin-left: 0px!important;
+}
+.data_pog_dost_height {
+    max-height: 32px;
 }
 .nom_margin {
     margin-left: 10px;
@@ -1036,8 +1049,11 @@
 .add_summ_grade_inp_1 {
     width: 101px;
 }
+.main_head_marg {
+    margin-bottom: 20px!important;
+}
 .second_header_cr_order {
-    margin-bottom:20px;
+    margin-bottom:40px;
 }
 .vid_TS {
     padding-left: 30px;
@@ -1079,13 +1095,27 @@
 .comm_settings {
     width: 100%;
 }
+.comm_settings_1 {
+    width: 93%;
+}
 .ob_ves {
     padding-right: 40px;
 }
 .ob_ob_width {
     min-width: 100px;
 }
-
+.terminal_ts {
+    margin-bottom: 10px;
+}
+.select_width {
+    width:100%;
+}
+.text_out_block{
+    word-wrap: break-word;
+}
+.ts_counter {
+    margin-top: 10px!important;
+}
 .box{
 
     background-color:grey;
@@ -1093,6 +1123,9 @@
 }
 .fit_height {
     height: fit-content;
+}
+.middle_block_cr_order {
+    padding-left: 0px!important;
 }
 .top_menu_1 {
     white-space: nowrap;
@@ -1232,6 +1265,10 @@
     border: 1px solid #DBDBDB;
     position: fixed;
     bottom: 0;
+
+}
+.main_grade_div {
+    margin-bottom: 70px;
 }
 .mod_1 {
     width: 1200px;

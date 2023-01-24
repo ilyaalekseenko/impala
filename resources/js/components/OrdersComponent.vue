@@ -198,7 +198,22 @@ Vue.filter('formatDate', function(value) {
         methods: {
             go_to_order(id)
             {
-                window.location.href =('/create_orders/'+id)
+                axios
+                    .post('/check_if_order_isset',{
+                        id:id,
+                    })
+                    .then(response => {
+                        if(response.data.data=='isset')
+                        {
+                            window.location.href =('/create_orders/'+id)
+                        }
+                        else
+                        {
+                            alert('Заявка удалена')
+                        }
+
+                    })
+              //  window.location.href =('/create_orders/'+id)
             },
             get_gruzootpravitel_list()
             {
@@ -292,7 +307,7 @@ Vue.filter('formatDate', function(value) {
 
             delete_orders()
             {
-                console.log(this.orders_list)
+
                 let temp_arr=[];
                 for( let i = 0; i < this.orders_list.length; i++ )
                 {

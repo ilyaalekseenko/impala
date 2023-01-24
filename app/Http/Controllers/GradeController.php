@@ -201,9 +201,10 @@ class GradeController extends Controller
         $elem_arr = $request->input('elem');
         $name = $request->input('name');
         $id_summa = $request->input('id_summa');
+        $grade_id = $request->input('grade_id');
         $data_to_up = $request->input('data_to_up');
         $grade_list = GradeSumma::
-               where('grade_id', '=', $elem_arr['grade_id'])
+               where('grade_id', '=', $grade_id)
             -> where('id_ts', '=', $elem_arr['id_ts'])
             -> where('id_summa', '=', $id_summa)
             ->update(
@@ -219,9 +220,10 @@ class GradeController extends Controller
         $id_pogr = $request->input('id_pogr');
         $pogr_or_vygr = $request->input('pogr_or_vygr');
         $data_to_up = $request->input('data_to_up');
+        $grade_id = $request->input('grade_id');
 
         $grade_list = GradePogruzka::
-               where('grade_id', '=', $elem_arr['grade_id'])
+               where('grade_id', '=', $grade_id)
             -> where('id_ts', '=', $elem_arr['id_ts'])
             -> where('id_pogruzka', '=', $id_pogr)
             -> where('pogruzka_or_vygruzka', '=', $pogr_or_vygr)
@@ -310,6 +312,10 @@ class GradeController extends Controller
         foreach ($grade_list as $grade)
         {
             $summa = GradeSumma::where('grade_id', '=', $grade_id)->where('id_ts', '=', $grade['id_ts'])->get();
+            foreach ($summa as $one_summ)
+            {
+                $one_summ['show_DP_date']=false;
+            }
             $grade['summa_list']=$summa;
             $TS_list_pogruzka = GradePogruzka::where('grade_id', '=', $grade_id)->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
             $TS_list_vygruzka = GradePogruzka::where('grade_id', '=', $grade_id)->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();

@@ -9,7 +9,7 @@
                                                     <li class="dropmenu"><a href="#">Пользователи</a>
                                                         <ul class="level2">
                                                             <li v-on:click="nav_menu_show(4)"><a href="#">Добавление</a></li>
-                                                            <li v-on:click="nav_menu_show(5)"><a href="#">Роли</a></li>
+                                                            <li v-on:click="nav_menu_show(5)"><a href="#">Список пользователей</a></li>
                                                         </ul>
                                                     </li>
                     </ul>

@@ -1,10 +1,10 @@
 <template>
     <div class="container" id="scroll_block">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 main_head_marg">
                 <modal-pogruzka-component :get_gruzootpravitel_list='get_gruzootpravitel_list' :select_gruzootpravitel='select_gruzootpravitel'></modal-pogruzka-component>
                 <div  class="col-6 orders_create_title">
-                    Заявки: Создание заявки
+                     {{ order_header_text }} {{ data_vneseniya }}
                 </div>
             </div>
             <div class="col-12 second_header_cr_order">
@@ -129,7 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col fit_height row ">
+                    <div class="col fit_height row middle_block_cr_order ">
                         <div class="col cr_ord_mid_col">
                             <div class="little_title_create_orders">
                                 Номенклатура
@@ -150,7 +150,7 @@
 
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
-                                   <div class="col no_wrap">Адрес погрузки 1</div>
+                                   <div class="col no_wrap">Адрес погрузки</div>
                                    <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>
                                 </div>
                                 <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_pogruzke">
@@ -165,18 +165,9 @@
                                     <div class="little_title_create_orders ">
                                         Дата погрузки
                                     </div>
-                                    <div class="create_orders_bottom no_padding_right">
+                                    <div class="data_pog_dost_height no_padding_right">
                                         <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
                                         <date-picker ref="datepicker2"  v-model="data_pogruzki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP2" @change="handleChange0"></date-picker>
-                                    </div>
-                                </div>
-                                <div class=" offset-1 col-6  data_pog_dost  no_padding_right">
-                                    <div class="little_title_create_orders no_padding_right">
-                                        Дата доставки
-                                    </div>
-                                    <div class="create_orders_bottom no_padding_right">
-                                        <input @click="openDB3" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
-                                        <date-picker ref="datepicker3"  v-model="data_dostavki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP3" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -226,12 +217,23 @@
                                     <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
                                 </select>
                             </div>
+                            <div class="col-12 row no_padding_right">
+                                <div class="col-5  data_pog_dost  no_padding_right">
+                                    <div class="little_title_create_orders">
+                                        Дата доставки
+                                    </div>
+                                    <div class="data_pog_dost_height no_padding_right">
+                                        <input @click="openDB3" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
+                                        <date-picker ref="datepicker3"  v-model="data_dostavki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP3" @change="handleChange0"></date-picker>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="big_comment">
                             <div class="little_title_create_orders">
                                 Комментарий
                             </div>
-                            <textarea class="comm_settings" @blur="update_order()" v-model="komment_1" rows="6"  name="text"></textarea>
+                            <textarea class="comm_settings_1" @blur="update_order()" v-model="komment_1" rows="6"  name="text"></textarea>
                         </div>
                     </div>
                 </div>
@@ -251,48 +253,45 @@
                     <span v-for="(elem,key) in spisokTSarr">
                         <span v-if="add_ts!==key">
                         <div class="col row" >
-                                    <div class="col-1 no_padding_right create_order_right_main_text">{{key + 1}}</div>
+                                    <div class="col-1 no_padding_right create_order_right_main_text ts_counter">{{key + 1}}</div>
                                     <div class="col-2 no_padding_right ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text ">Вид ТС</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right">
-                                            <div class="create_order_right_main_text">
-                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['ts_list_id']==elem.vid_TS" class="col-9 no_padding_left">{{ one_ts.ts_name }}</div>
-                                                <div else class="col-9 no_padding_left"></div>
-                                            </div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text ">Вид ТС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right">
+                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['ts_list_id']==elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
                                         </div>
                                     </div>
                                     <div class="col-2 no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Расстояние,км</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.rasstojanie_TS }}</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Расстояние,км</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.rasstojanie_TS }}</div>
                                     </div>
                                     <div class="col-2 no_padding_right  ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Кол.грузомест</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.kol_gruz_TS }}</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.грузомест</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_gruz_TS }}</div>
                                     </div>
                                     <div class="col-2 no_padding_right  ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Кол.ТС</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.kol_TS_TS }}</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.ТС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_TS_TS }}</div>
                                     </div>
                                     <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Общий вес,кг</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.ob_ves_TS }}</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Общий вес,кг</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ves_TS }}</div>
                                     </div>
 
                                     <div class="offset-1 col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text text_line mt_ts_text">Общий объём,м3</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.ob_ob_TS }}</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text text_line mt_ts_text">Общий объём,м3</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ob_TS }}</div>
                                     </div>
                                     <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.stavka_TS }}р.</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
                                     </div>
                                     <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.stavka_kp_TS }}р.</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_kp_TS }}<span v-if="elem.stavka_kp_TS">р.</span></div>
                                     </div>
                                     <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_ord_right_lit_text mt_ts_text">Маржа</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-center no_padding_right create_order_right_main_text">{{ elem.marja_TS }}р.</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Маржа</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.marja_TS }} <span v-if="elem.marja_TS">р.</span> </div>
                                     </div>
                                 </div>
 
@@ -334,12 +333,10 @@
                                 Вид ТС
                             </div>
                             <div class="create_orders_bottom">
-
-                                <select  class="sel_cust" v-model="vid_TS">
+                                <select  class="sel_cust select_width" v-model="vid_TS">
                                     <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
                                 </select>
                             </div>
-
                             <div class="col-12 row">
                                 <div class="col-6">
                                     <div class="little_title_create_orders2">
@@ -472,8 +469,8 @@
                         <div class="col-12 right_comments">
 
                             <div class="col-6 row checkbox2_row">
-                                <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
-                                <div class="col">На терминале</div>
+                                <input class="col-2 checkbox_create_orders2 border_input checkbox_create_orders2_height" type="checkbox" id="checkbox1" v-model="checked2">
+                                <div class="col terminal_ts">На терминале</div>
                             </div>
                             <div v-if="checked2" class="col-6 terminal_cr_ord">
                                 <div class="little_title_create_orders">
@@ -504,7 +501,7 @@
                             </div>
                             <div class="create_orders_bottom">
 
-                                <select  class="sel_cust" v-model="vid_TS">
+                                <select  class="sel_cust select_width" v-model="vid_TS">
                                     <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
                                 </select>
                             </div>
@@ -640,8 +637,8 @@
                         <div class="col-12 right_comments">
 
                             <div class="col-6 row checkbox2_row">
-                                <input class="col-2 checkbox_create_orders2 border_input" type="checkbox" id="checkbox1" v-model="checked2">
-                                <div class="col">На терминале</div>
+                                <input class="col-2 checkbox_create_orders2 checkbox_create_orders2_height_d border_input" type="checkbox" id="checkbox1" v-model="checked2">
+                                <div class="col terminal_ts">На терминале</div>
                             </div>
                             <div v-if="checked2" class="col-6 terminal_cr_ord">
                                 <div class="little_title_create_orders">
@@ -754,7 +751,8 @@
                 perevozka_arr:[],
                 gruzootpravitel_arr: [],
                 select_temp_pogr_or_vygr:'',
-                select_temp_pogr_or_vygr_key:''
+                select_temp_pogr_or_vygr_key:'',
+                order_header_text:''
             }
         },
         mounted()
@@ -774,11 +772,13 @@
             {
                 this.data_vneseniya= new Date().toLocaleDateString();
                 this.start_new_order();
+                this.order_header_text='Создание заявки'
             }
             //если редактируем заявку
             else
             {
                 this.order_id=adress;
+                this.order_header_text='Заявка номер: '+adress+' Дата внесения: '
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
             }
         },
@@ -792,7 +792,10 @@
                 }
                 else
                 {
-                    return this.stavka_TS/this.rasstojanie_TS
+                    // return this.stavka_TS/this.rasstojanie_TS
+                    let st= this.stavka_TS/this.rasstojanie_TS
+                    let fin =(parseInt(st * 100)) / 100
+                    return fin
                 }
             },
             marja_TS: function () {

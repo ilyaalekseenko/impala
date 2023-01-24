@@ -10932,6 +10932,7 @@ aside {
 }
 
 .dropmenu {
+  z-index: 99999;
   width: 200px;
 }
 
