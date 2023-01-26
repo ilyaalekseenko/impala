@@ -9,14 +9,17 @@ use App\Models\OplataOrders;
 use App\Models\Orders;
 use App\Models\Perevozka;
 use App\Models\PogruzkaTS;
+use App\Models\Role;
 use App\Models\TemplateVar;
 use App\Models\TS;
 use App\Models\LogistName;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -30,11 +33,20 @@ class OrdersController extends Controller
 {
     public function main_orders()
     {
-        return view('front.orders');
+        return view('front.orders')->with('auth_user',  auth()->user());
     }
     public function create_orders()
     {
-        return view('front.create_orders');
+        $user = User::find(Auth::id());
+        //получаем список ролей
+        $roles= Role::find($user->roles[0]['id']);
+        $permissions_arr=[];
+        foreach ($roles->permissions as $permission) {
+            array_push($permissions_arr, $permission['id']);
+        }
+        $role_perm=['role'=>$user->roles[0]['id'],'permissions'=>$permissions_arr];
+        $user['role_perm']=$role_perm;
+        return view('front.create_orders')->with('auth_user',  $user);
     }
     public function check_if_order_isset(Request $request)
     {

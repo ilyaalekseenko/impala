@@ -31,7 +31,7 @@ class GradeController extends Controller
     }
     public function show_grade(Request $request)
     {
-        return view('front.grade');
+        return view('front.grade')->with('auth_user',  auth()->user());
     }
     public function save_start_summa(Request $request)
     {

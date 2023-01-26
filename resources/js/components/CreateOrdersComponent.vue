@@ -93,9 +93,10 @@
                             </div>
                             <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD"  />
                         </div>
-                        <div class="col-12 row">
+                        <div class="col-12 row" v-show="checkRolePermission([1])">
+<!--                        <div class="col-12 row" v-show="checkRolePermission(['admin':'show','logist':'show'])">-->
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
-                                <div class="little_title_create_orders no_wrap_text">
+                                <div class="little_title_create_orders no_wrap_text" >
                                     Цена контракта
                                 </div>
                                 <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
@@ -285,11 +286,11 @@
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
                                     </div>
-                                    <div class="col-2  no_padding_right">
+                                    <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_kp_TS }}<span v-if="elem.stavka_kp_TS">р.</span></div>
                                     </div>
-                                    <div class="col-2  no_padding_right">
+                                    <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Маржа</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.marja_TS }} <span v-if="elem.marja_TS">р.</span> </div>
                                     </div>
@@ -355,7 +356,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 row">
+                            <div class="col-12 row" v-show="checkRolePermission([1])">
                                 <div class="col-6">
                                     <div class="little_title_create_orders2">
                                         Ставка КП
@@ -523,7 +524,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 row">
+                            <div class="col-12 row" v-show="checkRolePermission([1])">
                                 <div class="col-6">
                                     <div class="little_title_create_orders2">
                                         Ставка КП
@@ -680,6 +681,7 @@
         }
     });
     export default {
+        props: ['auth_user'],
         components: {
             datepicker,
             DatePicker
@@ -752,11 +754,15 @@
                 gruzootpravitel_arr: [],
                 select_temp_pogr_or_vygr:'',
                 select_temp_pogr_or_vygr_key:'',
-                order_header_text:''
+                order_header_text:'',
+                role:'',
+                permissions:[]
             }
         },
         mounted()
         {
+            this.role=this.auth_user['role_perm']['role']
+            this.permissions=this.auth_user['role_perm']['permissions']
             this.get_terminal_list(this.termList);
             this.get_perevozka_list(this.perevozka_arr)
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
@@ -826,6 +832,27 @@
             },
         },
         methods: {
+            //проверка показывать ли этот блок текущему пользователю
+            //role - id роли 1- admin 2- manager 3- logist и т.д
+            //permission id прав, 1 - все права 2 - show и т.д.
+            //на вход отдавать список id кто должен видеть блок
+
+            checkRolePermission(users_permissions_list)
+            {
+                let permission=2;
+
+                //перебор юзеров
+                let role=0;
+                let flag=false;
+                for(var j = 0; j < users_permissions_list.length; j++) {
+                    role=users_permissions_list[j]
+                     if((role==this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
+                         flag = true;
+                     }
+                }
+                return flag
+
+            },
             get_perevozka_list(inp)
             {
                 axios

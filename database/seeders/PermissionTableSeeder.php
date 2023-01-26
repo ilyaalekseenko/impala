@@ -17,8 +17,7 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
             ['slug' => 'all_permissions', 'name' => 'Все права'],
-            ['slug' => 'see_self_orders', 'name' => 'Видит свои заявки'],
-            ['slug' => 'see_all_logists_orders', 'name' => 'Видит все заявки логистов'],
+            ['slug' => 'show', 'name' => 'Видит свои заявки'],
             ];
         foreach ($permissions as $item) {
             $permission = new Permission();

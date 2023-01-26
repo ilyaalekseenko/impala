@@ -229,8 +229,8 @@
                                             Адрес погрузки {{ key1 + 1 }}
                                         </div>
                                         <div class="col-6 row">
-                                            <span v-on:click="add_new_adres_pogruzka(key,1)" class="col add_button_grade no_wrap_text">Новый адрес</span>
-                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить адрес</span>
+                                            <span v-on:click="add_new_adres_pogruzka(key,1)" class="col add_button_grade no_wrap_text">Новый</span>
+                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
                                         <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">
@@ -285,8 +285,8 @@
                                             Адрес выгрузки {{ key2 + 1 }}
                                         </div>
                                         <div class="col-6 row">
-                                            <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый адрес</span>
-                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить адрес</span>
+                                            <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый</span>
+                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
                                          <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">
@@ -337,8 +337,8 @@
                                             Терминал
                                         </div>
                                         <div class="col-12 row">
-                                            <span class="col add_button_grade no_wrap_text">Новый адрес</span>
-                                            <span class="col add_button_grade no_wrap_text">Добавить адрес</span>
+                                            <span class="col add_button_grade no_wrap_text">Новый</span>
+                                            <span class="col add_button_grade no_wrap_text">Добавить</span>
                                         </div>
                                     </div>
                                     <select v-if="elem1.checked2" @blur="update_one_data(elem1,'terminal_TS')" class="col border_input grade_adr" v-model="elem1.terminal_TS">
@@ -482,6 +482,7 @@
         }
     });
     export default {
+        props: ['auth_user'],
         components: {
             datepicker,
             DatePicker
