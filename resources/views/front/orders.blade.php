@@ -1,4 +1,4 @@
 @extends('layouts.main')
 @section('content')
-        <orders-component></orders-component>
+        <orders-component :auth_user='@json($auth_user)'></orders-component>
 @endsection

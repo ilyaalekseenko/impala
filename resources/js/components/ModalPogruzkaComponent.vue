@@ -46,8 +46,8 @@
                             </div>
                             <div class="container-fluid ">
                                 <div class="col-12 row">
-                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade ">ИНН {{ founded }}</div>
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot grade_marg_top">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade ">Для автозаполнения введите ИНН {{ founded }}</div>
                                         <input @blur="get_INN_api()" class="col-12 border_input inn_width"
                                                v-model="INN"/>
                                     </div>

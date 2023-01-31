@@ -10,6 +10,8 @@ use App\Models\Orders;
 use App\Models\PogruzkaTS;
 use App\Models\TemplateVar;
 use App\Models\TS;
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use ZipArchive;
 
@@ -48,6 +50,14 @@ class GradeController extends Controller
             'status' => 'success',
             'message' =>'Сумма успешно сохранена',
         ], 200);
+    }
+    public function get_logist_list()
+    {
+        $list_users= User::whereRelation('roles', 'role_id', '=', 2)->get();
+        return response()->json([
+            'status' => 'success',
+            'list_users' => $list_users
+        ], 201);
     }
     public function add_new_adres_pogruzka(Request $request)
     {

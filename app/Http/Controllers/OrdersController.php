@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UpdateLogistEvent;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\Gruzootpravitel;
@@ -13,6 +14,7 @@ use App\Models\Role;
 use App\Models\TemplateVar;
 use App\Models\TS;
 use App\Models\LogistName;
+use App\Models\UnreadHeader;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Gotenberg\Gotenberg;
@@ -83,6 +85,67 @@ class OrdersController extends Controller
         return response()->json([
             'status' => 'success',
             'file' =>$doc[0]['doc_name'],
+        ], 200);
+
+    }
+    public function update_unread_status(Request $request)
+    {
+        //id = order_id
+        $id=$request->input('id');
+        //logist = logist_id
+        $logist=$request->input('logist_id');
+       $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->get();
+        if (!$isset->isEmpty())
+        {
+                        $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->delete();
+                       $orders_count_new=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
+                       broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist))->toOthers();
+        }
+        return response()->json([
+            'status' => 'success',
+        ], 200);
+
+    }
+    public function update_order_logist(Request $request)
+    {
+        //id = order_id
+        $id=$request->input('id');
+        //logist = logist_id
+        $logist=$request->input('logist');
+        if($logist!==0)
+        {
+            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+            if ($logist_to_del->isEmpty()) {
+                $logist_to_del=0;
+                $orders_count_new=0;
+            }
+            else
+            {
+                UnreadHeader::where('order_id','=',$id)->delete();
+                $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
+                $logist_to_del=$logist_to_del[0]['logist_id'];
+            }
+
+
+            UnreadHeader::where('order_id','=',$id)->delete();
+        UnreadHeader::firstOrCreate([
+            'logist_id' =>$logist,
+            'column_name' =>'ocenka',
+            'order_id' =>$id,
+        ]);
+
+        $orders_count=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
+        broadcast(new UpdateLogistEvent($orders_count,$logist,$orders_count_new,$logist_to_del))->toOthers();
+        }
+        else
+        {
+            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+            UnreadHeader::where('order_id','=',$id)->delete();
+            $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
+            broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del[0]['logist_id']))->toOthers();
+        }
+        return response()->json([
+            'status' => 'success',
         ], 200);
 
     }
@@ -161,10 +224,11 @@ class OrdersController extends Controller
        }
         $orders_list[0]['oplata']=$arr_to_add;
 
-        $log_name= LogistName::where('id', '=', $orders_list[0]['logist'])->get('logist_name');
+        $log_name= User::where('id', '=', $orders_list[0]['logist'])->get();
 
-       if (!$log_name->isEmpty()) {
-        $orders_list[0]['logist_name']=$log_name[0]['logist_name'];
+       if (!$log_name->isEmpty())
+            {
+                $orders_list[0]['logist_name']=$log_name[0]['last_name'].' '.$log_name[0]['first_name'].' '.$log_name[0]['patronymic'];
             }
             else
             {
@@ -423,14 +487,88 @@ class OrdersController extends Controller
 //        $objWriter->save(public_path('grade_doc/2.txt'));
 
     }
+    public function header_counter_orders()
+    {
+        $user = User::find(Auth::id());
+        $role=$user->roles[0]['id'];
+        $ocenka_unread_count=0;
+        if($role==1)
+        {
+            //общее количество заявок
+            $zurnal_zaiavok = Orders::all()
+                ->count();
+            //количество заявок отданных какому-либо логисту
+            $ocenka = Orders::
+                  where('logist', '<>', 0)
+                ->where('logist', '<>', null)
+                ->count();
+        }
+        //если роль логист
+        if($role==2)
+        {
+            //общее количество заявок
+            $zurnal_zaiavok = Orders::all()
+                ->count();
+            //количество заявок данного логиста
+            $ocenka = Orders::
+                where('logist',Auth::id())
+                ->count();
+            //количество не прочитанных заявок оценка
+
+            $ocenka_unread_count=UnreadHeader::where('logist_id',$user['id'])->where('column_name','ocenka')->count();
+
+        }
+        return response()->json([
+            'status' => 'success',
+            'zurnal_zaiavok' => $zurnal_zaiavok,
+            'ocenka' => $ocenka,
+            'ocenka_unread_count' => $ocenka_unread_count,
+//            'naznachenie_stavki' => $naznachenie_stavki,
+//            'v_rabote' => $v_rabote,
+//            'kontrol' => $kontrol,
+//            'zavershen' => $zavershen
+
+        ], 201);
+
+    }
     public function get_orders_list_new(Request $request)
     {
         $offset =  $request->input('offset');
         $limit =  $request->input('limit');
+        //выборка по фильтру из шапки
+        //0 - журнал заявок
+        //1 - оценка
+        //2 - назначение ставки
+        //3 - в работе
+        //4 - контроль
+        //5 - завершён
+        $order_by =  $request->input('order_by');
+        $user = User::find(Auth::id());
+        $role=$user->roles[0]['id'];
+
+
+        //разбираем важные
         //получаем количество всех важных записей
-        $all_imp = Orders::where('important', 1)->count();
+        $all_imp = Orders::where('important', 1)
+            //если сортировка по колонке оценка и юзер админ
+            ->when($order_by==1&&$role==1, function($q){
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+            })
+            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+            ->when($order_by==1&&$role==2, function($q){
+                return $q->where('logist', Auth::id());
+            })
+            ->count();
         //получаем все важные сначала
         $list_colored_imp = Orders::where('important', 1)
+            //если сортировка по колонке оценка и юзер админ
+            ->when($order_by==1&&$role==1, function($q){
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+            })
+            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+            ->when($order_by==1&&$role==2, function($q){
+                return $q->where('logist', Auth::id());
+            })
             ->get();
         $not_empty_flag=false;
 //        if($all_imp>$offset&&($limit+$offset)<=$all_imp)
@@ -446,6 +584,14 @@ class OrdersController extends Controller
                 //получаем все не важные записи с листа
                 $list_colored = Orders::where('id', '>=', 0)
                     ->where('important',null)
+                    //если сортировка по колонке оценка и юзер админ
+                    ->when($order_by==1&&$role==1, function($q){
+                        return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                    })
+                    //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+                    ->when($order_by==1&&$role==2, function($q){
+                        return $q->where('logist', Auth::id());
+                    })
                     ->offset($temp_offset)
                     ->limit($dif)
                     ->get();
@@ -456,6 +602,14 @@ class OrdersController extends Controller
       {
           $list_colored = Orders::where('id', '>=', 0)
               ->where('important',null)
+              //если сортировка по колонке оценка и юзер админ
+              ->when($order_by==1&&$role==1, function($q){
+                  return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+              })
+              //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+              ->when($order_by==1&&$role==2, function($q){
+                  return $q->where('logist', Auth::id());
+              })
               ->offset($offset-$all_imp)
               ->limit($limit)
               ->get();
@@ -482,16 +636,26 @@ class OrdersController extends Controller
         }
 
         $count = Orders::where('id', '>=', 0)
+            //если сортировка по колонке оценка и юзер админ
+            ->when($order_by==1&&$role==1, function($q){
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+            })
+            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+            ->when($order_by==1&&$role==2, function($q){
+                return $q->where('logist', Auth::id());
+            })
             ->count();
         //получаем имя грузоотправителя
         $gruzootpravitel = Gruzootpravitel::all();
 
+        //конец выборки по колонки 0 - журнал заявок
 
         return response()->json([
             'status' => 'success',
             'list_colored' => $res_arr,
             'tipes_count' => $count,
-            'gruzootpravitel' => $gruzootpravitel
+            'order_by' => $order_by,
+            'role' => $role,
 //            'res'=>$list_colored_imp_old,
 //            'res1'=>$old_imp['id']
         ], 201);

@@ -19,13 +19,11 @@
                        </span>
                         <date-picker ref="datepicker0"  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" @change="handleChange0"></date-picker>
                     </div>
-                    <div class="col-4 ">
+                    <div class="col-4" v-show="checkRolePermission([1])">
                         <span  class="create_orders_date_title">Логист:</span>
-                        <select @change="handleChange" v-if="logist_list" @update="update_order()" class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
-                            <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
-                            <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
-                            <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
-                            <option v-bind:value="3" class="sel_cust">Путин В.В.</option>
+                        <select @change="handleChange" v-if="logist_list"  class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
+                            <option  v-bind:value=0  class="sel_cust">Логист не выбран</option>
+                            <option v-for="(logist) in logist_list_full" v-bind:value=logist.id  class="sel_cust">{{ logist.full_logist_name }}</option>
                         </select>
                         <span v-if="!logist_list" class="create_orders_date_title_int">{{ logist_name }}</span>
                         <span @click="logist_show">
@@ -756,16 +754,19 @@
                 select_temp_pogr_or_vygr_key:'',
                 order_header_text:'',
                 role:'',
-                permissions:[]
+                permissions:[],
+                logist_list_full:[]
             }
         },
         mounted()
         {
             this.role=this.auth_user['role_perm']['role']
             this.permissions=this.auth_user['role_perm']['permissions']
+
             this.get_terminal_list(this.termList);
             this.get_perevozka_list(this.perevozka_arr)
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
+            this.get_logist_list(this.logist_list_full)
             for (let i = document.getElementsByClassName('mx-input-wrapper').length; i > 0 ; i--) {
                 let m = i - 1
                 document.getElementsByClassName('mx-input-wrapper')[m].remove();
@@ -786,6 +787,7 @@
                 this.order_id=adress;
                 this.order_header_text='Заявка номер: '+adress+' Дата внесения: '
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
+                this.update_unread_status()
             }
         },
 
@@ -852,6 +854,22 @@
                 }
                 return flag
 
+            },
+            get_logist_list(inp)
+            {
+                axios
+                    .post('/get_logist_list',{
+                    })
+                    .then(({ data }) => (
+                            data.list_users.forEach(function(entry) {
+                                inp.push({
+                                    id:entry.id,
+                                    full_logist_name:entry.last_name+' '+entry.first_name+' '+entry.patronymic,
+
+                                });
+                            })
+                        )
+                    );
             },
             get_perevozka_list(inp)
             {
@@ -1021,7 +1039,8 @@
                 var name = e.target.options[e.target.options.selectedIndex].text;
                 this.logist_name=name ;
                 this.logist_show();
-                this.update_order();
+                this.update_order_logist()
+
              },
             logist_show()
             {
@@ -1043,8 +1062,34 @@
                         )
                     );
             },
+            update_unread_status()
+            {
+                if(this.role==2)
+                {
+                axios
+                    .post('/update_unread_status',{
+                        logist_id:this.auth_user['id'],
+                        id:this.order_id
+                    })
+                }
+            },
+            update_order_logist()
+            {
+
+                    axios
+                        .post('/update_order_logist',{
+                            logist:this.logist,
+                            id:this.order_id
+                        })
+                        .then(({ data }) => (
+                            this.update_order()
+                        ))
+
+
+            },
             update_order()
             {
+
                 axios
                     .post('/update_order',{
                         id:this.order_id,

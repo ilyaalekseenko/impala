@@ -57,6 +57,8 @@ import vClickOutside from 'v-click-outside'
 
 Vue.use(vClickOutside)
 
+
+
 const app = new Vue({
     el: '#app',
 });

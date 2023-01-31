@@ -33,6 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store_doc_templ', [App\Http\Controllers\OrdersController::class, 'store_doc_templ'])->name('store_doc_templ');
     Route::post('/delete_orders', [App\Http\Controllers\OrdersController::class, 'delete_orders'])->name('delete_orders');
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'mark_as_important'])->name('mark_as_important');
+    Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'update_order_logist'])->name('update_order_logist');
+    Route::post('/update_unread_status', [App\Http\Controllers\OrdersController::class, 'update_unread_status'])->name('update_unread_status');
     Route::post('/save_ts', [App\Http\Controllers\TSController::class, 'save_ts'])->name('save_ts');
     Route::post('/delete_TS', [App\Http\Controllers\TSController::class, 'delete_TS'])->name('delete_TS');
     Route::post('/get_ts_list', [App\Http\Controllers\TSController::class, 'get_ts_list'])->name('get_ts_list');
@@ -40,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_type_per_list', [App\Http\Controllers\TSController::class, 'get_type_per_list'])->name('get_type_per_list');
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
     Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
+    Route::post('/header_counter_orders', [App\Http\Controllers\OrdersController::class, 'header_counter_orders'])->name('header_counter_orders');
     Route::post('/get_start_data_grade', [App\Http\Controllers\GradeController::class, 'get_start_data_grade'])->name('get_start_data_grade');
     Route::post('/update_final_grade', [App\Http\Controllers\GradeController::class, 'update_final_grade'])->name('update_final_grade');
     Route::post('/add_pogruzka_grade', [App\Http\Controllers\GradeController::class, 'add_pogruzka_grade'])->name('add_pogruzka_grade');
@@ -53,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store_grade_file', [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
     Route::post('/delete_file_grade', [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
     Route::post('/get_ob_budzet_down', [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
+    Route::post('/get_logist_list', [App\Http\Controllers\GradeController::class, 'get_logist_list'])->name('get_logist_list');
     Route::post('/get_templ_names', [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
     Route::get('/download_all_doc_grade/{grade_id}/{ts_id}', [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');
     Route::post('/get_template_vars', [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');

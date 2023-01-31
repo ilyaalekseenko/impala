@@ -15,65 +15,65 @@
                 <div class="col-12 coloring_row row">
                     <div class="col-12 row coloring_row_1">
 
-                        <div class="col-2  color_title_1 coloring_np">
+                        <div class="col-2  color_title_1 coloring_np" v-on:click="update_header_underscore(0)" :class="{ header_underscore_0: header_underscore_list_class[0] }">
                             <span class="col-12 row">
                             <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
                             <div class="col-6 row text-end coloring_np">
                                 <div class="col-12 coloring_np">
-                                    <span class="coloring_integer">{{ orders_total_numb }}</span>
+                                    <span class="coloring_integer">{{ zurnal_zaiavok }}</span>
                                 </div>
                             </div>
                             </span>
                         </div>
 
-                        <div class="col-2  color_title_2 coloring_np">
+                        <div class="col-2  color_title_2 coloring_np" v-on:click="update_header_underscore(1)" :class="{ header_underscore_1: header_underscore_list_class[1] }">
                             <span class="col-12 row">
                             <div class="col-4 coloring_row_text coloring_np head_font">Оценка</div >
                             <div class="col row text-end coloring_np">
                                 <div class="col coloring_np">
-                                    <span class="coloring_integer head_font">100000</span>
-                                    <span class="coloring_integer_green">+1</span>
+                                    <span class="coloring_integer head_font">{{ ocenka }}</span>
+                                    <span class="coloring_integer_green" v-if="ocenka_counter!==0">+{{ ocenka_counter }}</span>
                                 </div>
                             </div>
                             </span>
                         </div>
 
-                    <div class="col-2 color_title_3 coloring_np">
+                    <div class="col-2 color_title_3 coloring_np" v-on:click="update_header_underscore(2)" :class="{ header_underscore_2: header_underscore_list_class[2] }">
                         <span class="col-12 row">
                         <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
                             <div class="col-12 coloring_np ">
-                            <span class="coloring_integer head_font">1000</span>
+                            <span class="coloring_integer head_font">0</span>
                             </div>
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_4 coloring_np">
+                    <div class="col-2 color_title_4 coloring_np" v-on:click="update_header_underscore(3)" :class="{ header_underscore_3: header_underscore_list_class[3] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">В работе</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np coloring_np">
-                                <span class="coloring_integer head_font">100000</span>
+                                <span class="coloring_integer head_font">0</span>
                             </div>
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_5 coloring_np">
+                    <div class="col-2 color_title_5 coloring_np" v-on:click="update_header_underscore(4)" :class="{ header_underscore_4: header_underscore_list_class[4] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Контроль</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer head_font">100000</span>
+                                <span class="coloring_integer head_font">0</span>
                             </div>
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_6 coloring_np">
+                    <div class="col-2 color_title_6 coloring_np" v-on:click="update_header_underscore(5)" :class="{ header_underscore_5: header_underscore_list_class[5] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Завершён</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer head_font">100000</span>
+                                <span class="coloring_integer head_font">0</span>
                             </div>
                         </div>
                             </span>
@@ -168,8 +168,25 @@ Vue.filter('formatDate', function(value) {
     }
 });
     export default {
+        props: ['auth_user'],
         mounted() {
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
+            this.header_counter_orders()
+            window.Echo.private('logist')
+                .listen('UpdateLogistEvent',(e) => {
+                    // console.log(e.counter)
+                    console.log(e)
+                    //если номер id пришедшего обновления совпадает с номером логиста
+                    if(e.logist_number==this.auth_user.id)
+                    {
+                        this.ocenka_counter=e.counter
+                    }
+                    if(e.delete_logist_number==this.auth_user.id)
+                    {
+                        this.ocenka_counter=e.delete_counter
+                    }
+                })
+           console.log(this.auth_user.id)
         },
         data() {
             return {
@@ -183,16 +200,28 @@ Vue.filter('formatDate', function(value) {
                 limit:20,
                 last_pagination_number:true,
                 //конец пагинации
-                orders_total_numb:0,
+                ocenka:0,
                 delete_arr:[],
                 type_per_list:[],
                 gruzootpravitel_arr: [],
+                zurnal_zaiavok:0,
+                ocenka_counter:0,
+                header_underscore_list_class:[true,false,false,false,false,false],
+                order_by:'0'
             }
         },
         created()
         {
             this.get_orders_list(this.orders_list)
             this.get_type_per_list(this.type_per_list);
+
+
+            // var channel = pusher.subscribe('logist');
+            // channel.bind('UpdateLogistEvent', function(data) {
+            //    alert('tetst')
+            // });
+            // const channel = window.pusher.subscribe('private-logist')
+
 
         },
         methods: {
@@ -214,6 +243,21 @@ Vue.filter('formatDate', function(value) {
 
                     })
               //  window.location.href =('/create_orders/'+id)
+            },
+            update_header_underscore(numb)
+            {
+                this.order_by=numb
+                this.header_underscore_list_class=[false,false,false,false,false,false]
+                this.header_underscore_list_class[numb]=true
+                this.orders_list=[];
+                this.pagination_all=0,
+                this.current_page=1,
+                this.pagination_numb=[],
+                this.offset=20,
+                this.limit=20,
+                this.last_pagination_number=true,
+                    this.checked_all=false
+                this.get_orders_list(this.orders_list)
             },
             get_gruzootpravitel_list()
             {
@@ -342,6 +386,18 @@ Vue.filter('formatDate', function(value) {
             create_order() {
                 window.location.href =('/create_orders')
             },
+            header_counter_orders()
+            {
+                axios
+                    .post('/header_counter_orders',{
+                    })
+                    .then(({ data }) => (
+                                this.zurnal_zaiavok=data.zurnal_zaiavok,
+                                this.ocenka=data.ocenka,
+                                this.ocenka_counter=data.ocenka_unread_count
+                        )
+                    );
+            },
             get_orders_list(inp)
             {
                 let offset_from_start=(this.current_page-1)*this.offset
@@ -349,11 +405,11 @@ Vue.filter('formatDate', function(value) {
                 axios
                     .post('/get_orders_list_new',{
                         offset:offset_from_start,
-                        limit:this.limit
+                        limit:this.limit,
+                        order_by:this.order_by
                     })
                     .then(({ data }) => (
-                            this.pagination_all=data.tipes_count,
-                                this.orders_total_numb=data.tipes_count,
+                                this.pagination_all=data.tipes_count,
                                 data.list_colored.forEach(function(entry) {
                                     inp.push({
                                         id:entry.id,
@@ -392,8 +448,6 @@ Vue.filter('formatDate', function(value) {
             },
             new_page(page_id)
             {
-                console.log(this.current_page)
-
                 this.pagination_numb=[]
                 this.orders_list=[]
                 this.current_page=page_id
