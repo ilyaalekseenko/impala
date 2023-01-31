@@ -518,6 +518,18 @@ class OrdersController extends Controller
             $ocenka_unread_count=UnreadHeader::where('logist_id',$user['id'])->where('column_name','ocenka')->count();
 
         }
+        //если роль менеджер
+        if($role==3)
+        {
+            //общее количество заявок
+            $zurnal_zaiavok = Orders::all()
+                ->count();
+            //количество заявок данного логиста
+            $ocenka = 0;
+            //количество не прочитанных заявок оценка
+            $ocenka_unread_count=0;
+
+        }
         return response()->json([
             'status' => 'success',
             'zurnal_zaiavok' => $zurnal_zaiavok,
@@ -558,6 +570,10 @@ class OrdersController extends Controller
             ->when($order_by==1&&$role==2, function($q){
                 return $q->where('logist', Auth::id());
             })
+            //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
+            ->when($order_by==1&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
             ->count();
         //получаем все важные сначала
         $list_colored_imp = Orders::where('important', 1)
@@ -568,6 +584,10 @@ class OrdersController extends Controller
             //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
             ->when($order_by==1&&$role==2, function($q){
                 return $q->where('logist', Auth::id());
+            })
+            //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
+            ->when($order_by==1&&$role==3, function($q){
+                return $q->where('id', 0);
             })
             ->get();
         $not_empty_flag=false;
@@ -592,6 +612,10 @@ class OrdersController extends Controller
                     ->when($order_by==1&&$role==2, function($q){
                         return $q->where('logist', Auth::id());
                     })
+                    //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
+                    ->when($order_by==1&&$role==3, function($q){
+                        return $q->where('id', 0);
+                    })
                     ->offset($temp_offset)
                     ->limit($dif)
                     ->get();
@@ -609,6 +633,10 @@ class OrdersController extends Controller
               //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
               ->when($order_by==1&&$role==2, function($q){
                   return $q->where('logist', Auth::id());
+              })
+              //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
+              ->when($order_by==1&&$role==3, function($q){
+                  return $q->where('id', 0);
               })
               ->offset($offset-$all_imp)
               ->limit($limit)
@@ -643,6 +671,10 @@ class OrdersController extends Controller
             //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
             ->when($order_by==1&&$role==2, function($q){
                 return $q->where('logist', Auth::id());
+            })
+            //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
+            ->when($order_by==1&&$role==3, function($q){
+                return $q->where('id', 0);
             })
             ->count();
         //получаем имя грузоотправителя
