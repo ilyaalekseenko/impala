@@ -35,6 +35,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'mark_as_important'])->name('mark_as_important');
     Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'update_order_logist'])->name('update_order_logist');
     Route::post('/update_unread_status', [App\Http\Controllers\OrdersController::class, 'update_unread_status'])->name('update_unread_status');
+    Route::post('/add_oplata_orders', [App\Http\Controllers\OrdersController::class, 'add_oplata_orders'])->name('add_oplata_orders');
+    Route::post('/update_order_oplata', [App\Http\Controllers\OrdersController::class, 'update_order_oplata'])->name('update_order_oplata');
+    Route::post('/delete_oplata_summa', [App\Http\Controllers\OrdersController::class, 'delete_oplata_summa'])->name('delete_oplata_summa');
     Route::post('/save_ts', [App\Http\Controllers\TSController::class, 'save_ts'])->name('save_ts');
     Route::post('/delete_TS', [App\Http\Controllers\TSController::class, 'delete_TS'])->name('delete_TS');
     Route::post('/get_ts_list', [App\Http\Controllers\TSController::class, 'get_ts_list'])->name('get_ts_list');
@@ -83,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'add_perevozka_settings'])->name('add_perevozka_settings');
     Route::post('/add_forma_settings', [App\Http\Controllers\SettingsController::class, 'add_forma_settings'])->name('add_forma_settings');
     Route::post('/get_forma_gruzootpravitel_list', [App\Http\Controllers\SettingsController::class, 'get_forma_gruzootpravitel_list'])->name('get_forma_gruzootpravitel_list');
+    Route::post('/update_user', [App\Http\Controllers\SettingsController::class, 'update_user'])->name('update_user');
     Route::post('/update_forma_settings', [App\Http\Controllers\SettingsController::class, 'update_forma_settings'])->name('update_forma_settings');
     Route::post('/logout', [App\Http\Controllers\ProfileController::class, 'logout'])->name('logout');
 

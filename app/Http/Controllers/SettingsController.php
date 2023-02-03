@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FormaModal;
 use App\Models\Gruzootpravitel;
 use App\Models\Perevozka;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -15,6 +16,29 @@ class SettingsController extends Controller
         Perevozka::where('id', '=',$perevozka['id'])->update([
             'perevozka_name' =>$perevozka['perevozka_name'],
         ]);
+    }
+    public function  update_user(Request $request)
+    {
+        $user_id=$request->input('user_id');
+        $search=$request->input('search');
+        $data=$request->input('data');
+        $request->validate([
+            'name' => ['string', 'max:255'],
+            'email' => [ 'string', 'email', 'max:255', 'unique:users'],
+            'first_name' => [ 'max:255'],
+            'last_name' => [ 'max:255'],
+            'patronymic' => ['max:255'],
+            'dolznost' => ['max:255'],
+            'telefon' => ['max:255'],
+            'data_rozdenia' => ['max:255'],
+
+        ]);
+        User::where('id', '=',$user_id)->update([
+            $search =>$data,
+        ]);
+        return response()->json([
+            'status' => 'success',
+        ], 201);
     }
     public function update_forma_settings(Request $request)
     {

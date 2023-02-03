@@ -62,7 +62,7 @@
             </ul>
         </aside>
        </div>
-        <div class="col-10" >
+        <div class="col-10 ">
         <docs-settings-component v-if="nav_menu_show_var==1"></docs-settings-component>
         <perevozka-settings-component v-if="nav_menu_show_var==2"></perevozka-settings-component>
         <forma-gruzootpravitel-settings-component v-if="nav_menu_show_var==3"></forma-gruzootpravitel-settings-component>
