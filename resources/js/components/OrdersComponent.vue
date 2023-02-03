@@ -175,18 +175,41 @@ Vue.filter('formatDate', function(value) {
             window.Echo.private('logist')
                 .listen('UpdateLogistEvent',(e) => {
                     // console.log(e.counter)
-                    console.log(e)
                     //если номер id пришедшего обновления совпадает с номером логиста
                     if(e.logist_number==this.auth_user.id)
                     {
                         this.ocenka_counter=e.counter
+                        this.header_counter_orders()
                     }
                     if(e.delete_logist_number==this.auth_user.id)
                     {
                         this.ocenka_counter=e.delete_counter
+                        this.header_counter_orders()
                     }
-                })
-           console.log(this.auth_user.id)
+                }),
+                window.Echo.private('delete-order-channel')
+                    .listen('DeleteOrderEvent',(e) => {
+                        console.log(e)
+                        let temp_arr=[];
+                        for( let i = 0; i < this.orders_list.length; i++ )
+                        {
+                            let flag =false;
+                            for( let j = 0; j < e.order_id.length; j++ )
+                            {
+                                if(this.orders_list[i].id==e.order_id[j])
+                                {
+                                   flag=true
+                                }
+                            }
+                            if(flag==false)
+                            {
+                                temp_arr.push(this.orders_list[i])
+                            }
+
+
+                        }
+                        this.orders_list=temp_arr
+                    })
         },
         data() {
             return {

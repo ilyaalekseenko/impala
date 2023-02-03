@@ -23,7 +23,9 @@
             <div class="col-6">Почта</div>
             <input class="col-6" type="email" v-model="email"  />
             <div class="col-6">Номер телефона</div>
-            <input class="col-6" v-model="telefon"  />
+
+            <vue-tel-input  v-model="telefon" v-bind="vueTel.props"></vue-tel-input>
+
             <div class="col-6">Роль</div>
             <select class="cr_ord_inp_n_1" v-model="role">
                 <option v-for="(elem,key) in roles_list" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>
@@ -77,6 +79,20 @@ Vue.filter('formatDate', function(value) {
                 openDP:false,
                 role:3,
                 roles_list:[],
+                vueTel: {
+                    phone: "",
+                    props: {
+                        preferredCountries: ["RU", "BY"],
+                        placeholder: "Введите номер телефона",
+                        mode: "international",
+                        defaultCountry:"RU",
+                        inputOptions: {
+                            showDialCode: true
+                        },
+                        disabledFormatting: false,
+                        wrapperClasses: "country-phone-input"
+                    }
+                },
             }
         },
         methods: {

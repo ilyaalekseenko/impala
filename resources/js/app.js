@@ -57,7 +57,11 @@ import vClickOutside from 'v-click-outside'
 
 Vue.use(vClickOutside)
 
-
+import VueTelInput from "vue-tel-input";
+import VuePhoneNumberInput from "vue-phone-number-input";
+import "vue-phone-number-input/dist/vue-phone-number-input.css";
+Vue.use(VueTelInput);
+Vue.component("vue-phone-number-input", VuePhoneNumberInput);
 
 const app = new Vue({
     el: '#app',

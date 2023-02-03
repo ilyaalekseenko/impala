@@ -113,14 +113,15 @@
                                 <div class="little_title_create_orders">
                                     Оплата
                                 </div>
-                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].oplata"  />
+                                <input @blur="update_order_oplata('oplata',oplata.id,oplata_arr[key].oplata)" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].oplata"  />
                            </span>
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
                                 <div class="little_title_create_orders">
                                     Сумма
                                 </div>
-                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].summa"  />
+                                <input @blur="update_order_oplata('summa',oplata.id,oplata_arr[key].summa)" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].summa"  />
                                 </span>
+                            <span class="col-12 oplata_del" ><span v-on:click="delete_oplata_summa(oplata.id,key)" class="del_summa_text">удалить</span></span>
                         </div>
                         <div class="col">
                             <div class="add_button_plus" v-on:click="dobavit_oplatu()">
@@ -777,7 +778,7 @@
             //если новая заявка
             if(adress==null)
             {
-                this.data_vneseniya= new Date().toLocaleDateString();
+                this.data_vneseniya= new Date().toLocaleDateString('ru-RU');
                 this.start_new_order();
                 this.order_header_text='Создание заявки'
             }
@@ -853,6 +854,27 @@
                      }
                 }
                 return flag
+
+            },
+            update_order_oplata(summ_opl,id,data)
+            {
+                axios
+                    .post('/update_order_oplata',{
+                        id:id,
+                        summ_opl:summ_opl,
+                        data:data,
+                    })
+
+            },
+            delete_oplata_summa(id,key)
+            {
+                axios
+                    .post('/delete_oplata_summa',{
+                        id:id
+                    })
+                    .then(response => {
+                        this.oplata_arr.splice(key,1)
+                    })
 
             },
             get_logist_list(inp)
@@ -1180,7 +1202,7 @@
             {
                 axios
                     .post('/start_new_order',{
-                        data_vneseniya:new Date().toLocaleDateString()
+                        data_vneseniya:new Date().toLocaleDateString('ru-RU')
                     })
                     .then(({ data }) => (
                             this.order_id=data.data['id']
@@ -1506,10 +1528,20 @@
             },
             dobavit_oplatu()
             {
-                let objToPush= {};
-                objToPush['oplata'] = '';
-                objToPush['summa'] = '';
-                this.oplata_arr.push(objToPush);
+
+                axios
+                    .post('/add_oplata_orders',{
+                        id:this.order_id,
+                    })
+                    .then(response => {
+                        let objToPush= {};
+                        objToPush['id'] = response.data.data.id;
+                        objToPush['oplata'] = '';
+                        objToPush['summa'] = '';
+                        this.oplata_arr.push(objToPush);
+                    })
+
+
             },
             openEndDatePicker: function() {
 
@@ -1538,7 +1570,7 @@
                 //все последующие загрузки и изменения
                 else
                 {
-                    this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString();
+                    this.rasschitat_do= new Date(this.rasschitat_do).toLocaleDateString('ru-RU');
                  //   this.update_order()
                 }
                 return moment(date).format('D MM YYYY');
@@ -1552,7 +1584,7 @@
                 //все последующие загрузки и изменения
                 else
                 {
-                    this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString();
+                    this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString('ru-RU');
                   //  this.update_order()
                 }
                 // console.log(this.data_vneseniya);

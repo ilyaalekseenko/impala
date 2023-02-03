@@ -21,3 +21,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('logist', function ($user) {
     return true;
 });
+Broadcast::channel('delete-order-channel', function ($user) {
+    return true;
+});

@@ -32,12 +32,15 @@
         "autoprefixer": "10.4.5",
         "bootstrap-vue": "^2.22.0",
         "laravel-echo": "^1.15.0",
+        "libphonenumber-js": "^1.10.19",
         "moment": "^2.29.3",
         "pusher-js": "^8.0.1",
         "v-click-outside": "^3.2.0",
         "vue-awesome-sidebar": "^1.2.1",
         "vue-click-outside-element": "^3.1.2",
+        "vue-phone-number-input": "^1.12.13",
         "vue-sidebar-menu": "^5.2.5",
+        "vue-tel-input": "^5.12.0",
         "vue2-datepicker": "^3.11.0",
         "vuejs-datepicker": "^1.6.2"
     }

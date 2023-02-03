@@ -12,6 +12,8 @@
     <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.0-beta.3/iconify-icon.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-tel-input/dist/vue-tel-input.css" />
+
 </head>
 <body >
 <div id="app">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeleteOrderEvent;
 use App\Events\UpdateLogistEvent;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
@@ -196,19 +197,42 @@ class OrdersController extends Controller
             'ob_ob' =>$ob_ob,
             'vid_perevozki' =>$vid_perevozki,
         ]);
-        $oplata_arr=$request->input('oplata_arr');
-        OplataOrders::where('order_id','=',$id)->delete();
-        foreach ($oplata_arr as $oplata)
-        {
-            if($oplata['oplata']!=''||$oplata['summa']!='')
-            {
-                OplataOrders::create([
-                    'order_id' =>$id,
-                    'oplata' =>$oplata['oplata'],
-                    'summa' =>$oplata['summa'],
-                ]);
-            }
-        }
+
+
+    }
+    public function update_order_oplata(Request $request)
+    {
+        $id=$request->input('id');
+        $data=$request->input('data');
+        $summ_opl=$request->input('summ_opl');
+        OplataOrders::where('id', '=', $id)->update([
+            $summ_opl =>$data,
+        ]);
+
+    }
+    public function add_oplata_orders(Request $request)
+    {
+        $id=$request->input('id');
+
+       $oplata_id= OplataOrders::create([
+            'order_id' =>$id,
+            'oplata' =>'',
+            'summa' =>'',
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' =>'оплата успешно создана',
+            'data' =>$oplata_id,
+        ], 200);
+    }
+    public function delete_oplata_summa(Request $request)
+    {
+        $id=$request->input('id');
+        OplataOrders::where('id','=',$id)->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'оплата успешно удалена'
+        ], 200);
 
     }
     //если заявка уже существует
@@ -766,7 +790,19 @@ class OrdersController extends Controller
     public function delete_orders(Request $request)
     {
         $orders_id =  $request->input('orders_id');
+
         Orders::whereIn('id', $orders_id)->delete();
+
+        foreach ($orders_id as $ord_id)
+        {
+            $logist_to_del=UnreadHeader::where('order_id',$ord_id)->where('column_name','ocenka')->get();
+            UnreadHeader::where('order_id','=',$ord_id)->delete();
+            if (!$logist_to_del->isEmpty()) {
+                $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
+                broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del[0]['logist_id']))->toOthers();
+            }
+        }
+        broadcast(new DeleteOrderEvent($orders_id))->toOthers();
         return response()->json([
             'status' => 'success',
             'message' => 'заявки успешно удалены',

@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { VueTelInput } from 'vue-tel-input'
+
 export default {
     data() {
         return {
