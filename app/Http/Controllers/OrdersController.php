@@ -113,37 +113,100 @@ class OrdersController extends Controller
         $id=$request->input('id');
         //logist = logist_id
         $logist=$request->input('logist');
+
+//        $orders_count это НЕ ПРОЧИТАННЫЕ заявки
+
+        //назначаем логиста на заявку
         if($logist!==0)
         {
-            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
-            if ($logist_to_del->isEmpty()) {
-                $logist_to_del=0;
-                $orders_count_new=0;
+            //получаем id предыдущего логиста
+            $old_logist_id=Orders::where('id',$id)->get();
+            //если не было предыдущего логиста
+            if ($old_logist_id[0]['logist']==null) {
+                //тогда назначем предыдущему логисту id ноль
+                $old_logist_id=0;
             }
             else
             {
-                UnreadHeader::where('order_id','=',$id)->delete();
-                $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
-                $logist_to_del=$logist_to_del[0]['logist_id'];
+                //если был предыдущий логист тогда получаем его id
+                $old_logist_id=$old_logist_id[0]['logist'];
             }
-
-
-            UnreadHeader::where('order_id','=',$id)->delete();
-        UnreadHeader::firstOrCreate([
+            //читал ли предыдущий логист эту заявку
+            $unread_flag=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+            //если эта заявка не была прочитана предыдущим логистом
+            if (!$unread_flag->isEmpty()) {
+                //удаляем не прочитанную заявку предыдущего логиста
+                UnreadHeader::where('order_id','=',$id)->delete();
+            }
+            //считаем сколько не прочитанных заявок у предыдущего логиста
+            $old_logist_unread=UnreadHeader::where('logist_id',$old_logist_id)->where('column_name','ocenka')->count();
+            //ставим на эту заявку нового логиста
+            Orders::where('id', '=', $id)->update([
+                'logist' =>$logist,
+            ]);
+        //назначем её не прочитанной новому логисту
+            UnreadHeader::firstOrCreate([
             'logist_id' =>$logist,
             'column_name' =>'ocenka',
             'order_id' =>$id,
         ]);
-
-        $orders_count=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
-        broadcast(new UpdateLogistEvent($orders_count,$logist,$orders_count_new,$logist_to_del))->toOthers();
+        //пересчитываем не прочитанные заявки у нового логиста
+        $new_logist_orders_count=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
+        // UpdateLogistEvent('не прочитанные заявки нового логиста','id нового логиста','не прочитанные заявки старого логиста','id старого логиста')
+        broadcast(new UpdateLogistEvent($new_logist_orders_count,$logist,$old_logist_unread,$old_logist_id))->toOthers();
         }
+        //если приходит то что убрали логиста с заявки вообще ну тоесть ноль
         else
         {
-            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
-            UnreadHeader::where('order_id','=',$id)->delete();
-            $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
-            broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del[0]['logist_id']))->toOthers();
+            //получаем id предыдущего логиста
+            $old_logist_id=Orders::where('id',$id)->get();
+            //если не было предыдущего логиста
+            if ($old_logist_id[0]['logist']==null) {
+                //тогда назначем предыдущему логисту id ноль
+                $old_logist_id=0;
+            }
+            else
+            {
+                //если был предыдущий логист тогда получаем его id
+                $old_logist_id=$old_logist_id[0]['logist'];
+            }
+            //читал ли предыдущий логист эту заявку
+            $unread_flag=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+            //если эта заявка не была прочитана предыдущим логистом
+            if (!$unread_flag->isEmpty()) {
+                //удаляем не прочитанную заявку предыдущего логиста
+                UnreadHeader::where('order_id','=',$id)->delete();
+            }
+            //считаем сколько не прочитанных заявок у предыдущего логиста
+            $old_logist_unread=UnreadHeader::where('logist_id',$old_logist_id)->where('column_name','ocenka')->count();
+            //ставим на эту заявку нового логиста
+            Orders::where('id', '=', $id)->update([
+                'logist' =>$logist,
+            ]);
+            //пересчитываем не прочитанные заявки у нового логиста
+            // UpdateLogistEvent('не прочитанные заявки нового логиста','id нового логиста','не прочитанные заявки старого логиста','id старого логиста')
+            broadcast(new UpdateLogistEvent(0,0,$old_logist_unread,$old_logist_id))->toOthers();
+
+//            //проверка был ли логист назначенный до текущего назначения Не прочитанный
+//            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+//            //если не был
+//            if ($logist_to_del->isEmpty())
+//            {
+//                //номер логиста ноль потому что не был назначен
+//                $logist_to_del=0;
+//                //соответственно у него нет оставшихся заявок
+//                $orders_count_new=0;
+//            }
+//            //если был назначенный логист
+//            else
+//            {
+//            UnreadHeader::where('order_id','=',$id)->delete();
+//            //считаем количество не прочитанных заявок у данного логиста
+//            $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
+//            //забираем id логиста
+//            $logist_to_del=$logist_to_del[0]['logist_id'];
+//            }
+//            broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del))->toOthers();
         }
         return response()->json([
             'status' => 'success',

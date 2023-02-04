@@ -1103,9 +1103,9 @@
                             logist:this.logist,
                             id:this.order_id
                         })
-                        .then(({ data }) => (
-                            this.update_order()
-                        ))
+                        // .then(({ data }) => (
+                        //     this.update_order()
+                        // ))
 
 
             },

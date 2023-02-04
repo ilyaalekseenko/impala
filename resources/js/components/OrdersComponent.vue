@@ -174,7 +174,7 @@ Vue.filter('formatDate', function(value) {
             this.header_counter_orders()
             window.Echo.private('logist')
                 .listen('UpdateLogistEvent',(e) => {
-                    // console.log(e.counter)
+                     console.log(e)
                     //если номер id пришедшего обновления совпадает с номером логиста
                     if(e.logist_number==this.auth_user.id)
                     {
@@ -209,6 +209,7 @@ Vue.filter('formatDate', function(value) {
 
                         }
                         this.orders_list=temp_arr
+                        this.header_counter_orders()
                     })
         },
         data() {
