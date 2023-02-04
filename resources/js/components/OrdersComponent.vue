@@ -396,6 +396,7 @@ Vue.filter('formatDate', function(value) {
                        orders_id:this.delete_arr,
                    })
                this.delete_arr=[]
+                this.header_counter_orders()
             },
             show_by(int)
             {
