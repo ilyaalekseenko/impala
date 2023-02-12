@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\DeleteOrderEvent;
 use App\Events\UpdateLogistEvent;
+use App\Events\UpdateNaznachenieStavkiHeaderEvent;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\Gruzootpravitel;
@@ -36,7 +37,16 @@ class OrdersController extends Controller
 {
     public function main_orders()
     {
-        return view('front.orders')->with('auth_user',  auth()->user());
+        $user = User::find(Auth::id());
+        //получаем список ролей
+        $roles= Role::find($user->roles[0]['id']);
+        $permissions_arr=[];
+        foreach ($roles->permissions as $permission) {
+            array_push($permissions_arr, $permission['id']);
+        }
+        $role_perm=['role'=>$user->roles[0]['id'],'permissions'=>$permissions_arr];
+        $user['role_perm']=$role_perm;
+        return view('front.orders')->with('auth_user',  $user);
     }
     public function create_orders()
     {
@@ -79,6 +89,34 @@ class OrdersController extends Controller
             'perevozka_list' =>$perevozka,
         ], 200);
     }
+    public function check_buttons_show(Request $request)
+    {
+        $id=$request->input('id');
+        $user_id=$request->input('user_id');
+        $role=$request->input('role');
+        $utverzdenie_show_button=false;
+        $v_rabote_show_button=false;
+        //Получим заявку
+        $order=Orders::where('id',$id)->get();
+
+        $naznachenie_stavki=$order[0]['naznachenie_stavki'];
+        $v_rabote=$order[0]['v_rabote'];
+        //если логист и если колонка оценка то показываем кнопку Утверждение
+        if(($role==2)&&($naznachenie_stavki==null)&&($v_rabote==null))
+        {
+            $utverzdenie_show_button=true;
+        }
+        if(($role==1)&&($naznachenie_stavki==1)&&($v_rabote==null))
+        {
+            $v_rabote_show_button=true;
+        }
+        return response()->json([
+            'status' => 'success',
+            'utverzdenie_show_button' =>$utverzdenie_show_button,
+            'v_rabote_show_button' =>$v_rabote_show_button
+        ], 200);
+
+    }
     public function download_current_doc(Request $request)
     {
         $doc_type=$request->input('doc_type');
@@ -93,19 +131,50 @@ class OrdersController extends Controller
     {
         //id = order_id
         $id=$request->input('id');
+        $column_name=$request->input('column_name');
         //logist = logist_id
         $logist=$request->input('logist_id');
-       $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->get();
-        if (!$isset->isEmpty())
+        if($column_name=='ocenka')
         {
-                        $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->delete();
-                       $orders_count_new=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
-                       broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist))->toOthers();
+            $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->get();
+            if (!$isset->isEmpty())
+            {
+                $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','ocenka')->delete();
+                $orders_count_new=UnreadHeader::where('logist_id',$logist)->where('column_name','ocenka')->count();
+                broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist))->toOthers();
+            }
         }
+        if($column_name=='naznachenie_stavki')
+        {
+            $isset= UnreadHeader::where('order_id','=',$id)->where('column_name','naznachenie_stavki')->get();
+            if (!$isset->isEmpty())
+            {
+                $isset= UnreadHeader::where('order_id','=',$id)->where('column_name','naznachenie_stavki')->delete();
+                $orders_count_new=UnreadHeader::where('column_name','naznachenie_stavki')->count();
+                broadcast(new UpdateNaznachenieStavkiHeaderEvent())->toOthers();
+            }
+        }
+
         return response()->json([
             'status' => 'success',
         ], 200);
 
+    }
+    public function update_unread_status_v_rabote(Request $request)
+    {
+        $id=$request->input('id');
+        $column_name=$request->input('column_name');
+        $logist=$request->input('logist_id');
+        if($column_name=='v_rabote')
+        {
+            $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','v_rabote')->get();
+            if (!$isset->isEmpty())
+            {
+                $isset= UnreadHeader::where('order_id','=',$id)->where('logist_id',$logist)->where('column_name','v_rabote')->delete();
+                $orders_count_new=UnreadHeader::where('logist_id',$logist)->where('column_name','v_rabote')->count();
+                broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist))->toOthers();
+            }
+        }
     }
     public function update_order_logist(Request $request)
     {
@@ -576,9 +645,14 @@ class OrdersController extends Controller
     }
     public function header_counter_orders()
     {
+
+        //из назначения ставки обязательно делать NULL, а не ноль
         $user = User::find(Auth::id());
         $role=$user->roles[0]['id'];
         $ocenka_unread_count=0;
+        $naznachenie_stavki_unread_count=0;
+        $v_rabote=0;
+        $v_rabote_unread_count=0;
         if($role==1)
         {
             //общее количество заявок
@@ -588,7 +662,13 @@ class OrdersController extends Controller
             $ocenka = Orders::
                   where('logist', '<>', 0)
                 ->where('logist', '<>', null)
+                ->where('naznachenie_stavki', '=', null)
                 ->count();
+
+            $naznachenie_stavki = Orders::where('naznachenie_stavki', '=', 1)->count();
+            $naznachenie_stavki_unread_count=UnreadHeader::where('column_name','naznachenie_stavki')->count();
+            $v_rabote = Orders::where('naznachenie_stavki', '=', null)->where('v_rabote', '=', 1)->count();
+
         }
         //если роль логист
         if($role==2)
@@ -599,10 +679,14 @@ class OrdersController extends Controller
             //количество заявок данного логиста
             $ocenka = Orders::
                 where('logist',Auth::id())
+                ->where('naznachenie_stavki', '=', null)
                 ->count();
             //количество не прочитанных заявок оценка
 
             $ocenka_unread_count=UnreadHeader::where('logist_id',$user['id'])->where('column_name','ocenka')->count();
+            $naznachenie_stavki=0;
+            $v_rabote = Orders::where('naznachenie_stavki', '=', null)->where('v_rabote', '=', 1)->where('logist',Auth::id())->count();
+            $v_rabote_unread_count=UnreadHeader::where('column_name','v_rabote')->where('logist_id',Auth::id())->count();
 
         }
         //если роль менеджер
@@ -615,15 +699,17 @@ class OrdersController extends Controller
             $ocenka = 0;
             //количество не прочитанных заявок оценка
             $ocenka_unread_count=0;
-
+            $naznachenie_stavki=0;
         }
         return response()->json([
             'status' => 'success',
             'zurnal_zaiavok' => $zurnal_zaiavok,
             'ocenka' => $ocenka,
             'ocenka_unread_count' => $ocenka_unread_count,
-//            'naznachenie_stavki' => $naznachenie_stavki,
-//            'v_rabote' => $v_rabote,
+            'naznachenie_stavki' => $naznachenie_stavki,
+            'naznachenie_stavki_unread_count' => $naznachenie_stavki_unread_count,
+            'v_rabote' => $v_rabote,
+            'v_rabote_unread_count' => $v_rabote_unread_count,
 //            'kontrol' => $kontrol,
 //            'zavershen' => $zavershen
 
@@ -634,6 +720,7 @@ class OrdersController extends Controller
     {
         $offset =  $request->input('offset');
         $limit =  $request->input('limit');
+
         //выборка по фильтру из шапки
         //0 - журнал заявок
         //1 - оценка
@@ -649,31 +736,80 @@ class OrdersController extends Controller
         //разбираем важные
         //получаем количество всех важных записей
         $all_imp = Orders::where('important', 1)
-            //если сортировка по колонке оценка и юзер админ
+            //если сортировка по колонке оценка и юзер админ, отдаём оценки минус назначение ставки
             ->when($order_by==1&&$role==1, function($q){
-                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0)->where('naznachenie_stavki', '=', null);
             })
-            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки минус назначение ставки
             ->when($order_by==1&&$role==2, function($q){
-                return $q->where('logist', Auth::id());
+                return $q->where('logist', Auth::id())->where('naznachenie_stavki', '=', null);
             })
             //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
             ->when($order_by==1&&$role==3, function($q){
                 return $q->where('id', 0);
             })
+            //если сортировка по колонке назначение ставки и юзер админ, отдаём все назначения ставки
+            ->when($order_by==2&&$role==1, function($q){
+                return $q->where('naznachenie_stavki', '=', 1);
+            })
+            //если сортировка по колонке назначение ставки и юзер логист отдаём ноль
+            ->when($order_by==2&&$role==2, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке назначение ставки и юзер менеджер отдаём ноль
+            ->when($order_by==2&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке в работе и юзер админ, отдаём все в работе
+            ->when($order_by==3&&$role==1, function($q){
+                return $q->where('v_rabote', '=', 1);
+            })
+            //если сортировка по колонке в работе и юзер логист отдаём то что в работе у логиста и уже не в назначении ставки
+            ->when($order_by==3&&$role==2, function($q){
+                return $q->where('logist', Auth::id())->where('v_rabote', '=', 1)->where('naznachenie_stavki', '=', null);
+            })
+            //если сортировка по колонке в работе ставки и юзер менеджер отдаём ноль
+            ->when($order_by==3&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
             ->count();
+
         //получаем все важные сначала
         $list_colored_imp = Orders::where('important', 1)
-            //если сортировка по колонке оценка и юзер админ
+            //если сортировка по колонке оценка и юзер админ, отдаём оценки минус назначение ставки
             ->when($order_by==1&&$role==1, function($q){
-                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0)->where('naznachenie_stavki', '=', null);
             })
-            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
+            //если сортировка по колонке оценка и юзер логист, отдаём только его заявки минус назначение ставки
             ->when($order_by==1&&$role==2, function($q){
-                return $q->where('logist', Auth::id());
+                return $q->where('logist', Auth::id())->where('naznachenie_stavki', '=', null);
             })
             //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
             ->when($order_by==1&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке назначение ставки и юзер админ, отдаём все назначения ставки
+            ->when($order_by==2&&$role==1, function($q){
+                return $q->where('naznachenie_stavki', '=', 1);
+            })
+            //если сортировка по колонке назначение ставки и юзер логист отдаём ноль
+            ->when($order_by==2&&$role==2, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке назначение ставки и юзер менеджер отдаём ноль
+            ->when($order_by==2&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке в работе и юзер админ, отдаём все в работе
+            ->when($order_by==3&&$role==1, function($q){
+                return $q->where('v_rabote', '=', 1);
+            })
+            //если сортировка по колонке в работе и юзер логист отдаём то что в работе у логиста и уже не в назначении ставки
+            ->when($order_by==3&&$role==2, function($q){
+                return $q->where('logist', Auth::id())->where('v_rabote', '=', 1)->where('naznachenie_stavki', '=', null);
+            })
+            //если сортировка по колонке в работе ставки и юзер менеджер отдаём ноль
+            ->when($order_by==3&&$role==3, function($q){
                 return $q->where('id', 0);
             })
             ->get();
@@ -682,6 +818,7 @@ class OrdersController extends Controller
         if($all_imp>$offset)
         {
             $dif=$limit+$offset-$all_imp;
+
             if($dif>0)
             {
                 if($all_imp-$offset>0)
@@ -693,14 +830,38 @@ class OrdersController extends Controller
                     ->where('important',null)
                     //если сортировка по колонке оценка и юзер админ
                     ->when($order_by==1&&$role==1, function($q){
-                        return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                        return $q->where('logist', '<>', null)->where('logist', '<>', 0)->where('naznachenie_stavki', '=', null);
                     })
                     //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
                     ->when($order_by==1&&$role==2, function($q){
-                        return $q->where('logist', Auth::id());
+                        return $q->where('logist', Auth::id())->where('naznachenie_stavki', '=', null);
                     })
                     //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
                     ->when($order_by==1&&$role==3, function($q){
+                        return $q->where('id', 0);
+                    })
+                    //если сортировка по колонке назначение ставки и юзер админ, отдаём все назначения ставки
+                    ->when($order_by==2&&$role==1, function($q){
+                        return $q->where('naznachenie_stavki', '=', 1);
+                    })
+                    //если сортировка по колонке назначение ставки и юзер логист отдаём ноль
+                    ->when($order_by==2&&$role==2, function($q){
+                        return $q->where('id', 0);
+                    })
+                    //если сортировка по колонке назначение ставки и юзер менеджер отдаём ноль
+                    ->when($order_by==2&&$role==3, function($q){
+                        return $q->where('id', 0);
+                    })
+                    //если сортировка по колонке в работе и юзер админ, отдаём все в работе
+                    ->when($order_by==3&&$role==1, function($q){
+                        return $q->where('v_rabote', '=', 1);
+                    })
+                    //если сортировка по колонке в работе и юзер логист отдаём то что в работе у логиста и уже не в назначении ставки
+                    ->when($order_by==3&&$role==2, function($q){
+                        return $q->where('logist', Auth::id())->where('v_rabote', '=', 1)->where('naznachenie_stavki', '=', null);
+                    })
+                    //если сортировка по колонке в работе ставки и юзер менеджер отдаём ноль
+                    ->when($order_by==3&&$role==3, function($q){
                         return $q->where('id', 0);
                     })
                     ->offset($temp_offset)
@@ -715,14 +876,38 @@ class OrdersController extends Controller
               ->where('important',null)
               //если сортировка по колонке оценка и юзер админ
               ->when($order_by==1&&$role==1, function($q){
-                  return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                  return $q->where('logist', '<>', null)->where('logist', '<>', 0)->where('naznachenie_stavki', '=', null);
               })
               //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
               ->when($order_by==1&&$role==2, function($q){
-                  return $q->where('logist', Auth::id());
+                  return $q->where('logist', Auth::id())->where('naznachenie_stavki', '=', null);
               })
               //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
               ->when($order_by==1&&$role==3, function($q){
+                  return $q->where('id', 0);
+              })
+              //если сортировка по колонке назначение ставки и юзер админ, отдаём все назначения ставки
+              ->when($order_by==2&&$role==1, function($q){
+                  return $q->where('naznachenie_stavki', '=', 1);
+              })
+              //если сортировка по колонке назначение ставки и юзер логист отдаём ноль
+              ->when($order_by==2&&$role==2, function($q){
+                  return $q->where('id', 0);
+              })
+              //если сортировка по колонке назначение ставки и юзер менеджер отдаём ноль
+              ->when($order_by==2&&$role==3, function($q){
+                  return $q->where('id', 0);
+              })
+              //если сортировка по колонке в работе и юзер админ, отдаём все в работе
+              ->when($order_by==3&&$role==1, function($q){
+                  return $q->where('v_rabote', '=', 1);
+              })
+              //если сортировка по колонке в работе и юзер логист отдаём то что в работе у логиста и уже не в назначении ставки
+              ->when($order_by==3&&$role==2, function($q){
+                  return $q->where('logist', Auth::id())->where('v_rabote', '=', 1)->where('naznachenie_stavki', '=', null);
+              })
+              //если сортировка по колонке в работе ставки и юзер менеджер отдаём ноль
+              ->when($order_by==3&&$role==3, function($q){
                   return $q->where('id', 0);
               })
               ->offset($offset-$all_imp)
@@ -753,14 +938,38 @@ class OrdersController extends Controller
         $count = Orders::where('id', '>=', 0)
             //если сортировка по колонке оценка и юзер админ
             ->when($order_by==1&&$role==1, function($q){
-                return $q->where('logist', '<>', null)->where('logist', '<>', 0);
+                return $q->where('logist', '<>', null)->where('logist', '<>', 0)->where('naznachenie_stavki', '=', null);
             })
             //если сортировка по колонке оценка и юзер логист, отдаём только его заявки
             ->when($order_by==1&&$role==2, function($q){
-                return $q->where('logist', Auth::id());
+                return $q->where('logist', Auth::id())->where('naznachenie_stavki', '=', null);
             })
             //если сортировка по колонке оценка и юзер менеджер, отдаём ноль
             ->when($order_by==1&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке назначение ставки и юзер админ, отдаём все назначения ставки
+            ->when($order_by==2&&$role==1, function($q){
+                return $q->where('naznachenie_stavki', '=', 1);
+            })
+            //если сортировка по колонке назначение ставки и юзер логист отдаём ноль
+            ->when($order_by==2&&$role==2, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке назначение ставки и юзер менеджер отдаём ноль
+            ->when($order_by==2&&$role==3, function($q){
+                return $q->where('id', 0);
+            })
+            //если сортировка по колонке в работе и юзер админ, отдаём все в работе
+            ->when($order_by==3&&$role==1, function($q){
+                return $q->where('v_rabote', '=', 1);
+            })
+            //если сортировка по колонке в работе и юзер логист отдаём то что в работе у логиста и уже не в назначении ставки
+            ->when($order_by==3&&$role==2, function($q){
+                return $q->where('logist', Auth::id())->where('v_rabote', '=', 1)->where('naznachenie_stavki', '=', null);
+            })
+            //если сортировка по колонке в работе ставки и юзер менеджер отдаём ноль
+            ->when($order_by==3&&$role==3, function($q){
                 return $q->where('id', 0);
             })
             ->count();
@@ -871,16 +1080,44 @@ class OrdersController extends Controller
             'message' => 'заявки успешно удалены',
         ], 201);
     }
+    public function important_mark(Request $request)
+    {
+
+        $orders_id =  $request->input('orders_id');
+        $model =  $request->input('model');
+        $model = 'App\Models\\' . $model;
+        foreach ($orders_id as $order)
+        {
+            $single_order= $model::where('id', $order)->get();
+            if($single_order[0]['important']==1)
+            {
+                $model::where('id', $order)->update([
+                    'important' =>null,
+                ]);
+            }
+            else
+            {
+                $model::where('id', $order)->update([
+                    'important' =>1,
+                ]);
+            }
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'заявки успешно обновлены',
+        ], 201);
+    }
     public function mark_as_important(Request $request)
     {
+
         $orders_id =  $request->input('orders_id');
         foreach ($orders_id as $order)
         {
             $single_order= Orders::where('id', $order)->get();
             if($single_order[0]['important']==1)
             {
-             Orders::where('id', $order)->update([
-            'important' =>null,
+                Orders::where('id', $order)->update([
+                    'important' =>null,
                 ]);
             }
             else

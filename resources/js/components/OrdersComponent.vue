@@ -38,12 +38,13 @@
                             </span>
                         </div>
 
-                    <div class="col-2 color_title_3 coloring_np" v-on:click="update_header_underscore(2)" :class="{ header_underscore_2: header_underscore_list_class[2] }">
+                    <div class="col-2 color_title_3 coloring_np" v-show="checkRolePermission([1])" v-on:click="update_header_underscore(2)" :class="{ header_underscore_2: header_underscore_list_class[2] }">
                         <span class="col-12 row">
                         <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
                             <div class="col-12 coloring_np ">
-                            <span class="coloring_integer head_font">0</span>
+                            <span class="coloring_integer head_font">{{ naznachenie_stavki }}</span>
+                                <span class="coloring_integer_green" v-if="naznachenie_stavki_unread_count!==0">+{{ naznachenie_stavki_unread_count }}</span>
                             </div>
                         </div>
                             </span>
@@ -53,7 +54,8 @@
                         <div class="col-4 coloring_row_text coloring_np head_font">В работе</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np coloring_np">
-                                <span class="coloring_integer head_font">0</span>
+                                <span class="coloring_integer head_font">{{ v_rabote }}</span>
+                                    <span class="coloring_integer_green" v-if="v_rabote_unread_count!==0">+{{ v_rabote_unread_count }}</span>
                             </div>
                         </div>
                             </span>
@@ -172,6 +174,7 @@ Vue.filter('formatDate', function(value) {
         mounted() {
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
             this.header_counter_orders()
+            this.role=this.auth_user['role_perm']['role']
             window.Echo.private('logist')
                 .listen('UpdateLogistEvent',(e) => {
                      console.log(e)
@@ -189,7 +192,6 @@ Vue.filter('formatDate', function(value) {
                 }),
                 window.Echo.private('delete-order-channel')
                     .listen('DeleteOrderEvent',(e) => {
-                        console.log(e)
                         let temp_arr=[];
                         for( let i = 0; i < this.orders_list.length; i++ )
                         {
@@ -205,12 +207,30 @@ Vue.filter('formatDate', function(value) {
                             {
                                 temp_arr.push(this.orders_list[i])
                             }
-
-
                         }
                         this.orders_list=temp_arr
                         this.header_counter_orders()
+                    }),
+                //слушаем обновилось ли назначение ставки
+                window.Echo.private('admin_naznachenie_stavki')
+                    .listen('UpdateNaznachenieStavkiHeaderEvent',() => {
+                        //если админ
+                        if(this.role==1)
+                        {
+                            this.header_counter_orders()
+                        }
+                    }),
+                window.Echo.private('logist_v_rabote')
+                    .listen('UpdateVRaboteHeaderEvent',(e) => {
+                        //если админ
+                        // console.log(e)
+                        if((this.role==2)&&(e.logist_number==this.auth_user.id))
+                        {
+                            this.header_counter_orders()
+                        }
                     })
+            this.permissions=this.auth_user['role_perm']['permissions']
+
         },
         data() {
             return {
@@ -231,14 +251,28 @@ Vue.filter('formatDate', function(value) {
                 zurnal_zaiavok:0,
                 ocenka_counter:0,
                 header_underscore_list_class:[true,false,false,false,false,false],
-                order_by:'0'
+                order_by:'0',
+                naznachenie_stavki:0,
+                role:0,
+                naznachenie_stavki_unread_count:0,
+                v_rabote:0,
+                v_rabote_unread_count:0,
+                permissions:[],
             }
         },
         created()
         {
+
+            //проверяем логист ли это с закладки оценка, нажавший кнопку утверждение
+            if(localStorage.getItem('logist_ut_flag')==1)
+            {
+                this.order_by=1
+                localStorage.setItem('logist_ut_flag',0)
+                this.header_underscore_list_class=[false,false,false,false,false,false]
+                this.header_underscore_list_class[this.order_by]=true
+            }
             this.get_orders_list(this.orders_list)
             this.get_type_per_list(this.type_per_list);
-
 
             // var channel = pusher.subscribe('logist');
             // channel.bind('UpdateLogistEvent', function(data) {
@@ -280,7 +314,7 @@ Vue.filter('formatDate', function(value) {
                 this.offset=20,
                 this.limit=20,
                 this.last_pagination_number=true,
-                    this.checked_all=false
+                this.checked_all=false
                 this.get_orders_list(this.orders_list)
             },
             get_gruzootpravitel_list()
@@ -315,6 +349,22 @@ Vue.filter('formatDate', function(value) {
                             })
                         )
                     );
+            },
+            checkRolePermission(users_permissions_list)
+            {
+                let permission=2;
+
+                //перебор юзеров
+                let role=0;
+                let flag=false;
+                for(var j = 0; j < users_permissions_list.length; j++) {
+                    role=users_permissions_list[j]
+                    if((role==this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
+                        flag = true;
+                    }
+                }
+                return flag
+
             },
             check_all()
             {
@@ -395,8 +445,12 @@ Vue.filter('formatDate', function(value) {
                    .post('/delete_orders',{
                        orders_id:this.delete_arr,
                    })
-               this.delete_arr=[]
-                this.header_counter_orders()
+                   .then(({ data }) => (
+                       this.delete_arr=[],
+                       this.header_counter_orders()
+                       )
+                   );
+
             },
             show_by(int)
             {
@@ -419,7 +473,11 @@ Vue.filter('formatDate', function(value) {
                     .then(({ data }) => (
                                 this.zurnal_zaiavok=data.zurnal_zaiavok,
                                 this.ocenka=data.ocenka,
-                                this.ocenka_counter=data.ocenka_unread_count
+                                this.ocenka_counter=data.ocenka_unread_count,
+                                this.naznachenie_stavki_unread_count=data.naznachenie_stavki_unread_count,
+                                this.naznachenie_stavki=data.naznachenie_stavki,
+                                this.v_rabote=data.v_rabote,
+                                this.v_rabote_unread_count=data.v_rabote_unread_count
                         )
                     );
             },

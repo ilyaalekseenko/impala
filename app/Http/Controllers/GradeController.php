@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UpdateNaznachenieStavkiHeaderEvent;
+use App\Events\UpdateVRaboteHeaderEvent;
 use App\Models\FinalGrade;
 use App\Models\GradeDocuments;
 use App\Models\GradePogruzka;
 use App\Models\GradeSumma;
+use App\Models\NaznachenieStavki;
 use App\Models\Orders;
 use App\Models\PogruzkaTS;
 use App\Models\TemplateVar;
 use App\Models\TS;
+use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -49,6 +53,48 @@ class GradeController extends Controller
         return response()->json([
             'status' => 'success',
             'message' =>'Сумма успешно сохранена',
+        ], 200);
+    }
+    public function add_to_naznachenie_stavki(Request $request)
+    {
+        $order_id=$request->input('order_id');
+
+        Orders::where('id', '=', $order_id)->update(
+                [
+                    'naznachenie_stavki'=> 1
+                ],
+            );
+        UnreadHeader::firstOrCreate([
+            'logist_id' =>0,
+            'column_name' =>'naznachenie_stavki',
+            'order_id' =>$order_id,
+        ]);
+        broadcast(new UpdateNaznachenieStavkiHeaderEvent())->toOthers();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Заявка успешно сохранена в назначение ставки',
+        ], 200);
+    }
+    public function add_to_work(Request $request)
+    {
+        $order_id=$request->input('order_id');
+
+        Orders::where('id', '=', $order_id)->update(
+            [
+                'naznachenie_stavki'=> null,
+                'v_rabote'=> 1,
+            ],
+        );
+        $logist_id=Orders::where('id', '=', $order_id)->get();
+        UnreadHeader::firstOrCreate([
+            'logist_id' =>$logist_id[0]['logist'],
+            'column_name' =>'v_rabote',
+            'order_id' =>$order_id,
+        ]);
+        broadcast(new UpdateVRaboteHeaderEvent($logist_id[0]['logist']))->toOthers();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Заявка успешно сохранена в назначение ставки',
         ], 200);
     }
     public function get_logist_list()

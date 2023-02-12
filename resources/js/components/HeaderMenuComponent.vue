@@ -11,10 +11,10 @@
 <!--                    Заявки-->
 <!--                </div>-->
 <!--                <div class="col-5 top_menu_words align-self-center d-flex top_menu_1">-->
-                <span class=" top_menu_words  top_menu_words_settings">
+                <span class=" top_menu_words  top_menu_words_settings" v-on:click="go_to_path('/gruzootpravitel')">
                     Грузоотправитель/грузополучатель
                 </span>
-                <span class="top_menu_words  top_menu_words_settings">
+                <span class="top_menu_words  top_menu_words_settings" v-on:click="go_to_path('/perevozchiki')">
                     Перевозчики
                 </span>
                 <span class="top_menu_words top_menu_words_settings ">
@@ -32,7 +32,7 @@
                 <div v-if="show_search" class="col align-self-center  top_menu_user_name no_wrap  ">Константин Константинопольский</div>
             </div>
             <div class="col align-self-center">
-            <span class="gear_settings" v-on:click="go_to_docs_setting()">
+            <span class="gear_settings" v-on:click="go_to_path('/docs_setting')">
                 <span class="iconify" data-icon="ci:settings-filled" style="color: #020e49;" data-width="32" data-height="32" ></span>
             </span>
                 <span class="gear_settings" v-on:click="logout()">
@@ -63,15 +63,17 @@
 </template>
 
 <script>
+
     export default {
         mounted() {
-            console.log('Component mounted.')
+           // this.displayMessage()
         },
         methods: {
-            go_to_docs_setting()
-            {
-                window.location.href =('/docs_setting')
-            },
+
+          //  go_to(path)
+          //  {
+           //     window.location.href =(path)
+           // },
             logout()
             {
                 axios

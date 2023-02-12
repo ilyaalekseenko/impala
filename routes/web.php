@@ -33,8 +33,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store_doc_templ', [App\Http\Controllers\OrdersController::class, 'store_doc_templ'])->name('store_doc_templ');
     Route::post('/delete_orders', [App\Http\Controllers\OrdersController::class, 'delete_orders'])->name('delete_orders');
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'mark_as_important'])->name('mark_as_important');
+    Route::post('/important_mark', [App\Http\Controllers\OrdersController::class, 'important_mark'])->name('important_mark');
     Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'update_order_logist'])->name('update_order_logist');
     Route::post('/update_unread_status', [App\Http\Controllers\OrdersController::class, 'update_unread_status'])->name('update_unread_status');
+    Route::post('/update_unread_status_v_rabote', [App\Http\Controllers\OrdersController::class, 'update_unread_status_v_rabote'])->name('update_unread_status_v_rabote');
     Route::post('/add_oplata_orders', [App\Http\Controllers\OrdersController::class, 'add_oplata_orders'])->name('add_oplata_orders');
     Route::post('/update_order_oplata', [App\Http\Controllers\OrdersController::class, 'update_order_oplata'])->name('update_order_oplata');
     Route::post('/delete_oplata_summa', [App\Http\Controllers\OrdersController::class, 'delete_oplata_summa'])->name('delete_oplata_summa');
@@ -57,6 +59,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update_one_data_pogruzka', [App\Http\Controllers\GradeController::class, 'update_one_data_pogruzka'])->name('update_one_data_pogruzka');
     Route::post('/update_one_data_summa', [App\Http\Controllers\GradeController::class, 'update_one_data_summa'])->name('update_one_data_summa');
     Route::post('/store_grade_file', [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
+    Route::post('/add_to_naznachenie_stavki', [App\Http\Controllers\GradeController::class, 'add_to_naznachenie_stavki'])->name('add_to_naznachenie_stavki');
+    Route::post('/add_to_work', [App\Http\Controllers\GradeController::class, 'add_to_work'])->name('add_to_work');
     Route::post('/delete_file_grade', [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
     Route::post('/get_ob_budzet_down', [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
     Route::post('/get_logist_list', [App\Http\Controllers\GradeController::class, 'get_logist_list'])->name('get_logist_list');
@@ -78,8 +82,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_INN_api', [App\Http\Controllers\GruzootpravitelController::class, 'get_INN_api'])->name('get_INN_api');
     Route::post('/delete_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'delete_gruzootpravitel'])->name('delete_gruzootpravitel');
     Route::post('/get_gruzootpravitel_list', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list'])->name('get_gruzootpravitel_list');
+    Route::post('/get_gruzootpravitel_list_front', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_front'])->name('get_gruzootpravitel_list_front');
     Route::post('/select_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'select_gruzootpravitel'])->name('select_gruzootpravitel');
+    Route::get('/gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'gruzootpravitel'])->name('gruzootpravitel');
     Route::post('/get_perevozka_list', [App\Http\Controllers\OrdersController::class, 'get_perevozka_list'])->name('get_perevozka_list');
+    Route::post('/check_buttons_show', [App\Http\Controllers\OrdersController::class, 'check_buttons_show'])->name('check_buttons_show');
     Route::post('/update_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'update_perevozka_settings'])->name('update_perevozka_settings');
     Route::post('/delete_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'delete_perevozka_settings'])->name('delete_perevozka_settings');
 //    Route::post('/delete_forma_settings', [App\Http\Controllers\SettingsController::class, 'delete_forma_settings'])->name('delete_forma_settings');
@@ -98,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_roles', [App\Http\Controllers\AdminController::class, 'get_roles'])->name('get_roles');
 
     Route::post('/add_user', [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
+    Route::get('/perevozchiki', [App\Http\Controllers\PerevozchikiController::class, 'perevozchiki'])->name('perevozchiki');
 
 });
 Auth::routes();

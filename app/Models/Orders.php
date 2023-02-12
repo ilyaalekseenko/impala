@@ -38,7 +38,8 @@ class Orders extends Authenticatable
         'rasstojanie',
         'ob_ves',
         'ob_ob',
-        'vid_perevozki'
+        'vid_perevozki',
+        'naznachenie_stavki'
     ];
 
     /**

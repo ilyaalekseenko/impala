@@ -24,3 +24,9 @@ Broadcast::channel('logist', function ($user) {
 Broadcast::channel('delete-order-channel', function ($user) {
     return true;
 });
+Broadcast::channel('admin_naznachenie_stavki', function ($user) {
+    return true;
+});
+Broadcast::channel('logist_v_rabote', function ($user) {
+    return true;
+});

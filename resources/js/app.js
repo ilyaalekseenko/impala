@@ -32,6 +32,8 @@ Vue.component('docs-settings-component', require('./components/Settings/DocsSett
 Vue.component('perevozka-settings-component', require('./components/Settings/PerevozkaSettingsComponent').default);
 Vue.component('forma-gruzootpravitel-settings-component', require('./components/Settings/FormaGruzootpravitelSettingsComponent').default);
 Vue.component('add-users-settings-component', require('./components/Settings/AddUsersSettingsComponent').default);
+Vue.component('gruzootpravitel-component', require('./components/GruzootpravitelComponent').default);
+Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -63,6 +65,12 @@ import "vue-phone-number-input/dist/vue-phone-number-input.css";
 Vue.use(VueTelInput);
 Vue.component("vue-phone-number-input", VuePhoneNumberInput);
 
+
+//mixins
+import MixinGoTo from './mixins/MixinGoTo'
+Vue.mixin(MixinGoTo);
+import MixinListMethods from './mixins/MixinListMethods'
+Vue.mixin(MixinListMethods);
 const app = new Vue({
     el: '#app',
 });

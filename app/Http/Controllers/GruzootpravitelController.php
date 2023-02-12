@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class GruzootpravitelController extends Controller
 {
+    public function gruzootpravitel(Request $request)
+    {
+        return view('front.gruzootpravitel')->with('auth_user',  auth()->user());
+    }
     public function get_BIK_BANK_api(Request $request)
     {
         $bank_bik = $request->input('bank');
@@ -163,11 +167,14 @@ class GruzootpravitelController extends Controller
                  {
                      foreach ($doc_files as $doc)
                      {
-                         GruzootpravitelFile::create([
-                             'gruzootpravitel_id' => $gruz_main['id'],
-                             'file_name' => $doc['file_name'].'.'.$doc['ext'],
-                             'server_name' => $doc['doc_path'],
-                         ]);
+                         if($doc['doc_path']!='')
+                         {
+                             GruzootpravitelFile::create([
+                                 'gruzootpravitel_id' => $gruz_main['id'],
+                                 'file_name' => $doc['file_name'].'.'.$doc['ext'],
+                                 'server_name' => $doc['doc_path'],
+                             ]);
+                         }
                      }
                  }
                  return response()->json([
@@ -192,11 +199,14 @@ class GruzootpravitelController extends Controller
                      'YR_adres' => $yridicheskii_adres,
                      'pochtovyi_adres' => $pochtovyi_adres,
                  ]);
+                 GruzootpravitelContact::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
+                 GruzootpravitelBank::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
                  if($kontakty)
                  {
                      foreach ($kontakty as $kontakt)
                      {
-                         GruzootpravitelContact::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->update([
+                         GruzootpravitelContact::create([
+                             'gruzootpravitel_id' => $current_gruzootpravitel_id,
                              'dolznost' => $kontakt['dolznost'],
                              'FIO' => $kontakt['FIO'],
                              'telefon' => $kontakt['telefon'],
@@ -208,7 +218,8 @@ class GruzootpravitelController extends Controller
                  {
                      foreach ($bank_arr as $bank)
                      {
-                         GruzootpravitelBank::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->update([
+                         GruzootpravitelBank::create([
+                             'gruzootpravitel_id' => $current_gruzootpravitel_id,
                              'BIK' => $bank['BIK'],
                              'raschetnyi' => $bank['raschetnyi'],
                              'korschet' => $bank['korschet'],
@@ -378,9 +389,88 @@ class GruzootpravitelController extends Controller
             'gruzootpravitel' =>$gruzootpravitel,
         ], 200);
     }
+
+    public function get_gruzootpravitel_list_front(Request $request)
+    {
+        $offset =  $request->input('offset');
+        $limit =  $request->input('limit');
+
+        //получаем количество всех важных записей
+        $all_imp = Gruzootpravitel::where('important', 1) ->count();
+
+        //получаем все важные сначала
+        $list_colored_imp = Gruzootpravitel::where('important', 1)
+
+            ->get();
+//        $gruzootpravitel = Gruzootpravitel::where('id', '>', 0)->get();
+        $not_empty_flag=false;
+
+        if($all_imp>$offset)
+        {
+            $dif=$limit+$offset-$all_imp;
+
+            if($dif>0)
+            {
+                if($all_imp-$offset>0)
+                {
+                    $temp_offset=0;
+                }
+                //получаем все не важные записи с листа
+                $list_colored = Gruzootpravitel::where('id', '>=', 0)
+                    ->where('important',null)
+                    ->offset($temp_offset)
+                    ->limit($dif)
+                    ->get();
+                $not_empty_flag=true;
+            }
+        }
+        else
+        {
+            $list_colored = Gruzootpravitel::where('id', '>=', 0)
+                ->where('important',null)
+                ->offset($offset-$all_imp)
+                ->limit($limit)
+                ->get();
+            $not_empty_flag=true;
+        }
+
+        $res_arr=[];
+        if($all_imp>$offset)
+        {
+            //добавляем важные записи в результирующий массив
+            foreach ($list_colored_imp as $imp)
+            {
+                array_push($res_arr,$imp);
+            }
+            $res_arr = array_splice($res_arr, $offset, $limit);
+        }
+        if($not_empty_flag)
+        {
+            //добавляем все остальные записи в результирующий массив
+            foreach ($list_colored as $colored)
+            {
+                array_push($res_arr,$colored);
+            }
+        }
+        $count = Gruzootpravitel::where('id', '>=', 0)
+            ->count();
+
+        foreach ($res_arr as $gruz)
+        {
+            $kontaktnoe_lico_arr = GruzootpravitelContact::where('gruzootpravitel_id', '=', $gruz['id'])->get();
+            $gruz['kontaktnoe_lico']=$kontaktnoe_lico_arr;
+        }
+        return response()->json([
+            'status' => 'success',
+            'gruzootpravitel' => $res_arr,
+            'tipes_count' => $count
+        ], 200);
+    }
     public function delete_gruzootpravitel(Request $request)
     {
-        $gruzootpravitel_id = $request->input('id');
+        $gruzootpravitels_id = $request->input('gruzootpravitels_id');
+        foreach ($gruzootpravitels_id as $gruzootpravitel_id)
+        {
         $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->get();
         foreach ($old_docs as $old_doc)
         {
@@ -397,9 +487,10 @@ class GruzootpravitelController extends Controller
         GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
         GruzootpravitelBank::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
         Gruzootpravitel::where('id', '=',$gruzootpravitel_id)->delete();
+        }
         return response()->json([
             'status' => 'success',
-            'message' =>'Грузоотправитель удалён',
+            'message' =>'Грузоотправители удалены',
         ], 200);
     }
     public function select_gruzootpravitel()

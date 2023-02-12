@@ -38,8 +38,11 @@
                        </span>
                         <date-picker ref="datepicker1"  v-model="rasschitat_do" valueType="format" format="DD.MM.YYYY"  :open.sync="openDP1" @change="handleChange1"></date-picker>
                     </div>
-                    <div class="col-2 justify-content-end" v-on:click="go_to_grade()">
+                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="go_to_grade()">
                         <div class="col add_ts_button4 text-center">Утверждение</div>
+                    </div>
+                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="add_to_work()">
+                        <div class="col add_ts_button4 text-center">В работе</div>
                     </div>
                 </div>
             </div>
@@ -670,6 +673,7 @@
 <script>
     import datepicker from 'vuejs-datepicker';
     import moment from 'moment'
+    import {logistData} from "../app.js";
 
     import DatePicker from 'vue2-datepicker';
     import 'vue2-datepicker/index.css';
@@ -756,12 +760,15 @@
                 order_header_text:'',
                 role:'',
                 permissions:[],
-                logist_list_full:[]
+                logist_list_full:[],
+                utverzdenie_show_button:false,
+                v_rabote_show_button:false,
             }
         },
         mounted()
         {
             this.role=this.auth_user['role_perm']['role']
+
             this.permissions=this.auth_user['role_perm']['permissions']
 
             this.get_terminal_list(this.termList);
@@ -786,10 +793,13 @@
             else
             {
                 this.order_id=adress;
+                this.checkButtonsShow();
                 this.order_header_text='Заявка номер: '+adress+' Дата внесения: '
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
                 this.update_unread_status()
+                this.update_unread_status_v_rabote()
             }
+
         },
 
         computed: {
@@ -836,7 +846,7 @@
         },
         methods: {
             //проверка показывать ли этот блок текущему пользователю
-            //role - id роли 1- admin 2- manager 3- logist и т.д
+            //role - id роли 1- admin 2- logist 3- manager и т.д
             //permission id прав, 1 - все права 2 - show и т.д.
             //на вход отдавать список id кто должен видеть блок
 
@@ -855,6 +865,22 @@
                 }
                 return flag
 
+            },
+            //проверка какие кнопки показывать пользователям
+            checkButtonsShow(list)
+            {
+                axios
+                    .post('/check_buttons_show',{
+                        id:this.order_id,
+                        user_id:this.auth_user['id'],
+                        role:this.role
+                    })
+                    .then(({ data }) => (
+                        this.utverzdenie_show_button=data.utverzdenie_show_button,
+                        this.v_rabote_show_button=data.v_rabote_show_button
+                        )
+
+                    );
             },
             update_order_oplata(summ_opl,id,data)
             {
@@ -1091,8 +1117,30 @@
                 axios
                     .post('/update_unread_status',{
                         logist_id:this.auth_user['id'],
-                        id:this.order_id
+                        id:this.order_id,
+                        column_name:'ocenka',
                     })
+                }
+                if(this.role==1)
+                {
+                    axios
+                        .post('/update_unread_status',{
+                            logist_id:this.auth_user['id'],
+                            id:this.order_id,
+                            column_name:'naznachenie_stavki',
+                        })
+                }
+            },
+            update_unread_status_v_rabote()
+            {
+                if(this.role==2)
+                {
+                    axios
+                        .post('/update_unread_status_v_rabote',{
+                            logist_id:this.auth_user['id'],
+                            id:this.order_id,
+                            column_name:'v_rabote',
+                        })
                 }
             },
             update_order_logist()
@@ -1205,13 +1253,44 @@
                         data_vneseniya:new Date().toLocaleDateString('ru-RU')
                     })
                     .then(({ data }) => (
-                            this.order_id=data.data['id']
+                            this.order_id=data.data['id'],
+                            this.checkButtonsShow()
                         )
                     )
             },
+            add_to_work()
+            {
+                this.v_rabote_show_button=false;
+                axios
+                    .post('/add_to_work',{
+                        order_id:this.order_id
+                    })
+                    .then(response => {
+                        alert('заявка добавлена в работу')
+                    })
+            },
             go_to_grade()
             {
-                window.location.href =('/grade/'+this.order_id)
+                // window.location.href =('/grade/'+this.order_id)
+                //отправляем заявку на вкладку назначение ставки
+                this.utverzdenie_show_button=false;
+                axios
+                    .post('/add_to_naznachenie_stavki',{
+                        order_id:this.order_id
+                    })
+                    .then(response => {
+                        if(this.role==2) {
+                            //редиректим логиста на главную перед этим говорим  отобразить оценку
+                            localStorage.setItem('logist_ut_flag', '1')
+                            window.location.href = ('/')
+                        }
+                        //если утвердил админ
+                        if(this.role==1)
+                        {
+                            alert('заявка добавлена в назначение ставки')
+                        }
+
+                    })
             },
             save_TS()
             {

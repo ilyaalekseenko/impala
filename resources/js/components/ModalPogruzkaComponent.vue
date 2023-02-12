@@ -195,7 +195,7 @@
 
 import vClickOutside from 'v-click-outside'
     export default {
-        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel'],
+        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel','change_one_gruzzotpravitel'],
         directives: {
             vClickOutside: vClickOutside.directive
         },
@@ -563,6 +563,7 @@ import vClickOutside from 'v-click-outside'
 
             save_gruzootpravitel()
             {
+
                 this.alert_arr=[];
                 this.alert=false;
                 if(this.forma=="")
@@ -596,6 +597,10 @@ import vClickOutside from 'v-click-outside'
                         {
                             this.get_gruzootpravitel_list()
                             this.select_gruzootpravitel()
+                        }
+                        if(this.change_one_gruzzotpravitel)
+                        {
+                            this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty)
                         }
 
                         this.hideModal()
