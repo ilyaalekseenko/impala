@@ -233,9 +233,9 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
-                                        <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">
-                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                        </select>
+<!--                                        <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">-->
+<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                        </select>-->
 <!--                                        {{ elem1['id_ts'] }}-->
                                         <auto-input-component class="cr_ord_inp_n_1"
                                                               inp_type='grade_pogruzka'
@@ -302,9 +302,9 @@
                                         </div>
                                     </div>
 <!--                                        {{ adres_vygr }}-->
-                                         <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">
-                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                        </select>
+<!--                                         <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">-->
+<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                        </select>-->
 
                                          <auto-input-component class="cr_ord_inp_n_1"
                                                                inp_type='grade_vygruzka'
