@@ -2,7 +2,10 @@
     <div class="container" id="scroll_block">
         <div class="row">
             <div class="col-12 main_head_marg">
-                <modal-pogruzka-component :get_gruzootpravitel_list='get_gruzootpravitel_list' :select_gruzootpravitel='select_gruzootpravitel'></modal-pogruzka-component>
+                <modal-pogruzka-component
+                    :get_gruzootpravitel_list='get_gruzootpravitel_list'
+                    :select_gruzootpravitel='select_gruzootpravitel'
+                ></modal-pogruzka-component>
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
                 </div>
@@ -156,9 +159,14 @@
                                    <div class="col no_wrap">Адрес погрузки</div>
                                    <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>
                                 </div>
-                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_pogruzke">
-                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                </select>
+
+                            <auto-input-component class="cr_ord_inp_n_1"
+                                inp_type='adres_pogruzke'
+                                :adres_pogruzke_show="adres_pogruzke_show"
+                                :order_id="order_id"
+                                v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                ref="AutoSelectComponent"
+                            ></auto-input-component>
                             </div>
 
                         </div>
@@ -213,12 +221,19 @@
                             </div>
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
-                                    <div class="col no_wrap">Адрес выгрузки 1</div>
+                                    <div class="col no_wrap">Адрес выгрузки</div>
                                     <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('vygruzka',0)">Добавить</div>
                                 </div>
-                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_vygruski">
-                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                </select>
+<!--                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_vygruski">-->
+<!--                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                </select>-->
+                                <auto-input-component class="cr_ord_inp_n_1"
+                                                      inp_type='adres_vygruski'
+                                                      :adres_pogruzke_show="adres_vygruski_show"
+                                                      :order_id="order_id"
+                                                      v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                      ref="AutoSelectComponent"
+                                ></auto-input-component>
                             </div>
                             <div class="col-12 row no_padding_right">
                                 <div class="col-5  data_pog_dost  no_padding_right">
@@ -431,13 +446,21 @@
                                             Адрес погрузки
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka',key)">Добавить</span>
                                         </div>
-                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">
-                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                        </select>
+<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">-->
+<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                        </select>-->
+                                        <auto-input-component class="cr_ord_inp_n_1"
+                                                              inp_type='add_pogruzka_edit'
+                                                              :adres_pogruzke_show="flag_pogruz"
+                                                              :adres_pogruzke_show_edit="ad_pogruzki_arr_temp[key]['adres_pogruzke_show']"
+                                                              :order_id="order_id"
+                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                              :key_in_arr="key"
+                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                              ref="AutoSelectComponent_pogruzka_edit"
+                                        ></auto-input-component>
                                         <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
-<!--                                        <span v-on:click="add_empty_adres_pogr()">+</span>-->
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_pogr(key)">-</button>
-<!--                                        <span v-on:click="delete_adres_pogr(key)">-</span>-->
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')">-</button>
                                     </div>
 
                                 </div>
@@ -450,11 +473,21 @@
                                     </div>
                                     <div class="create_orders_bottom">
 <!--                                        <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />-->
-                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">
-                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                        </select>
+<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">-->
+<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                        </select>-->
+                                        <auto-input-component class="cr_ord_inp_n_1"
+                                                              inp_type='add_vygruzka_edit'
+                                                              :adres_pogruzke_show="flag_pogruz"
+                                                              :adres_pogruzke_show_edit="ad_vygruz_arr_temp[key]['adres_vygruzki_show']"
+                                                              :order_id="order_id"
+                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                              :key_in_arr="key"
+                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                              ref="AutoSelectComponent_vygruzka_edit"
+                                        ></auto-input-component>
                                         <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_vygruz(key)">-</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')">-</button>
 
                                     </div>
                                 </div>
@@ -596,15 +629,25 @@
 
                                     <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
-                                            Адрес погрузки
+                                            Адрес погрузки {{ key }}
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
                                         </div>
 <!--                                        <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />-->
-                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">
-                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                        </select>
+<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">-->
+<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                        </select>-->
+                                        <auto-input-component class="cr_ord_inp_n_1"
+                                                              inp_type='add_pogruzka_empty'
+                                                              adres_pogruzke_show=''
+                                                              :order_id="order_id"
+                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                              :key_in_arr="key"
+                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                              ref="AutoSelectComponent_pogruzka_empty"
+                                        ></auto-input-component>
+
                                         <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_pogr(key)">-</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_empty','adres_pogruzke_show')">-</button>
 
                                     </div>
 
@@ -618,11 +661,20 @@
                                         </div>
                                         <div class="create_orders_bottom">
 <!--                                            <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />-->
-                                            <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">
-                                                <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
-                                            </select>
+<!--                                            <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">-->
+<!--                                                <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
+<!--                                            </select>-->
+                                            <auto-input-component class="cr_ord_inp_n_1"
+                                                                  inp_type='add_vygruzka_empty'
+                                                                  adres_pogruzke_show=''
+                                                                  :order_id="order_id"
+                                                                  v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                                  :key_in_arr="key"
+                                                                  @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                                  ref="AutoSelectComponent_vygruzka_empty"
+                                            ></auto-input-component>
                                             <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
-                                            <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres_vygruz(key)">-</button>
+                                            <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_empty','adres_vygruzki_show')">-</button>
 
                                         </div>
                                     </div>
@@ -709,6 +761,9 @@
                 dob_oplatu:false,
                 oplata_arr:[],
                 adres_pogruzke:'',
+                adres_pogruzke_show:'',
+                adres_vygruski:'',
+                adres_vygruski_show:'',
                 data_pogruzki:'',
                 data_dostavki:'',
                 gruzomesta_big:'',
@@ -716,7 +771,6 @@
                 rasstojanie:'',
                 ob_ves:'',
                 ob_ob:'',
-                adres_vygruski:'',
                 komment_1:'',
                 // ob_budjet:0,
                 add_ts:'',
@@ -763,9 +817,12 @@
                 logist_list_full:[],
                 utverzdenie_show_button:false,
                 v_rabote_show_button:false,
+                flag_pogruz:''
+
+
             }
         },
-        mounted()
+        created()
         {
             this.role=this.auth_user['role_perm']['role']
 
@@ -866,6 +923,23 @@
                 return flag
 
             },
+            //добавление пустой погрузки или выгрузки
+            add_new_pogruzka_in_ts(data)
+            {
+                //если погрузка
+                if(data.pogr_or_vygr=='pogruzka')
+                {
+                    this.ad_pogruzki_arr_temp[data.key]['adres_pogruzki']=data.inp_pog_id;
+                    this.ad_pogruzki_arr_temp[data.key]['adres_pogruzke_show']=data.nazvanie;
+                }
+                //если выгрузка
+                if(data.pogr_or_vygr=='vygruzka')
+                {
+                    this.ad_vygruz_arr_temp[data.key]['adres_pogruzki']=data.inp_pog_id;
+                    this.ad_vygruz_arr_temp[data.key]['adres_vygruzki_show']=data.nazvanie;
+                }
+
+            },
             //проверка какие кнопки показывать пользователям
             checkButtonsShow(list)
             {
@@ -949,10 +1023,11 @@
                                 });
                             })
                         ),
-                        this.gruzootpravitel_arr=inp_temp
-
+                        this.gruzootpravitel_arr=inp_temp,
                     );
             },
+
+            //работа из модального окна добавления грузоотправителя
             //метод выборки, адрес погрузки или адрес выгрузки поменяется динамически
             select_temp_var(pogr_or_vygr,key)
             {
@@ -974,7 +1049,8 @@
                         })
                         .then(({ data }) => (
                                 this.adres_pogruzke=data.gruzootpravitel.id,
-                                    this.update_order()
+                                this.adres_pogruzke_show=data.gruzootpravitel.nazvanie,
+                                this.$refs.AutoSelectComponent.up_gruzoot_from_select(this.adres_pogruzke,'adres_pogruzke')
                             )
 
                         );
@@ -986,55 +1062,76 @@
                         })
                         .then(({ data }) => (
                                 this.adres_vygruski=data.gruzootpravitel.id,
-                                    this.update_order()
+                                this.adres_vygruski_show=data.gruzootpravitel.nazvanie,
+                                this.$refs.AutoSelectComponent.up_gruzoot_from_select(this.adres_vygruski,'adres_vygruski')
                             )
 
                         );
                 }
+                //если редактируем погрузку
                 if(this.select_temp_pogr_or_vygr=='TS_pogruzka')
                 {
                     axios
                         .post('/select_gruzootpravitel',{
                         })
                         .then(({ data }) => (
+                                //сохраняем во временный массив
                                 this.ad_pogruzki_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
-                                    this.update_order()
+                                //сохраняем название во временный массив
+                                this.ad_pogruzki_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzke_show']=data.gruzootpravitel.nazvanie,
+                                //передаём в селект название и отображаем там
+                                this.$refs.AutoSelectComponent_pogruzka_edit[this.select_temp_pogr_or_vygr_key].up_gruz_from_modal(data.gruzootpravitel.nazvanie)
                             )
 
                         );
                 }
+                //если редактируем выгрузку
                 if(this.select_temp_pogr_or_vygr=='TS_vygruzka')
                 {
                     axios
                         .post('/select_gruzootpravitel',{
                         })
                         .then(({ data }) => (
-                                this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
-                                    this.update_order()
+                            //сохраняем во временный массив
+                            this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
+                            //сохраняем название во временный массив
+                            this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_vygruzki_show']=data.gruzootpravitel.nazvanie,
+                            //передаём в селект название и отображаем там
+                            this.$refs.AutoSelectComponent_vygruzka_edit[this.select_temp_pogr_or_vygr_key].up_gruz_from_modal(data.gruzootpravitel.nazvanie)
                             )
 
                         );
                 }
+                //если добавляем новую погрузку
                 if(this.select_temp_pogr_or_vygr=='TS_pogruzka_new')
                 {
                     axios
                         .post('/select_gruzootpravitel',{
                         })
                         .then(({ data }) => (
+                                //сохраняем во временный массив
                                 this.ad_pogruzki_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
-                                    this.update_order()
+                                //сохраняем название во временный массив
+                                this.ad_pogruzki_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzke_show']=data.gruzootpravitel.nazvanie,
+                                //передаём в селект название и отображаем там
+                                this.$refs.AutoSelectComponent_pogruzka_empty[this.select_temp_pogr_or_vygr_key].up_gruz_from_modal(data.gruzootpravitel.nazvanie)
                             )
 
                         );
                 }
+                //если добавляем новую выгрузку
                 if(this.select_temp_pogr_or_vygr=='TS_vygruzka_new')
                 {
                     axios
                         .post('/select_gruzootpravitel',{
                         })
                         .then(({ data }) => (
-                                this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
-                                    this.update_order()
+                            //сохраняем во временный массив
+                            this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_pogruzki']=data.gruzootpravitel.id,
+                            //сохраняем название во временный массив
+                            this.ad_vygruz_arr_temp[this.select_temp_pogr_or_vygr_key]['adres_vygruzki_show']=data.gruzootpravitel.nazvanie,
+                            //передаём в селект название и отображаем там
+                            this.$refs.AutoSelectComponent_vygruzka_empty[this.select_temp_pogr_or_vygr_key].up_gruz_from_modal(data.gruzootpravitel.nazvanie)
                             )
 
                         );
@@ -1064,7 +1161,6 @@
             },
             openDB0()
             {
-                console.log(this.$refs.files)
                 this.openDP=true
             },
             openDB1()
@@ -1172,7 +1268,7 @@
                         ISD:this.ISD,
                         cena_kontrakta:this.cena_kontrakta,
                         data_kontrakta:this.data_kontrakta,
-                        adres_pogruzke:this.adres_pogruzke,
+                       // adres_pogruzke:this.adres_pogruzke,
                         data_pogruzki:this.data_pogruzki,
                         data_dostavki:this.data_dostavki,
                         adres_vygruski:this.adres_vygruski,
@@ -1205,9 +1301,11 @@
                             this.cena_kontrakta=data.data[0]['cena_kontrakta'],
                             this.data_kontrakta=data.data[0]['data_kontrakta'],
                             this.adres_pogruzke=data.data[0]['adres_pogruzke'],
+                            this.adres_pogruzke_show=data.adres_pogruzke_show,
+                            this.adres_vygruski=data.data[0]['adres_vygruski'],
+                            this.adres_vygruski_show=data.adres_vygruski_show,
                             this.data_pogruzki=data.data[0]['data_pogruzki'],
                             this.data_dostavki=data.data[0]['data_dostavki'],
-                            this.adres_vygruski=data.data[0]['adres_vygruski'],
                             this.komment_1=data.data[0]['komment_1'],
                             this.logist=data.data[0]['logist'],
                             this.logist_name=data.data[0]['logist_name'],
@@ -1231,9 +1329,9 @@
                                         kol_gruz_TS : entry.kol_gruz_TS,
                                         kol_TS_TS : entry.kol_TS_TS,
                                         rasstojanie_TS : entry.rasstojanie_TS,
-                                        adres_pogruzki_TS : entry.adres_pogruzki_TS,
                                         ob_ves_TS : entry.ob_ves_TS,
                                         ob_ob_TS : entry.ob_ob_TS,
+                                        adres_pogruzki_TS : entry.adres_pogruzki_TS,
                                         adres_vygr_TS : entry.adres_vygr_TS,
                                         kommentari_TS : entry.kommentari_TS,
                                         checked2 : entry.checked2,
@@ -1447,7 +1545,7 @@
                 }
                 this.ob_ves_TS=this.spisokTSarr[key]['ob_ves_TS'];
                 this.ob_ob_TS=this.spisokTSarr[key]['ob_ob_TS'];
-              //  this.adres_vygr_TS=this.spisokTSarr[key]['adres_vygr_TS'];
+
                 this.ad_vygruz_arr_temp=this.spisokTSarr[key]['adres_vygr_TS'];
                 if(this.spisokTSarr[key]['adres_vygr_TS'].length==0)
                 {
@@ -1572,20 +1670,39 @@
                     behavior: 'smooth'
                 });
             },
-            delete_adres_pogr(key)
+            //метод логики удаления из массива
+            delete_adres(arr,key,ref,pogr_vygr)
             {
-                this.ad_pogruzki_arr_temp.splice(key,1)
+                //удаляем из массива
+                this.delete_from_arr(arr,key)
+                //перерисовываем массив
+                this.render_new_arr(arr,ref,pogr_vygr)
             },
+            //arr массив откуда
+            //key ключ где
+            delete_from_arr(arr,key)
+            {
+                arr.splice(key,1)
+            },
+            //arr массив откуда
+            //ref ссылка на элементы вида AutoSelectComponent_pogruzka_empty
+            //pogr_vygr ссылка во временном массиве названия например adres_vygruzki_show
+            render_new_arr(arr,ref,pogr_vygr)
+            {
+                for (let i = 0; i < arr.length; i++) {
+                    this.$refs[ref][i].up_gruz_from_modal(arr[i][pogr_vygr])
+                }
+            },
+
             delete_adres_vygruz(key)
             {
                 this.ad_vygruz_arr_temp.splice(key,1)
             },
             add_empty_adres_pogr_to_old(elem1, key)
             {
-                console.log(key);
                 let objToPush= {};
                 objToPush['adres_pogruzki'] ='';
-                console.log(this.spisokTSarr[key].adres_pogruzki_TS.length)
+                // console.log(this.spisokTSarr[key].adres_pogruzki_TS.length)
                 this.spisokTSarr[key].adres_pogruzki_TS.push(objToPush);
               //  console.log(this.spisokTSarr)
             },

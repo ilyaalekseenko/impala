@@ -34,6 +34,8 @@ Vue.component('forma-gruzootpravitel-settings-component', require('./components/
 Vue.component('add-users-settings-component', require('./components/Settings/AddUsersSettingsComponent').default);
 Vue.component('gruzootpravitel-component', require('./components/GruzootpravitelComponent').default);
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
+Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
+Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -64,13 +66,17 @@ import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
 Vue.use(VueTelInput);
 Vue.component("vue-phone-number-input", VuePhoneNumberInput);
-
+import Autocomplete from '@trevoreyre/autocomplete-vue'
+import '@trevoreyre/autocomplete-vue/dist/style.css'
+Vue.use(Autocomplete)
 
 //mixins
 import MixinGoTo from './mixins/MixinGoTo'
 Vue.mixin(MixinGoTo);
 import MixinListMethods from './mixins/MixinListMethods'
 Vue.mixin(MixinListMethods);
+import MixinAutocompliteMethods from './mixins/MixinAutocompliteMethods'
+Vue.mixin(MixinAutocompliteMethods);
 const app = new Vue({
     el: '#app',
 });

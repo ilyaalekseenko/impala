@@ -372,6 +372,36 @@ class OrdersController extends Controller
     {
         $id = $request->input('id');
         $orders_list = Orders::where('id', '=', $id) ->get();
+        //адрес погрузки
+        if($orders_list[0]['adres_pogruzke']==null)
+        {
+            $adres_pogruzke_show='';
+        }
+        else
+        {
+            $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_pogruzke']) ->get();
+            $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+        }
+        //адрес выгрузки
+        if($orders_list[0]['adres_vygruski']==null)
+        {
+            $adres_vygruski_show='';
+        }
+        else
+        {
+            $adres_vygruski_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_vygruski']) ->get();
+            $adres_vygruski_show = $adres_vygruski_show[0]['nazvanie'];
+        }
+        //адрес выгрузки
+        if($orders_list[0]['adres_vygruski']==null)
+        {
+            $adres_vygruski_show='';
+        }
+        else
+        {
+            $adres_vygruski_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_vygruski']) ->get();
+            $adres_vygruski_show = $adres_vygruski_show[0]['nazvanie'];
+        }
         $oplata_list= OplataOrders::where('order_id', '=', $id) ->get();
         $arr_to_add=[];
        foreach ($oplata_list as $oplata)
@@ -395,17 +425,38 @@ class OrdersController extends Controller
         //получаем список адресов погрузки и выгрузки
         foreach ($TS_list as $ts)
         {
-          //  return dd($ts['id_ts']);
             $TS_list_pogruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '1')->where('id_ts', $ts['id_ts'])->get();
             $TS_list_vygruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '2')->where('id_ts', $ts['id_ts'])->get();
             $ts['adres_pogruzki_TS']=$TS_list_pogruzka;
             $ts['adres_vygr_TS']=$TS_list_vygruzka;
+            //добавляем название к адресу погрузки
+            foreach ($ts['adres_pogruzki_TS'] as $one_adres) {
+                if ($one_adres['adres_pogruzki'] == null) {
+                    $one_adres['adres_pogruzke_show'] = '';
+                } else {
+                    $adres_pogruzke_show_temp = Gruzootpravitel::where('id', '=', $one_adres['adres_pogruzki'])->get();
+                    $one_adres['adres_pogruzke_show'] = $adres_pogruzke_show_temp[0]['nazvanie'];
+                }
+            }
+            //добавляем название к адресу выгрузки
+            foreach ($ts['adres_vygr_TS'] as $one_adres) {
+                if ($one_adres['adres_pogruzki'] == null) {
+                    $one_adres['adres_vygruzki_show'] = '';
+                } else {
+                    $adres_pogruzke_show_temp = Gruzootpravitel::where('id', '=', $one_adres['adres_pogruzki'])->get();
+                    $one_adres['adres_vygruzki_show'] = $adres_pogruzke_show_temp[0]['nazvanie'];
+                }
+            }
+
+
         }
         return response()->json([
             'status' => 'success',
             'message' =>'Заявка успешно получена',
             'data' =>$orders_list,
             'TS_list' =>$TS_list,
+            'adres_pogruzke_show' =>$adres_pogruzke_show,
+            'adres_vygruski_show' =>$adres_vygruski_show,
         ], 200);
     }
     //если новая заявка
@@ -1131,5 +1182,14 @@ class OrdersController extends Controller
             'status' => 'success',
             'message' => 'заявки успешно обновлены',
         ], 201);
+    }
+    public function up_gruzoot_from_select(Request $request)
+    {
+        $order_id =  $request->input('order_id');
+        $adres_pogruzke =  $request->input('adres_id');
+        $column_name =  $request->input('column_name');
+        Orders::where('id', $order_id)->update([
+            $column_name =>$adres_pogruzke,
+        ]);
     }
 }

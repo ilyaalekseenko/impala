@@ -15,6 +15,7 @@
 
 <script>
     export default {
+        props: ['title'],
         mounted() {
            this.get_perevozka_list(this.perevozka_arr)
         },

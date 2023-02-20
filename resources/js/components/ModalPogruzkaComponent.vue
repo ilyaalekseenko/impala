@@ -9,14 +9,15 @@
                             <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
                         </div>
+
+                        <div v-if="show_alert" class="alert alert-danger">
+                            <ul>
+                                <li v-for="error in alert_list" :key="error"  role="alert" class="alert_text">{{ error }}</li>
+                            </ul>
+                        </div>
+
                     </div>
-                    <div v-if="alert" class="alert alert-danger" role="alert">
-                        <ul id="error_list">
-                            <li v-for="item in alert_arr" >
-                                {{ item }}
-                            </li>
-                        </ul>
-                    </div>
+
                     <div class="col-12 no_padding_right no_padding_left row mod_borders_bottom">
                         <!--                        начало левой колонки модалка-->
                         <div class="col-6">
@@ -241,7 +242,10 @@ import vClickOutside from 'v-click-outside'
                 current_opened_inp:'',
                 founded:'',
                 //переменные редактирования
-                current_gruzootpravitel_id:''
+                current_gruzootpravitel_id:'',
+
+                alert_list: [],
+                show_alert:false,
 
             }},
         methods: {
@@ -563,16 +567,10 @@ import vClickOutside from 'v-click-outside'
 
             save_gruzootpravitel()
             {
+                //вынести в метод очистки списка ошибок
+                this.alert_list=[];
+                this.show_alert=false
 
-                this.alert_arr=[];
-                this.alert=false;
-                if(this.forma=="")
-                {
-                    this.alert=true;
-                    this.alert_arr.push('Выберите форму');
-                }
-                if(this.alert==false)
-                {
                 axios
                     .post('/save_gruzootpravitel',{
                         current_gruzootpravitel_id:this.current_gruzootpravitel_id,
@@ -596,6 +594,7 @@ import vClickOutside from 'v-click-outside'
                         if(this.get_gruzootpravitel_list)
                         {
                             this.get_gruzootpravitel_list()
+
                             this.select_gruzootpravitel()
                         }
                         if(this.change_one_gruzzotpravitel)
@@ -605,8 +604,15 @@ import vClickOutside from 'v-click-outside'
 
                         this.hideModal()
                     })
+                    .catch(error => {
+                        if (error.response.status === 422) {
+                            this.alert_list = Object.values(error.response.data.errors).flat();
+                            this.show_alert=true;
+                        } else {
+                            console.error(error);
+                        }
+                    });
 
-                }
             }
         }
     }

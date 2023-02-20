@@ -8,6 +8,7 @@ use App\Models\FinalGrade;
 use App\Models\GradeDocuments;
 use App\Models\GradePogruzka;
 use App\Models\GradeSumma;
+use App\Models\Gruzootpravitel;
 use App\Models\NaznachenieStavki;
 use App\Models\Orders;
 use App\Models\PogruzkaTS;
@@ -289,6 +290,40 @@ class GradeController extends Controller
                 ],
             );
     }
+    //метод обновляющий данные из инпута
+    public function up_in_db_gruzootpravitel(Request $request)
+    {
+        $grade_list = GradePogruzka::
+        where('grade_id', '=', $request->input('grade_id'))
+            -> where('id_ts', '=', $request->input('id_ts'))
+            -> where('id_pogruzka', '=', $request->input('id_pogr'))
+            -> where('pogruzka_or_vygruzka', '=', $request->input('pogr_or_vygr'))
+            ->update(
+                [
+                    'adres_pogruzki' => $request->input('inp_pog_id')
+                ],
+            );
+    }
+    public function update_one_gruzzootpravitel_from_select(Request $request)
+    {
+        $elem_arr = $request->input('elem');
+        $name = $request->input('name');
+        $id_pogr = $request->input('id_pogr');
+        $pogr_or_vygr = $request->input('pogr_or_vygr');
+        $data_to_up = $request->input('data_to_up');
+        $grade_id = $request->input('grade_id');
+
+        $grade_list = GradePogruzka::
+            where('grade_id', '=', $grade_id)
+            -> where('id_ts', '=', $elem_arr['id_ts'])
+            -> where('id_pogruzka', '=', $id_pogr)
+            -> where('pogruzka_or_vygruzka', '=', $pogr_or_vygr)
+            ->update(
+                [
+                    $name => $data_to_up
+                ],
+            );
+    }
 
     public function delete_file_grade(Request $request)
     {
@@ -394,6 +429,17 @@ class GradeController extends Controller
                 $pogruzka['show_DP_date']=false;
                 $pogruzka['show_DP_time']=false;
 
+                if(($pogruzka['adres_pogruzki']=='')||($pogruzka['adres_pogruzki']==null))
+                {
+                    $pogruzka['adres_pogruzki_show']='';
+                }
+                else
+                {
+                    $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
+                    $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+                    $pogruzka['adres_pogruzki_show']=$adres_pogruzke_show;
+                }
+
 
             }
             foreach ($TS_list_vygruzka as $pogruzka)
@@ -413,6 +459,18 @@ class GradeController extends Controller
                 }
                 $pogruzka['show_DP_date']=false;
                 $pogruzka['show_DP_time']=false;
+
+                if(($pogruzka['adres_pogruzki']=='')||($pogruzka['adres_pogruzki']==null))
+                {
+                    $pogruzka['adres_vygruzki_show']='';
+                }
+                else
+                {
+                    $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
+                    $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+                    $pogruzka['adres_vygruzki_show']=$adres_pogruzke_show;
+                }
+
             }
             $grade['adres_pogruzki_TS']=$TS_list_pogruzka;
             $grade['adres_vygr_TS']=$TS_list_vygruzka;
@@ -503,6 +561,19 @@ class GradeController extends Controller
                 {
                     $ts1['date_ts']='';
                     $ts1['time_ts']='';
+//                    if(($ts1['adres_pogruzki']=='')||($ts1['adres_pogruzki']==null))
+//                    {
+//                        $ts1['adres_pogruzki_show']='';
+//                    }
+//                    else
+//                    {
+//                        $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $ts1['adres_pogruzki']) ->get();
+//                        $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+//                        $ts1['adres_pogruzki_show']=$adres_pogruzke_show;
+//                    }
+
+
+
                 }
                 foreach ($TS_list_vygruzka as $ts1)
                 {

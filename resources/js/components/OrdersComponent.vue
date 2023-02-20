@@ -292,7 +292,17 @@ Vue.filter('formatDate', function(value) {
                     .then(response => {
                         if(response.data.data=='isset')
                         {
-                            window.location.href =('/create_orders/'+id)
+
+                            //если закладка в работе то редирект на вид grade
+                            if(this.order_by==3)
+                            {
+                                window.location.href =('/grade/'+id)
+                            }
+                            else
+                            {
+                                window.location.href =('/create_orders/'+id)
+                            }
+
                         }
                         else
                         {

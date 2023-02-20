@@ -6,6 +6,8 @@ use App\Models\Gruzootpravitel;
 use App\Models\GruzootpravitelBank;
 use App\Models\GruzootpravitelContact;
 use App\Models\GruzootpravitelFile;
+use App\Models\Orders;
+use Cassandra\Exception\ValidationException;
 use Illuminate\Http\Request;
 
 class GruzootpravitelController extends Controller
@@ -120,6 +122,15 @@ class GruzootpravitelController extends Controller
         $kontakty = $request->input('kontakty');
         $bank_arr = $request->input('bank_arr');
         $doc_files = $request->input('doc_files');
+
+
+        $rules = [
+            'nazvanie' => 'required','unique:users'
+        ];
+        $request->validate($rules);
+
+
+
         //если новое модальное окно
              if($current_gruzootpravitel_id=='')
              {
@@ -389,6 +400,12 @@ class GruzootpravitelController extends Controller
             'gruzootpravitel' =>$gruzootpravitel,
         ], 200);
     }
+    public function get_gruzootpravitel_list_atocomplite(Request $request)
+    {
+        $queryString=$request->input('req');
+        $gruzootpravitels = Gruzootpravitel::where('nazvanie', 'LIKE', "%$queryString%")->orderBy('id')->get();
+        return $gruzootpravitels;
+    }
 
     public function get_gruzootpravitel_list_front(Request $request)
     {
@@ -500,6 +517,71 @@ class GruzootpravitelController extends Controller
             'status' => 'success',
             'message' =>'Грузоотправитель получен',
             'gruzootpravitel' =>$gruzootpravitel,
+        ], 200);
+    }
+    public function check_if_name_gruz(Request $request)
+    {
+        $order_id =  $request->input('order_id');
+        $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
+        $column_name =  $request->input('column_name');
+        $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+        if($adres_pogruzke_show=='')
+        {
+            Orders::where('id', $order_id)->update([
+                $column_name =>null,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' =>'убрали грузоотправителя',
+                'isset_flag' =>'no',
+                'adres_pogruzke' =>0,
+            ], 200);
+        }
+        if (!$gruz->isEmpty()) {
+            Orders::where('id', $order_id)->update([
+                $column_name =>$gruz[0]['id'],
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Грузоотправитель изменен',
+                'isset_flag' =>'yes',
+                'adres_pogruzke' =>$gruz[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого грузоотправителя',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
+        ], 200);
+
+    }
+    public function check_if_name_gruz_isset(Request $request)
+    {
+        $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
+        $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+        if($adres_pogruzke_show=='')
+        {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'убрали грузоотправителя',
+                'isset_flag' =>'no',
+                'adres_pogruzke' =>0,
+            ], 200);
+        }
+        if (!$gruz->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Грузоотправитель получен',
+                'isset_flag' =>'yes',
+                'adres_pogruzke' =>$gruz[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого грузоотправителя',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
         ], 200);
     }
 }

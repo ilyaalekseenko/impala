@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_final_grades_data', [App\Http\Controllers\GradeController::class, 'get_final_grades_data'])->name('get_final_grades_data');
     Route::post('/update_one_data', [App\Http\Controllers\GradeController::class, 'update_one_data'])->name('update_one_data');
     Route::post('/update_one_data_pogruzka', [App\Http\Controllers\GradeController::class, 'update_one_data_pogruzka'])->name('update_one_data_pogruzka');
+    Route::post('/up_in_db_gruzootpravitel', [App\Http\Controllers\GradeController::class, 'up_in_db_gruzootpravitel'])->name('up_in_db_gruzootpravitel');
+    Route::post('/update_one_gruzzootpravitel_from_select', [App\Http\Controllers\GradeController::class, 'update_one_gruzzootpravitel_from_select'])->name('update_one_gruzzootpravitel_from_select');
     Route::post('/update_one_data_summa', [App\Http\Controllers\GradeController::class, 'update_one_data_summa'])->name('update_one_data_summa');
     Route::post('/store_grade_file', [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
     Route::post('/add_to_naznachenie_stavki', [App\Http\Controllers\GradeController::class, 'add_to_naznachenie_stavki'])->name('add_to_naznachenie_stavki');
@@ -83,10 +85,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'delete_gruzootpravitel'])->name('delete_gruzootpravitel');
     Route::post('/get_gruzootpravitel_list', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list'])->name('get_gruzootpravitel_list');
     Route::post('/get_gruzootpravitel_list_front', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_front'])->name('get_gruzootpravitel_list_front');
+    Route::post('/get_gruzootpravitel_list_atocomplite', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_atocomplite'])->name('get_gruzootpravitel_list_atocomplite');
+    Route::post('/check_if_name_gruz', [App\Http\Controllers\GruzootpravitelController::class, 'check_if_name_gruz'])->name('check_if_name_gruz');
+    Route::post('/check_if_name_gruz_isset', [App\Http\Controllers\GruzootpravitelController::class, 'check_if_name_gruz_isset'])->name('check_if_name_gruz_isset');
     Route::post('/select_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'select_gruzootpravitel'])->name('select_gruzootpravitel');
     Route::get('/gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'gruzootpravitel'])->name('gruzootpravitel');
     Route::post('/get_perevozka_list', [App\Http\Controllers\OrdersController::class, 'get_perevozka_list'])->name('get_perevozka_list');
     Route::post('/check_buttons_show', [App\Http\Controllers\OrdersController::class, 'check_buttons_show'])->name('check_buttons_show');
+    Route::post('/up_gruzoot_from_select', [App\Http\Controllers\OrdersController::class, 'up_gruzoot_from_select'])->name('up_gruzoot_from_select');
     Route::post('/update_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'update_perevozka_settings'])->name('update_perevozka_settings');
     Route::post('/delete_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'delete_perevozka_settings'])->name('delete_perevozka_settings');
 //    Route::post('/delete_forma_settings', [App\Http\Controllers\SettingsController::class, 'delete_forma_settings'])->name('delete_forma_settings');

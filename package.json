@@ -29,6 +29,7 @@
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@livelybone/vue-datepicker": "^4.1.0",
+        "@trevoreyre/autocomplete-vue": "^2.4.1",
         "autoprefixer": "10.4.5",
         "bootstrap-vue": "^2.22.0",
         "laravel-echo": "^1.15.0",

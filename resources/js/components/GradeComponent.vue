@@ -236,6 +236,18 @@
                                         <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">
                                             <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
                                         </select>
+<!--                                        {{ elem1['id_ts'] }}-->
+                                        <auto-input-component class="cr_ord_inp_n_1"
+                                                              inp_type='grade_pogruzka'
+                                                              :adres_pogruzke_show="flag_pogruz"
+                                                              :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
+                                                              :order_id="order_id"
+                                                              :id_ts="elem1['id_ts']"
+                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                              :key_in_arr="key1"
+                                                              @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                              ref="AutoSelectComponent_grade_pogruzka"
+                                        ></auto-input-component>
                                     <div class="col-12 row">
                                         <div class="col-6 date_width">
                                             <div class="little_title_grade">Дата</div>
@@ -289,9 +301,23 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
+<!--                                        {{ adres_vygr }}-->
                                          <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">
                                             <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>
                                         </select>
+
+                                         <auto-input-component class="cr_ord_inp_n_1"
+                                                               inp_type='grade_vygruzka'
+                                                               :adres_pogruzke_show="flag_pogruz"
+                                                               :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"
+                                                               :order_id="order_id"
+                                                               :id_ts="elem1['id_ts']"
+                                                               v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                               :key_in_arr="key2"
+                                                               @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                               ref="AutoSelectComponent_grade_vygruzka"
+                                         ></auto-input-component>
+
                                         <div class="col-12 row">
                                         <div class="col-6 date_width">
                                             <div class="little_title_grade">Дата</div>
@@ -572,7 +598,8 @@
                 p2:'',
                 p3:'',
                 p4:'',
-                p5:''
+                p5:'',
+                flag_pogruz:''
 
 
             }
@@ -631,7 +658,6 @@
                 for(var i = 0; i < this.spisokTShead.length; i++)
                 {
                     gruzomesta=(Number(gruzomesta)+Number(this.spisokTShead[i]['kol_gruz_TS']));
-                    // console.log(gruzomesta)
                 }
                 return this.gruzomesta_big-gruzomesta;
             },
@@ -729,6 +755,65 @@
         },
 
         methods: {
+            //добавление пустой погрузки или выгрузки
+            update_one_gruzzootpravitel_from_select(data)
+            {
+                console.log(this.order_id)
+                //номер транспортного средства по порядку среди всех ТС в данной grade(заявке)
+                console.log(data.id_ts)
+                //ключ , это номер по порядку в данном ТС
+                console.log(data.key)
+                //погрузка - 1 или выгрузка - 2
+                console.log(data.pogr_or_vygr)
+                //id грузоотправителя
+                console.log(data.inp_pog_id)
+                //то что в инпуте
+                console.log(data.nazvanie)
+                //обновим в базе данных
+                this.up_in_db_gruzootpravitel(this.order_id,data.id_ts,data.key,data.pogr_or_vygr,data.inp_pog_id)
+                //обновим на фронте
+                let pog_vyg='';
+                let pog_vyg_show='';
+                if(data.pogr_or_vygr=='1')
+                {
+                    pog_vyg='adres_pogruzki_TS'
+                    pog_vyg_show='adres_pogruzki_show'
+                }
+                if(data.pogr_or_vygr=='2')
+                {
+                    pog_vyg='adres_vygr_TS'
+                    pog_vyg_show='adres_vygruzki_show'
+                }
+                this.up_gruz_in_front(data.id_ts,pog_vyg,data.key,pog_vyg_show,data.nazvanie)
+            },
+
+            //метод обновляющий данные грузоотправителя из инпута
+            //this.order_id
+            //номер транспортного средства по порядку среди всех ТС в данной grade(заявке)
+            //data.id_ts
+            //ключ , это номер по порядку в данном ТС
+            //data.key
+            //погрузка - 1 или выгрузка - 2
+            //data.pogr_or_vygr
+            //id грузоотправителя
+            //data.inp_pog_id
+            up_in_db_gruzootpravitel(order_id,id_ts,key,pogr_or_vygr,inp_pog_id)
+            {
+                axios
+                    .post('/up_in_db_gruzootpravitel',{
+                        grade_id:this.order_id,
+                        id_ts:id_ts,
+                        id_pogr:key,
+                        pogr_or_vygr:pogr_or_vygr,
+                        inp_pog_id:inp_pog_id,
+                        name:name,
+                    })
+            },
+            //обновим данные на фронте в списке грузоотправителей после работы с селектом
+            up_gruz_in_front(id_ts,pog_vyg,key,pog_vyg_show,nazvanie)
+            {
+                this.spisokTShead[id_ts][pog_vyg][key][pog_vyg_show]=nazvanie
+            },
             deleteTs()
             {
              console.log(this.spisokTShead)
@@ -738,8 +823,6 @@
                 //key - номер в массиве spisokTShead
                 //pogr_vygr - погрузка или выгрузка в массиве spisokTShead
                 //key1 - номер в массиве погрузки или выгрузки
-              //  console.log('pogr_or_vygr')
-              //  console.log(pogr_or_vygr)
                 this.add_gruzoot_key=key
                 this.add_gruzoot_pogr_vygr=pogr_vygr
                 this.add_gruzoot_key1=key1
@@ -751,31 +834,43 @@
             },
             select_gruzootpravitel()
             {
-                if(this.add_gruzoot_pogr_vygr=='pogruzka')
-                {
+
                     axios
                         .post('/select_gruzootpravitel',{
                         })
-                        .then(({ data }) => (
-                            this.spisokTShead[this.add_gruzoot_key]['adres_pogruzki_TS'][this.add_gruzoot_key1]['adres_pogruzki']=data.gruzootpravitel.id,
-                            this.update_one_data_pogruzka(this.p1,this.p2,this.p3,data.gruzootpravitel.id,this.p5)
-                            )
+                        .then(response => {
 
-                        );
-                }
+                            //обновим на фронте
+                            // this.p1.id_ts  - id ts номер транспортного средства по порядку среди всех ТС в данной grade(заявке)
+                            // this.add_gruzoot_key - ключ , это номер по порядку в данном ТС
+                            let pog_vyg='';
+                            let pog_vyg_show='';
+                            let ref_link='';
+                            if(this.add_gruzoot_pogr_vygr=='pogruzka')
+                            {
 
-                if(this.add_gruzoot_pogr_vygr=='vygruzka')
-                {
-                    axios
-                        .post('/select_gruzootpravitel',{
+                                this.spisokTShead[this.add_gruzoot_key]['adres_pogruzki_TS'][this.add_gruzoot_key1]['adres_pogruzki']=response.data.gruzootpravitel.id,
+                                    this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
+                                pog_vyg='adres_pogruzki_TS'
+                                pog_vyg_show='adres_pogruzki_show'
+                                ref_link='AutoSelectComponent_grade_pogruzka'
+                            }
+                            if(this.add_gruzoot_pogr_vygr=='vygruzka')
+                            {
+                                this.spisokTShead[this.add_gruzoot_key]['adres_vygr_TS'][this.add_gruzoot_key1]['adres_pogruzki']=response.data.gruzootpravitel.id,
+                                    this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
+                                pog_vyg='adres_vygr_TS'
+                                pog_vyg_show='adres_vygruzki_show'
+                                ref_link='AutoSelectComponent_grade_vygruzka'
+
+                            }
+                            this.up_gruz_in_front(this.p1.id_ts,pog_vyg,this.p2,pog_vyg_show,response.data.gruzootpravitel.nazvanie)
+                            //обновим в input
+                            //передаём в селект название и отображаем там
+
+                            this.$refs[ref_link][this.p2].up_gruz_from_modal(response.data.gruzootpravitel.nazvanie)
                         })
-                        .then(({ data }) => (
-                                this.spisokTShead[this.add_gruzoot_key]['adres_vygr_TS'][this.add_gruzoot_key1]['adres_pogruzki']=data.gruzootpravitel.id,
-                                this.update_one_data_pogruzka(this.p1,this.p2,this.p3,data.gruzootpravitel.id,this.p5)
-                            )
 
-                        );
-                }
             },
             get_gruzootpravitel_list()
             {
@@ -1508,7 +1603,6 @@
                                     kol_gruz_TS : entry.kol_gruz_TS,
                                     kol_TS_TS : entry.kol_TS_TS,
                                     rasstojanie_TS : entry.rasstojanie_TS,
-
                                     adres_pogruzki_TS : entry.adres_pogruzki_TS,
                                     ob_ves_TS : entry.ob_ves_TS,
                                     ob_ob_TS : entry.ob_ob_TS,
