@@ -629,7 +629,7 @@
 
                                     <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
-                                            Адрес погрузки {{ key }}
+                                            Адрес погрузки
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
                                         </div>
 <!--                                        <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />-->
