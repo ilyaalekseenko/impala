@@ -907,12 +907,6 @@
                     })
 
             },
-            set_doc()
-            {
-                axios
-                    .post('/set_doc',{
-                    })
-            },
             store_doc()
             {
                 this.$refs.files_doc.click();

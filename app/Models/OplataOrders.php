@@ -41,4 +41,11 @@ class OplataOrders extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getOplataByOrderIdInModel($id)
+    {
+        return OplataOrders::where('order_id', $id) ->get();
+
+    }
+
 }

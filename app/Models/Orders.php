@@ -60,4 +60,54 @@ class Orders extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function getOrderByIdInModel($id)
+    {
+       return Orders::where('id', '=', $id) ->get();
+    }
+    public function getFirstOrderInModel($id)
+    {
+        return Orders::where('id', $id)->first();
+    }
+    public function createNewOrderInModel($dataVneseniya)
+    {
+        return Orders::create([
+            'data_vneseniya' => $dataVneseniya
+        ]);
+    }
+    public function updateOrderMassInModel()
+    {
+        Orders::where('id', '=', request('id'))->update([
+            'data_vneseniya' =>request('data_vneseniya'),
+            'rasschitat_do' =>request('rasschitat_do'),
+            'nomenklatura' =>request('nomenklatura'),
+            'nomer_zayavki' =>request('nomer_zayavki'),
+            'kompaniya_zakazchik' =>request('kompaniya_zakazchik'),
+            'menedzer_zakazchik' =>request('menedzer_zakazchik'),
+            'ISD' =>request('ISD'),
+            'cena_kontrakta' =>request('cena_kontrakta'),
+            'data_kontrakta' =>request('data_kontrakta'),
+            'adres_pogruzke' =>request('adres_pogruzke'),
+            'data_pogruzki' =>request('data_pogruzki'),
+            'data_dostavki' =>request('data_dostavki'),
+            'adres_vygruski' =>request('adres_vygruski'),
+            'komment_1' =>request('komment_1'),
+            'logist' =>request('logist'),
+            'gruzomesta_big' =>request('gruzomesta_big'),
+            'gruzomesta_small' =>request('gruzomesta_small'),
+            'rasstojanie' =>request('rasstojanie'),
+            'ob_ves' =>request('ob_ves'),
+            'ob_ob' =>request('ob_ob'),
+            'vid_perevozki' =>request('vid_perevozki'),
+        ]);
+    }
+    public function updateOneFieldInOrderInModel($id,$field,$data)
+    {
+        Orders::where('id', $id)->update([
+            $field =>$data,
+        ]);
+    }
+    public function whereInDeleteInModel($orders_id)
+    {
+        Orders::whereIn('id', $orders_id)->delete();
+    }
 }

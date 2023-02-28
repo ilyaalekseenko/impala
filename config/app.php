@@ -199,6 +199,8 @@ return [
         Meneses\LaravelMpdf\LaravelMpdfServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
+        App\Providers\GruzootpravitelProvider::class,
+        App\Providers\UserProvider::class,
     ],
 
     /*

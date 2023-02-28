@@ -15,7 +15,10 @@ class Gruzootpravitel extends Model
 //    {
 //        return $this->belongsTo(FormaGruzootpravitel::class, 'id');
 //    }
-
+    public function getGruzootpravitelByIdInModel($id)
+    {
+        return Gruzootpravitel::where('id', $id) ->get();
+    }
 
 
 }

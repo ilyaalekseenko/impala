@@ -82,5 +82,8 @@ class User extends Authenticatable
     {
         return $this->hasPermission($permission);
     }
-
+    public function getUserByIdInModel($id)
+    {
+        return User::where('id', $id)->get();
+    }
 }

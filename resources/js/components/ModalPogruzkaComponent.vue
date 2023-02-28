@@ -10,11 +10,7 @@
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
                         </div>
 
-                        <div v-if="show_alert" class="alert alert-danger">
-                            <ul>
-                                <li v-for="error in alert_list" :key="error"  role="alert" class="alert_text">{{ error }}</li>
-                            </ul>
-                        </div>
+                        <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
 
                     </div>
 
@@ -567,9 +563,9 @@ import vClickOutside from 'v-click-outside'
 
             save_gruzootpravitel()
             {
-                //вынести в метод очистки списка ошибок
-                this.alert_list=[];
-                this.show_alert=false
+                //работа с алертом валидации
+                this.$refs.AlertListComponent.hide_alert_list()
+                this.$refs.AlertListComponent.clear_alert_list()
 
                 axios
                     .post('/save_gruzootpravitel',{
@@ -607,7 +603,7 @@ import vClickOutside from 'v-click-outside'
                     .catch(error => {
                         if (error.response.status === 422) {
                             this.alert_list = Object.values(error.response.data.errors).flat();
-                            this.show_alert=true;
+                            this.$refs.AlertListComponent.show_alert_list()
                         } else {
                             console.error(error);
                         }

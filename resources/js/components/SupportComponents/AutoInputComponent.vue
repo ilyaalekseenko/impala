@@ -36,7 +36,6 @@
                 {
                     this.adres_pogruzke_show_local=this.adres_pogruzke_show
                 }
-
             },
         },
         methods: {

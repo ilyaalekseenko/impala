@@ -43,4 +43,10 @@ class PogruzkaTS extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function tsListPogruzkaGetInModel($id,$ts,$pog_vyg)
+    {
+       return PogruzkaTS::where('order_id',$id)->where('pogruzka_or_vygruzka', $pog_vyg)->where('id_ts', $ts)->get();
+    }
+
 }

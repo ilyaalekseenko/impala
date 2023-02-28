@@ -18,6 +18,15 @@ use App\Models\TS;
 use App\Models\LogistName;
 use App\Models\UnreadHeader;
 use App\Models\User;
+use App\Services\DocService;
+use App\Services\ImportantService;
+use App\Services\LogistService;
+use App\Services\OplataService;
+use App\Services\OrderService;
+use App\Services\TSService;
+use App\Services\UnreadHeaderService;
+use App\Services\UserService;
+use App\Services\PogruzkaTSService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
@@ -35,36 +44,69 @@ use Dompdf\Dompdf;
 
 class OrdersController extends Controller
 {
-    public function main_orders()
+    private $orderService;
+    private $oplataOrders;
+    private $oplataService;
+    private $user_mod;
+    private $userService;
+    private $TSService;
+    private $pogruzkaTSService;
+    private $order_mod;
+    private $docService;
+    private $docsTemplMod;
+    private $UnreadHeadersService;
+    private $ImportantService;
+    private $LogistService;
+    private $UnreadHeadersModel;
+
+    public function __construct(
+        OrderService $orderService,
+        OplataOrders $oplataOrders,
+        OplataService $oplataService,
+        User $user_mod,
+        UserService $userService,
+        TSService $TSService,
+        PogruzkaTSService $pogruzkaTSService,
+        Orders $order_mod,
+        DocService $docService,
+        DocsTemplate $docsTemplMod,
+        UnreadHeaderService $UnreadHeadersService,
+        ImportantService $ImportantService,
+        LogistService $LogistService,
+        UnreadHeader $UnreadHeadersModel,
+        )
     {
-        $user = User::find(Auth::id());
-        //получаем список ролей
-        $roles= Role::find($user->roles[0]['id']);
-        $permissions_arr=[];
-        foreach ($roles->permissions as $permission) {
-            array_push($permissions_arr, $permission['id']);
-        }
-        $role_perm=['role'=>$user->roles[0]['id'],'permissions'=>$permissions_arr];
-        $user['role_perm']=$role_perm;
+        $this->orderService = $orderService;
+        $this->oplataOrders = $oplataOrders;
+        $this->oplataService = $oplataService;
+        $this->user_mod = $user_mod;
+        $this->userService = $userService;
+        $this->TSService = $TSService;
+        $this->pogruzkaTSService = $pogruzkaTSService;
+        $this->order_mod = $order_mod;
+        $this->docService = $docService;
+        $this->docsTemplMod = $docsTemplMod;
+        $this->UnreadHeadersService = $UnreadHeadersService;
+        $this->ImportantService = $ImportantService;
+        $this->LogistService = $LogistService;
+        $this->UnreadHeadersModel = $UnreadHeadersModel;
+    }
+
+
+    public function mainOrders(UserService $userService)
+    {
+        $user=$userService->getRole();
         return view('front.orders')->with('auth_user',  $user);
     }
-    public function create_orders()
+    public function createOrders(UserService $userService)
     {
-        $user = User::find(Auth::id());
-        //получаем список ролей
-        $roles= Role::find($user->roles[0]['id']);
-        $permissions_arr=[];
-        foreach ($roles->permissions as $permission) {
-            array_push($permissions_arr, $permission['id']);
-        }
-        $role_perm=['role'=>$user->roles[0]['id'],'permissions'=>$permissions_arr];
-        $user['role_perm']=$role_perm;
+        $user=$userService->getRole();
         return view('front.create_orders')->with('auth_user',  $user);
     }
-    public function check_if_order_isset(Request $request)
+    public function checkIfOrderIsset(Request $request)
     {
-        $id=$request->input('id');
-        $isset = Orders::where('id', $id)->first();
+       // $id=$request->input('id');
+        $isset =$this->orderService->getfirstOrder(request('id'));
 
         if ($isset !== null) {
             return response()->json([
@@ -189,26 +231,20 @@ class OrdersController extends Controller
         if($logist!==0)
         {
             //получаем id предыдущего логиста
-            $old_logist_id=Orders::where('id',$id)->get();
-            //если не было предыдущего логиста
-            if ($old_logist_id[0]['logist']==null) {
-                //тогда назначем предыдущему логисту id ноль
-                $old_logist_id=0;
-            }
-            else
-            {
-                //если был предыдущий логист тогда получаем его id
-                $old_logist_id=$old_logist_id[0]['logist'];
-            }
+            $old_logist_id= $this->LogistService->getOldLogistId(request('id'));
+
             //читал ли предыдущий логист эту заявку
-            $unread_flag=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
+            $unread_flag= $this->UnreadHeadersModel->getUnreadHeaderByColumnInModel(request('id'),'ocenka');
+            //$unread_flag=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
             //если эта заявка не была прочитана предыдущим логистом
             if (!$unread_flag->isEmpty()) {
                 //удаляем не прочитанную заявку предыдущего логиста
-                UnreadHeader::where('order_id','=',$id)->delete();
+                $this->UnreadHeadersModel->delUnreadHeaderInModel(request('id'));
+               // UnreadHeader::where('order_id','=',$id)->delete();
             }
             //считаем сколько не прочитанных заявок у предыдущего логиста
-            $old_logist_unread=UnreadHeader::where('logist_id',$old_logist_id)->where('column_name','ocenka')->count();
+            $old_logist_unread= $this->UnreadHeadersModel->countUnreadHeaderByColumnInModel($old_logist_id,'ocenka');
+            //$old_logist_unread=UnreadHeader::where('logist_id',$old_logist_id)->where('column_name','ocenka')->count();
             //ставим на эту заявку нового логиста
             Orders::where('id', '=', $id)->update([
                 'logist' =>$logist,
@@ -256,81 +292,15 @@ class OrdersController extends Controller
             // UpdateLogistEvent('не прочитанные заявки нового логиста','id нового логиста','не прочитанные заявки старого логиста','id старого логиста')
             broadcast(new UpdateLogistEvent(0,0,$old_logist_unread,$old_logist_id))->toOthers();
 
-//            //проверка был ли логист назначенный до текущего назначения Не прочитанный
-//            $logist_to_del=UnreadHeader::where('order_id',$id)->where('column_name','ocenka')->get();
-//            //если не был
-//            if ($logist_to_del->isEmpty())
-//            {
-//                //номер логиста ноль потому что не был назначен
-//                $logist_to_del=0;
-//                //соответственно у него нет оставшихся заявок
-//                $orders_count_new=0;
-//            }
-//            //если был назначенный логист
-//            else
-//            {
-//            UnreadHeader::where('order_id','=',$id)->delete();
-//            //считаем количество не прочитанных заявок у данного логиста
-//            $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
-//            //забираем id логиста
-//            $logist_to_del=$logist_to_del[0]['logist_id'];
-//            }
-//            broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del))->toOthers();
-        }
+       }
         return response()->json([
             'status' => 'success',
         ], 200);
 
     }
-    public function update_order(Request $request)
+    public function updateOrder(Request $request)
     {
-        $id=$request->input('id');
-        $data_vneseniya=$request->input('data_vneseniya');
-        $rasschitat_do=$request->input('rasschitat_do');
-        $nomenklatura=$request->input('nomenklatura');
-        $nomer_zayavki=$request->input('nomer_zayavki');
-        $kompaniya_zakazchik=$request->input('kompaniya_zakazchik');
-        $menedzer_zakazchik=$request->input('menedzer_zakazchik');
-        $ISD=$request->input('ISD');
-        $cena_kontrakta=$request->input('cena_kontrakta');
-        $data_kontrakta=$request->input('data_kontrakta');
-        $adres_pogruzke=$request->input('adres_pogruzke');
-        $data_pogruzki=$request->input('data_pogruzki');
-        $data_dostavki=$request->input('data_dostavki');
-        $adres_vygruski=$request->input('adres_vygruski');
-        $komment_1=$request->input('komment_1');
-        $logist=$request->input('logist');
-        $gruzomesta_big=$request->input('gruzomesta_big');
-        $gruzomesta_small=$request->input('gruzomesta_small');
-        $rasstojanie=$request->input('rasstojanie');
-        $ob_ves=$request->input('ob_ves');
-        $ob_ob=$request->input('ob_ob');
-        $vid_perevozki=$request->input('vid_perevozki');
-        Orders::where('id', '=', $id)->update([
-            'data_vneseniya' =>$data_vneseniya,
-            'rasschitat_do' =>$rasschitat_do,
-            'nomenklatura' =>$nomenklatura,
-            'nomer_zayavki' =>$nomer_zayavki,
-            'kompaniya_zakazchik' =>$kompaniya_zakazchik,
-            'menedzer_zakazchik' =>$menedzer_zakazchik,
-            'ISD' =>$ISD,
-            'cena_kontrakta' =>$cena_kontrakta,
-            'data_kontrakta' =>$data_kontrakta,
-            'adres_pogruzke' =>$adres_pogruzke,
-            'data_pogruzki' =>$data_pogruzki,
-            'data_dostavki' =>$data_dostavki,
-            'adres_vygruski' =>$adres_vygruski,
-            'komment_1' =>$komment_1,
-            'logist' =>$logist,
-            'gruzomesta_big' =>$gruzomesta_big,
-            'gruzomesta_small' =>$gruzomesta_small,
-            'rasstojanie' =>$rasstojanie,
-            'ob_ves' =>$ob_ves,
-            'ob_ob' =>$ob_ob,
-            'vid_perevozki' =>$vid_perevozki,
-        ]);
-
-
+        $this->orderService->updateOrderMass();
     }
     public function update_order_oplata(Request $request)
     {
@@ -368,87 +338,33 @@ class OrdersController extends Controller
 
     }
     //если заявка уже существует
-    public function start_get_old_order(Request $request)
+    public function startGetOldOrder(Request $request)
     {
         $id = $request->input('id');
-        $orders_list = Orders::where('id', '=', $id) ->get();
-        //адрес погрузки
-        if($orders_list[0]['adres_pogruzke']==null)
-        {
-            $adres_pogruzke_show='';
-        }
-        else
-        {
-            $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_pogruzke']) ->get();
-            $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
-        }
-        //адрес выгрузки
-        if($orders_list[0]['adres_vygruski']==null)
-        {
-            $adres_vygruski_show='';
-        }
-        else
-        {
-            $adres_vygruski_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_vygruski']) ->get();
-            $adres_vygruski_show = $adres_vygruski_show[0]['nazvanie'];
-        }
-        //адрес выгрузки
-        if($orders_list[0]['adres_vygruski']==null)
-        {
-            $adres_vygruski_show='';
-        }
-        else
-        {
-            $adres_vygruski_show = Gruzootpravitel::where('id', '=', $orders_list[0]['adres_vygruski']) ->get();
-            $adres_vygruski_show = $adres_vygruski_show[0]['nazvanie'];
-        }
-        $oplata_list= OplataOrders::where('order_id', '=', $id) ->get();
-        $arr_to_add=[];
-       foreach ($oplata_list as $oplata)
-       {
-           array_push($arr_to_add, $oplata);
-       }
-        $orders_list[0]['oplata']=$arr_to_add;
-
-        $log_name= User::where('id', '=', $orders_list[0]['logist'])->get();
-
-       if (!$log_name->isEmpty())
-            {
-                $orders_list[0]['logist_name']=$log_name[0]['last_name'].' '.$log_name[0]['first_name'].' '.$log_name[0]['patronymic'];
-            }
-            else
-            {
-                $orders_list[0]['logist_name']='Логист не выбран';
-            }
-       //получаем список ТС
-        $TS_list= TS::where('order_id', '=', $id)->get();
+        $orders_list=$this->orderService->getOrderById(request('id'));
+        $adres_pogruzke_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_pogruzke']);
+        $adres_vygruski_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_vygruski']);
+        $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
+        $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
+        //получаем юзера по id логиста
+        $log_name= $this->user_mod->getUserByIdInModel($orders_list[0]['logist']);
+        //присваиваем имя
+        $orders_list[0]['logist_name']=$this->userService->setNameToUser($log_name);
+       //получаем список ТС по order_id
+        $TS_list= $this->TSService->getTsListByOrderId($id);
         //получаем список адресов погрузки и выгрузки
         foreach ($TS_list as $ts)
         {
-            $TS_list_pogruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '1')->where('id_ts', $ts['id_ts'])->get();
-            $TS_list_vygruzka = PogruzkaTS::where('order_id', '=', $id)->where('pogruzka_or_vygruzka', '2')->where('id_ts', $ts['id_ts'])->get();
-            $ts['adres_pogruzki_TS']=$TS_list_pogruzka;
-            $ts['adres_vygr_TS']=$TS_list_vygruzka;
+            $ts['adres_pogruzki_TS']= $this->pogruzkaTSService->tsListPogruzkaGet($id,$ts['id_ts'],'1');
+            $ts['adres_vygr_TS']= $this->pogruzkaTSService->tsListPogruzkaGet($id,$ts['id_ts'],'2');
             //добавляем название к адресу погрузки
             foreach ($ts['adres_pogruzki_TS'] as $one_adres) {
-                if ($one_adres['adres_pogruzki'] == null) {
-                    $one_adres['adres_pogruzke_show'] = '';
-                } else {
-                    $adres_pogruzke_show_temp = Gruzootpravitel::where('id', '=', $one_adres['adres_pogruzki'])->get();
-                    $one_adres['adres_pogruzke_show'] = $adres_pogruzke_show_temp[0]['nazvanie'];
-                }
+                $one_adres['adres_pogruzke_show']=$this->pogruzkaTSService->setNameShow($one_adres);
             }
             //добавляем название к адресу выгрузки
             foreach ($ts['adres_vygr_TS'] as $one_adres) {
-                if ($one_adres['adres_pogruzki'] == null) {
-                    $one_adres['adres_vygruzki_show'] = '';
-                } else {
-                    $adres_pogruzke_show_temp = Gruzootpravitel::where('id', '=', $one_adres['adres_pogruzki'])->get();
-                    $one_adres['adres_vygruzki_show'] = $adres_pogruzke_show_temp[0]['nazvanie'];
-                }
+                $one_adres['adres_vygruzki_show']=$this->pogruzkaTSService->setNameShow($one_adres);
             }
-
-
         }
         return response()->json([
             'status' => 'success',
@@ -460,24 +376,21 @@ class OrdersController extends Controller
         ], 200);
     }
     //если новая заявка
-    public function start_new_order(Request $request)
+    public function startNewOrder(Request $request)
     {
-        $data_vneseniya = $request->input('data_vneseniya');
-       $orders= Orders::create([
-            'data_vneseniya' => $data_vneseniya
-        ]);
+        $orders=$this->orderService->newOrder(request('data_vneseniya'));
         return response()->json([
             'status' => 'success',
             'message' =>'Заявка успешно создана',
             'data' =>$orders,
         ], 200);
     }
-    public function store_xlsx(Request $request)
+    public function storeXlsx(Request $request)
     {
-        Orders::where('id', '=', $request['order_id'])->update([
-            'nomenklatura' =>$request['file_name'],
-        ]);
-       $request['file_xlsx']->move(public_path('/images/orders_xlsx/'), $request['order_id'].'__'.$request['full_name']);
+        //сохраним в БД
+        $this->order_mod->updateOneFieldInOrderInModel(request('order_id'),'nomenklatura',request('file_name'));
+        //сохраним в проекте
+        $this->docService->storeDoc(request('file_xlsx'),'/images/orders_xlsx/',$request['order_id'].'__'.$request['full_name']);
         return response()->json([
             'status' => 'success',
             'message' =>'Файл xlsx успешно сохранён',
@@ -485,45 +398,29 @@ class OrdersController extends Controller
     }
     public function store_doc(Request $request)
     {
-        $request['file_xlsx']->move(public_path('/grade_doc/'), $request['order_id'].'__'.$request['full_name']);
+        $this->docService->storeDoc(request('file_xlsx'),'/grade_doc/',$request['order_id'].'__'.$request['full_name']);
+//        $request['file_xlsx']->move(public_path('/grade_doc/'), $request['order_id'].'__'.$request['full_name']);
         return response()->json([
             'status' => 'success',
             'message' =>'Файл xlsx успешно сохранён',
         ], 200);
     }
-    public function store_doc_templ(Request $request)
+    public function storeDocTempl(Request $request)
     {
-        $doc_type= $request->input('doc_type');
-        $full_name= $request->input('full_name');
-
-            $isset = DocsTemplate::where('doc_type', $doc_type)->first();
-
+            $isset = $this->docsTemplMod->getFirstInModel('doc_type',request('doc_type'));
             if ($isset !== null) {
-                $path_to_del = public_path() . "/templates/" . $isset['doc_name'];
-                try {
-                unlink($path_to_del);
-                }
-                catch (\Throwable $e)
-                {
-
-                }
-                $isset->update(
-                [
-                'doc_name' =>$request['full_name'],
-                ]
-            );
+                //удаляем документ
+                $this->docService->delDoc(public_path() . "/templates/" . $isset['doc_name']);
+                //обновляем
+                $this->docsTemplMod->updateOneFieldInModel($isset['id'],'doc_name',request('full_name'));
             }
             else{
-                DocsTemplate::create(
-                    [
-                        'doc_type' =>$doc_type,
-                        'doc_name' =>$request['full_name'],
-                    ]
-                );
+                $this->docsTemplMod->createDocFieldsInModel(request('doc_type'),request('full_name'));
             }
+            //сохраняем
+            $this->docService->storeDoc(request('file_xlsx'),public_path('/templates/'),request('full_name'));
 
-        $request['file_xlsx']->move(public_path('/templates/'), $full_name);
-        return response()->json([
+            return response()->json([
             'status' => 'success',
             'message' =>'Файл успешно сохранён',
         ], 200);
@@ -664,35 +561,6 @@ class OrdersController extends Controller
                 'file' =>'ZAI.pdf',
             ], 200);
         }
-    }
-    public function set_doc(Request $request)
-    {
-        $phpWord = new PhpWord();
-//        $phpWord = \PhpOffice\PhpWord\IOFactory::load(public_path('grade_doc/2.txt'));
-
-
-        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('grade_doc/Документ для редактирования.docx'));
-        $templateProcessor->setValue(array('{{company}}'), array('Developer'));
-        $templateProcessor->saveAs(public_path('grade_doc/3.docx'));
-
-        $template = new Template();
-        $template->open(public_path('grade_doc/Книга1.xlsx'))
-        ->replace('one', 'two')
-        ->save(public_path('grade_doc/test.xlsx'));
-
-//        $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('grade_doc/Книга1.xlsx'));
-//        $templateProcessor->setValue(array('{{company}}'), array('Developer'));
-//        $templateProcessor->saveAs(public_path('grade_doc/3.xlsx'));
-
-//        $section = $phpWord->addSection();
-//        $section->addText(
-//            '"Learn from yesterday, live for today, hope for tomorrow. '
-//            . 'The important thing is not to stop questioning." '
-//            . '(Albert Einstein)'
-//        );
-//        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-//        $objWriter->save(public_path('grade_doc/2.txt'));
-
     }
     public function header_counter_orders()
     {
@@ -1110,72 +978,39 @@ class OrdersController extends Controller
 //            'res1'=>$old_imp['id']
         ], 201);
     }
-    public function delete_orders(Request $request)
+    public function deleteOrders(Request $request)
     {
         $orders_id =  $request->input('orders_id');
-
-        Orders::whereIn('id', $orders_id)->delete();
-
-        foreach ($orders_id as $ord_id)
-        {
-            $logist_to_del=UnreadHeader::where('order_id',$ord_id)->where('column_name','ocenka')->get();
-            UnreadHeader::where('order_id','=',$ord_id)->delete();
-            if (!$logist_to_del->isEmpty()) {
-                $orders_count_new=UnreadHeader::where('logist_id',$logist_to_del[0]['logist_id'])->where('column_name','ocenka')->count();
-                broadcast(new UpdateLogistEvent(0,0,$orders_count_new,$logist_to_del[0]['logist_id']))->toOthers();
-            }
-        }
+        //удаляем все заявки по id
+        $this->order_mod->whereInDeleteInModel(request('orders_id'));
+        //удаление не прочитанных шапок
+        $this->UnreadHeadersService->delUnreadHeaders(request('orders_id'));
         broadcast(new DeleteOrderEvent($orders_id))->toOthers();
         return response()->json([
             'status' => 'success',
             'message' => 'заявки успешно удалены',
         ], 201);
     }
-    public function important_mark(Request $request)
+    public function importantMark(Request $request)
     {
-
-        $orders_id =  $request->input('orders_id');
-        $model =  $request->input('model');
-        $model = 'App\Models\\' . $model;
-        foreach ($orders_id as $order)
-        {
-            $single_order= $model::where('id', $order)->get();
-            if($single_order[0]['important']==1)
-            {
-                $model::where('id', $order)->update([
-                    'important' =>null,
-                ]);
-            }
-            else
-            {
-                $model::where('id', $order)->update([
-                    'important' =>1,
-                ]);
-            }
-        }
+        $this->ImportantService->importantMarkGlobal();
         return response()->json([
             'status' => 'success',
             'message' => 'заявки успешно обновлены',
         ], 201);
     }
-    public function mark_as_important(Request $request)
+    public function markAsImportant(Request $request)
     {
-
-        $orders_id =  $request->input('orders_id');
-        foreach ($orders_id as $order)
+        foreach (request('orders_id') as $order)
         {
-            $single_order= Orders::where('id', $order)->get();
+            $single_order=$this->orderService->getOrderById($order);
             if($single_order[0]['important']==1)
             {
-                Orders::where('id', $order)->update([
-                    'important' =>null,
-                ]);
+                $this->order_mod->updateOneFieldInOrderInModel($order,'important',null);
             }
             else
             {
-                Orders::where('id', $order)->update([
-                    'important' =>1,
-                ]);
+                $this->order_mod->updateOneFieldInOrderInModel($order,'important',1);
             }
         }
         return response()->json([

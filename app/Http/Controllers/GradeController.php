@@ -36,9 +36,9 @@ class GradeController extends Controller
             'success'   => 'yes',
         ], 200);
     }
-    public function show_grade(Request $request)
+    public function showGrade(Request $request)
     {
-        return view('front.grade')->with('auth_user',  auth()->user());
+        return view('front.grade')->with('auth_user',auth()->user());
     }
     public function save_start_summa(Request $request)
     {
@@ -669,7 +669,7 @@ class GradeController extends Controller
             ], 200);
         }
     }
-    public function docs_setting()
+    public function docsSetting()
     {
         return view('front.docs');
     }

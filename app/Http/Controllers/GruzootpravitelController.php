@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateGruzootpravitelRequest;
 use App\Models\Gruzootpravitel;
 use App\Models\GruzootpravitelBank;
 use App\Models\GruzootpravitelContact;
 use App\Models\GruzootpravitelFile;
 use App\Models\Orders;
+use App\Services\GruzootpravitelService;
 use Cassandra\Exception\ValidationException;
 use Illuminate\Http\Request;
 
@@ -105,29 +107,29 @@ class GruzootpravitelController extends Controller
             'gruzootpravitel_files' =>$gruzootpravitel_files,
         ], 200);
     }
-    public function save_gruzootpravitel(Request $request)
+    public function save_gruzootpravitel(Request $request_back, CreateGruzootpravitelRequest $request)
     {
-        $current_gruzootpravitel_id = $request->input('current_gruzootpravitel_id');
-        $forma = $request->input('forma');
-        $nazvanie = $request->input('nazvanie');
-        $data_registracii = $request->input('data_registracii');
-        $INN = $request->input('INN');
-        $OGRN = $request->input('OGRN');
-        $telefon = $request->input('telefon');
-        $email = $request->input('email');
-        $generalnii_direktor = $request->input('generalnii_direktor');
-        $telefon_gen_dir = $request->input('telefon_gen_dir');
-        $yridicheskii_adres = $request->input('yridicheskii_adres');
-        $pochtovyi_adres = $request->input('pochtovyi_adres');
-        $kontakty = $request->input('kontakty');
-        $bank_arr = $request->input('bank_arr');
-        $doc_files = $request->input('doc_files');
+        $current_gruzootpravitel_id = $request_back->input('current_gruzootpravitel_id');
+        $forma = $request_back->input('forma');
+        $nazvanie = $request_back->input('nazvanie');
+        $data_registracii = $request_back->input('data_registracii');
+        $INN = $request_back->input('INN');
+        $OGRN = $request_back->input('OGRN');
+        $telefon = $request_back->input('telefon');
+        $email = $request_back->input('email');
+        $generalnii_direktor = $request_back->input('generalnii_direktor');
+        $telefon_gen_dir = $request_back->input('telefon_gen_dir');
+        $yridicheskii_adres = $request_back->input('yridicheskii_adres');
+        $pochtovyi_adres = $request_back->input('pochtovyi_adres');
+        $kontakty = $request_back->input('kontakty');
+        $bank_arr = $request_back->input('bank_arr');
+        $doc_files = $request_back->input('doc_files');
 
 
-        $rules = [
-            'nazvanie' => 'required','unique:users'
-        ];
-        $request->validate($rules);
+       // $rules = [
+        //    'nazvanie' => 'required','unique:users'
+       // ];
+       // $request->validate($rules);
 
 
 
@@ -483,7 +485,7 @@ class GruzootpravitelController extends Controller
             'tipes_count' => $count
         ], 200);
     }
-    public function delete_gruzootpravitel(Request $request)
+    public function delete_gruzootpravitel(Request $request, GruzootpravitelService $gruzootpravitelService)
     {
         $gruzootpravitels_id = $request->input('gruzootpravitels_id');
         foreach ($gruzootpravitels_id as $gruzootpravitel_id)
@@ -501,9 +503,10 @@ class GruzootpravitelController extends Controller
 
             }
         }
-        GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
+            $gruzootpravitelService->deleteContact($gruzootpravitel_id);
         GruzootpravitelBank::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
         Gruzootpravitel::where('id', '=',$gruzootpravitel_id)->delete();
+
         }
         return response()->json([
             'status' => 'success',
