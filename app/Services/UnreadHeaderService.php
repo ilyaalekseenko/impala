@@ -29,5 +29,9 @@ class UnreadHeaderService
             }
         }
     }
+    public function updateUnreadStatus($columnName)
+    {
+
+    }
 
 }

@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete_orders', [App\Http\Controllers\OrdersController::class, 'deleteOrders'])->name('deleteOrders');
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'markAsImportant'])->name('markAsImportant');
     Route::post('/important_mark', [App\Http\Controllers\OrdersController::class, 'importantMark'])->name('importantMark');
-    Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'update_order_logist'])->name('update_order_logist');
+    Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'updateOrderLogist'])->name('updateOrderLogist');
     Route::post('/update_unread_status', [App\Http\Controllers\OrdersController::class, 'update_unread_status'])->name('update_unread_status');
     Route::post('/update_unread_status_v_rabote', [App\Http\Controllers\OrdersController::class, 'update_unread_status_v_rabote'])->name('update_unread_status_v_rabote');
     Route::post('/add_oplata_orders', [App\Http\Controllers\OrdersController::class, 'add_oplata_orders'])->name('add_oplata_orders');
