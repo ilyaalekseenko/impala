@@ -100,9 +100,10 @@
                             }
                             this.pagination_numb.push({'id': '...'})
                             this.pagination_numb.push({'id': g})
-                        } else {
-                            this.pagination_numb.push({'id': g})
                         }
+                        // else {
+                        //     this.pagination_numb.push({'id': g})
+                        // }
                     }
                     //текущая страница вторая
                     if (this.current_page == 2) {
