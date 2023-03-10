@@ -36,6 +36,7 @@ Vue.component('gruzootpravitel-component', require('./components/Gruzootpravitel
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
+Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

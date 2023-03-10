@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class Orders extends Authenticatable
@@ -109,5 +110,107 @@ class Orders extends Authenticatable
     public function whereInDeleteInModel($orders_id)
     {
         Orders::whereIn('id', $orders_id)->delete();
+    }
+    public function setNulltoAllColumnsHeaderInModel($orderId)
+    {
+        Orders::where('id', $orderId)->update([
+            'ocenka' =>null,
+            'v_rabote' =>null,
+            'naznachenie_stavki' =>null,
+        ]);
+    }
+    public function getOneColumnByOrderId($orderId,$columnName)
+    {
+        return Orders::where('id',$orderId) ->pluck($columnName)->first();
+    }
+    //получим количество всех заявок в колонке ( белый цвет ) всех типов
+
+    public function allHeadersCountModel($logistId,$logistOradmin)
+    {
+        $counterArr=['all'=>0,'ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,];
+        $counterArr['all']=Orders::all()->count();
+        if($logistOradmin=='logist')
+        {
+            $Orders=Orders::where('logist',$logistId)->get();
+        }
+        if($logistOradmin=='admin')
+        {
+            $Orders=Orders::all();
+        }
+
+        foreach ($Orders as $oneHeader)
+        {
+            if($oneHeader['ocenka']==1)
+            {
+                $counterArr['ocenka']++;
+            }
+            if($oneHeader['naznachenie_stavki']==1)
+            {
+                $counterArr['naznachenieStavki']++;
+            }
+            if($oneHeader['v_rabote']==1)
+            {
+                $counterArr['vRabote']++;
+            }
+        }
+        return $counterArr;
+    }
+    public function isEmptyColumnOrder($orderId)
+    {
+        return Orders::where('id',$orderId)->where('ocenka',null)->where('v_rabote',null)->where('naznachenie_stavki',null)->exists();
+    }
+    public function getColumnOrderListAdmin($columnName,$offset,$limit)
+    {
+        return Orders::
+            when($columnName=='zurnal_zaiavok', function($q)use ($offset,$limit){
+                return $q->where('id','>',0)
+                ->offset($offset)
+                ->limit($limit);
+            })
+            ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
+                return $q->where($columnName,1)
+                    ->offset($offset)
+                    ->limit($limit);
+            })
+            ->get();
+    }
+    public function getColumnOrderListLogist($columnName,$offset,$limit)
+    {
+        return Orders::
+        when($columnName=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
+            return $q->where('id','>',0)
+                ->offset($offset)
+                ->limit($limit);
+        })
+            ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
+                return $q->where($columnName,1)->where('logist',Auth::id())
+                    ->offset($offset)
+                    ->limit($limit);
+            })
+            ->get();
+    }
+    public function countColumnOrderListAdmin($columnName)
+    {
+        return Orders::
+        when($columnName=='zurnal_zaiavok', function($q)use ($columnName){
+            return $q->where('id','>',0);
+        })
+            ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName){
+                return $q->where($columnName,1)
+                    ;
+            })
+            ->count();
+    }
+    public function countColumnOrderListLogist($columnName)
+    {
+        return Orders::
+        when($columnName=='zurnal_zaiavok', function($q)use ($columnName){
+            return $q->where('id','>',0);
+        })
+            ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName){
+                return $q->where($columnName,1)->where('logist',Auth::id())
+                    ;
+            })
+            ->count();
     }
 }

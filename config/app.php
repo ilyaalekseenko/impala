@@ -201,6 +201,7 @@ return [
 
         App\Providers\GruzootpravitelProvider::class,
         App\Providers\UserProvider::class,
+        App\Providers\ButtonsProvider::class,
     ],
 
     /*

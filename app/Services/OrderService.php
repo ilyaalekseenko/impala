@@ -47,4 +47,29 @@ class OrderService
         $this->order->updateOrderMassInModel();
     }
 
+    public function getOrdersListService($userStatus,$columnName,$offset,$limit)
+    {
+        if($userStatus=='admin')
+        {
+            return $this->order->getColumnOrderListAdmin($columnName,$offset,$limit);
+        }
+        if($userStatus=='logist')
+        {
+            return $this->order->getColumnOrderListLogist($columnName,$offset,$limit);
+        }
+    }
+    public function countOrdersListService($userStatus,$columnName)
+    {
+        if($userStatus=='admin')
+        {
+            return $this->order->countColumnOrderListAdmin($columnName);
+        }
+        if($userStatus=='logist')
+        {
+            return $this->order->countColumnOrderListLogist($columnName);
+        }
+
+    }
+
+
 }

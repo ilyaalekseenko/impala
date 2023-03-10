@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -51,6 +52,7 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class,'users_roles');
+       // return $this->hasMany(Role::class,'users_roles');
     }
 
     /**
@@ -85,5 +87,16 @@ class User extends Authenticatable
     public function getUserByIdInModel($id)
     {
         return User::where('id', $id)->get();
+    }
+    public function getAdminsId()
+    {
+       return User::whereHas('roles', function ($query) {
+            $query->where('slug', 'admin');
+        })->get();    }
+
+    public function getUserStatusName()
+    {
+        $user=User::find(Auth::id())->roles;
+        return $user[0]['slug'];
     }
 }

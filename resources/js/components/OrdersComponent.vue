@@ -15,7 +15,7 @@
                 <div class="col-12 coloring_row row">
                     <div class="col-12 row coloring_row_1">
 
-                        <div class="col-2  color_title_1 coloring_np" v-on:click="update_header_underscore(0)" :class="{ header_underscore_0: header_underscore_list_class[0] }">
+                        <div class="col-2  color_title_1 coloring_np" v-on:click="update_header_underscore(0,'zurnal_zaiavok')" :class="{ header_underscore_0: header_underscore_list_class[0] }">
                             <span class="col-12 row">
                             <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
                             <div class="col-6 row text-end coloring_np">
@@ -26,7 +26,7 @@
                             </span>
                         </div>
 
-                        <div class="col-2  color_title_2 coloring_np" v-on:click="update_header_underscore(1)" :class="{ header_underscore_1: header_underscore_list_class[1] }">
+                        <div class="col-2  color_title_2 coloring_np" v-on:click="update_header_underscore(1,'ocenka')" :class="{ header_underscore_1: header_underscore_list_class[1] }">
                             <span class="col-12 row">
                             <div class="col-4 coloring_row_text coloring_np head_font">Оценка</div >
                             <div class="col row text-end coloring_np">
@@ -38,7 +38,7 @@
                             </span>
                         </div>
 
-                    <div class="col-2 color_title_3 coloring_np" v-show="checkRolePermission([1])" v-on:click="update_header_underscore(2)" :class="{ header_underscore_2: header_underscore_list_class[2] }">
+                    <div class="col-2 color_title_3 coloring_np" v-show="checkRolePermission([1])" v-on:click="update_header_underscore(2,'naznachenie_stavki')" :class="{ header_underscore_2: header_underscore_list_class[2] }">
                         <span class="col-12 row">
                         <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
@@ -49,7 +49,7 @@
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_4 coloring_np" v-on:click="update_header_underscore(3)" :class="{ header_underscore_3: header_underscore_list_class[3] }">
+                    <div class="col-2 color_title_4 coloring_np" v-on:click="update_header_underscore(3,'v_rabote')" :class="{ header_underscore_3: header_underscore_list_class[3] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">В работе</div >
                         <div class="col-8 row text-end coloring_np">
@@ -126,29 +126,35 @@
                             <!-- Pagination -->
                             <!--            пагинация          -->
                             <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
-                                <ul class="pagination">
-                                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"
-                                        v-bind:class="{ active: pag.id==current_page }"
-                                        v-on:click="new_page(pag.id)">
-                                        <span class="page-link page_link_int" >{{ pag.id }}</span>
-                                    </li>
-                                    <li v-else class="page-item">
-                                        <span class="page-link" >{{ pag.id }}</span>
-                                    </li>
-<!--                                    стрелки-->
-                                    <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">
-                                        <div v-if="current_page!=1">
-                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="90deg">
-                                        </span>
-                                        </div>
-                                    </li>
-                                    <li class="page-item pagination_button next_pag_button page_link_int" v-on:click="next_page()">
-                                        <div v-if="last_pagination_number">
-                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="270deg"></span>
-                                        </div>
-                                    </li>
-<!--                                    конец стрелок-->
-                                </ul>
+                                <pagination-component
+                                :countAllTypes="countAllTypes"
+                                :countLimit="limit"
+                                :dataFromPagination="dataFromPagination"
+                                ref="PaginationComponent"
+                                ></pagination-component>
+<!--                                <ul class="pagination">-->
+<!--                                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"-->
+<!--                                        v-bind:class="{ active: pag.id==current_page }"-->
+<!--                                        v-on:click="new_page(pag.id)">-->
+<!--                                        <span class="page-link page_link_int" >{{ pag.id }}</span>-->
+<!--                                    </li>-->
+<!--                                    <li v-else class="page-item">-->
+<!--                                        <span class="page-link" >{{ pag.id }}</span>-->
+<!--                                    </li>-->
+<!--&lt;!&ndash;                                    стрелки&ndash;&gt;-->
+<!--                                    <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">-->
+<!--                                        <div v-if="current_page!=1">-->
+<!--                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="90deg">-->
+<!--                                        </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li class="page-item pagination_button next_pag_button page_link_int" v-on:click="next_page()">-->
+<!--                                        <div v-if="last_pagination_number">-->
+<!--                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="270deg"></span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--&lt;!&ndash;                                    конец стрелок&ndash;&gt;-->
+<!--                                </ul>-->
                             </nav>
                     </div>
 
@@ -176,18 +182,21 @@ Vue.filter('formatDate', function(value) {
             this.header_counter_orders()
             this.role=this.auth_user['role_perm']['role']
             window.Echo.private('logist')
-                .listen('UpdateLogistEvent',(e) => {
-                     console.log(e)
-                    //если номер id пришедшего обновления совпадает с номером логиста
-                    if(e.logist_number==this.auth_user.id)
+                .listen('UpdateMainLogistEvent',(e) => {
+                    console.log(e.unreadHeaderArr.naznachenieStavki)
+                    //если номер id пришедшего обновления совпадает с номером пользователя
+                    if(e.logistId==this.auth_user.id)
                     {
-                        this.ocenka_counter=e.counter
-                        this.header_counter_orders()
-                    }
-                    if(e.delete_logist_number==this.auth_user.id)
-                    {
-                        this.ocenka_counter=e.delete_counter
-                        this.header_counter_orders()
+                        //общая белая шапка
+                        this.zurnal_zaiavok=e.mainHeaderArr.all
+                        this.ocenka=e.mainHeaderArr.ocenka
+                        this.naznachenie_stavki=e.mainHeaderArr.naznachenieStavki
+                        this.v_rabote=e.mainHeaderArr.vRabote
+                        //зелёная оповещения
+                        this.ocenka_counter=e.unreadHeaderArr.ocenka
+                        this.naznachenie_stavki_unread_count=e.unreadHeaderArr.naznachenieStavki
+                        this.v_rabote_unread_count=e.unreadHeaderArr.vRabote
+
                     }
                 }),
                 window.Echo.private('delete-order-channel')
@@ -211,24 +220,6 @@ Vue.filter('formatDate', function(value) {
                         this.orders_list=temp_arr
                         this.header_counter_orders()
                     }),
-                //слушаем обновилось ли назначение ставки
-                window.Echo.private('admin_naznachenie_stavki')
-                    .listen('UpdateNaznachenieStavkiHeaderEvent',() => {
-                        //если админ
-                        if(this.role==1)
-                        {
-                            this.header_counter_orders()
-                        }
-                    }),
-                window.Echo.private('logist_v_rabote')
-                    .listen('UpdateVRaboteHeaderEvent',(e) => {
-                        //если админ
-                        // console.log(e)
-                        if((this.role==2)&&(e.logist_number==this.auth_user.id))
-                        {
-                            this.header_counter_orders()
-                        }
-                    })
             this.permissions=this.auth_user['role_perm']['permissions']
 
         },
@@ -240,7 +231,7 @@ Vue.filter('formatDate', function(value) {
                 pagination_all:0,
                 current_page:1,
                 pagination_numb:[],
-                offset:20,
+                offset:0,
                 limit:20,
                 last_pagination_number:true,
                 //конец пагинации
@@ -258,6 +249,9 @@ Vue.filter('formatDate', function(value) {
                 v_rabote:0,
                 v_rabote_unread_count:0,
                 permissions:[],
+                columnName:'zurnal_zaiavok',
+                offset_from_start:0,
+                countAllTypes:0
             }
         },
         created()
@@ -271,7 +265,9 @@ Vue.filter('formatDate', function(value) {
                 this.header_underscore_list_class=[false,false,false,false,false,false]
                 this.header_underscore_list_class[this.order_by]=true
             }
-            this.get_orders_list(this.orders_list)
+            this.getOrderlist(this.orders_list)
+            // this.get_orders_list(this.orders_list)
+
             this.get_type_per_list(this.type_per_list);
 
             // var channel = pusher.subscribe('logist');
@@ -312,20 +308,19 @@ Vue.filter('formatDate', function(value) {
                     })
               //  window.location.href =('/create_orders/'+id)
             },
-            update_header_underscore(numb)
+            update_header_underscore(numb,columnName)
             {
+                this.columnName=columnName
                 this.order_by=numb
                 this.header_underscore_list_class=[false,false,false,false,false,false]
                 this.header_underscore_list_class[numb]=true
                 this.orders_list=[];
-                this.pagination_all=0,
-                this.current_page=1,
-                this.pagination_numb=[],
-                this.offset=20,
-                this.limit=20,
-                this.last_pagination_number=true,
                 this.checked_all=false
-                this.get_orders_list(this.orders_list)
+                //установим пагинацию в нулевое состояние
+                this.$refs.PaginationComponent.setToDefaultState()
+                // this.getOrderlist(this.orders_list)
+
+               // this.get_orders_list(this.orders_list)
             },
             get_gruzootpravitel_list()
             {
@@ -464,16 +459,11 @@ Vue.filter('formatDate', function(value) {
             },
             show_by(int)
             {
-                this.offset=int
                 this.limit=int
-                this.pagination_all=0
-                this.current_page=1,
-                this.pagination_numb=[],
-                this.orders_list=[]
-                this.get_orders_list(this.orders_list)
             },
             create_order() {
-                window.location.href =('/create_orders')
+             //  this.countAllTypes=Number(this.countAllTypes)+Number(20);
+             window.location.href =('/create_orders')
             },
             header_counter_orders()
             {
@@ -481,16 +471,47 @@ Vue.filter('formatDate', function(value) {
                     .post('/header_counter_orders',{
                     })
                     .then(({ data }) => (
-                                this.zurnal_zaiavok=data.zurnal_zaiavok,
-                                this.ocenka=data.ocenka,
-                                this.ocenka_counter=data.ocenka_unread_count,
-                                this.naznachenie_stavki_unread_count=data.naznachenie_stavki_unread_count,
-                                this.naznachenie_stavki=data.naznachenie_stavki,
-                                this.v_rabote=data.v_rabote,
-                                this.v_rabote_unread_count=data.v_rabote_unread_count
+                        //общая белая шапка
+                this.zurnal_zaiavok=data.mainHeaderArr.all,
+                this.ocenka=data.mainHeaderArr.ocenka,
+                this.naznachenie_stavki=data.mainHeaderArr.naznachenieStavki,
+                this.v_rabote=data.mainHeaderArr.vRabote,
+                //зелёная оповещения
+                this.ocenka_counter=data.unreadHeaderArr.ocenka,
+                this.naznachenie_stavki_unread_count=data.unreadHeaderArr.naznachenieStavki,
+                this.v_rabote_unread_count=data.unreadHeaderArr.vRabote
                         )
                     );
             },
+            getOrderlist(inp)
+            {
+                console.log(this.offset_from_start)
+                axios
+                    .post('/getOrderlist',{
+                         columnName:this.columnName,
+                         offset:this.offset_from_start,
+                         limit:this.limit,
+                        // order_by:this.order_by
+                    })
+                    .then(({ data }) => (
+                            this.countAllTypes=data.tipesCount,
+                                data.list_colored.forEach(function(entry) {
+                                    inp.push({
+                                        id:entry.id,
+                                        data_vneseniya:entry.data_vneseniya,
+                                        vid_perevozki:entry.vid_perevozki,
+                                        adres_pogruzke:entry.adres_pogruzke,
+                                        adres_vygruski:entry.adres_vygruski,
+                                        kompaniya_zakazchik:entry.kompaniya_zakazchik,
+                                        checked_order:false,
+                                        important:entry.important
+                                    });
+                                })
+                                // this.pagination_counter()
+                        )
+                    );
+            },
+            //пересчитать сам лист заявок
             get_orders_list(inp)
             {
                 let offset_from_start=(this.current_page-1)*this.offset
@@ -519,112 +540,13 @@ Vue.filter('formatDate', function(value) {
                         )
                     );
             },
-            prev_page()
+            dataFromPagination(offset)
             {
-                if(this.current_page!=1)
-                {
-                    this.current_page=this.current_page-1;
-                    this.new_page(this.current_page)
-                }
+                this.offset_from_start=offset
+                this.orders_list=[];
+                this.getOrderlist(this.orders_list)
+            }
 
-            },
-            next_page()
-            {
-                this.last_pagination_number=!this.last_pagination_number;
-                let g=Math.ceil(this.pagination_all/this.offset);
-
-                if(this.current_page!=g)
-                {
-                    this.current_page=this.current_page+1;
-                    this.new_page(this.current_page)
-                }
-            },
-            new_page(page_id)
-            {
-                this.pagination_numb=[]
-                this.orders_list=[]
-                this.current_page=page_id
-                this.get_orders_list(this.orders_list);
-            },
-            pagination_counter()
-            {
-                if(this.pagination_all!=0) {
-
-                    //формирование отрисовки пагинации
-                    let g = Math.ceil(this.pagination_all / this.offset);
-                    //проверка на последнюю страничку
-                    if(this.current_page==g)
-                    {
-                        this.last_pagination_number=false
-                    }
-                    else
-                    {
-                        this.last_pagination_number=true
-                    }
-                    //текущая страница первая
-                    if (this.current_page == 1) {
-                        if (g > 1) {
-                            for (let i = 1; i <= 2; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                            this.pagination_numb.push({'id': '...'})
-                            this.pagination_numb.push({'id': g})
-                        } else {
-                            this.pagination_numb.push({'id': g})
-                        }
-                    }
-                    //текущая страница вторая
-                    if (this.current_page == 2) {
-                        if (g > 2) {
-                            for (let i = 1; i <= 3; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                            this.pagination_numb.push({'id': '...'})
-                            this.pagination_numb.push({'id': g})
-                        } else {
-                            for (let i = 1; i <= 2; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                        }
-                    }
-                    if (this.current_page > 2) {
-
-                        //минусовая
-                        if ((this.current_page - 3) == 1) {
-                            let page = this.current_page - 3
-                            this.pagination_numb.push({'id': '1'})
-                        } else {
-                            if ((this.current_page - 2) > 1) {
-                                this.pagination_numb.push({'id': '1'})
-                                this.pagination_numb.push({'id': '...'})
-                            }
-                        }
-                        let page = this.current_page - 2
-                        this.pagination_numb.push({'id': page})
-                        page = this.current_page - 1
-                        this.pagination_numb.push({'id': page})
-                        this.pagination_numb.push({'id': this.current_page})
-                        //плюсовая
-                        if ((this.current_page + 1) <= g) {
-                            page = this.current_page + 1
-                            this.pagination_numb.push({'id': page})
-                        }
-                        if ((this.current_page + 2) <= g) {
-                            page = this.current_page + 2
-                            this.pagination_numb.push({'id': page})
-                        }
-                        if ((this.current_page + 3) == g) {
-                            page = this.current_page + 3
-                            this.pagination_numb.push({'id': page})
-                        } else {
-                            if ((g - this.current_page) > 2) {
-                                this.pagination_numb.push({'id': '...'})
-                                this.pagination_numb.push({'id': g})
-                            }
-                        }
-                    }
-                }
-            },
         }
     }
 </script>

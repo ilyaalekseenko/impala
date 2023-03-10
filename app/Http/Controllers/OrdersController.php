@@ -27,6 +27,7 @@ use App\Services\TSService;
 use App\Services\UnreadHeaderService;
 use App\Services\UserService;
 use App\Services\PogruzkaTSService;
+use App\Services\ButtonsService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
@@ -58,6 +59,7 @@ class OrdersController extends Controller
     private $ImportantService;
     private $LogistService;
     private $UnreadHeadersModel;
+    private $ButtonsService;
 
     public function __construct(
         OrderService $orderService,
@@ -74,7 +76,9 @@ class OrdersController extends Controller
         ImportantService $ImportantService,
         LogistService $LogistService,
         UnreadHeader $UnreadHeadersModel,
-        )
+        ButtonsService $ButtonsService,
+
+    )
     {
         $this->orderService = $orderService;
         $this->oplataOrders = $oplataOrders;
@@ -90,6 +94,7 @@ class OrdersController extends Controller
         $this->ImportantService = $ImportantService;
         $this->LogistService = $LogistService;
         $this->UnreadHeadersModel = $UnreadHeadersModel;
+        $this->ButtonsService = $ButtonsService;
     }
 
 
@@ -133,29 +138,14 @@ class OrdersController extends Controller
     }
     public function check_buttons_show(Request $request)
     {
-        $id=$request->input('id');
-        $user_id=$request->input('user_id');
-        $role=$request->input('role');
-        $utverzdenie_show_button=false;
-        $v_rabote_show_button=false;
-        //Получим заявку
-        $order=Orders::where('id',$id)->get();
+        //логика показа кнопок
+        $buttonsStatus=$this->ButtonsService->buttonStatus(request('id'),request('role'));
 
-        $naznachenie_stavki=$order[0]['naznachenie_stavki'];
-        $v_rabote=$order[0]['v_rabote'];
-        //если логист и если колонка оценка то показываем кнопку Утверждение
-        if(($role==2)&&($naznachenie_stavki==null)&&($v_rabote==null))
-        {
-            $utverzdenie_show_button=true;
-        }
-        if(($role==1)&&($naznachenie_stavki==1)&&($v_rabote==null))
-        {
-            $v_rabote_show_button=true;
-        }
         return response()->json([
             'status' => 'success',
-            'utverzdenie_show_button' =>$utverzdenie_show_button,
-            'v_rabote_show_button' =>$v_rabote_show_button
+            'ocenkaShowButton' =>$buttonsStatus['ocenkaShowButton'],
+            'utverzdenieShowButton' =>$buttonsStatus['utverzdenieShowButton'],
+            'vRaboteShowButton' =>$buttonsStatus['vRaboteShowButton']
         ], 200);
 
     }
@@ -236,7 +226,6 @@ class OrdersController extends Controller
         //если приходит то что убрали логиста с заявки вообще ну тоесть ноль,и возможно вариант добавления админом в колонку оценка
         else
         {
-            $re=0;
         $setLogist=$this->LogistService->setLogistToOrder(true);
         // UpdateLogistEvent('не прочитанные заявки нового логиста','id нового логиста','не прочитанные заявки старого логиста','id старого логиста')
         broadcast(new UpdateLogistEvent(0,0,$setLogist['old_logist_unread'],$setLogist['old_logist_id']))->toOthers();
@@ -510,79 +499,27 @@ class OrdersController extends Controller
             ], 200);
         }
     }
-    public function header_counter_orders()
+
+    public function getOrderlist(Request $request)
     {
-
-        //из назначения ставки обязательно делать NULL, а не ноль
-        $user = User::find(Auth::id());
-        $role=$user->roles[0]['id'];
-        $ocenka_unread_count=0;
-        $naznachenie_stavki_unread_count=0;
-        $v_rabote=0;
-        $v_rabote_unread_count=0;
-        if($role==1)
-        {
-            //общее количество заявок
-            $zurnal_zaiavok = Orders::all()
-                ->count();
-            //количество заявок отданных какому-либо логисту
-            $ocenka = Orders::
-                  where('logist', '<>', 0)
-                ->where('logist', '<>', null)
-                ->where('naznachenie_stavki', '=', null)
-                ->count();
-
-            $naznachenie_stavki = Orders::where('naznachenie_stavki', '=', 1)->count();
-            $naznachenie_stavki_unread_count=UnreadHeader::where('column_name','naznachenie_stavki')->count();
-            $v_rabote = Orders::where('naznachenie_stavki', '=', null)->where('v_rabote', '=', 1)->count();
-
-        }
-        //если роль логист
-        if($role==2)
-        {
-            //общее количество заявок
-            $zurnal_zaiavok = Orders::all()
-                ->count();
-            //количество заявок данного логиста
-            $ocenka = Orders::
-                where('logist',Auth::id())
-                ->where('naznachenie_stavki', '=', null)
-                ->count();
-            //количество не прочитанных заявок оценка
-
-            $ocenka_unread_count=UnreadHeader::where('logist_id',$user['id'])->where('column_name','ocenka')->count();
-            $naznachenie_stavki=0;
-            $v_rabote = Orders::where('naznachenie_stavki', '=', null)->where('v_rabote', '=', 1)->where('logist',Auth::id())->count();
-            $v_rabote_unread_count=UnreadHeader::where('column_name','v_rabote')->where('logist_id',Auth::id())->count();
-
-        }
-        //если роль менеджер
-        if($role==3)
-        {
-            //общее количество заявок
-            $zurnal_zaiavok = Orders::all()
-                ->count();
-            //количество заявок данного логиста
-            $ocenka = 0;
-            //количество не прочитанных заявок оценка
-            $ocenka_unread_count=0;
-            $naznachenie_stavki=0;
-        }
+        //получаем название статуса пользователя
+      $userStatus=$this->user_mod->getUserStatusName();
+      //получаем данные из списка заявок
+      $res_arr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
+      //посчитаем сколько всего записей выводить
+        $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
         return response()->json([
             'status' => 'success',
-            'zurnal_zaiavok' => $zurnal_zaiavok,
-            'ocenka' => $ocenka,
-            'ocenka_unread_count' => $ocenka_unread_count,
-            'naznachenie_stavki' => $naznachenie_stavki,
-            'naznachenie_stavki_unread_count' => $naznachenie_stavki_unread_count,
-            'v_rabote' => $v_rabote,
-            'v_rabote_unread_count' => $v_rabote_unread_count,
-//            'kontrol' => $kontrol,
-//            'zavershen' => $zavershen
-
+            'list_colored' => $res_arr,
+            'tipesCount' => $count,
+           // 'order_by' => $order_by,
+           // 'role' => $role,
+//            'res'=>$list_colored_imp_old,
+//            'res1'=>$old_imp['id']
         ], 201);
 
     }
+
     public function get_orders_list_new(Request $request)
     {
         $offset =  $request->input('offset');

@@ -37,6 +37,46 @@ class LogistService
                 return $old_logist_id[0]['logist'];
             }
         }
+
+        //установка конкретного логиста на заявку
+        public function setLogistToOrderHeader($orderId,$logistId)
+        {
+            $this->orders->updateOneFieldInOrderInModel($orderId,'logist',$logistId);
+        }
+        //уставнока конкретной колонки у заявки
+        public function setOrderColumn($orderId,$field)
+        {
+            $this->orders->updateOneFieldInOrderInModel($orderId,$field,1);
+        }
+        //уберём у всех колонок значение этой заявки, поставим null
+        public function setNulltoAllColumnsHeader($orderId)
+        {
+            $this->orders->setNulltoAllColumnsHeaderInModel($orderId);
+        }
+        public function setLogistToColumnOld($orderId,$logistId)
+        {
+            //проверяем в какой колонке была заявка
+            //если ни в какой то отправим в оценку
+           $order=$this->orders->getFirstOrderInModel($orderId);
+           if(($order['ocenka']==null)&&($order['v_rabote']==null)&&($order['naznachenie_stavki']==null))
+           {
+                //установим колонку оценка в Orders
+                $this->setOrderColumn($orderId,'ocenka');
+                //установим колонку оценка в не прочитанных
+                $this->UnreadHeadersModel->setUnreadToLogistModel($logistId,$orderId,'ocenka');
+           }
+           if($order['v_rabote']==1)
+           {
+               //установим колонку оценка в не прочитанных
+               $this->UnreadHeadersModel->setUnreadToLogistModel($logistId,$orderId,'v_rabote');
+           }
+            if($order['naznachenie_stavki']==1)
+            {
+                //установим колонку оценка в не прочитанных
+                $this->UnreadHeadersModel->setUnreadToLogistModel($logistId,$orderId,'naznachenie_stavki');
+            }
+        }
+        //удалено
         public function setLogistToOrder($newLogist)
         {
             //получаем id предыдущего логиста
@@ -50,6 +90,8 @@ class LogistService
             }
             //считаем сколько не прочитанных заявок у предыдущего логиста
             $old_logist_unread= $this->UnreadHeadersModel->countUnreadHeaderByColumnInModel($old_logist_id,'ocenka');
+
+
             //ставим на эту заявку нового логиста
             $this->orders->updateOneFieldInOrderInModel(request('id'),'logist',request('logist'));
             //если новый логист есть и он назначен
@@ -66,5 +108,9 @@ class LogistService
                 $new_logist_orders_count=0;
             }
             return ['new_logist_orders_count'=>$new_logist_orders_count,'old_logist_unread'=>$old_logist_unread,'old_logist_id'=>$old_logist_id];
+        }
+        public function setNewLogist()
+        {
+
         }
 }

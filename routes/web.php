@@ -32,7 +32,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete_orders', [App\Http\Controllers\OrdersController::class, 'deleteOrders'])->name('deleteOrders');
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'markAsImportant'])->name('markAsImportant');
     Route::post('/important_mark', [App\Http\Controllers\OrdersController::class, 'importantMark'])->name('importantMark');
-    Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'updateOrderLogist'])->name('updateOrderLogist');
+//    Route::post('/update_order_logist', [App\Http\Controllers\OrdersController::class, 'updateOrderLogist'])->name('updateOrderLogist');
+    Route::post('/update_order_logist', [App\Http\Controllers\MainHeaderController::class, 'updateOrderLogist'])->name('updateOrderLogist');
+    Route::post('/orderChangeColumn', [App\Http\Controllers\MainHeaderController::class, 'orderChangeColumn'])->name('orderChangeColumn');
     Route::post('/update_unread_status', [App\Http\Controllers\OrdersController::class, 'update_unread_status'])->name('update_unread_status');
     Route::post('/update_unread_status_v_rabote', [App\Http\Controllers\OrdersController::class, 'update_unread_status_v_rabote'])->name('update_unread_status_v_rabote');
     Route::post('/add_oplata_orders', [App\Http\Controllers\OrdersController::class, 'add_oplata_orders'])->name('add_oplata_orders');
@@ -44,8 +46,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_forma_list', [App\Http\Controllers\TSController::class, 'get_forma_list'])->name('get_forma_list');
     Route::post('/get_type_per_list', [App\Http\Controllers\TSController::class, 'get_type_per_list'])->name('get_type_per_list');
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
-    Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
-    Route::post('/header_counter_orders', [App\Http\Controllers\OrdersController::class, 'header_counter_orders'])->name('header_counter_orders');
+   // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
+    Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');
+    Route::post('/header_counter_orders', [App\Http\Controllers\MainHeaderController::class, 'headerCounterOrders'])->name('headerCounterOrders');
     Route::post('/get_start_data_grade', [App\Http\Controllers\GradeController::class, 'get_start_data_grade'])->name('get_start_data_grade');
     Route::post('/update_final_grade', [App\Http\Controllers\GradeController::class, 'update_final_grade'])->name('update_final_grade');
     Route::post('/add_pogruzka_grade', [App\Http\Controllers\GradeController::class, 'add_pogruzka_grade'])->name('add_pogruzka_grade');

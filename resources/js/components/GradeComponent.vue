@@ -599,7 +599,8 @@
                 p3:'',
                 p4:'',
                 p5:'',
-                flag_pogruz:''
+                flag_pogruz:'',
+                role:''
 
 
             }
@@ -613,6 +614,12 @@
             this.get_final_grades_data(this.spisokTShead);
             this.get_ob_budzet_down();
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
+            this.update_unread_status_v_rabote()
+        },
+        created()
+        {
+            this.role=this.auth_user['role_perm']['role']
+            console.log(this.role)
         },
 
         computed: {
@@ -813,6 +820,18 @@
             up_gruz_in_front(id_ts,pog_vyg,key,pog_vyg_show,nazvanie)
             {
                 this.spisokTShead[id_ts][pog_vyg][key][pog_vyg_show]=nazvanie
+            },
+            update_unread_status_v_rabote()
+            {
+                if(this.role==2)
+                {
+                    axios
+                        .post('/update_unread_status_v_rabote',{
+                            logist_id:this.auth_user['id'],
+                            id:this.order_id,
+                            column_name:'v_rabote',
+                        })
+                }
             },
             deleteTs()
             {

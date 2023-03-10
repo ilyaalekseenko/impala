@@ -19,9 +19,20 @@ use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use ZipArchive;
+use App\Services\UserService;
+
 
 class GradeController extends Controller
 {
+    private $userService;
+
+    public function __construct(
+        UserService $userService,
+    )
+    {
+        $this->userService = $userService;
+    }
+
     public function get_template_vars()
     {
         $data1=TemplateVar::where('doc_type', '1')->get();
@@ -38,7 +49,9 @@ class GradeController extends Controller
     }
     public function showGrade(Request $request)
     {
-        return view('front.grade')->with('auth_user',auth()->user());
+        $user=$this->userService->getRole();
+//        return view('front.grade')->with('auth_user',auth()->user());
+        return view('front.grade')->with('auth_user',$user);
     }
     public function save_start_summa(Request $request)
     {

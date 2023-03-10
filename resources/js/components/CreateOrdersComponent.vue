@@ -41,10 +41,19 @@
                        </span>
                         <date-picker ref="datepicker1"  v-model="rasschitat_do" valueType="format" format="DD.MM.YYYY"  :open.sync="openDP1" @change="handleChange1"></date-picker>
                     </div>
-                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="go_to_grade()">
+                    <div class="col-2 justify-content-end" v-if="ocenka_show_button" v-on:click="setColumn('ocenka')">
+                        <div class="col add_ts_button4 text-center">Оценка</div>
+                    </div>
+                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="setColumn('naznachenie_stavki')">
                         <div class="col add_ts_button4 text-center">Утверждение</div>
                     </div>
-                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="add_to_work()">
+<!--                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="go_to_grade()">-->
+<!--                        <div class="col add_ts_button4 text-center">Утверждение</div>-->
+<!--                    </div>-->
+<!--                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="add_to_work()">-->
+<!--                        <div class="col add_ts_button4 text-center">В работе</div>-->
+<!--                    </div>-->
+                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="setColumn('v_rabote')">
                         <div class="col add_ts_button4 text-center">В работе</div>
                     </div>
                 </div>
@@ -817,6 +826,7 @@
                 logist_list_full:[],
                 utverzdenie_show_button:false,
                 v_rabote_show_button:false,
+                ocenka_show_button:false,
                 flag_pogruz:''
 
 
@@ -950,8 +960,9 @@
                         role:this.role
                     })
                     .then(({ data }) => (
-                        this.utverzdenie_show_button=data.utverzdenie_show_button,
-                        this.v_rabote_show_button=data.v_rabote_show_button
+                        this.ocenka_show_button=data.ocenkaShowButton,
+                        this.utverzdenie_show_button=data.utverzdenieShowButton,
+                        this.v_rabote_show_button=data.vRaboteShowButton
                         )
 
                     );
@@ -1250,8 +1261,45 @@
                         // .then(({ data }) => (
                         //     this.update_order()
                         // ))
+            },
+            setColumn(columnName)
+            {
+                axios
+                    .post('/orderChangeColumn',{
+                        columnName:columnName,
+                        id:this.order_id
+                    })
+                    .then(response => {
+                        if((this.role==2)&&(columnName=='naznachenie_stavki')) {
+                            //редиректим логиста на главную перед этим говорим  отобразить оценку
+                            localStorage.setItem('logist_ut_flag', '1')
+                            window.location.href = ('/')
+                        }
+                        //если утвердил админ
+                        if(this.role==1)
+                        {
+                           let message=this.setMessage(columnName)
+                            alert(message)
+                        }
 
-
+                    })
+            },
+            setMessage(columnName)
+            {
+                let message=''
+              if(columnName=='ocenka')
+              {
+                  message = 'Заявка отправлена на оценку'
+              }
+               if(columnName=='naznachenie_stavki')
+              {
+                  message = 'Заявка отправлена на назначение ставки'
+              }
+              if(columnName=='v_rabote')
+              {
+                  message = 'Заявка отправлена в работу'
+              }
+              return message;
             },
             update_order()
             {

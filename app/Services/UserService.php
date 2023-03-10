@@ -44,6 +44,9 @@ class UserService
         {
             return 'Логист не выбран';
         }
-
+    }
+    public function getAllAdminsId()
+    {
+        return $this->user->getAdminsId();
     }
 }
