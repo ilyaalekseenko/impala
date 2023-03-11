@@ -78,6 +78,10 @@ import MixinListMethods from './mixins/MixinListMethods'
 Vue.mixin(MixinListMethods);
 import MixinAutocompliteMethods from './mixins/MixinAutocompliteMethods'
 Vue.mixin(MixinAutocompliteMethods);
+import MixinCheckShowBlock from './mixins/MixinCheckShowBlock'
+Vue.mixin(MixinCheckShowBlock);
+import MixinCheckOrderStatus from './mixins/MixinCheckOrderStatus'
+Vue.mixin(MixinCheckOrderStatus);
 const app = new Vue({
     el: '#app',
 });

@@ -2,7 +2,7 @@
     <div class="container orders_main">
         <div class="row orders_title_div">
             <div class="col-12 row">
-                <div class="col-6 orders_title">
+                <div class="col-6 orders_title" >
                     Заявки
                 </div>
                 <div class="col-6 d-flex justify-content-end">
@@ -38,7 +38,7 @@
                             </span>
                         </div>
 
-                    <div class="col-2 color_title_3 coloring_np" v-show="checkRolePermission([1])" v-on:click="update_header_underscore(2,'naznachenie_stavki')" :class="{ header_underscore_2: header_underscore_list_class[2] }">
+                    <div class="col-2 color_title_3 coloring_np" v-show="checkRolePermissionMixin([1])" v-on:click="update_header_underscore(2,'naznachenie_stavki')" :class="{ header_underscore_2: header_underscore_list_class[2] }">
                         <span class="col-12 row">
                         <div class="col-7 coloring_row_text coloring_np head_font">Назначение ставки</div >
                         <div class="col-5 row text-end coloring_np">
@@ -92,23 +92,25 @@
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
-                            <div class="col-2 orders_title_table_main text-start row">
+                            <div class="col-1 orders_title_table_main text-start row">
                                 <div class="col-2"></div>
                                 <div class="col-10 head_font">Номер заявки</div>
                             </div>
-                            <div class="col-2 orders_title_table_main head_font">Дата внесения</div>
+                            <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
+                            <div class="col-1 orders_title_table_main head_font">Статус</div>
                             <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
                             <div class="col-2 orders_title_table_main head_font">Откуда</div>
                             <div class="col-2 orders_title_table_main head_font">Куда</div>
                             <div class="col-2 orders_title_table_main head_font">Заказчик</div>
                         </div>
                         <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: order.important==1 }">
-                        <div class="col-2 orders_title_table text-start row">
+                        <div class="col-1 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="order.checked_order">
-                            <div class="col-10">№ {{ order.id }}</div>
+                            <div class="col-10">{{ order.id }}</div>
                         </div>
-                        <div class="col-2 orders_title_table">{{ order.data_vneseniya }}</div>
-                        <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
+                        <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
+                            <div class="col-1 orders_title_table t2" >{{ order.status }}</div>
+                            <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
                         <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
                             <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_pogruzke">{{ gruz.nazvanie }}</div>
                         <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_vygruski">{{ gruz.nazvanie }}</div>
@@ -123,7 +125,6 @@
                         / <span :class="{ blue_ref: offset!=100 }" v-on:click="show_by(100)">по 100</span>
                     </div>
                     <div class="col-5 pagination_orders_right row">
-                            <!-- Pagination -->
                             <!--            пагинация          -->
                             <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
                                 <pagination-component
@@ -132,29 +133,6 @@
                                 :dataFromPagination="dataFromPagination"
                                 ref="PaginationComponent"
                                 ></pagination-component>
-<!--                                <ul class="pagination">-->
-<!--                                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"-->
-<!--                                        v-bind:class="{ active: pag.id==current_page }"-->
-<!--                                        v-on:click="new_page(pag.id)">-->
-<!--                                        <span class="page-link page_link_int" >{{ pag.id }}</span>-->
-<!--                                    </li>-->
-<!--                                    <li v-else class="page-item">-->
-<!--                                        <span class="page-link" >{{ pag.id }}</span>-->
-<!--                                    </li>-->
-<!--&lt;!&ndash;                                    стрелки&ndash;&gt;-->
-<!--                                    <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">-->
-<!--                                        <div v-if="current_page!=1">-->
-<!--                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="90deg">-->
-<!--                                        </span>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--                                    <li class="page-item pagination_button next_pag_button page_link_int" v-on:click="next_page()">-->
-<!--                                        <div v-if="last_pagination_number">-->
-<!--                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="270deg"></span>-->
-<!--                                        </div>-->
-<!--                                    </li>-->
-<!--&lt;!&ndash;                                    конец стрелок&ndash;&gt;-->
-<!--                                </ul>-->
                             </nav>
                     </div>
 
@@ -221,7 +199,6 @@ Vue.filter('formatDate', function(value) {
                         this.header_counter_orders()
                     }),
             this.permissions=this.auth_user['role_perm']['permissions']
-
         },
         data() {
             return {
@@ -256,7 +233,6 @@ Vue.filter('formatDate', function(value) {
         },
         created()
         {
-
             //проверяем логист ли это с закладки оценка, нажавший кнопку утверждение
             if(localStorage.getItem('logist_ut_flag')==1)
             {
@@ -266,19 +242,10 @@ Vue.filter('formatDate', function(value) {
                 this.header_underscore_list_class[this.order_by]=true
             }
             this.getOrderlist(this.orders_list)
-            // this.get_orders_list(this.orders_list)
-
             this.get_type_per_list(this.type_per_list);
-
-            // var channel = pusher.subscribe('logist');
-            // channel.bind('UpdateLogistEvent', function(data) {
-            //    alert('tetst')
-            // });
-            // const channel = window.pusher.subscribe('private-logist')
-
-
         },
         methods: {
+
             go_to_order(id)
             {
                 axios
@@ -288,7 +255,6 @@ Vue.filter('formatDate', function(value) {
                     .then(response => {
                         if(response.data.data=='isset')
                         {
-
                             //если закладка в работе то редирект на вид grade
                             if(this.order_by==3)
                             {
@@ -318,9 +284,6 @@ Vue.filter('formatDate', function(value) {
                 this.checked_all=false
                 //установим пагинацию в нулевое состояние
                 this.$refs.PaginationComponent.setToDefaultState()
-                // this.getOrderlist(this.orders_list)
-
-               // this.get_orders_list(this.orders_list)
             },
             get_gruzootpravitel_list()
             {
@@ -354,22 +317,6 @@ Vue.filter('formatDate', function(value) {
                             })
                         )
                     );
-            },
-            checkRolePermission(users_permissions_list)
-            {
-                let permission=2;
-
-                //перебор юзеров
-                let role=0;
-                let flag=false;
-                for(var j = 0; j < users_permissions_list.length; j++) {
-                    role=users_permissions_list[j]
-                    if((role==this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
-                        flag = true;
-                    }
-                }
-                return flag
-
             },
             check_all()
             {
@@ -430,15 +377,12 @@ Vue.filter('formatDate', function(value) {
 
             delete_orders()
             {
-
                 let temp_arr=[];
                 for( let i = 0; i < this.orders_list.length; i++ )
                 {
                         if(this.orders_list[i].checked_order==true)
                         {
                             this.delete_arr.push(this.orders_list[i].id)
-                            // this.orders_list.splice(i, 1);
-                            // console.log(this.delete_arr)
                         }
                         else
                         {
@@ -485,7 +429,6 @@ Vue.filter('formatDate', function(value) {
             },
             getOrderlist(inp)
             {
-                console.log(this.offset_from_start)
                 axios
                     .post('/getOrderlist',{
                          columnName:this.columnName,
@@ -499,6 +442,7 @@ Vue.filter('formatDate', function(value) {
                                     inp.push({
                                         id:entry.id,
                                         data_vneseniya:entry.data_vneseniya,
+                                        status:entry.status,
                                         vid_perevozki:entry.vid_perevozki,
                                         adres_pogruzke:entry.adres_pogruzke,
                                         adres_vygruski:entry.adres_vygruski,
@@ -508,35 +452,6 @@ Vue.filter('formatDate', function(value) {
                                     });
                                 })
                                 // this.pagination_counter()
-                        )
-                    );
-            },
-            //пересчитать сам лист заявок
-            get_orders_list(inp)
-            {
-                let offset_from_start=(this.current_page-1)*this.offset
-                // console.log(this.offset)
-                axios
-                    .post('/get_orders_list_new',{
-                        offset:offset_from_start,
-                        limit:this.limit,
-                        order_by:this.order_by
-                    })
-                    .then(({ data }) => (
-                                this.pagination_all=data.tipes_count,
-                                data.list_colored.forEach(function(entry) {
-                                    inp.push({
-                                        id:entry.id,
-                                        data_vneseniya:entry.data_vneseniya,
-                                        vid_perevozki:entry.vid_perevozki,
-                                        adres_pogruzke:entry.adres_pogruzke,
-                                        adres_vygruski:entry.adres_vygruski,
-                                        kompaniya_zakazchik:entry.kompaniya_zakazchik,
-                                        checked_order:false,
-                                        important:entry.important
-                                    });
-                                }),
-                                this.pagination_counter()
                         )
                     );
             },

@@ -505,12 +505,14 @@ class OrdersController extends Controller
         //получаем название статуса пользователя
       $userStatus=$this->user_mod->getUserStatusName();
       //получаем данные из списка заявок
-      $res_arr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
+      $resArr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
       //посчитаем сколько всего записей выводить
-        $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
+      $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
+      //добавим статус
+      $resArr=$this->orderService->setStatustoOrder($resArr);
         return response()->json([
             'status' => 'success',
-            'list_colored' => $res_arr,
+            'list_colored' => $resArr,
             'tipesCount' => $count,
            // 'order_by' => $order_by,
            // 'role' => $role,
@@ -912,4 +914,9 @@ class OrdersController extends Controller
             $column_name =>$adres_pogruzke,
         ]);
     }
+//    public function checkOrderStatusName(Request $request)
+//    {
+//        $order=$this->orderService->getStatusName(request('orderId'));
+//
+//    }
 }

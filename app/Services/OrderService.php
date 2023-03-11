@@ -68,7 +68,29 @@ class OrderService
         {
             return $this->order->countColumnOrderListLogist($columnName);
         }
-
+    }
+    public function setStatustoOrder($orders)
+    {
+        foreach ($orders as $order)
+        {
+            if($order['naznachenie_stavki'])
+            {
+                $order['status']='Назначение ставки';
+            }
+            if($order['v_rabote'])
+            {
+                $order['status']='В работе';
+            }
+            if($order['ocenka'])
+            {
+                $order['status']='На оценке';
+            }
+            if(($order['naznachenie_stavki']==null)&&($order['v_rabote']==null)&&($order['ocenka']==null)&&($order['logist']==null))
+            {
+                $order['status']='Черновик';
+            }
+        }
+        return $orders;
     }
 
 
