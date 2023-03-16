@@ -6,14 +6,25 @@ use App\Mail\RegisterMail;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+
 class AdminController extends Controller
 {
+
+    private $userService;
+    public function __construct(
+        UserService $userService,
+    )
+    {
+        $this->userService = $userService;
+    }
+
     public function users_list(Request $request)
     {
         return view('admin.users_list');
@@ -153,6 +164,14 @@ class AdminController extends Controller
             'list_users' => $list_users,
             'tipes_count' => $count,
             'asc_desc' => $asc_desc,
+        ], 201);
+    }
+    public function getRoleUser()
+    {
+         $user=$this->userService->getRole();
+        return response()->json([
+            'status' => 'success',
+            'user' => $user,
         ], 201);
     }
 

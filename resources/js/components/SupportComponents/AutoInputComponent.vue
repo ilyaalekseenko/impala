@@ -75,8 +75,10 @@
             search() {
                 let f=this.adres_pogruzke_show_local;
                 this.filteredList = this.gruzootpravitel_arr.filter(function(item) {
-                    //nazvanie где искать
+                    // let searchVar=forma_id+nazvanie+
                     return item.nazvanie.toLowerCase().includes(f.toLowerCase());
+                    //nazvanie где искать
+                    // return item.nazvanie.toLowerCase().includes(f.toLowerCase());
                 });
                 if(this.filteredList.length!=0)
                 {

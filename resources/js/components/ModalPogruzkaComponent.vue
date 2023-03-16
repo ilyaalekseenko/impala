@@ -106,6 +106,41 @@
                                 </div>
                             </div>
                             <div class="col-12"><span v-on:click="dobavit_kontank()" class="add_cont_grade">Добавить контакт</span></div>
+
+                            <div class="col-12 grade_title_lit cont_header">Адреса:</div>
+                            <div class="container-fluid ">
+                                <div class="col-12 row" v-for="(oneAdres,key) in adresa">
+                                    <div class="col-4 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Название</div>
+                                        <input  class="col-12 border_input inn_width"
+                                                v-model="adresa[key].nazvanie"/>
+                                    </div>
+                                    <div class="col-4 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Адрес</div>
+                                        <input  class="col-12 border_input inn_width"
+                                                v-model="adresa[key].adres"/>
+                                    </div>
+                                    <div class="col-4 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">ФИО</div>
+                                        <input  class="col-12 border_input inn_width"
+                                                v-model="adresa[key].FIO"/>
+                                    </div>
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">телефон</div>
+                                        <input  class="col-12 border_input inn_width"
+                                                v-model="adresa[key].telefon"/>
+                                    </div>
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
+                                        <input  class="col-12 border_input inn_width"
+                                                v-model="adresa[key].email"/>
+                                    </div>
+                                    <button type="button" class="col-1 btn btn-danger btn_del_in_ord1" v-on:click="delete_one_adres(key)">-</button>
+                                </div>
+                            </div>
+                            <div class="col-12"><span v-on:click="dobavit_adres()" class="add_cont_grade">Добавить адрес</span></div>
+
+
                         </div>
                         <!--                        конец левой колонки модалка-->
                         <!--                        начало правой колонки модалка-->
@@ -227,6 +262,7 @@ import vClickOutside from 'v-click-outside'
                 pochtovyi_adres:'',
                 menedzer_zakazchik:'',
                 kontakty:[],
+                adresa:[],
                 openDP:false,
                 bank_arr:[],
                 files:[],
@@ -246,8 +282,8 @@ import vClickOutside from 'v-click-outside'
             }},
         methods: {
             //методы редактирования
-            //общий метод загрузки тартовы данны
-            //передаем из предыде ида
+            //общий метод загрузки cтартовых данных
+            //передаем из предыде вида
             get_modal_edit_data(id)
             {
                 if(this.edit_flag)
@@ -265,6 +301,7 @@ import vClickOutside from 'v-click-outside'
                         this.pochtovyi_adres='',
                         this.menedzer_zakazchik='',
                         this.kontakty=[],
+                        this.adresa=[],
                         this.openDP=false,
                         this.bank_arr=[],
                         this.files=[],
@@ -275,12 +312,12 @@ import vClickOutside from 'v-click-outside'
                         this.current_opened_inp=''
 
                     this.current_gruzootpravitel_id=id
-                    this.get_gruzootpravitel_modal(this.kontakty, this.bank_arr, this.doc_files)
+                    this.get_gruzootpravitel_modal(this.kontakty,this.adresa, this.bank_arr, this.doc_files)
 
                 }
             },
             //получаем стартовые данные
-            get_gruzootpravitel_modal(kontakty,bank_arr,doc_files) {
+            get_gruzootpravitel_modal(kontakty,adresa,bank_arr,doc_files) {
                 axios
                     .post('/get_gruzootpravitel_modal',{
                         id:this.current_gruzootpravitel_id
@@ -304,6 +341,16 @@ import vClickOutside from 'v-click-outside'
                                          FIO : entry.FIO,
                                          telefon : entry.telefon,
                                          email : entry.email,
+                                 });
+                             }),
+                             data.gruzootpravitel_adresa.forEach(function(entry) {
+                                 adresa.push({
+                                     id:entry.id,
+                                     nazvanie:entry.nazvanie,
+                                     adres:entry.adres,
+                                     FIO:entry.FIO,
+                                     telefon:entry.telefon,
+                                     email:entry.email
                                  });
                              }),
                              data.gruzootpravitel_banks.forEach(function(entry) {
@@ -419,6 +466,7 @@ import vClickOutside from 'v-click-outside'
                 this.pochtovyi_adres='',
                 this.menedzer_zakazchik='',
                 this.kontakty=[],
+                this.adresa=[],
                 this.openDP=false,
                 this.bank_arr=[],
                 this.files=[],
@@ -453,6 +501,10 @@ import vClickOutside from 'v-click-outside'
             {
                 this.kontakty.splice(key,1)
             },
+            delete_one_adres(key)
+            {
+                this.adresa.splice(key,1)
+            },
             delete_bank(key)
             {
                 this.bank_arr.splice(key,1)
@@ -466,6 +518,17 @@ import vClickOutside from 'v-click-outside'
                 objToPush['telefon'] = '';
                 objToPush['email'] = '';
                 this.kontakty.push(objToPush);
+            },
+            dobavit_adres()
+            {
+                let objToPush= {};
+                objToPush['id'] = '';
+                objToPush['nazvanie'] = '';
+                objToPush['adres'] = '';
+                objToPush['FIO'] = '';
+                objToPush['telefon'] = '';
+                objToPush['email'] = '';
+                this.adresa.push(objToPush);
             },
             dobavit_bank()
             {
@@ -583,6 +646,7 @@ import vClickOutside from 'v-click-outside'
                         pochtovyi_adres:this.pochtovyi_adres,
                         menedzer_zakazchik:this.menedzer_zakazchik,
                         kontakty:this.kontakty,
+                        adresa:this.adresa,
                         bank_arr:this.bank_arr,
                         doc_files:this.doc_files
                     })
@@ -590,8 +654,8 @@ import vClickOutside from 'v-click-outside'
                         if(this.get_gruzootpravitel_list)
                         {
                             this.get_gruzootpravitel_list()
-
-                            this.select_gruzootpravitel()
+                                //метод автообновления в виде
+                           // this.select_gruzootpravitel()
                         }
                         if(this.change_one_gruzzotpravitel)
                         {

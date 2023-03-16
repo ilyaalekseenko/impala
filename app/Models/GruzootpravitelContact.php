@@ -14,5 +14,15 @@ class GruzootpravitelContact extends Model
     {
         GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
     }
+    public function saveContact($kontakt,$gruzootpravitelId)
+    {
+        GruzootpravitelContact::create([
+            'gruzootpravitel_id' => $gruzootpravitelId,
+            'dolznost' => $kontakt['dolznost'],
+            'FIO' => $kontakt['FIO'],
+            'telefon' => $kontakt['telefon'],
+            'email' => $kontakt['email'],
+        ]);
+    }
 
 }

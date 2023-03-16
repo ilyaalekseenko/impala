@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_INN_api', [App\Http\Controllers\GruzootpravitelController::class, 'get_INN_api'])->name('get_INN_api');
     Route::post('/delete_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'delete_gruzootpravitel'])->name('delete_gruzootpravitel');
     Route::post('/get_gruzootpravitel_list', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list'])->name('get_gruzootpravitel_list');
+    Route::post('/getGruzWithName', [App\Http\Controllers\GruzootpravitelController::class, 'getGruzWithName'])->name('getGruzWithName');
     Route::post('/get_gruzootpravitel_list_front', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_front'])->name('get_gruzootpravitel_list_front');
     Route::post('/get_gruzootpravitel_list_atocomplite', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_atocomplite'])->name('get_gruzootpravitel_list_atocomplite');
     Route::post('/check_if_name_gruz', [App\Http\Controllers\GruzootpravitelController::class, 'check_if_name_gruz'])->name('check_if_name_gruz');
@@ -111,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/change_permission', [App\Http\Controllers\AdminController::class, 'change_permission'])->name('change_permission');
     Route::post('/is_admin_settings', [App\Http\Controllers\AdminController::class, 'is_admin_settings'])->name('is_admin_settings');
     Route::post('/get_roles', [App\Http\Controllers\AdminController::class, 'get_roles'])->name('get_roles');
+    Route::post('/getRoleUser', [App\Http\Controllers\AdminController::class, 'getRoleUser'])->name('getRoleUser');
 
     Route::post('/add_user', [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
     Route::get('/perevozchiki', [App\Http\Controllers\PerevozchikiController::class, 'perevozchiki'])->name('perevozchiki');

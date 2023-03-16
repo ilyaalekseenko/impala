@@ -97,7 +97,7 @@
                                 <div class="col-10 head_font">Номер заявки</div>
                             </div>
                             <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
-                            <div class="col-1 orders_title_table_main head_font">Статус</div>
+                            <div class="col-1 orders_title_table_main head_font" v-show="checkRolePermissionMixin([1])">Статус</div>
                             <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
                             <div class="col-2 orders_title_table_main head_font">Откуда</div>
                             <div class="col-2 orders_title_table_main head_font">Куда</div>
@@ -109,7 +109,7 @@
                             <div class="col-10">{{ order.id }}</div>
                         </div>
                         <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
-                            <div class="col-1 orders_title_table t2" >{{ order.status }}</div>
+                            <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
                             <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
                         <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
                             <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_pogruzke">{{ gruz.nazvanie }}</div>

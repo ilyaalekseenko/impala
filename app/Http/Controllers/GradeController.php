@@ -17,6 +17,7 @@ use App\Models\TS;
 use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Services\GruzootpravitelAdresService;
 use Illuminate\Http\Request;
 use ZipArchive;
 use App\Services\UserService;
@@ -25,12 +26,15 @@ use App\Services\UserService;
 class GradeController extends Controller
 {
     private $userService;
+    private $gruzootpravitelAdresService;
 
     public function __construct(
         UserService $userService,
+        GruzootpravitelAdresService $gruzootpravitelAdresService
     )
     {
         $this->userService = $userService;
+        $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
     }
 
     public function get_template_vars()
@@ -448,8 +452,10 @@ class GradeController extends Controller
                 }
                 else
                 {
-                    $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
-                    $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+                    //получаем изначальный адрес в инпут для показа
+                    $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($pogruzka['adres_pogruzki']);
+                 //   $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
+                 //   $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
                     $pogruzka['adres_pogruzki_show']=$adres_pogruzke_show;
                 }
 
@@ -479,8 +485,9 @@ class GradeController extends Controller
                 }
                 else
                 {
-                    $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
-                    $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
+                    $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($pogruzka['adres_pogruzki']);
+                   // $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
+                   // $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
                     $pogruzka['adres_vygruzki_show']=$adres_pogruzke_show;
                 }
 

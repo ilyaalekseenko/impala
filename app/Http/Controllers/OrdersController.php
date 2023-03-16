@@ -19,6 +19,7 @@ use App\Models\LogistName;
 use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Services\DocService;
+use App\Services\GruzootpravitelAdresService;
 use App\Services\ImportantService;
 use App\Services\LogistService;
 use App\Services\OplataService;
@@ -60,6 +61,7 @@ class OrdersController extends Controller
     private $LogistService;
     private $UnreadHeadersModel;
     private $ButtonsService;
+    private $gruzootpravitelAdresService;
 
     public function __construct(
         OrderService $orderService,
@@ -77,7 +79,7 @@ class OrdersController extends Controller
         LogistService $LogistService,
         UnreadHeader $UnreadHeadersModel,
         ButtonsService $ButtonsService,
-
+        GruzootpravitelAdresService $gruzootpravitelAdresService
     )
     {
         $this->orderService = $orderService;
@@ -95,6 +97,7 @@ class OrdersController extends Controller
         $this->LogistService = $LogistService;
         $this->UnreadHeadersModel = $UnreadHeadersModel;
         $this->ButtonsService = $ButtonsService;
+        $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
     }
 
 
@@ -279,8 +282,25 @@ class OrdersController extends Controller
     {
         $id = $request->input('id');
         $orders_list=$this->orderService->getOrderById(request('id'));
-        $adres_pogruzke_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_pogruzke']);
-        $adres_vygruski_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_vygruski']);
+        //получить новый полный адрес погрузки и выгрузки
+        if(($orders_list[0]['adres_pogruzke'])==null)
+        {
+            $adres_pogruzke_show='';
+        }
+        else
+        {
+            $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($orders_list[0]['adres_pogruzke']);
+        }
+      //  $adres_pogruzke_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_pogruzke']);
+        if(($orders_list[0]['adres_vygruski'])==null)
+        {
+            $adres_vygruski_show='';
+        }
+        else
+        {
+            $adres_vygruski_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($orders_list[0]['adres_vygruski']);
+        }
+        //$adres_vygruski_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_vygruski']);
         $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
         $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
         //получаем юзера по id логиста
@@ -296,12 +316,25 @@ class OrdersController extends Controller
             $ts['adres_vygr_TS']= $this->pogruzkaTSService->tsListPogruzkaGet($id,$ts['id_ts'],'2');
             //добавляем название к адресу погрузки
             foreach ($ts['adres_pogruzki_TS'] as $one_adres) {
-                $one_adres['adres_pogruzke_show']=$this->pogruzkaTSService->setNameShow($one_adres);
+                if(($one_adres['adres_pogruzki'])==null)
+                {
+                    $one_adres['adres_pogruzke_show']='';
+                }
+                else
+                {
+                    $one_adres['adres_pogruzke_show']=$this->gruzootpravitelAdresService->getOneAdresForSearch($one_adres['adres_pogruzki']);
+                }
             }
             //добавляем название к адресу выгрузки
             foreach ($ts['adres_vygr_TS'] as $one_adres) {
-                $one_adres['adres_vygruzki_show']=$this->pogruzkaTSService->setNameShow($one_adres);
-            }
+                if(($one_adres['adres_pogruzki'])==null)
+                {
+                    $one_adres['adres_vygruzki_show']='';
+                }
+                else
+                {
+                    $one_adres['adres_vygruzki_show']=$this->gruzootpravitelAdresService->getOneAdresForSearch($one_adres['adres_pogruzki']);
+                }            }
         }
         return response()->json([
             'status' => 'success',

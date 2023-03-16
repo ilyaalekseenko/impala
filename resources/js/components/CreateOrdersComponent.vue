@@ -1024,7 +1024,7 @@
             {
                 let inp_temp =[];
                 axios
-                    .post('/get_gruzootpravitel_list',{
+                    .post('/getGruzWithName',{
                     })
                     .then(({ data }) => (
                             data.gruzootpravitel.forEach(function(entry) {
