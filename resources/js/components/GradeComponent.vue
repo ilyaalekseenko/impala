@@ -1404,6 +1404,7 @@
                     let objToPush2= {};
                     // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] =' ';
+                    objToPush2['adres_pogruzki_show'] ='';
                     objToPush2['id_ts'] = this.right_current_TS;
                     objToPush2['grade_id'] = this.order_id;
                     objToPush2['pogruzka_or_vygruzka'] = 1;
@@ -1421,6 +1422,7 @@
                     let objToPush2= {};
                     // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] = this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki;
+                    objToPush2['adres_pogruzki_show'] =this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki_show;
                     objToPush2['id_ts'] = this.right_current_TS;
                     objToPush2['grade_id'] = this.spisokTSarr[key].adres_pogruzki_TS[i].order_id;
                     objToPush2['pogruzka_or_vygruzka'] = this.spisokTSarr[key].adres_pogruzki_TS[i].pogruzka_or_vygruzka;
@@ -1438,6 +1440,7 @@
                     let objToPush2= {};
                     // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] =' ';
+                    objToPush2['adres_vygruzki_show'] ='';
                     objToPush2['id_ts'] = this.right_current_TS;
                     objToPush2['grade_id'] = this.order_id;
                     objToPush2['pogruzka_or_vygruzka'] = 2;
@@ -1454,6 +1457,7 @@
                     let objToPush2= {};
                     // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] = this.spisokTSarr[key].adres_vygr_TS[i].adres_pogruzki;
+                    objToPush2['adres_vygruzki_show'] =this.spisokTSarr[key].adres_vygr_TS[i].adres_vygruzki_show;
                     objToPush2['id_ts'] = this.right_current_TS;
                     objToPush2['grade_id'] = this.spisokTSarr[key].adres_vygr_TS[i].order_id;
                     objToPush2['pogruzka_or_vygruzka'] = this.spisokTSarr[key].adres_vygr_TS[i].pogruzka_or_vygruzka;
@@ -1477,7 +1481,6 @@
                 console.log(this.spisokTSarr)
                 console.log('Правый список')
                 console.log(this.spisokTShead)
-
 
                 if(this.right_col_down_show==true)
                 {

@@ -581,16 +581,15 @@ class GradeController extends Controller
                 {
                     $ts1['date_ts']='';
                     $ts1['time_ts']='';
-//                    if(($ts1['adres_pogruzki']=='')||($ts1['adres_pogruzki']==null))
-//                    {
-//                        $ts1['adres_pogruzki_show']='';
-//                    }
-//                    else
-//                    {
-//                        $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $ts1['adres_pogruzki']) ->get();
-//                        $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
-//                        $ts1['adres_pogruzki_show']=$adres_pogruzke_show;
-//                    }
+                   if(($ts1['adres_pogruzki']=='')||($ts1['adres_pogruzki']==null))
+                    {
+                       $ts1['adres_pogruzki_show']='';
+                   }
+                    else
+                    {
+                        $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($ts1['adres_pogruzki']);
+                        $ts1['adres_pogruzki_show']=$adres_pogruzke_show;
+                    }
 
 
 
@@ -599,17 +598,21 @@ class GradeController extends Controller
                 {
                     $ts1['date_ts']='';
                     $ts1['time_ts']='';
+
+                    if(($ts1['adres_pogruzki']=='')||($ts1['adres_pogruzki']==null))
+                    {
+                        $ts1['adres_vygruzki_show']='';
+                    }
+                    else
+                    {
+                        $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($ts1['adres_pogruzki']);
+                        $ts1['adres_vygruzki_show']=$adres_pogruzke_show;
+                    }
+
                 }
-                //$ts['adres_pogruzki_TS']='e';
-               // $ts['adres_pogruzki_TS']->put('date_ts','123');
 
             }
 
-
-
-
-           // return dd($TS_list_pogruzka);
-           // $Terminal_list= TS::where('order_id', '=', $id)->where('checked2', '=', '1')->get();
             return response()->json([
                 'status' => 'success',
                 'message' =>'Заявка успешно получена',
