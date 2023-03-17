@@ -282,6 +282,8 @@ class OrdersController extends Controller
     {
         $id = $request->input('id');
         $orders_list=$this->orderService->getOrderById(request('id'));
+        //получим статус
+        $orders_list=$this->orderService->setStatustoOrder($orders_list);
         //получить новый полный адрес погрузки и выгрузки
         if(($orders_list[0]['adres_pogruzke'])==null)
         {
@@ -533,6 +535,11 @@ class OrdersController extends Controller
         }
     }
 
+    public function getOrderStatus(Request $request)
+    {
+        $resArr=$this->orderService->setStatustoOrder($resArr);
+
+    }
     public function getOrderlist(Request $request)
     {
         //получаем название статуса пользователя
@@ -541,7 +548,7 @@ class OrdersController extends Controller
       $resArr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
       //посчитаем сколько всего записей выводить
       $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
-      //добавим статус
+      //добавим статус для каждой заявки
       $resArr=$this->orderService->setStatustoOrder($resArr);
         return response()->json([
             'status' => 'success',

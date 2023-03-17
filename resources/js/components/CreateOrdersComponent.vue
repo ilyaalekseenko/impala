@@ -1,14 +1,15 @@
 <template>
     <div class="container" id="scroll_block">
         <div class="row">
-            <div class="col-12 main_head_marg">
-                <modal-pogruzka-component
-                    :get_gruzootpravitel_list='get_gruzootpravitel_list'
-                    :select_gruzootpravitel='select_gruzootpravitel'
-                ></modal-pogruzka-component>
+            <modal-pogruzka-component
+                :get_gruzootpravitel_list='get_gruzootpravitel_list'
+                :select_gruzootpravitel='select_gruzootpravitel'
+            ></modal-pogruzka-component>
+            <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
                 </div>
+                <div class="col-4 orders_create_title create_orders_status">{{ status }}</div>
             </div>
             <div class="col-12 second_header_cr_order">
                 <div class="col-10 create_orders_second_title row">
@@ -47,12 +48,6 @@
                     <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="setColumn('naznachenie_stavki')">
                         <div class="col add_ts_button4 text-center">Утверждение</div>
                     </div>
-<!--                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="go_to_grade()">-->
-<!--                        <div class="col add_ts_button4 text-center">Утверждение</div>-->
-<!--                    </div>-->
-<!--                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="add_to_work()">-->
-<!--                        <div class="col add_ts_button4 text-center">В работе</div>-->
-<!--                    </div>-->
                     <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="setColumn('v_rabote')">
                         <div class="col add_ts_button4 text-center">В работе</div>
                     </div>
@@ -827,7 +822,8 @@
                 utverzdenie_show_button:false,
                 v_rabote_show_button:false,
                 ocenka_show_button:false,
-                flag_pogruz:''
+                flag_pogruz:'',
+                status:'Черновик'
 
 
             }
@@ -1195,8 +1191,26 @@
                 this.logist_name=name ;
                 this.logist_show();
                 this.update_order_logist()
-
+                    if((this.status=='Черновик')&&(name!='Логист не выбран'))
+                    {
+                        this.status='На оценке'
+                    }
              },
+            setStatusName(columnName)
+            {
+                if(columnName=='ocenka')
+                {
+                    this.status='На оценке'
+                }
+                if(columnName=='naznachenie_stavki')
+                {
+                    this.status='На утверждении'
+                }
+                if(columnName=='v_rabote')
+                {
+                    this.status='В работе'
+                }
+            },
             logist_show()
             {
                 this.logist_list=!this.logist_list
@@ -1283,6 +1297,7 @@
                         }
 
                     })
+                this.setStatusName(columnName)
             },
             setMessage(columnName)
             {
@@ -1362,6 +1377,7 @@
                             this.ob_ves=data.data[0]['ob_ves'],
                             this.ob_ob=data.data[0]['ob_ob'],
                             this.vid_perevozki=data.data[0]['vid_perevozki'],
+                            this.status=data.data[0]['status'],
                                 data.data[0].oplata.forEach(function(entry) {
                                     inp.push(entry);
                                 }),

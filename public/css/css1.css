@@ -1664,3 +1664,6 @@
     max-height: 200px;
     overflow: auto;
 }
+.create_orders_status {
+    text-align: right;
+}

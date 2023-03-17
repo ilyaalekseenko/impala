@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
    // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
     Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');
+    Route::post('/getOrderStatus', [App\Http\Controllers\OrdersController::class, 'getOrderStatus'])->name('getOrderStatus');
     Route::post('/checkOrderStatusName', [App\Http\Controllers\OrdersController::class, 'checkOrderStatusName'])->name('checkOrderStatusName');
     Route::post('/header_counter_orders', [App\Http\Controllers\MainHeaderController::class, 'headerCounterOrders'])->name('headerCounterOrders');
     Route::post('/get_start_data_grade', [App\Http\Controllers\GradeController::class, 'get_start_data_grade'])->name('get_start_data_grade');
