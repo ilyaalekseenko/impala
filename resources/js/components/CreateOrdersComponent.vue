@@ -963,6 +963,21 @@
 
                     );
             },
+            hideButton(buttonName)
+            {
+                if(buttonName=='ocenka')
+                {
+                    this.ocenka_show_button=false
+                }
+                if(buttonName=='naznachenie_stavki')
+                {
+                    this.utverzdenie_show_button=false
+                }
+                if(buttonName=='v_rabote')
+                {
+                    this.v_rabote_show_button=false
+                }
+            },
             update_order_oplata(summ_opl,id,data)
             {
                 axios
@@ -1292,6 +1307,7 @@
                         //если утвердил админ
                         if(this.role==1)
                         {
+                           this.hideButton(columnName)
                            let message=this.setMessage(columnName)
                             alert(message)
                         }
@@ -1454,8 +1470,26 @@
 
                     })
             },
+            showButtons()
+            {
+
+                this.utverzdenie_show_button=true
+              if(this.role==1)
+              {
+                  this.ocenka_show_button=true
+                  this.v_rabote_show_button=true
+              }
+
+            },
+            hideButtonsUsers()
+            {
+                this.v_rabote_show_button=false
+                this.utverzdenie_show_button=false
+            },
             save_TS()
             {
+                //показываем кнопки
+                this.showButtons()
                 if(this.edit_flag==false)
                 {
                     //проверка, были ли вообще хоть одно ТС
@@ -1623,6 +1657,8 @@
             },
             deleteTs()
             {
+
+
                 if(this.edit_flag==false)
                 {
                 this.id_ts='';
@@ -1674,6 +1710,12 @@
                     this.edit_flag=false;
                     this.add_ts='';
                     this.add_new_ts=false;
+                }
+                console.log(this.spisokTSarr.length)
+                if(this.spisokTSarr.length==0)
+                {
+
+                    this.hideButtonsUsers()
                 }
             },
             add_ts_func()

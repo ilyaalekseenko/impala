@@ -10,7 +10,7 @@ class GruzootpravitelAdresa extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function saveAdres($adres,$gruzootpravitelId)
+    public function saveAdres($adres,$gruzootpravitelId,$forma,$nazvanie)
     {
         GruzootpravitelAdresa::create([
             'gruzootpravitel_id' => $gruzootpravitelId,
@@ -18,7 +18,8 @@ class GruzootpravitelAdresa extends Model
             'adres' => $adres['adres'],
             'FIO' => $adres['FIO'],
             'telefon' => $adres['telefon'],
-            'email' => $adres['email']
+            'email' => $adres['email'],
+            'full_name' => $forma.' '.$nazvanie.' '.$adres['adres']
         ]);
     }
     public function delAdres($adresId)
@@ -30,7 +31,7 @@ class GruzootpravitelAdresa extends Model
     {
        return GruzootpravitelAdresa::where('gruzootpravitel_id',$gruzootpravitelId)->get();
     }
-    public function updateAdres($adres,$gruzootpravitelId)
+    public function updateAdres($adres,$gruzootpravitelId,$forma,$nazvanie)
     {
         GruzootpravitelAdresa::updateOrCreate(
         //массив что ищем
@@ -44,7 +45,8 @@ class GruzootpravitelAdresa extends Model
                 'adres' => $adres['adres'],
                 'FIO' => $adres['FIO'],
                 'telefon' => $adres['telefon'],
-                'email' => $adres['email']
+                'email' => $adres['email'],
+                'full_name'=>$forma.' '.$nazvanie.' '.$adres['adres']
             ]);
     }
     public function getAdresByIdWithGruz($adresId)

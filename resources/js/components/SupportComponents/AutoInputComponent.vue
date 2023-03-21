@@ -2,9 +2,9 @@
     <div class="gruz_auto_select">
 
         <div class="input-container" v-click-outside="focus_out_from_select">
-            <input type="text" v-model="adres_pogruzke_show_local" @input="search"/>
-            <div class="dropdown" v-if="showList">
-                <ul class="select_list_gruzoot">
+            <input type="text" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <div class="dropdown" v-if="showList" >
+                <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
                         {{ item.nazvanie }}
                     </li>
@@ -23,9 +23,17 @@
                 showList: false,
                 filteredList: [],
                 adres_pogruzke_show_local:this.adres_pogruzke_show_edit,
-                order_id_local:''
+                order_id_local:'',
+                searchOffset:0
             }
         },
+        mounted() {
+          //  window.addEventListener('scroll', this.handleWindowScroll);
+        },
+        //убираем для предотвращения утечки памяти
+        // beforeUnmount() {
+        //     this.$refs.scrollContainer.removeEventListener('scroll', this.handleScroll);
+        // },
         watch: {
             // отслеживаем изменения значений в родителе
             order_id: function () {
@@ -90,7 +98,87 @@
                 }
 
             },
-            select(item) {
+            //метод поиска на бэке
+            searchBack(inp)
+            {
+                let searchArrTemp=[];
+                let searchWord=this.adres_pogruzke_show_local;
+                axios
+                    .post('/searchBack',{
+                        searchWord:searchWord,
+                        model:'GruzootpravitelAdresa',
+                        fieldToSearch:'full_name',
+                        searchOffset:this.searchOffset
+                    })
+                    .then(response => {
+                        response.data.res.forEach(function(entry) {
+                            inp.push({
+                                id:entry.id,
+                                gruzootpravitel_id:entry.gruzootpravitel_id,
+                                nazvanie:entry.full_name
+                            });
+                        })
+
+                    })
+               // return searchArrTemp
+
+            },
+            clickSearchInp()
+            {
+
+                if(this.adres_pogruzke_show_local==undefined)
+                {
+                    this.adres_pogruzke_show_local=''
+                    this.searchInp()
+                }
+                else
+                {
+                    this.showList = true;
+                }
+            },
+            //метод при вводе нового значения в инпут
+            searchInp()
+            {
+                this.searchBack(this.filteredList)
+                this.showList = true;
+              // ждём появления скролла и если он появился вызываем метод searchInpNext
+               this.waitScroll()
+            },
+            searchInpNew()
+            {
+                this.filteredList=[];
+                this.searchOffset=0;
+                this.searchBack(this.filteredList)
+                this.showList = true;
+                // ждём появления скролла и если он появился вызываем метод searchInpNext
+                this.waitScroll()
+            },
+            searchInpNext()
+            {
+                const scrollContainer = this.$refs.scrollContainer;
+                //добавляем слушатель к скроллу
+                scrollContainer.addEventListener('scroll', this.handleScroll);
+
+            },
+            handleScroll() {
+                 const scrollContainer = this.$refs.scrollContainer;
+                 if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight) {
+                     this.searchOffset+=10
+                     this.searchBack(this.filteredList)
+
+                 }
+            },
+             waitScroll () {
+                if (!this.$refs.scrollContainer) {
+                    setTimeout(this.waitScroll, 300); // try again in 300 milliseconds
+                }
+                else
+                {
+                    this.searchInpNext()
+                }
+                  },
+
+             select(item) {
                 this.adres_pogruzke_show_local = item.nazvanie;
                 this.adres_pogruzke=item.id;
                 this.showList = false;

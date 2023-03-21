@@ -19,12 +19,12 @@ class GruzootpravitelAdresService
         $this->gruzootpravitelAdresa = $gruzootpravitelAdresa;
     }
 
-    public function updateAdresa($gruzootpravitelId,$adresa)
+    public function updateAdresa($gruzootpravitelId,$adresa,$forma,$nazvanie)
     {
         //удалим из БД те адреса которые удалил пользователь
         $this->deleteNotExistAdresa($gruzootpravitelId,$adresa);
         //проапдейтим старые адреса или создадим новые если их нет
-        $this->updateOldAdresa($adresa,$gruzootpravitelId);
+        $this->updateOldAdresa($adresa,$gruzootpravitelId,$forma,$nazvanie);
     }
 
     public function deleteNotExistAdresa($gruzootpravitelId,$adresa)
@@ -51,11 +51,11 @@ class GruzootpravitelAdresService
         }
 
     }
-    public function updateOldAdresa($adresa,$gruzootpravitelId)
+    public function updateOldAdresa($adresa,$gruzootpravitelId,$forma,$nazvanie)
     {
         foreach ($adresa as $adres)
         {
-         $this->gruzootpravitelAdresa->updateAdres($adres,$gruzootpravitelId);
+         $this->gruzootpravitelAdresa->updateAdres($adres,$gruzootpravitelId,$forma,$nazvanie);
         }
     }
     public function createAdresForSearch()

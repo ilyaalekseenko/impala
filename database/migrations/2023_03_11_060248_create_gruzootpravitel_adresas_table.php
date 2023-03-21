@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('FIO')->nullable();
             $table->text('telefon')->nullable();
             $table->text('email')->nullable();
+            $table->text('full_name')->nullable();
             $table->timestamps();
         });
     }

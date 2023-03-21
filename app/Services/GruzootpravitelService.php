@@ -48,7 +48,7 @@ class GruzootpravitelService
         }
         foreach ($adresa as $adres)
         {
-           $this->gruzootpravitelAdresa->saveAdres($adres,$gruzootpravitelId);
+           $this->gruzootpravitelAdresa->saveAdres($adres,$gruzootpravitelId,$forma,$nazvanie);
         }
         foreach ($bank_arr as $bank)
         {

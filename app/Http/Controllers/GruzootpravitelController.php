@@ -169,7 +169,7 @@ class GruzootpravitelController extends Controller
                      ,request('doc_files')
                  );
                  //обновим адреса
-                 $this->gruzootpravitelAdresService->updateAdresa($current_gruzootpravitel_id,request('adresa'));
+                 $this->gruzootpravitelAdresService->updateAdresa($current_gruzootpravitel_id,request('adresa'),request('forma'),request('nazvanie'));
 
 //                 GruzootpravitelAdresa::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
 //                 if($adresa)
@@ -480,4 +480,5 @@ class GruzootpravitelController extends Controller
             'adres_pogruzke' =>0,
         ], 200);
     }
+
 }

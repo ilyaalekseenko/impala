@@ -143,6 +143,12 @@ class OrdersController extends Controller
     {
         //логика показа кнопок
         $buttonsStatus=$this->ButtonsService->buttonStatus(request('id'),request('role'));
+        $TS= $this->TSService->getTsListByOrderId(request('id'));
+        if($TS->isEmpty())
+        {
+            $buttonsStatus['utverzdenieShowButton']=false;
+            $buttonsStatus['vRaboteShowButton']=false;
+        }
 
         return response()->json([
             'status' => 'success',
