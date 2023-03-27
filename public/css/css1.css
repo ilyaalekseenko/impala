@@ -1407,6 +1407,10 @@
 }
 .btn_del_in_ord {
     width: 36px!important;
+
+}
+.bottom_marg {
+    margin-bottom: 40px;
 }
 .btn_del_in_ord1 {
     width: 36px!important;
@@ -1627,7 +1631,8 @@
  }
 
 .gruz_auto_select input {
-     width: 100%;
+     /*width: 100%;*/
+     width: 100px;
      padding: 2px;
      border: 1px solid #ccc;
      border-radius: 4px;
@@ -1667,3 +1672,7 @@
 .create_orders_status {
     text-align: right;
 }
+.textar_settings{
+    width: 85%;
+}
+

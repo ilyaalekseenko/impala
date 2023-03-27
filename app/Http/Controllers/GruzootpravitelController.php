@@ -70,8 +70,14 @@ class GruzootpravitelController extends Controller
             //вытаскиваем отсюда все нужные значения  https://dadata.ru/api/find-party/
             //название
             $nazvanie = $result[0]['value'] ?? "";
+            //берём до пробела, тоесть ИП ООО и т.д.
+            preg_match('/^[^\s]*/', $nazvanie, $matches);
+            //берём после пробела, само название организации
+            preg_match('/\s(.*)/', $nazvanie, $matchesNazvanie);
+            $nazvanie=$matchesNazvanie[1];
             //форма
-            $forma = $result[0]['data']['opf']['full'] ?? "";
+            //$forma = $result[0]['data']['opf']['full'] ?? "";
+            $forma = $matches[0];
             //дата регистрации
             $data_registracii = date("d.m.y",($result[0]['data']['state']['registration_date'])/1000) ?? "";
             //ogrn
@@ -163,6 +169,7 @@ class GruzootpravitelController extends Controller
              //если редактируем уже существуюющие модальное окно
              else
              {
+
                  //обновим грузоотправителя
                  $this->gruzootpravitelService->updateGruzootpravitel($current_gruzootpravitel_id,request('forma'),request('nazvanie'),request('data_registracii'),request('INN'),request('OGRN'),request('telefon'),
                      request('email'),request('generalnii_direktor'),request('telefon_gen_dir'),request('YR_adres'),request('pochtovyi_adres'),request('kontakty'),request('adresa'),request('bank_arr')
@@ -170,21 +177,6 @@ class GruzootpravitelController extends Controller
                  );
                  //обновим адреса
                  $this->gruzootpravitelAdresService->updateAdresa($current_gruzootpravitel_id,request('adresa'),request('forma'),request('nazvanie'));
-
-//                 GruzootpravitelAdresa::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
-//                 if($adresa)
-//                 {
-//                     foreach ($adresa as $adres)
-//                     {
-//                         GruzootpravitelAdresa::create([
-//                             'gruzootpravitel_id' => $current_gruzootpravitel_id,
-//                             'nazvanie' => $adres['nazvanie'],
-//                             'adres' => $adres['adres']
-//                         ]);
-//                     }
-//                 }
-
-//                 GruzootpravitelFile::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->delete();
 
                  return response()->json([
                      'status' => 'success',

@@ -83,7 +83,7 @@ class GruzootpravitelFile extends Model
         //если массив приходящий пустой но там в БД лежали старые файлы, то их нужно удалить
         else
         {
-            $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$current_gruzootpravitel_id)->get();
+            $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$gruzootpravitelId)->get();
             foreach ($old_docs as $old_doc)
             {
                 try {

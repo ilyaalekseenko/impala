@@ -543,7 +543,7 @@ class OrdersController extends Controller
 
     public function getOrderStatus(Request $request)
     {
-        $resArr=$this->orderService->setStatustoOrder($resArr);
+        $resArr=$this->orderService->setStatustoOrder(request('orders'));
 
     }
     public function getOrderlist(Request $request)

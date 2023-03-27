@@ -1,8 +1,9 @@
 <template>
     <div class="gruz_auto_select">
 
-        <div class="input-container" v-click-outside="focus_out_from_select">
-            <input type="text" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
+        <div class="input-container inp_show" v-click-outside="focus_out_from_select">
+<!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>-->
+            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
@@ -24,11 +25,16 @@
                 filteredList: [],
                 adres_pogruzke_show_local:this.adres_pogruzke_show_edit,
                 order_id_local:'',
-                searchOffset:0
+                searchOffset:0,
+                 inputHeight: 30
             }
         },
         mounted() {
-          //  window.addEventListener('scroll', this.handleWindowScroll);
+            console.log('adres_pogruzke_show_local')
+            console.log(this.adres_pogruzke_show_local)
+            console.log('input start')
+            console.log(this.$refs.auto_input.scrollHeight)
+        //    this.inputHeight = this.$refs.auto_input.scrollHeight
         },
         //убираем для предотвращения утечки памяти
         // beforeUnmount() {
@@ -45,8 +51,24 @@
                     this.adres_pogruzke_show_local=this.adres_pogruzke_show
                 }
             },
+            adres_pogruzke_show_local: function () {
+                setTimeout(this.waitScrollTextarea, 1);
+            }
         },
         methods: {
+            waitScrollTextarea()
+            {
+                setTimeout(this.waitScrollTextareaSec, 1);
+            },
+            waitScrollTextareaSec()
+            {
+                if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
+                {
+                    this.inputHeight = this.$refs.auto_input.scrollHeight
+                    this.waitScrollTextarea()
+                }
+
+            },
             //клик в не списка
             focus_out_from_select()
             {
@@ -130,15 +152,19 @@
                 {
                     this.adres_pogruzke_show_local=''
                     this.searchInp()
+
                 }
                 else
                 {
+
+                    this.searchInpNew()
                     this.showList = true;
                 }
             },
             //метод при вводе нового значения в инпут
             searchInp()
             {
+                this.inputHeight = this.$refs.auto_input.scrollHeight
                 this.searchBack(this.filteredList)
                 this.showList = true;
               // ждём появления скролла и если он появился вызываем метод searchInpNext
@@ -146,6 +172,7 @@
             },
             searchInpNew()
             {
+                setTimeout(this.waitScrollTextarea, 300);
                 this.filteredList=[];
                 this.searchOffset=0;
                 this.searchBack(this.filteredList)

@@ -12,6 +12,19 @@ use Illuminate\Http\Request;
 
 class TSController extends Controller
 {
+
+    protected $TSModel;
+    protected $vidTSModel;
+
+    public function __construct(
+        TS $TSModel,
+        VidTS $vidTSModel
+    )
+    {
+        $this->TSModel = $TSModel;
+        $this->vidTSModel = $vidTSModel;
+    }
+
     public function get_terminal_list()
     {
         $TS_list= Terminal::all();
@@ -165,6 +178,48 @@ class TSController extends Controller
         $order_id=$request->input('order_id');
         PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
         TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->delete();
+    }
+
+    public function get_vid_TS_list()
+    {
+        $TS_list=$this->vidTSModel->getVidTSList(request('offset'),request('limit'));
+        $tipesCount=$this->vidTSModel->countVidTs();
+        return response()->json([
+            'status' => 'success',
+            'ts' =>$TS_list,
+            'tipesCount' =>$tipesCount,
+            'message' =>'Вид ТС создан',
+        ], 200);
+    }
+
+    //метод удаления Вида ТС
+    public function delete_vid_TS(Request $request)
+    {
+        //удаляем(ставим NULL) из таблицы уже существующих ТС ( не видов а самих ТС )
+        $this->TSModel->setNullVidTS(request('vidTSId'));
+        //удаляем из таблицы vid_TS сам vid_TS
+        $this->vidTSModel->deleteVidTS(request('vidTSId'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Вид ТС удалено',
+        ], 200);
+    }
+    public function update_vid_TS(Request $request)
+    {
+        $this->vidTSModel->updateVidTS(request('vidTSId'),request('ts_name'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Вид ТС обновлён',
+        ], 200);
+    }
+    public function create_vid_TS()
+    {
+       $result=$this->vidTSModel->createVidTS();
+        return response()->json([
+            'status' => 'success',
+            'id' => $result['id'],
+            'message' =>'Вид ТС создан',
+        ], 200);
     }
 
 }

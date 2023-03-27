@@ -30,8 +30,9 @@
 //При вызове компонента значение countAllTypes отслеживает общее количество записей
 //Обновить компонент уставновив пагинацию на первую страничку можно методом
 //this.$refs.PaginationComponent.setToDefaultState() не забудь прописать ref="PaginationComponent" в компоненте
-//возвращает значение offset в методе dataFromPagination в родителе
+//возвращает результат работы пагинации (значение offset) в методе dataFromPagination в родителе
 //countLimit следит за изменением количества одновременно выводимых записей, по умолчанию 20
+//в родителе ставить limit 0, затем в mounted то значение которое надо
 //все строки обязательны
 //<pagination-component
 //:countAllTypes="countAllTypes"
@@ -78,11 +79,17 @@
             //перерисовка самой пагинации
             paginationCounter()
             {
+                console.log('countAllTypesLocal')
+                console.log(this.countAllTypesLocal)
                 //если всех записей не ноль
                 if(this.countAllTypesLocal!=0) {
 
                     //получаем количество всех страниц ( округляем в большую сторону)
                     let g = Math.ceil(this.countAllTypesLocal / this.limit);
+                    console.log('g')
+                    console.log(g)
+                    console.log('limit')
+                    console.log(this.limit)
                     //проверка на последнюю страничку
                             if(this.current_page==g)
                             {

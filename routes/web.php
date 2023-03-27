@@ -41,6 +41,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update_order_oplata', [App\Http\Controllers\OrdersController::class, 'update_order_oplata'])->name('update_order_oplata');
     Route::post('/delete_oplata_summa', [App\Http\Controllers\OrdersController::class, 'delete_oplata_summa'])->name('delete_oplata_summa');
     Route::post('/save_ts', [App\Http\Controllers\TSController::class, 'save_ts'])->name('save_ts');
+    Route::post('/get_vid_TS_list', [App\Http\Controllers\TSController::class, 'get_vid_TS_list'])->name('get_vid_TS_list');
+    Route::post('/delete_vid_TS', [App\Http\Controllers\TSController::class, 'delete_vid_TS'])->name('delete_vid_TS');
+    Route::post('/update_vid_TS', [App\Http\Controllers\TSController::class, 'update_vid_TS'])->name('update_vid_TS');
+    Route::post('/create_vid_TS', [App\Http\Controllers\TSController::class, 'create_vid_TS'])->name('create_vid_TS');
     Route::post('/delete_TS', [App\Http\Controllers\TSController::class, 'delete_TS'])->name('delete_TS');
     Route::post('/get_ts_list', [App\Http\Controllers\TSController::class, 'get_ts_list'])->name('get_ts_list');
     Route::post('/get_forma_list', [App\Http\Controllers\TSController::class, 'get_forma_list'])->name('get_forma_list');

@@ -59,6 +59,12 @@
                         </li>
                     </ul>
                 </li>
+                <li class="dropmenu" v-on:click="set_menu"><a href="#">ТС</a>
+                    <ul class="level1">
+                        <li v-on:click="nav_menu_show(6)"><a href="#">Виды ТС</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </aside>
        </div>
@@ -68,6 +74,7 @@
         <forma-gruzootpravitel-settings-component v-if="nav_menu_show_var==3"></forma-gruzootpravitel-settings-component>
         <add-users-settings-component v-if="nav_menu_show_var==4"></add-users-settings-component>
         <users-list-component v-if="nav_menu_show_var==5"></users-list-component>
+        <vid-t-s-component v-if="nav_menu_show_var==6"></vid-t-s-component>
         </div>
 
         </div>

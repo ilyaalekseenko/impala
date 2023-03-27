@@ -41,4 +41,30 @@ class VidTS extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getVidTSList($offset, $limit)
+    {
+      return VidTS::
+            offset($offset)
+            ->limit($limit)
+            ->get();
+    }
+    public function countVidTs()
+    {
+        return VidTS::count();
+    }
+    public function deleteVidTS($vidTSId)
+    {
+        VidTS::where('id', $vidTSId)->delete();
+    }
+    public function updateVidTS($vidTSId,$ts_name)
+    {
+        VidTS::where('id',$vidTSId)->update([
+            'ts_name' =>$ts_name,
+        ]);
+    }
+    public function createVidTS()
+    {
+        return VidTS::create([]);
+    }
 }

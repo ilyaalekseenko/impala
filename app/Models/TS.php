@@ -60,4 +60,10 @@ class TS extends Authenticatable
     {
        return TS::where('order_id', $orderId)->get();
     }
+    public function setNullVidTS($vidTSId)
+    {
+        TS::where('vid_TS', $vidTSId)->update([
+            'vid_TS' =>null,
+        ]);
+    }
 }

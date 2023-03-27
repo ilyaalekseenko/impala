@@ -74,6 +74,7 @@ class GruzootpravitelService
         {
             $this->gruzootpravitelBank->saveBank($bank,$gruzootpravitelId);
         }
+
         $this->gruzootpravitelFile->updateOldFiles($doc_files,$gruzootpravitelId);
 
     }

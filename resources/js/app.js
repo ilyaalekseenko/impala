@@ -37,6 +37,7 @@ Vue.component('perevozchiki-component', require('./components/PerevozchikiCompon
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
+Vue.component('vid-t-s-component', require('./components/Settings/VidTSComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
