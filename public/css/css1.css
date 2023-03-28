@@ -1675,4 +1675,7 @@
 .textar_settings{
     width: 85%;
 }
+.auto_input_height {
+    width:100%!important;
+}
 
