@@ -25,9 +25,9 @@
                     </ul>
                 </li>
 
-                <li class="dropmenu" v-on:click="set_menu"><a href="#">Перевозки</a>
-                    <ul class="level1">
-                        <li v-on:click="nav_menu_show(2)"><a href="#">Настройки</a>
+<!--                <li class="dropmenu" v-on:click="set_menu"><a href="#">Перевозки</a>-->
+<!--                    <ul class="level1">-->
+<!--                        <li v-on:click="nav_menu_show(2)"><a href="#">Настройки</a>-->
 <!--                        <li class="dropmenu"><a href="#">Trades</a>-->
 <!--                            <ul class="level2">-->
 <!--                                <li><a href="#">lorem iklor</a></li>-->
@@ -37,14 +37,14 @@
 <!--                            </ul>-->
 <!--                        </li>-->
 <!--                        <li><a href="#">ipsum</a>-->
-                    </li>
+<!--                    </li>-->
 <!--                        <li><a href="#">dolor</a></li>-->
 <!--                        <li><a href="#">sit</a></li>-->
-                    </ul>
-                </li>
-                <li class="dropmenu" v-on:click="set_menu"><a href="#">Грузоотправитель</a>
-                    <ul class="level1">
-                        <li v-on:click="nav_menu_show(3)"><a href="#">Список</a>
+<!--                    </ul>-->
+<!--                </li>-->
+<!--                <li class="dropmenu" v-on:click="set_menu"><a href="#">Грузоотправитель</a>-->
+<!--                    <ul class="level1">-->
+<!--                        <li v-on:click="nav_menu_show(3)"><a href="#">Список</a>-->
 <!--                        <li class="dropmenu"><a href="#">Trades</a>-->
 <!--                            <ul class="level2">-->
 <!--                                <li><a href="#">lorem iklor</a></li>-->
@@ -56,13 +56,14 @@
 <!--                        <li><a href="#">ipsum</a></li>-->
 <!--                        <li><a href="#">dolor</a></li>-->
 <!--                        <li><a href="#">sit</a>-->
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropmenu" v-on:click="set_menu"><a href="#">ТС</a>
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+                <li class="dropmenu" v-on:click="set_menu"><a href="#">Справочники</a>
                     <ul class="level1">
-                        <li v-on:click="nav_menu_show(6)"><a href="#">Виды ТС</a>
-                        </li>
+                        <li v-on:click="nav_menu_show(6)"><a href="#">Виды ТС</a></li>
+                        <li v-on:click="nav_menu_show(3)"><a href="#">Грузоотправители</a></li>
+                        <li v-on:click="nav_menu_show(2)"><a href="#">Перевозки</a></li>
                     </ul>
                 </li>
             </ul>
