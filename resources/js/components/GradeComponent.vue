@@ -842,7 +842,10 @@
             },
             deleteTs()
             {
+             console.log('spisokTShead')
              console.log(this.spisokTShead)
+             console.log('spisokTSarr')
+             console.log(this.spisokTSarr)
             },
             select_temp_var(key,pogr_vygr,key1,p1,p2,p3,p4,p5)
             {
@@ -1357,6 +1360,7 @@
                     objToPush['kol_gruz_TS'] = this.spisokTSarr[key].kol_gruz_TS;
                     objToPush['stavka_TS'] = this.spisokTSarr[key].stavka_TS;
                     objToPush['vid_TS'] = this.spisokTSarr[key].vid_TS;
+                    objToPush['vid_TSNazvanie'] = this.spisokTSarr[key].vid_TSNazvanie;
                     objToPush['rasstojanie_TS'] = this.spisokTSarr[key].rasstojanie_TS;
 
                     // objToPush['adres_pogruzki_TS'] = this.spisokTSarr[key].adres_pogruzki_TS;
@@ -1611,6 +1615,7 @@
                                     id_ts:entry.id_ts,
                                     order_id:entry.order_id,
                                     vid_TS : entry.vid_TS,
+                                    vid_TSNazvanie : entry.vid_TSNazvanie,
                                     stavka_TS : entry.stavka_TS,
                                     stavka_TS_za_km : entry.stavka_TS_za_km,
                                     stavka_kp_TS : entry.stavka_kp_TS,

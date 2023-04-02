@@ -595,6 +595,19 @@ class GradeController extends Controller
 
                 $ts['adres_pogruzki_TS']=$TS_list_pogruzka;
                 $ts['adres_vygr_TS']=$TS_list_vygruzka;
+
+                //получаем само название в инпут для показа
+                if(($ts['vid_TS']=='')||($ts['vid_TS']==null))
+                {
+                    $ts['vid_TSNazvanie']='';
+                }
+                else
+                {
+                    $vid_TSNazvanie=$this->vidTSModel->getTsNameBYId($ts['vid_TS']);
+                    $ts['vid_TSNazvanie']=$vid_TSNazvanie;
+                }
+
+
                 foreach ($TS_list_pogruzka as $ts1)
                 {
                     $ts1['date_ts']='';
