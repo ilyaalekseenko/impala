@@ -17,7 +17,9 @@ use App\Models\TS;
 use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\VidTS;
 use App\Services\GruzootpravitelAdresService;
+use App\Services\TSService;
 use Illuminate\Http\Request;
 use ZipArchive;
 use App\Services\UserService;
@@ -27,14 +29,18 @@ class GradeController extends Controller
 {
     private $userService;
     private $gruzootpravitelAdresService;
+    private $vidTSModel;
+
 
     public function __construct(
         UserService $userService,
-        GruzootpravitelAdresService $gruzootpravitelAdresService
+        GruzootpravitelAdresService $gruzootpravitelAdresService,
+        VidTS $vidTS
     )
     {
         $this->userService = $userService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
+        $this->vidTSModel = $vidTS;
     }
 
     public function get_template_vars()
@@ -427,6 +433,19 @@ class GradeController extends Controller
             $grade['summa_list']=$summa;
             $TS_list_pogruzka = GradePogruzka::where('grade_id', '=', $grade_id)->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
             $TS_list_vygruzka = GradePogruzka::where('grade_id', '=', $grade_id)->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();
+
+            //добавляем название к типу ТС
+            if(($grade['vid_TS']=='')||($grade['vid_TS']==null))
+            {
+                $grade['vid_TSNazvanie']='';
+            }
+            else
+            {
+                //получаем само название в инпут для показа
+                $vid_TSNazvanie=$this->vidTSModel->getTsNameBYId($grade['vid_TS']);
+                $grade['vid_TSNazvanie']=$vid_TSNazvanie;
+            }
+
             foreach ($TS_list_pogruzka as $pogruzka)
             {
 
@@ -458,7 +477,6 @@ class GradeController extends Controller
                  //   $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
                     $pogruzka['adres_pogruzki_show']=$adres_pogruzke_show;
                 }
-
 
             }
             foreach ($TS_list_vygruzka as $pogruzka)

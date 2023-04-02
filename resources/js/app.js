@@ -35,6 +35,7 @@ Vue.component('add-users-settings-component', require('./components/Settings/Add
 Vue.component('gruzootpravitel-component', require('./components/GruzootpravitelComponent').default);
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
+Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
 Vue.component('vid-t-s-component', require('./components/Settings/VidTSComponent').default);

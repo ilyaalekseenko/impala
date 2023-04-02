@@ -277,9 +277,9 @@
                         <div class="col row" >
                                     <div class="col-1 no_padding_right create_order_right_main_text ts_counter">{{key + 1}}</div>
                                     <div class="col-2 no_padding_right ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text ">Вид ТС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text ">Тип ТС</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right">
-                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['ts_list_id']==elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
+                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['id']==elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
                                         </div>
                                     </div>
                                     <div class="col-2 no_padding_right">
@@ -352,12 +352,19 @@
                     <div v-if="add_ts===key" class="row add_ts_class">
                         <div class="col spisok_ts_second_title_left">
                             <div class="little_title_create_orders2">
-                                Вид ТС
+                                Тип ТС
                             </div>
                             <div class="create_orders_bottom">
-                                <select  class="sel_cust select_width" v-model="vid_TS">
-                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
-                                </select>
+                                         <auto-input-global-component class="select_width"
+                                                               :vidTsFromParent="vidTsNazavanie"
+                                                               :order_id="order_id"
+                                                               :key_in_arr="key"
+                                                               @childReturnMethod="parentMethodFromAutoinput"
+                                                               ref="AutoSelectComponent_vid_TS"
+                                         ></auto-input-global-component>
+                                <!--                                <select  class="sel_cust select_width" v-model="vid_TS">-->
+<!--                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>-->
+<!--                                </select>-->
                             </div>
                             <div class="col-12 row">
                                 <div class="col-6">
@@ -537,13 +544,17 @@
                     <div v-if="add_new_ts" class="row add_ts_class">
                         <div class="col spisok_ts_second_title_left">
                             <div class="little_title_create_orders2">
-                                Вид ТС
+                                Тип ТС
                             </div>
                             <div class="create_orders_bottom">
+                                <auto-input-global-component class="select_width"
 
-                                <select  class="sel_cust select_width" v-model="vid_TS">
-                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>
-                                </select>
+                                                             @childReturnMethod="parentMethodFromAutoinputNewVidts"
+                                                             ref="AutoSelectComponent_vid_TS"
+                                ></auto-input-global-component>
+<!--                                <select  class="sel_cust select_width" v-model="vid_TS">-->
+<!--                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>-->
+<!--                                </select>-->
                             </div>
                             <div class="col-12 row">
                                 <div class="col-6">
@@ -823,7 +834,8 @@
                 v_rabote_show_button:false,
                 ocenka_show_button:false,
                 flag_pogruz:'',
-                status:'Черновик'
+                status:'Черновик',
+                vidTsNazavanie:''
 
 
             }
@@ -843,6 +855,7 @@
                 document.getElementsByClassName('mx-input-wrapper')[m].remove();
             }
             this.get_ts_list(this.ts_list_names);
+            console.log(this.ts_list_names)
             let adress=window.location.href;
             adress=(adress.split("/")[4])
             //если новая заявка
@@ -945,6 +958,17 @@
                     this.ad_vygruz_arr_temp[data.key]['adres_vygruzki_show']=data.nazvanie;
                 }
 
+            },
+            //если редактируешь тс
+            parentMethodFromAutoinput(data)
+            {
+                this.vid_TS=data.vid_TS
+            },
+            //если добавляешь новое тс
+            parentMethodFromAutoinputNewVidts(data)
+            {
+
+                this.vid_TS=data.vid_TS
             },
             //проверка какие кнопки показывать пользователям
             checkButtonsShow(list)
@@ -1566,6 +1590,7 @@
                 else
                 {
                     this.spisokTSarr[this.edit_number]['vid_TS']=this.vid_TS;
+                    console.log(this.spisokTSarr[this.edit_number]['vid_TS'])
                     this.spisokTSarr[this.edit_number]['stavka_TS']=this.stavka_TS;
                     this.spisokTSarr[this.edit_number]['stavka_kp_TS']=this.stavka_kp_TS;
                     this.spisokTSarr[this.edit_number]['kol_gruz_TS']=this.kol_gruz_TS;
@@ -1619,6 +1644,17 @@
                     this.ad_vygruz_arr_temp=[];
                 }
             },
+            //метод для получения названия видаТС по его id
+            getTSNazvanie()
+            {
+                for(var i = 0; i < this.ts_list_names.length; i++)
+               {
+                    if(this.ts_list_names[i]['id']==this.vid_TS)
+                    {
+                        this.vidTsNazavanie=this.ts_list_names[i]['ts_name']
+                    }
+               }
+            },
             editTs(key)
             {
                 this.add_new_ts=false;
@@ -1632,6 +1668,8 @@
                 this.kol_gruz_TS=this.spisokTSarr[key]['kol_gruz_TS'];
                 this.kol_TS_TS=this.spisokTSarr[key]['kol_TS_TS'];
                 this.rasstojanie_TS=this.spisokTSarr[key]['rasstojanie_TS'];
+                //получим название вида ТС при редактирвовании и отдадим его в окошко поиска
+                this.getTSNazvanie();
 
              //   this.adres_pogruzki_TS=this.spisokTSarr[key]['adres_pogruzki_TS'];
                 this.ad_pogruzki_arr_temp=this.spisokTSarr[key]['adres_pogruzki_TS'];

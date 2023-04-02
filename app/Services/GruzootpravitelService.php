@@ -7,7 +7,7 @@ use App\Models\GruzootpravitelAdresa;
 use App\Models\GruzootpravitelBank;
 use App\Models\GruzootpravitelContact;
 use App\Models\GruzootpravitelFile;
-use GruzootpravitelAdresService;
+use App\Services\GruzootpravitelAdresService;
 
 
 class GruzootpravitelService

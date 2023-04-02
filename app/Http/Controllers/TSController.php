@@ -221,5 +221,26 @@ class TSController extends Controller
             'message' =>'Вид ТС создан',
         ], 200);
     }
+    public function getVidTSNazvanie(Request $request)
+    {
+        $ts=$this->vidTSModel->getVidTSNazvanie(request('ts_name'));
+       // $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
+       // $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+
+        if (!$ts->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Вид ТС получен',
+                'isset_flag' =>'yes',
+                'idTSBack' =>$ts[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого вида ТС',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
+        ], 200);
+    }
 
 }

@@ -30,10 +30,7 @@
             }
         },
         mounted() {
-            console.log('adres_pogruzke_show_local')
-            console.log(this.adres_pogruzke_show_local)
-            console.log('input start')
-            console.log(this.$refs.auto_input.scrollHeight)
+
         //    this.inputHeight = this.$refs.auto_input.scrollHeight
         },
         //убираем для предотвращения утечки памяти

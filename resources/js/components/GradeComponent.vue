@@ -5,7 +5,7 @@
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
 
                 <div  class="col-6 orders_create_title">
-                    Заявки: Оценка > №{{ order_id }}
+                    Заявки: В работе > №{{ order_id }}
                 </div>
                 <div  class="col-6 row justify-content-end trio_but">
                     <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
@@ -171,12 +171,19 @@
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Данные о перевозчике</div>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Тип ТС:</div>
-                                    <select  @blur="update_one_data(elem1,'vid_TS')" class="create_orders_date_title_int_1 grade_marg_bot" v-model="elem.vid_TS">
-                                        <option v-bind:value="0" class="sel_cust">Автоперевозка</option>
-                                        <option v-bind:value="1" class="sel_cust">Самолётом</option>
-                                        <option v-bind:value="2" class="sel_cust">Кораблём</option>
-                                        <option v-bind:value="3" class="sel_cust">На верблюде</option>
-                                    </select>
+<!--                                    <select  @blur="update_one_data(elem1,'vid_TS')" class="create_orders_date_title_int_1 grade_marg_bot" v-model="elem.vid_TS">-->
+<!--                                        <option v-bind:value="0" class="sel_cust">Автоперевозка</option>-->
+<!--                                        <option v-bind:value="1" class="sel_cust">Самолётом</option>-->
+<!--                                        <option v-bind:value="2" class="sel_cust">Кораблём</option>-->
+<!--                                        <option v-bind:value="3" class="sel_cust">На верблюде</option>-->
+<!--                                    </select>-->
+                                           <auto-input-global-component class="select_width_grade"
+                                                                        :order_id="order_id"
+                                                                        :vidTsFromParent="elem1.vid_TSNazvanie"
+                                                                        :elem1="elem1"
+                                                                        @childReturnMethod="parentMethodFromAutoinputVidts"
+                                                                        ref="AutoSelectComponent_vid_TS"
+                                           ></auto-input-global-component>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
                                     <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Водитель:</div>
@@ -1247,6 +1254,7 @@
             },
             update_one_data(elem,name)
             {
+                console.log(elem)
 
                 axios
                     .post('/update_one_data',{
@@ -1268,6 +1276,7 @@
                                         grade_id:entry.grade_id,
                                         id_ts : entry.id_ts,
                                         vid_TS : entry.vid_TS,
+                                        vid_TSNazvanie:entry.vid_TSNazvanie,
                                         perevozchik : entry.perevozchik,
                                         voditel : entry.voditel,
                                         nomer_TS : entry.nomer_TS,
@@ -1304,8 +1313,7 @@
                 for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_vygr_TS.length; i++) {
                     arr_to_DB.push(this.spisokTShead[this.right_current_TS].adres_vygr_TS[i])
                 }
-                console.log('сохранение погрузки')
-                console.log(arr_to_DB)
+
                 axios
                     .post('/add_pogruzka_grade',{
                         arr_to_DB:arr_to_DB,
@@ -1402,7 +1410,6 @@
                 if(this.spisokTSarr[key].adres_pogruzki_TS.length==0)
                 {
                     let objToPush2= {};
-                    // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] =' ';
                     objToPush2['adres_pogruzki_show'] ='';
                     objToPush2['id_ts'] = this.right_current_TS;
@@ -1420,7 +1427,6 @@
                 {
                 for (let i = 0; i < this.spisokTSarr[key].adres_pogruzki_TS.length; i++) {
                     let objToPush2= {};
-                    // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] = this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki;
                     objToPush2['adres_pogruzki_show'] =this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki_show;
                     objToPush2['id_ts'] = this.right_current_TS;
@@ -1438,7 +1444,6 @@
                 if(this.spisokTSarr[key].adres_vygr_TS.length==0)
                 {
                     let objToPush2= {};
-                    // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] =' ';
                     objToPush2['adres_vygruzki_show'] ='';
                     objToPush2['id_ts'] = this.right_current_TS;
@@ -1455,7 +1460,6 @@
                 else{
                 for (let i = 0; i < this.spisokTSarr[key].adres_vygr_TS.length; i++) {
                     let objToPush2= {};
-                    // console.log(this.spisokTSarr[key].adres_pogruzki_TS[i].adres_pogruzki)
                     objToPush2['adres_pogruzki'] = this.spisokTSarr[key].adres_vygr_TS[i].adres_pogruzki;
                     objToPush2['adres_vygruzki_show'] =this.spisokTSarr[key].adres_vygr_TS[i].adres_vygruzki_show;
                     objToPush2['id_ts'] = this.right_current_TS;
@@ -1477,10 +1481,7 @@
                   this.add_pogruzka_grade();
                   //сохранение суммы
                   this.save_start_summa();
-                console.log('Левый список')
-                console.log(this.spisokTSarr)
-                console.log('Правый список')
-                console.log(this.spisokTShead)
+
 
                 if(this.right_col_down_show==true)
                 {
@@ -1554,7 +1555,6 @@
                 objToPush1['summa'] = '';
                 objToPush1['data'] = '';
                 objToPush1['show_DP_date'] =false;
-                // console.log(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)
                 objToPush1['id_summa'] =Number(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)+Number(1);
                 this.spisokTShead[key].summa_list.push(objToPush1);
                 axios
@@ -1574,7 +1574,6 @@
             },
             download_all_doc_grade (){
                 window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;
-                // console.log(this.spisokTShead)
 
 
             },
@@ -1636,7 +1635,6 @@
             },
             na_term_count()
             {
-                console.log(this.spisokTSarr)
 
                 //берём список старых терминалов
                 for (let i = 0; i < this.spisokTSarr.length; i++) {
@@ -1674,7 +1672,6 @@
                 };
                 for (let i = 0; i < this.na_terminale_arr.length; i++) {
                     for (let j = 0; j < this.termList.length; j++) {
-                        // console.log(this.termList[j])
                         if(this.na_terminale_arr[i]['terminal_TS']==this.termList[j]['id'])
                         {
                             this.na_terminale_arr[i]['terminal_name']=this.termList[j]['name']
@@ -1685,8 +1682,7 @@
                         }
                     }
                 }
-                // console.log(this.na_terminale_arr)
-                console.log(this.show_arr_TS)
+
             },
             get_terminal_list(inp)
             {
@@ -1704,6 +1700,21 @@
                 this.get_start_data_grade(this.oplata_arr,this.spisokTSarr)
                     );
             },
+            parentMethodFromAutoinputVidts(data)
+            {
+                //получить название и запихнуть в главный массив правой колонки в строку название
+                //id тоже
+                data.elem1.vid_TS=data.vid_TS
+                this.update_one_data(data.elem1,'vid_TS')
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                        if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
+                        {
+                            this.spisokTShead[i]['vid_TS']=data.vid_TS
+                            this.spisokTShead[i]['vid_TSNazvanie']=data.ts_name
+                        }
+                }
+
+            }
 
 
 
