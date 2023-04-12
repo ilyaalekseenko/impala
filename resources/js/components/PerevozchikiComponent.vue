@@ -1,20 +1,18 @@
 <template>
     <div class="container orders_main">
         <div class="row orders_title_div">
-            <modal-pogruzka-component ref="modalComponentforAction" edit_flag=true :change_one_gruzzotpravitel='change_one_gruzzotpravitel'></modal-pogruzka-component>
+            <modal-perevozchiki-component ref="modalComponentforAction" edit_flag=true :addOnePerevozchik='addOnePerevozchik' :change_one_gruzzotpravitel='change_one_gruzzotpravitel'></modal-perevozchiki-component>
             <div class="col-12 row">
                 <div class="col-6 orders_title">
                    Перевозчики
                 </div>
-
-
                 <div class="col-12 coloring_row row">
-
                     <div class="col-12 under_col_title_main">
                         <input type="checkbox" id="checkbox" v-on:click="check_all()" v-model="checked_all">
                         <span class="under_colored_title head_font" v-on:click="delete_gruzootpravitel()">Удалить</span>
                         <span class="under_colored_title head_font">Переместить</span>
                         <span class="under_colored_title head_font" v-on:click="mix_mark_as_important(gruzootpravitel_arr,'Gruzootpravitel')" >Важное</span>
+                        <span class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="newPerevozchik()">Добавить</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
@@ -49,33 +47,15 @@
                         / <span :class="{ blue_ref: offset!=100 }" v-on:click="show_by(100)">по 100</span>
                     </div>
                     <div class="col-5 pagination_orders_right row">
-                            <!-- Pagination -->
-                            <!--            пагинация          -->
-                            <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
-                                <ul class="pagination">
-                                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"
-                                        v-bind:class="{ active: pag.id==current_page }"
-                                        v-on:click="new_page(pag.id)">
-                                        <span class="page-link page_link_int" >{{ pag.id }}</span>
-                                    </li>
-                                    <li v-else class="page-item">
-                                        <span class="page-link" >{{ pag.id }}</span>
-                                    </li>
-<!--                                    стрелки-->
-                                    <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">
-                                        <div v-if="current_page!=1">
-                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="90deg">
-                                        </span>
-                                        </div>
-                                    </li>
-                                    <li class="page-item pagination_button next_pag_button page_link_int" v-on:click="next_page()">
-                                        <div v-if="last_pagination_number">
-                                        <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="270deg"></span>
-                                        </div>
-                                    </li>
-<!--                                    конец стрелок-->
-                                </ul>
-                            </nav>
+                        <!--            пагинация          -->
+                        <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
+                            <pagination-component
+                                :countAllTypes="countAllTypes"
+                                :countLimit="limit"
+                                :dataFromPagination="dataFromPagination"
+                                ref="PaginationComponent"
+                            ></pagination-component>
+                        </nav>
                     </div>
 
 
@@ -109,7 +89,7 @@ Vue.filter('formatDate', function(value) {
                 pagination_all:0,
                 current_page:1,
                 pagination_numb:[],
-                offset:20,
+                offset:0,
                 limit:20,
                 last_pagination_number:true,
                 //конец пагинации
@@ -120,7 +100,9 @@ Vue.filter('formatDate', function(value) {
                 zurnal_zaiavok:0,
                 ocenka_counter:0,
                 header_underscore_list_class:[true,false,false,false,false,false],
-                order_by:'0'
+                order_by:'0',
+                offset_from_start:0,
+                countAllTypes:0
             }
         },
         created()
@@ -128,6 +110,18 @@ Vue.filter('formatDate', function(value) {
             // this.get_type_per_list(this.type_per_list);
         },
         methods: {
+            //метод вызываемый из дочернего компонента
+            addOnePerevozchik(newPerevId,nazvanie,yridicheskii_adres,kontakty)
+            {
+                console.log(newPerevId)
+                let objToPush= {};
+                objToPush['id'] = newPerevId;
+                objToPush['nazvanie'] = nazvanie;
+                objToPush['YR_adres'] = yridicheskii_adres;
+                objToPush['kontaktnoe_lico'] = kontakty;
+                objToPush['checked_order'] = false;
+                this.gruzootpravitel_arr.push(objToPush);
+            },
             change_one_gruzzotpravitel(id,nazvanie,yr_adres,kontakty)
             {
 
@@ -166,6 +160,11 @@ Vue.filter('formatDate', function(value) {
                 //вызов метода дочернего компонента( модального окна )
                 this.$refs.modalComponentforAction.get_modal_edit_data(id)
             },
+            newPerevozchik(id)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.newPerevozchik()
+            },
             check_all()
             {
                 for( let i = 0; i < this.gruzootpravitel_arr.length; i++ )
@@ -190,8 +189,8 @@ Vue.filter('formatDate', function(value) {
                 }
                 this.gruzootpravitel_arr=temp_arr
                axios
-                   .post('/delete_gruzootpravitel',{
-                       gruzootpravitels_id:this.delete_arr,
+                   .post('/deletePerevozka',{
+                       ids:this.delete_arr,
                    })
                 this.delete_arr=[]
             },
@@ -210,17 +209,17 @@ Vue.filter('formatDate', function(value) {
             },
             get_gruzootpravitel_list()
             {
-                let offset_from_start=(this.current_page-1)*this.offset
-
                 let inp_temp =[];
                 axios
-                    .post('/get_gruzootpravitel_list_front',{
-                        offset:offset_from_start,
+                    .post('/get_perevozka_list_front',{
+                        offset:this.offset_from_start,
                         limit:this.limit,
                     })
                     .then(({ data }) => (
-                            this.pagination_all=data.tipes_count,
-                                data.gruzootpravitel.forEach(function(entry) {
+                            this.countAllTypes=data.tipesCount,
+                                console.log('this.countAllTypes!!!'),
+                                console.log(this.countAllTypes),
+                                data.perevozka.forEach(function(entry) {
                                 inp_temp.push({
                                     id:entry.id,
                                     nazvanie:entry.nazvanie,
@@ -229,120 +228,20 @@ Vue.filter('formatDate', function(value) {
                                     checked_order:false,
                                     important:entry.important
                                 });
-                            }),
-                         this.pagination_counter()
+                            })
                         ),
                         this.gruzootpravitel_arr=inp_temp
 
                     );
             },
-
-            prev_page()
+            dataFromPagination(offset)
             {
-                if(this.current_page!=1)
-                {
-                    this.current_page=this.current_page-1;
-                    this.new_page(this.current_page)
-                }
+                this.offset_from_start=offset
+                this.gruzootpravitel_arr=[];
+                this.get_gruzootpravitel_list()
+            }
 
-            },
-            next_page()
-            {
-                this.last_pagination_number=!this.last_pagination_number;
-                let g=Math.ceil(this.pagination_all/this.offset);
 
-                if(this.current_page!=g)
-                {
-                    this.current_page=this.current_page+1;
-                    this.new_page(this.current_page)
-                }
-            },
-            new_page(page_id)
-            {
-                this.pagination_numb=[]
-                this.gruzootpravitel_arr=[]
-                this.current_page=page_id
-                this.get_gruzootpravitel_list();
-            },
-            pagination_counter()
-            {
-                if(this.pagination_all!=0) {
-
-                    //формирование отрисовки пагинации
-                    let g = Math.ceil(this.pagination_all / this.offset);
-                    //проверка на последнюю страничку
-                    if(this.current_page==g)
-                    {
-                        this.last_pagination_number=false
-                    }
-                    else
-                    {
-                        this.last_pagination_number=true
-                    }
-                    //текущая страница первая
-                    if (this.current_page == 1) {
-                        if (g > 1) {
-                            for (let i = 1; i <= 2; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                            this.pagination_numb.push({'id': '...'})
-                            this.pagination_numb.push({'id': g})
-                        } else {
-                            this.pagination_numb.push({'id': g})
-                        }
-                    }
-                    //текущая страница вторая
-                    if (this.current_page == 2) {
-                        if (g > 2) {
-                            for (let i = 1; i <= 3; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                            this.pagination_numb.push({'id': '...'})
-                            this.pagination_numb.push({'id': g})
-                        } else {
-                            for (let i = 1; i <= 2; i++) {
-                                this.pagination_numb.push({'id': i})
-                            }
-                        }
-                    }
-                    if (this.current_page > 2) {
-
-                        //минусовая
-                        if ((this.current_page - 3) == 1) {
-                            let page = this.current_page - 3
-                            this.pagination_numb.push({'id': '1'})
-                        } else {
-                            if ((this.current_page - 2) > 1) {
-                                this.pagination_numb.push({'id': '1'})
-                                this.pagination_numb.push({'id': '...'})
-                            }
-                        }
-                        let page = this.current_page - 2
-                        this.pagination_numb.push({'id': page})
-                        page = this.current_page - 1
-                        this.pagination_numb.push({'id': page})
-                        this.pagination_numb.push({'id': this.current_page})
-                        //плюсовая
-                        if ((this.current_page + 1) <= g) {
-                            page = this.current_page + 1
-                            this.pagination_numb.push({'id': page})
-                        }
-                        if ((this.current_page + 2) <= g) {
-                            page = this.current_page + 2
-                            this.pagination_numb.push({'id': page})
-                        }
-                        if ((this.current_page + 3) == g) {
-                            page = this.current_page + 3
-                            this.pagination_numb.push({'id': page})
-                        } else {
-                            if ((g - this.current_page) > 2) {
-                                this.pagination_numb.push({'id': '...'})
-                                this.pagination_numb.push({'id': g})
-                            }
-                        }
-                    }
-                }
-            },
         }
     }
 </script>

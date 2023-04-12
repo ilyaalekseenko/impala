@@ -11,6 +11,7 @@ use App\Models\GradeSumma;
 use App\Models\Gruzootpravitel;
 use App\Models\NaznachenieStavki;
 use App\Models\Orders;
+use App\Models\Perevozka;
 use App\Models\PogruzkaTS;
 use App\Models\TemplateVar;
 use App\Models\TS;
@@ -30,17 +31,20 @@ class GradeController extends Controller
     private $userService;
     private $gruzootpravitelAdresService;
     private $vidTSModel;
+    private $perevozkaModel;
 
 
     public function __construct(
         UserService $userService,
         GruzootpravitelAdresService $gruzootpravitelAdresService,
-        VidTS $vidTS
+        VidTS $vidTS,
+        Perevozka $perevozkaModel
     )
     {
         $this->userService = $userService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
         $this->vidTSModel = $vidTS;
+        $this->perevozkaModel = $perevozkaModel;
     }
 
     public function get_template_vars()
@@ -446,6 +450,17 @@ class GradeController extends Controller
                 $grade['vid_TSNazvanie']=$vid_TSNazvanie;
             }
 
+            //получаем название перевозчика
+            if(($grade['perevozchik']=='')||($grade['perevozchik']==null))
+            {
+                $grade['perevozchik_TSNazvanie']='';
+            }
+            else
+            {
+                $vid_TSNazvanie=$this->perevozkaModel->getPerevozkaNameBYId($grade['perevozchik']);
+                $grade['perevozchik_TSNazvanie']=$vid_TSNazvanie;
+            }
+
             foreach ($TS_list_pogruzka as $pogruzka)
             {
 
@@ -607,6 +622,16 @@ class GradeController extends Controller
                     $ts['vid_TSNazvanie']=$vid_TSNazvanie;
                 }
 
+                //получаем название перевозчика
+                if(($ts['perevozchik']=='')||($ts['perevozchik']==null))
+                {
+                    $ts['perevozchik_TSNazvanie']='';
+                }
+                else
+                {
+                    $vid_TSNazvanie=$this->perevozkaModel->getPerevozkaNameBYId($ts['perevozchik']);
+                    $ts['perevozchik_TSNazvanie']=$vid_TSNazvanie;
+                }
 
                 foreach ($TS_list_pogruzka as $ts1)
                 {

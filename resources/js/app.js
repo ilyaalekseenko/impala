@@ -26,6 +26,7 @@ Vue.component('orders-component', require('./components/OrdersComponent.vue').de
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
+Vue.component('modal-perevozchiki-component', require('./components/ModalPerevozchikiComponent').default);
 Vue.component('users-list-component', require('./components/Settings/UsersListComponent').default);
 Vue.component('main-settings-component', require('./components/Settings/MainSettingsComponent').default);
 Vue.component('docs-settings-component', require('./components/Settings/DocsSettingsComponent').default);
@@ -36,6 +37,7 @@ Vue.component('gruzootpravitel-component', require('./components/Gruzootpravitel
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
 Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
+Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
 Vue.component('vid-t-s-component', require('./components/Settings/VidTSComponent').default);
@@ -64,14 +66,20 @@ import vClickOutside from 'v-click-outside'
 
 Vue.use(vClickOutside)
 
-import VueTelInput from "vue-tel-input";
+// import VueTelInput from "vue-tel-input";
 import VuePhoneNumberInput from "vue-phone-number-input";
 import "vue-phone-number-input/dist/vue-phone-number-input.css";
-Vue.use(VueTelInput);
+// Vue.use(VueTelInput);
 Vue.component("vue-phone-number-input", VuePhoneNumberInput);
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 Vue.use(Autocomplete)
+
+import VueTheMask from 'vue-the-mask';
+Vue.use(VueTheMask);
+//маска для мобильн
+// import VueInputMask from 'vue-inputmask';
+// Vue.use(VueInputMask);
 
 //mixins
 import MixinGoTo from './mixins/MixinGoTo'

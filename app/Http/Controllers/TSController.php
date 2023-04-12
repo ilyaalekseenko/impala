@@ -224,9 +224,6 @@ class TSController extends Controller
     public function getVidTSNazvanie(Request $request)
     {
         $ts=$this->vidTSModel->getVidTSNazvanie(request('ts_name'));
-       // $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
-       // $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
-
         if (!$ts->isEmpty()) {
             return response()->json([
                 'status' => 'success',

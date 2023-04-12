@@ -12,7 +12,7 @@ class GruzootpravitelContact extends Model
 
     public function deleteContactMod($gruzootpravitel_id)
     {
-        GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
+        GruzootpravitelContact::where('perevozka_id', '=',$gruzootpravitel_id)->delete();
     }
     public function saveContact($kontakt,$gruzootpravitelId)
     {

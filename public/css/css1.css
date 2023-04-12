@@ -1682,3 +1682,16 @@
     width:100%!important;
 }
 
+/*модальное окно перевозчика*/
+.perevoz_height {
+    height: 50px;
+}
+.perevoz_m_bottom {
+    margin-bottom: 38px;
+}
+@media (min-width: 1500px) {
+    .perevoz_m_bottom {
+        margin-bottom: 20px;
+    }
+}
+/* конец модальное окно перевозчика*/

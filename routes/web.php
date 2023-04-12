@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_type_per_list', [App\Http\Controllers\TSController::class, 'get_type_per_list'])->name('get_type_per_list');
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
     Route::post('/getVidTSNazvanie', [App\Http\Controllers\TSController::class, 'getVidTSNazvanie'])->name('getVidTSNazvanie');
+    Route::post('/getPerevozkaNazvanie', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaNazvanie'])->name('getPerevozkaNazvanie');
     // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
     Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');
     Route::post('/getOrderStatus', [App\Http\Controllers\OrdersController::class, 'getOrderStatus'])->name('getOrderStatus');
@@ -83,7 +84,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/download_xlsx_orders', [App\Http\Controllers\OrdersController::class, 'download_xlsx_orders'])->name('download_xlsx_orders');
     Route::get('/get_xlsx_file/images/orders_xlsx/{filename}', [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
     Route::post('/get_gruzootpravitel_modal', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_modal'])->name('get_gruzootpravitel_modal');
+    Route::post('/getPerevozkaModal', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaModal'])->name('getPerevozkaModal');
     Route::post('/save_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'save_gruzootpravitel'])->name('save_gruzootpravitel');
+    Route::post('/savePerevozchik', [App\Http\Controllers\PerevozchikiController::class, 'savePerevozchik'])->name('savePerevozchik');
     Route::post('/store_modal_file_temp', [App\Http\Controllers\GruzootpravitelController::class, 'store_modal_file_temp'])->name('store_modal_file_temp');
     Route::post('/delete_files_modal', [App\Http\Controllers\GruzootpravitelController::class, 'delete_files_modal'])->name('delete_files_modal');
     Route::post('/delete_one_file_modal', [App\Http\Controllers\GruzootpravitelController::class, 'delete_one_file_modal'])->name('delete_one_file_modal');
@@ -91,9 +94,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_BIK_BANK_api', [App\Http\Controllers\GruzootpravitelController::class, 'get_BIK_BANK_api'])->name('get_BIK_BANK_api');
     Route::post('/get_INN_api', [App\Http\Controllers\GruzootpravitelController::class, 'get_INN_api'])->name('get_INN_api');
     Route::post('/delete_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'delete_gruzootpravitel'])->name('delete_gruzootpravitel');
+    Route::post('/deletePerevozka', [App\Http\Controllers\PerevozchikiController::class, 'deletePerevozka'])->name('deletePerevozka');
     Route::post('/get_gruzootpravitel_list', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list'])->name('get_gruzootpravitel_list');
     Route::post('/getGruzWithName', [App\Http\Controllers\GruzootpravitelController::class, 'getGruzWithName'])->name('getGruzWithName');
     Route::post('/get_gruzootpravitel_list_front', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_front'])->name('get_gruzootpravitel_list_front');
+    Route::post('/get_perevozka_list_front', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaListFront'])->name('getPerevozkaListFront');
     Route::post('/get_gruzootpravitel_list_atocomplite', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_list_atocomplite'])->name('get_gruzootpravitel_list_atocomplite');
     Route::post('/check_if_name_gruz', [App\Http\Controllers\GruzootpravitelController::class, 'check_if_name_gruz'])->name('check_if_name_gruz');
     Route::post('/check_if_name_gruz_isset', [App\Http\Controllers\GruzootpravitelController::class, 'check_if_name_gruz_isset'])->name('check_if_name_gruz_isset');

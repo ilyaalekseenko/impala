@@ -185,7 +185,14 @@
                                                                         ref="AutoSelectComponent_vid_TS"
                                            ></auto-input-global-component>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                    <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />
+<!--                                    <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />-->
+                                    <auto-input-perevozka-component class="select_width_grade"
+                                                                 :order_id="order_id"
+                                                                 :vidTsFromParent="elem1.perevozchik_TSNazvanie"
+                                                                 :elem1="elem1"
+                                                                 @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                                                 ref="AutoSelectComponent_vid_TS"
+                                    ></auto-input-perevozka-component>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Водитель:</div>
                                     <input @blur="update_one_data(elem1,'voditel')" class="border_input grade_marg_bot" v-model="elem1.voditel"  />
 
@@ -1280,6 +1287,7 @@
                                         id_ts : entry.id_ts,
                                         vid_TS : entry.vid_TS,
                                         vid_TSNazvanie:entry.vid_TSNazvanie,
+                                        perevozchik_TSNazvanie:entry.perevozchik_TSNazvanie,
                                         perevozchik : entry.perevozchik,
                                         voditel : entry.voditel,
                                         nomer_TS : entry.nomer_TS,
@@ -1304,7 +1312,6 @@
                                 })
                         )
                     )
-
             },
             add_pogruzka_grade()
             {
@@ -1361,6 +1368,7 @@
                     objToPush['stavka_TS'] = this.spisokTSarr[key].stavka_TS;
                     objToPush['vid_TS'] = this.spisokTSarr[key].vid_TS;
                     objToPush['vid_TSNazvanie'] = this.spisokTSarr[key].vid_TSNazvanie;
+                    objToPush['perevozchik_TSNazvanie'] = this.spisokTSarr[key].perevozchik_TSNazvanie;
                     objToPush['rasstojanie_TS'] = this.spisokTSarr[key].rasstojanie_TS;
 
                     // objToPush['adres_pogruzki_TS'] = this.spisokTSarr[key].adres_pogruzki_TS;
@@ -1616,6 +1624,7 @@
                                     order_id:entry.order_id,
                                     vid_TS : entry.vid_TS,
                                     vid_TSNazvanie : entry.vid_TSNazvanie,
+                                    perevozchik_TSNazvanie : entry.perevozchik_TSNazvanie,
                                     stavka_TS : entry.stavka_TS,
                                     stavka_TS_za_km : entry.stavka_TS_za_km,
                                     stavka_kp_TS : entry.stavka_kp_TS,
@@ -1717,6 +1726,22 @@
                             this.spisokTShead[i]['vid_TS']=data.vid_TS
                             this.spisokTShead[i]['vid_TSNazvanie']=data.ts_name
                         }
+                }
+
+            },
+            //сохранить то что пришло на фронте и записать на бэк
+            parentMethodFromAutoinputPerevozka(data)
+            {
+                //получить название и запихнуть в главный массив правой колонки в строку название
+                //id тоже
+                data.elem1.perevozchik=data.id
+                this.update_one_data(data.elem1,'perevozchik')
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
+                    {
+                        this.spisokTShead[i]['perevozchik']=data.vid_TS
+                        this.spisokTShead[i]['perevozchik_TSNazvanie']=data.ts_name
+                    }
                 }
 
             }
