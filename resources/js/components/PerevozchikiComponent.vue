@@ -12,7 +12,7 @@
                         <span class="under_colored_title head_font" v-on:click="delete_gruzootpravitel()">Удалить</span>
                         <span class="under_colored_title head_font">Переместить</span>
                         <span class="under_colored_title head_font" v-on:click="mix_mark_as_important(gruzootpravitel_arr,'Gruzootpravitel')" >Важное</span>
-                        <span class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="newPerevozchik()">Добавить</span>
+                        <span class="col add_button_perevozchiki" v-b-modal.modal-xl variant="primary" v-on:click="newPerevozchik()">Добавить</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">

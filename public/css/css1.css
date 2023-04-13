@@ -659,7 +659,15 @@
     cursor: pointer;
     text-decoration: underline;
 }
-
+.add_button_perevozchiki {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    color: #4D93F9;
+    margin-top: 6px;
+    margin-left: 20px;
+}
 
 .create_order_right_title {
     font-family: 'Roboto', sans-serif;
