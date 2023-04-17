@@ -23,6 +23,11 @@ class Gruzootpravitel extends Model
     }
     public function saveGruzootpravitelModel($forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres)
     {
+
+        if($pochtovyi_adres=='')
+        {
+            $pochtovyi_adres=$yridicheskii_adres;
+        }
        return Gruzootpravitel::create([
             'forma_id' => $forma,
             'nazvanie' => $nazvanie,
@@ -39,6 +44,10 @@ class Gruzootpravitel extends Model
     }
     public function updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres)
     {
+        if($pochtovyi_adres=='')
+        {
+            $pochtovyi_adres=$yridicheskii_adres;
+        }
         Gruzootpravitel::where('id', $gruzootpravitelId)->update([
             'forma_id' => $forma,
             'nazvanie' => $nazvanie,

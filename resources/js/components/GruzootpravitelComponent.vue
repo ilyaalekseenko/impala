@@ -28,7 +28,7 @@
                         <div v-on:click="show_mod_edit(gruzootpravitel.id)"  v-for="(gruzootpravitel,key) in gruzootpravitel_arr" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: gruzootpravitel.important==1 }">
                         <div class="col-2 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
-                            <div class="col-10" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.nazvanie }}</div>
+                            <div class="col-10" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.forma_id }} {{ gruzootpravitel.nazvanie }}</div>
                         </div>
                         <div class="col-2 orders_title_table" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.YR_adres }}</div>
                         <div class="col-8 orders_title_table t1" v-b-modal.modal-xl variant="primary">
@@ -128,7 +128,7 @@ Vue.filter('formatDate', function(value) {
             // this.get_type_per_list(this.type_per_list);
         },
         methods: {
-            change_one_gruzzotpravitel(id,nazvanie,yr_adres,kontakty)
+            change_one_gruzzotpravitel(id,nazvanie,yr_adres,kontakty,forma_id)
             {
 
                 for( let i = 0; i < this.gruzootpravitel_arr.length; i++ )
@@ -138,6 +138,7 @@ Vue.filter('formatDate', function(value) {
                         this.gruzootpravitel_arr[i].nazvanie=nazvanie
                         this.gruzootpravitel_arr[i].YR_adres=yr_adres
                         this.gruzootpravitel_arr[i].kontaktnoe_lico=kontakty
+                        this.gruzootpravitel_arr[i].forma_id=forma_id
                     }
 
                 }
@@ -227,7 +228,8 @@ Vue.filter('formatDate', function(value) {
                                     YR_adres:entry.YR_adres,
                                     kontaktnoe_lico:entry.kontaktnoe_lico,
                                     checked_order:false,
-                                    important:entry.important
+                                    important:entry.important,
+                                    forma_id:entry.forma_id
                                 });
                             }),
                          this.pagination_counter()

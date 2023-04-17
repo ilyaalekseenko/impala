@@ -1,9 +1,10 @@
 <template>
     <div class="gruz_auto_select">
 
-        <div class="input-container inp_show" v-click-outside="focus_out_from_select">
-<!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
+        <div class="input-container inp_show col-11" v-click-outside="focus_out_from_select">
+
+<!--            <input id="inp1" type="text" class="auto_input_height showByClick" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>-->
+            <input id="inp1" type="text" class="auto_input_height showByClick" ref="auto_input" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
@@ -11,13 +12,14 @@
                     </li>
                 </ul>
             </div>
+
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        props: ['gruzootpravitel_arr','order_id','adres_pogruzke_show','inp_type','key_in_arr','adres_pogruzke_show_edit','id_ts'],
+        props: ['gruzootpravitel_arr','order_id','adres_pogruzke_show','inp_type','key_in_arr','adres_pogruzke_show_edit','id_ts','showHideText','firstClick'],
         data(){
             return {
                 selectedValue: "",
@@ -26,7 +28,8 @@
                 adres_pogruzke_show_local:this.adres_pogruzke_show_edit,
                 order_id_local:'',
                 searchOffset:0,
-                 inputHeight: 30
+                 inputHeight: 30,
+                firstClick_local:false
             }
         },
         mounted() {
@@ -41,6 +44,10 @@
             // отслеживаем изменения значений в родителе
             order_id: function () {
                 this.order_id_local=this.order_id
+            },
+            firstClick: function () {
+                // alert('ЗИМЕНЕНО')
+                this.firstClick_local=this.firstClick
             },
             adres_pogruzke_show: function () {
                 if(this.inp_type!='add_pogruzka_edit')
@@ -77,11 +84,22 @@
                     if((this.inp_type=='add_pogruzka_empty')||(this.inp_type=='add_vygruzka_empty')||(this.inp_type=='add_pogruzka_edit')||(this.inp_type=='add_vygruzka_edit'))
                     {
                         this.check_if_name_gruz_isset()
+                        this.firstClick_local=false
                     }
                     //если просто погрузка или выгрузка
                     if((this.inp_type=='adres_vygruski')||(this.inp_type=='adres_pogruzke'))
                     {
-                        this.check_if_name_gruz()
+
+                        if(this.firstClick_local)
+                        {
+                            this.check_if_name_gruz()
+                            this.firstClick_local=false
+                        }
+                        else
+                        {
+                            this.firstClick_local=true
+                        }
+
                     }
                     //если вид grade
                     if((this.inp_type=='grade_pogruzka')||(this.inp_type=='grade_vygruzka'))
@@ -206,6 +224,7 @@
                 this.adres_pogruzke_show_local = item.nazvanie;
                 this.adres_pogruzke=item.id;
                 this.showList = false;
+
                 //если вид grade
                 if((this.inp_type=='grade_pogruzka')||(this.inp_type=='grade_vygruzka'))
                 {
@@ -215,6 +234,7 @@
                 else
                 {
                     this.up_gruzoot_from_select()
+                    this.firstClick_local=false
                 }
 
             },
@@ -260,6 +280,7 @@
             //type_inp это погрузка или выгрузка из вида create_orders тоесть из модального окна
             up_gruzoot_from_select(adres_pogruzke_from_orders,type_inp)
             {
+
                 let adres='';
                 let column_name='';
                 //если выбираем локально пустую погрузку то передаём id погрузки во временный массив добавления погрузки
@@ -322,6 +343,12 @@
                     adres=this.adres_pogruzke
                     column_name=this.inp_type
                 }
+                //покажем текст вместо инпута
+                    this.$emit('showHideText', {
+                        type:this.inp_type,
+                        inputText:this.adres_pogruzke_show_local
+                    })
+
 
                 axios
                     .post('/up_gruzoot_from_select',{
@@ -333,6 +360,8 @@
             //метод проверки по названию когда клика пр списку не было а ввод был
             check_if_name_gruz()
             {
+                // console.log('this.inp_type')
+                // console.log(this.inp_type)
                 axios
                     .post('/check_if_name_gruz',{
                         order_id:this.order_id,
@@ -344,6 +373,19 @@
                         if(response.data.isset_flag=='yes')
                         {
                             this.adres_pogruzke=response.data.adres_pogruzke
+                            //покажем текст вместо инпута
+                            this.$emit('showHideText', {
+                                type:this.inp_type,
+                                inputText:this.adres_pogruzke_show_local
+                            })
+                        }
+                        else
+                        {
+                            //покажем текст вместо инпута
+                            this.$emit('showHideText', {
+                                type:this.inp_type,
+                                inputText:''
+                            })
                         }
                     })
             },

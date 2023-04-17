@@ -62,8 +62,8 @@
                 <li class="dropmenu" v-on:click="set_menu"><a href="#">Справочники</a>
                     <ul class="level1">
                         <li v-on:click="nav_menu_show(6)"><a href="#">Виды ТС</a></li>
-                        <li v-on:click="nav_menu_show(3)"><a href="#">Грузоотправители</a></li>
-                        <li v-on:click="nav_menu_show(2)"><a href="#">Перевозки</a></li>
+<!--                        <li v-on:click="nav_menu_show(3)"><a href="#">Грузоотправители</a></li>-->
+<!--                        <li v-on:click="nav_menu_show(2)"><a href="#">Перевозки</a></li>-->
                     </ul>
                 </li>
             </ul>

@@ -163,13 +163,16 @@
                                    <div class="col no_wrap">Адрес погрузки</div>
                                    <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>
                                 </div>
-
-                            <auto-input-component class="cr_ord_inp_n_1"
+                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&adres_pogruzke_show==''" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
+                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke_show }}</div>
+                            <auto-input-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"
                                 inp_type='adres_pogruzke'
                                 :adres_pogruzke_show="adres_pogruzke_show"
                                 :order_id="order_id"
+                                :firstClick="localFirstClick"
                                 v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
                                 ref="AutoSelectComponent"
+                                @showHideText="showHideParent"
                             ></auto-input-component>
                             </div>
 
@@ -231,11 +234,15 @@
 <!--                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_vygruski">-->
 <!--                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
 <!--                                </select>-->
-                                <auto-input-component class="cr_ord_inp_n_1"
+                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan&&adres_vygruski_show==''" v-on:click="inputShow('adresVygruzkiShowSpan')">Выбрать адрес</div>
+                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan" v-on:click="inputShow('adresVygruzkiShowSpan')">{{ adres_vygruski_show }}</div>
+                                <auto-input-component v-show="!adresVygruzkiShowSpan" class="cr_ord_inp_n_1"
                                                       inp_type='adres_vygruski'
                                                       :adres_pogruzke_show="adres_vygruski_show"
                                                       :order_id="order_id"
+                                                      :firstClick="localFirstClick"
                                                       v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                      @showHideText="showHideParent"
                                                       ref="AutoSelectComponent"
                                 ></auto-input-component>
                             </div>
@@ -835,7 +842,10 @@
                 ocenka_show_button:false,
                 flag_pogruz:'',
                 status:'Черновик',
-                vidTsNazavanie:''
+                vidTsNazavanie:'',
+                adresPogruzkiShowSpan:true,
+                adresVygruzkiShowSpan:true,
+                localFirstClick:false
 
 
             }
@@ -941,6 +951,48 @@
                 }
                 return flag
 
+            },
+            inputShow(inpVar)
+            {
+
+                //если кликнули на адрес погрузки
+                if(inpVar=='adresPogruzkiShowSpan')
+                {
+                    this.adresPogruzkiShowSpan=!this.adresPogruzkiShowSpan
+                    let elem=document.getElementsByClassName("showByClick");
+                    elem[0].click();
+                   // document.getElementById("inp1").click();
+                }
+                //если кликнули на адрес выгрузки
+                if(inpVar=='adresVygruzkiShowSpan')
+                {
+                    this.adresVygruzkiShowSpan=!this.adresVygruzkiShowSpan
+                    let elem=document.getElementsByClassName("showByClick");
+                    elem[1].click();
+                }
+            },
+            //метод показа или не показа инпута поиска в родителе
+            showHideParent(inpData)
+            {
+                // console.log('ТУТ МЕНЯЕТСЯ?')
+                // console.log(this.localFirstClick)
+                // this.localFirstClick=true
+                // console.log('ТУТ МЕНЯЕТСЯ?')
+                // console.log(this.localFirstClick)
+                // this.localFirstClick=false
+                // console.log('ТУТ МЕНЯЕТСЯ?')
+                // console.log(this.localFirstClick)
+                if(inpData.type=='adres_pogruzke')
+                {
+                    // console.log('ТУТ СРАБОТАЛО')
+                    this.adresPogruzkiShowSpan=!this.adresPogruzkiShowSpan
+                    this.adres_pogruzke_show=inpData.inputText
+                }
+                if(inpData.type=='adres_vygruski')
+                {
+                    this.adresVygruzkiShowSpan=!this.adresVygruzkiShowSpan
+                    this.adres_vygruski_show=inpData.inputText
+                }
             },
             //добавление пустой погрузки или выгрузки
             add_new_pogruzka_in_ts(data)

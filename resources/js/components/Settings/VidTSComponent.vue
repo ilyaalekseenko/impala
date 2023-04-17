@@ -3,8 +3,8 @@
         <div>Виды ТС</div>
         <div class="row col-10 justify-content-start">
             <div class="col-8 ad_pogr_marg1" v-for="(mainOne,key) in mainArr">
-                <textarea class="textar_settings border_input" @blur="updateOne(mainOne.id,key)" v-model="mainArr[key]['ts_name']"  />
-                <button type="button" class="btn btn-danger btn_del_in_ord bottom_marg" v-on:click="delete_perevozka_settings(mainOne.id,key)">-</button>
+                <input class="textar_settings border_input" @blur="updateOne(mainOne.id,key)" v-model="mainArr[key]['ts_name']"  />
+                <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_perevozka_settings(mainOne.id,key)">-</button>
 
             </div>
             <div class="col-2 add_settings_doc_button">

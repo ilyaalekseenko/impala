@@ -251,6 +251,8 @@
 <!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
 <!--                                        </select>-->
 <!--                                        {{ elem1['id_ts'] }}-->
+<!--                                        <div>{{ adres_pogr }}</div>-->
+<!--                                        <div class="cr_ord_inp_n_1" v-show="adresPogruzkiVygruzkiShowFunc(key1,1)" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogr.adres_pogruzki_show }}</div>-->
                                         <auto-input-component class="cr_ord_inp_n_1"
                                                               inp_type='grade_pogruzka'
                                                               :adres_pogruzke_show="flag_pogruz"
@@ -776,6 +778,11 @@
         },
 
         methods: {
+            //метод для проверки показывать ли инпут или текст в погрузке выгрузке, если есть значение то текст, если нету то инпут
+            adresPogruzkiVygruzkiShowFunc(key, pogr_vygr)
+            {
+
+            },
             //добавление пустой погрузки или выгрузки
             update_one_gruzzootpravitel_from_select(data)
             {

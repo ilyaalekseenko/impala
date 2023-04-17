@@ -412,7 +412,9 @@ class GruzootpravitelController extends Controller
         $order_id =  $request->input('order_id');
         $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
         $column_name =  $request->input('column_name');
-        $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+      //  $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+
+        //если адрес погрузки пустой то убираем грузоотправителя вообще
         if($adres_pogruzke_show=='')
         {
             Orders::where('id', $order_id)->update([
@@ -425,17 +427,32 @@ class GruzootpravitelController extends Controller
                 'adres_pogruzke' =>0,
             ], 200);
         }
-        if (!$gruz->isEmpty()) {
-            Orders::where('id', $order_id)->update([
-                $column_name =>$gruz[0]['id'],
-            ]);
-            return response()->json([
-                'status' => 'success',
-                'message' =>'Грузоотправитель изменен',
-                'isset_flag' =>'yes',
-                'adres_pogruzke' =>$gruz[0]['id'],
-            ], 200);
+        //если не пустой то ищем
+        $adresa=$this->gruzootpravitelAdresa->getAllAdresWithGruz();
+        $gruzColect=collect([]);
+        foreach ($adresa as $gruz)
+        {
+            $gruzColect[]=['id'=>$gruz['id'], 'gruzootpravitel_id'=>$gruz['gruzootpravitel_id'],'nazvanie'=>$gruz['forma_id'].' '.$gruz['nazvanie'].' '.$gruz['adres']];
         }
+        //ищем в коллекции совпадения
+
+        foreach ($gruzColect as $gruzOne)
+        {
+            if($gruzOne['nazvanie'] == $adres_pogruzke_show)
+            {
+                Orders::where('id', $order_id)->update([
+                    $column_name =>$gruzOne['id'],
+                ]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' =>'Грузоотправитель изменен',
+                    'isset_flag' =>'yes',
+                    'adres_pogruzke' =>$gruzOne['id'],
+                ], 200);
+            }
+        }
+
+        //если не нашли совпадения
         return response()->json([
             'status' => 'success',
             'message' =>'Нет такого грузоотправителя',
@@ -447,7 +464,7 @@ class GruzootpravitelController extends Controller
     public function check_if_name_gruz_isset(Request $request)
     {
         $adres_pogruzke_show =  $request->input('adres_pogruzke_show');
-        $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
+//        $gruz= Gruzootpravitel::where('nazvanie', '=',$adres_pogruzke_show)->get();
         if($adres_pogruzke_show=='')
         {
             return response()->json([
@@ -457,14 +474,40 @@ class GruzootpravitelController extends Controller
                 'adres_pogruzke' =>0,
             ], 200);
         }
-        if (!$gruz->isEmpty()) {
-            return response()->json([
-                'status' => 'success',
-                'message' =>'Грузоотправитель получен',
-                'isset_flag' =>'yes',
-                'adres_pogruzke' =>$gruz[0]['id'],
-            ], 200);
+
+        //если не пустой то ищем
+        $adresa=$this->gruzootpravitelAdresa->getAllAdresWithGruz();
+        $gruzColect=collect([]);
+        foreach ($adresa as $gruz)
+        {
+            $gruzColect[]=['id'=>$gruz['id'], 'gruzootpravitel_id'=>$gruz['gruzootpravitel_id'],'nazvanie'=>$gruz['forma_id'].' '.$gruz['nazvanie'].' '.$gruz['adres']];
         }
+        //ищем в коллекции совпадения
+
+        foreach ($gruzColect as $gruzOne)
+        {
+            if($gruzOne['nazvanie'] == $adres_pogruzke_show)
+            {
+//                Orders::where('id', $order_id)->update([
+//                    $column_name =>$gruzOne['id'],
+//                ]);
+                return response()->json([
+                    'status' => 'success',
+                    'message' =>'Грузоотправитель изменен',
+                    'isset_flag' =>'yes',
+                    'adres_pogruzke' =>$gruzOne['id'],
+                ], 200);
+            }
+        }
+
+//        if (!$gruz->isEmpty()) {
+//            return response()->json([
+//                'status' => 'success',
+//                'message' =>'Грузоотправитель получен',
+//                'isset_flag' =>'yes',
+//                'adres_pogruzke' =>$gruz[0]['id'],
+//            ], 200);
+//        }
         return response()->json([
             'status' => 'success',
             'message' =>'Нет такого грузоотправителя',

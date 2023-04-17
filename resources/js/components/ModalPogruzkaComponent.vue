@@ -642,7 +642,7 @@ import vClickOutside from 'v-click-outside'
                         email:this.email,
                         generalnii_direktor:this.generalnii_direktor,
                         telefon_gen_dir:this.telefon_gen_dir,
-                        yridicheskii_adres:this.yridicheskii_adres,
+                        YR_adres:this.yridicheskii_adres,
                         pochtovyi_adres:this.pochtovyi_adres,
                         menedzer_zakazchik:this.menedzer_zakazchik,
                         kontakty:this.kontakty,
@@ -659,7 +659,7 @@ import vClickOutside from 'v-click-outside'
                         }
                         if(this.change_one_gruzzotpravitel)
                         {
-                            this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty)
+                            this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
                         }
 
                         this.hideModal()
