@@ -145,7 +145,7 @@
                             </div>
 
                             <div class="col-2 grade_header_col">
-                                {{ elem.perevozchik }}
+                                {{ elem.perevozchik_TSNazvanie }}
                             </div>
                             <div class="col-2 grade_header_col">
                                 Прямой
@@ -158,6 +158,7 @@
                             </div>
                             <div class="col-2 grade_header_col">
                                 {{elem.ob_summa}}р .
+                                <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteTSFromRightColumn(elem,key)">-</button>
                             </div>
                         </div>
                        </div>
@@ -186,7 +187,10 @@
                                            ></auto-input-global-component>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
 <!--                                    <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />-->
-                                    <auto-input-perevozka-component class="select_width_grade"
+                            <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp" v-on:click="pogruzkaShowInpChange()">{{ elem1.perevozchik_TSNazvanie }}</div>
+                            <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp&&elem1.perevozchik_TSNazvanie==''" v-on:click="pogruzkaShowInpChange()">Выбрать перевозчика</div>
+
+                                    <auto-input-perevozka-component v-if="pogruzkaShowInp" class="select_width_grade"
                                                                  :order_id="order_id"
                                                                  :vidTsFromParent="elem1.perevozchik_TSNazvanie"
                                                                  :elem1="elem1"
@@ -616,7 +620,9 @@
                 p4:'',
                 p5:'',
                 flag_pogruz:'',
-                role:''
+                role:'',
+                deleteFlag:false,
+                pogruzkaShowInp:false
 
 
             }
@@ -861,6 +867,19 @@
              console.log('spisokTSarr')
              console.log(this.spisokTSarr)
             },
+            deleteTSFromRightColumn(elem,key)
+            {
+                this.deleteFlag=true;
+                this.spisokTShead.splice(key,1)
+                axios
+                    .post('/deleteTSFromRightColumn',{
+                        TS:elem,
+                        grade_id:this.order_id
+                    })
+                    .then(response => {
+                        console.log('удалено')
+                    })
+            },
             select_temp_var(key,pogr_vygr,key1,p1,p2,p3,p4,p5)
             {
                 //key - номер в массиве spisokTShead
@@ -914,6 +933,14 @@
                             this.$refs[ref_link][this.p2].up_gruz_from_modal(response.data.gruzootpravitel.nazvanie)
                         })
 
+            },
+            pogruzkaShowInpChange()
+            {
+               this.pogruzkaShowInp=!this.pogruzkaShowInp
+            },
+            addPerevozchikShowId(id_ts)
+            {
+                this.pogruzkaShowArr.push(id_ts)
             },
             get_gruzootpravitel_list()
             {
@@ -1518,12 +1545,20 @@
                 }
                 else
                 {
-                    this.right_current_TS=elem.id_ts
-                    if(this.right_col_down_show==true)
+
+                    if(!this.deleteFlag)
                     {
-                        this.right_col_down_show=false;
+                        this.right_current_TS=elem.id_ts
+                        if(this.right_col_down_show==true)
+                        {
+                            this.right_col_down_show=false;
+                        }
+                        this.right_col_down_show=true;
                     }
-                    this.right_col_down_show=true;
+                    else
+                    {
+                        this.deleteFlag=false
+                    }
                 }
 
             },
@@ -1739,8 +1774,6 @@
             //сохранить то что пришло на фронте и записать на бэк
             parentMethodFromAutoinputPerevozka(data)
             {
-                //получить название и запихнуть в главный массив правой колонки в строку название
-                //id тоже
                 data.elem1.perevozchik=data.id
                 this.update_one_data(data.elem1,'perevozchik')
                 for (let i = 0; i < this.spisokTShead.length; i++) {
@@ -1750,6 +1783,7 @@
                         this.spisokTShead[i]['perevozchik_TSNazvanie']=data.ts_name
                     }
                 }
+            this.pogruzkaShowInp=false
 
             }
 

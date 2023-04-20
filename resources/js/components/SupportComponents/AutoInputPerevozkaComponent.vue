@@ -6,7 +6,7 @@
             <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
-                    <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
+                    <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
                         {{ item.nazvanie }}
                     </li>
                 </ul>
@@ -80,14 +80,18 @@
                         //проверяем есть ли впринципе такой вид ТС
                         let isset_gruz =this.checkIfVidTSIsset_in_db()
                         isset_gruz.then((value) => {
-                            //если такое тс есть то записать результат
+                            //если есть такой перевозчик то записать результат
                             if(value.isset_flag=="yes")
                             {
                                 this.mainId=value.idTSBack;
                                 this.returnDataToParent();
-                                //присвоим id грузоотправителя
-                              //  this.adres_pogruzke=value.adres_pogruzke
-                              //  this.up_gruzoot_from_select_grade()
+                            }
+                            //если нет такого перевозчика то записываем пустое значение
+                            else
+                            {
+                                this.mainId=null;
+                                this.MainVarInInput=''
+                                this.returnDataToParent();
                             }
                         });
                 }

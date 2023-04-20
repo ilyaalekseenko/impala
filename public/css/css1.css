@@ -1418,7 +1418,10 @@
 }
 .btn_del_in_ord {
     width: 36px!important;
-
+}
+.btn_del_in_grade {
+    width: 36px!important;
+    margin-left: 20px;
 }
 .bottom_marg {
     margin-bottom: 40px;

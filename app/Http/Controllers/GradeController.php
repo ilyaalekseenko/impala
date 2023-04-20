@@ -19,6 +19,7 @@ use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\VidTS;
+use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\TSService;
 use Illuminate\Http\Request;
@@ -30,21 +31,33 @@ class GradeController extends Controller
 {
     private $userService;
     private $gruzootpravitelAdresService;
+    private $docService;
     private $vidTSModel;
     private $perevozkaModel;
+    private $gradePogruzkaModel;
+    private $gradeSummaModel;
+    private $finalGradeModel;
 
 
     public function __construct(
         UserService $userService,
+        DocService $docService,
         GruzootpravitelAdresService $gruzootpravitelAdresService,
         VidTS $vidTS,
-        Perevozka $perevozkaModel
+        Perevozka $perevozkaModel,
+        GradePogruzka $gradePogruzkaModel,
+        GradeSumma $gradeSummaModel,
+        FinalGrade $finalGradeModel
     )
     {
         $this->userService = $userService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
         $this->vidTSModel = $vidTS;
         $this->perevozkaModel = $perevozkaModel;
+        $this->docService = $docService;
+        $this->gradePogruzkaModel = $gradePogruzkaModel;
+        $this->gradeSummaModel = $gradeSummaModel;
+        $this->finalGradeModel = $finalGradeModel;
     }
 
     public function get_template_vars()
@@ -422,6 +435,25 @@ class GradeController extends Controller
         if(file_exists($filetopath)){
             return response()->download($filetopath);
         }
+    }
+    public function deleteTSFromRightColumn()
+    {
+        $elem=request('TS');
+
+        //удалим все файлы связанные с этим ТС
+        $this->docService->deleteGradeDoc(request('grade_id'),$elem['id_ts']);
+        //удалим погрузки связанные с этим ТС
+        $this->gradePogruzkaModel->delPogruzka(request('grade_id'),$elem['id_ts']);
+        //удалим сумму
+        $this->gradeSummaModel->delSumma(request('grade_id'),$elem['id_ts']);
+        //удалим из основной таблицы значения
+        $this->finalGradeModel->delGrade(request('grade_id'),$elem['id_ts']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Grade успешно удалён',
+        ], 200);
+
     }
     public function get_final_grades_data(Request $request)
     {

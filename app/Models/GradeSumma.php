@@ -9,4 +9,12 @@ class GradeSumma extends Model
 {
     use HasFactory;
     protected $guarded = false;
+
+    public function delSumma($grade_id,$id_ts)
+    {
+        GradeSumma:: where('grade_id',$grade_id)
+            ->where('id_ts',$id_ts)
+            ->delete();
+    }
+
 }

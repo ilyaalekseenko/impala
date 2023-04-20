@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add_new_adres_pogruzka', [App\Http\Controllers\GradeController::class, 'add_new_adres_pogruzka'])->name('add_new_adres_pogruzka');
     Route::post('/add_summ', [App\Http\Controllers\GradeController::class, 'add_summ'])->name('add_summ');
     Route::post('/get_final_grades_data', [App\Http\Controllers\GradeController::class, 'get_final_grades_data'])->name('get_final_grades_data');
+    Route::post('/deleteTSFromRightColumn', [App\Http\Controllers\GradeController::class, 'deleteTSFromRightColumn'])->name('deleteTSFromRightColumn');
     Route::post('/update_one_data', [App\Http\Controllers\GradeController::class, 'update_one_data'])->name('update_one_data');
     Route::post('/update_one_data_pogruzka', [App\Http\Controllers\GradeController::class, 'update_one_data_pogruzka'])->name('update_one_data_pogruzka');
     Route::post('/up_in_db_gruzootpravitel', [App\Http\Controllers\GradeController::class, 'up_in_db_gruzootpravitel'])->name('up_in_db_gruzootpravitel');
