@@ -24,7 +24,8 @@ class CreateGruzootpravitelRequest extends FormRequest
     public function rules()
     {
         return [
-            'nazvanie' => 'required','unique:users'
+            'nazvanie' => 'required'
         ];
     }
+
 }

@@ -23,4 +23,10 @@ class SearchService
             ->limit(10)
             ->get();
     }
+    public function deleteMainSearch()
+    {
+        $mainModel=request('mainModel');
+        $mainModel = 'App\Models\\' . $mainModel;
+        $mainModel::where('id',request('id'))->delete();
+    }
 }

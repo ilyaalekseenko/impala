@@ -15,13 +15,17 @@ use App\Models\Perevozka;
 use App\Models\PogruzkaTS;
 use App\Models\TemplateVar;
 use App\Models\TS;
+use App\Models\TSModal;
 use App\Models\UnreadHeader;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\VidTS;
+use App\Models\Voditel;
+use App\Models\PP;
 use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\TSService;
+use App\Services\SearchService;
 use Illuminate\Http\Request;
 use ZipArchive;
 use App\Services\UserService;
@@ -34,9 +38,13 @@ class GradeController extends Controller
     private $docService;
     private $vidTSModel;
     private $perevozkaModel;
+    private $voditelModel;
     private $gradePogruzkaModel;
     private $gradeSummaModel;
     private $finalGradeModel;
+    private $PPModel;
+    private $TSModal;
+    private $searchService;
 
 
     public function __construct(
@@ -45,19 +53,27 @@ class GradeController extends Controller
         GruzootpravitelAdresService $gruzootpravitelAdresService,
         VidTS $vidTS,
         Perevozka $perevozkaModel,
+        Voditel $voditelModel,
+        TSModal $TSModalModel,
+        PP $PPModel,
         GradePogruzka $gradePogruzkaModel,
         GradeSumma $gradeSummaModel,
-        FinalGrade $finalGradeModel
+        FinalGrade $finalGradeModel,
+        SearchService $searchService
     )
     {
         $this->userService = $userService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
         $this->vidTSModel = $vidTS;
         $this->perevozkaModel = $perevozkaModel;
+        $this->voditelModel = $voditelModel;
+        $this->TSModalModel = $TSModalModel;
+        $this->PPModel = $PPModel;
         $this->docService = $docService;
         $this->gradePogruzkaModel = $gradePogruzkaModel;
         $this->gradeSummaModel = $gradeSummaModel;
         $this->finalGradeModel = $finalGradeModel;
+        $this->searchService = $searchService;
     }
 
     public function get_template_vars()
@@ -196,13 +212,26 @@ class GradeController extends Controller
         $grade_id=$request->input('grade_id');
         $id_ts=$request->input('id_ts');
         $id_summa=$request->input('id_summa');
-        GradeSumma::create([
+        $sum=GradeSumma::create([
             'grade_id' => $grade_id,
             'id_ts' =>$id_ts,
             'id_summa' =>$id_summa,
             'summa' =>0,
             'data' =>''
         ]);
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Сумма добавлена',
+            'id' =>$sum['id'],
+        ], 200);
+    }
+    public function deleteSumm()
+    {
+        $this->gradeSummaModel->delById();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Сумма удалена',
+        ], 200);
     }
     public function add_pogruzka_grade(Request $request)
     {
@@ -364,6 +393,19 @@ class GradeController extends Controller
                 ],
             );
     }
+    public function deletePogVygInTS()
+    {
+        //удаляем файлы погрузки
+        $this->docService->deleteOneGradeDoc(request('grade_id'),request('id_ts'),request('id_pogruzka'),request('id_doc_type'));
+
+        //удаляем запись о погрузке
+      $id=$this->gradePogruzkaModel->deleteOnePogrVygr(request('grade_id'),request('id_ts'),request('id_pogruzka'),request('pogruzka_or_vygruzka'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Погрузка/выгрузка успешно удалена',
+            'id' =>$id,
+        ], 200);
+    }
 
     public function delete_file_grade(Request $request)
     {
@@ -459,6 +501,7 @@ class GradeController extends Controller
     {
         $grade_id = $request->input('grade_id');
         $grade_list = FinalGrade::where('grade_id', '=', $grade_id) ->get();
+
         foreach ($grade_list as $grade)
         {
             $summa = GradeSumma::where('grade_id', '=', $grade_id)->where('id_ts', '=', $grade['id_ts'])->get();
@@ -493,6 +536,38 @@ class GradeController extends Controller
                 $grade['perevozchik_TSNazvanie']=$vid_TSNazvanie;
             }
 
+            //получаем название водителя
+            if(($grade['voditel']=='')||($grade['voditel']==null))
+            {
+                $grade['voditel_TSNazvanie']='';
+            }
+            else
+            {
+                $vid_TSNazvanie=$this->voditelModel->getVoditelNameBYId($grade['voditel']);
+                $grade['voditel_TSNazvanie']=$vid_TSNazvanie;
+            }
+
+            //получаем название (номер) ТС
+            if(($grade['nomer_TS']=='')||($grade['nomer_TS']==null))
+            {
+                $grade['TS_TSNazvanie']='';
+            }
+            else
+            {
+                $TS_TSNazvanie=$this->TSModalModel->getTSModalNameBYId($grade['nomer_TS']);
+                $grade['TS_TSNazvanie']=$TS_TSNazvanie;
+            }
+            //получаем номер ПП
+            if(($grade['nomer_PP']=='')||($grade['nomer_PP']==null))
+            {
+                $grade['PP_Nazvanie']='';
+            }
+            else
+            {
+                $PP_Nazvanie=$this->PPModel->getPPNameBYId($grade['nomer_PP']);
+                $grade['PP_Nazvanie']=$PP_Nazvanie;
+            }
+
             foreach ($TS_list_pogruzka as $pogruzka)
             {
 
@@ -502,6 +577,7 @@ class GradeController extends Controller
                     ->where('id_doc_type', '=',1)
                     ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
                     ->get();
+
                 if ($name_doc->isEmpty()) {
                     $pogruzka['doc_name']='';
                 }
@@ -518,7 +594,9 @@ class GradeController extends Controller
                 }
                 else
                 {
+
                     //получаем изначальный адрес в инпут для показа
+
                     $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($pogruzka['adres_pogruzki']);
                  //   $adres_pogruzke_show = Gruzootpravitel::where('id', '=', $pogruzka['adres_pogruzki']) ->get();
                  //   $adres_pogruzke_show = $adres_pogruzke_show[0]['nazvanie'];
@@ -526,6 +604,7 @@ class GradeController extends Controller
                 }
 
             }
+
             foreach ($TS_list_vygruzka as $pogruzka)
             {
                 $name_doc = GradeDocuments::
@@ -665,6 +744,39 @@ class GradeController extends Controller
                     $ts['perevozchik_TSNazvanie']=$vid_TSNazvanie;
                 }
 
+                //получаем название водителя
+                if(($ts['voditel']=='')||($ts['voditel']==null))
+                {
+                    $ts['voditel_TSNazvanie']='';
+                }
+                else
+                {
+                    $vid_TSNazvanie=$this->voditelModel->getVoditelNameBYId($ts['voditel']);
+                    $ts['voditel_TSNazvanie']=$vid_TSNazvanie;
+                }
+                //получаем название номер ТС
+                if(($ts['nomer_TS']=='')||($ts['nomer_TS']==null))
+                {
+                    $ts['TS_TSNazvanie']='';
+                }
+                else
+                {
+                    $TS_TSNazvanie=$this->TSModal->getTSModalNameBYId($ts['nomer_TS']);
+                    $ts['TS_TSNazvanie']=$TS_TSNazvanie;
+                }
+                //получаем название ПП
+                if(($ts['nomer_PP']=='')||($ts['nomer_PP']==null))
+                {
+                    $ts['PP_Nazvanie']='';
+                }
+                else
+                {
+                    $PP_Nazvanie=$this->PPModel->getPPNameBYId($ts['nomer_PP']);
+                    $ts['PP_Nazvanie']=$PP_Nazvanie;
+                }
+
+
+
                 foreach ($TS_list_pogruzka as $ts1)
                 {
                     $ts1['date_ts']='';
@@ -783,5 +895,16 @@ class GradeController extends Controller
     public function docsSetting()
     {
         return view('front.docs');
+    }
+    //универсальный метод удаления, подходит для водителей,ТС,ПП
+    public function deleteFromSettings()
+    {
+        //удалим сами файлы
+        $this->docService->deleteDocFromDBUn();
+        //проапдейтим колонку с поисковым запросом в таблице FinalGrades
+        $this->finalGradeModel->upFinalGradeToNull();
+        //удалим сам запрос из нужной таблицы
+        $this->searchService->deleteMainSearch();
+
     }
 }

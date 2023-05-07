@@ -17,5 +17,21 @@ class FinalGrade extends Model
             ->where('id_ts',$id_ts)
             ->delete();
     }
+    public function upFinalGradeToNull()
+    {
+        FinalGrade:: where(request('searchColumnGrade'),request('id'))
+        ->update([
+            request('searchColumnGrade') => NULL,
+        ]);
+
+    }
+    public function upFinalGradePerevozka($id)
+    {
+        FinalGrade:: where('perevozchik',$id)
+            ->update([
+                'perevozchik' => NULL,
+            ]);
+
+    }
 
 }

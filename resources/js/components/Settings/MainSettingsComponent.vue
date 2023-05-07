@@ -62,8 +62,9 @@
                 <li class="dropmenu" v-on:click="set_menu"><a href="#">Справочники</a>
                     <ul class="level1">
                         <li v-on:click="nav_menu_show(6)"><a href="#">Виды ТС</a></li>
-<!--                        <li v-on:click="nav_menu_show(3)"><a href="#">Грузоотправители</a></li>-->
-<!--                        <li v-on:click="nav_menu_show(2)"><a href="#">Перевозки</a></li>-->
+                        <li v-on:click="nav_menu_show(7)"><a href="#">Водители</a></li>
+                        <li v-on:click="nav_menu_show(8)"><a href="#">Номера ТС</a></li>
+                        <li v-on:click="nav_menu_show(9)"><a href="#">Номера ПП</a></li>
                     </ul>
                 </li>
             </ul>
@@ -76,6 +77,9 @@
         <add-users-settings-component v-if="nav_menu_show_var==4"></add-users-settings-component>
         <users-list-component v-if="nav_menu_show_var==5"></users-list-component>
         <vid-t-s-component v-if="nav_menu_show_var==6"></vid-t-s-component>
+        <voditeli-component v-if="nav_menu_show_var==7"></voditeli-component>
+        <t-s-modal-component v-if="nav_menu_show_var==8"></t-s-modal-component>
+        <p-p-component v-if="nav_menu_show_var==9"></p-p-component>
         </div>
 
         </div>

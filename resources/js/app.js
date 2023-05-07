@@ -27,6 +27,7 @@ Vue.component('create-orders-component', require('./components/CreateOrdersCompo
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
 Vue.component('modal-perevozchiki-component', require('./components/ModalPerevozchikiComponent').default);
+Vue.component('modal-voditel-component', require('./components/ModalVoditelComponent').default);
 Vue.component('users-list-component', require('./components/Settings/UsersListComponent').default);
 Vue.component('main-settings-component', require('./components/Settings/MainSettingsComponent').default);
 Vue.component('docs-settings-component', require('./components/Settings/DocsSettingsComponent').default);
@@ -38,9 +39,17 @@ Vue.component('perevozchiki-component', require('./components/PerevozchikiCompon
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
 Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
 Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
+Vue.component('auto-input-voditel-component', require('./components/SupportComponents/AutoInputVoditelComponent').default);
+Vue.component('auto-input-t-s-component', require('./components/SupportComponents/AutoInputTSComponent').default);
+Vue.component('auto-input-p-p-component', require('./components/SupportComponents/AutoInputPPComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
 Vue.component('vid-t-s-component', require('./components/Settings/VidTSComponent').default);
+Vue.component('voditeli-component', require('./components/Settings/VoditeliComponent').default);
+Vue.component('p-p-component', require('./components/Settings/PPComponent').default);
+Vue.component('modal-t-s-component', require('./components/ModalTSComponent').default);
+Vue.component('modal-p-p-component', require('./components/ModalPPComponent').default);
+Vue.component('t-s-modal-component', require('./components/Settings/TSModalComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

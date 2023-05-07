@@ -1,5 +1,25 @@
 <template>
     <div class="container">
+        <modal-perevozchiki-component
+            ref="modalComponentforAction"
+            vid="grade"
+            :gradeAddPerevozchik='gradeAddPerevozchik'
+        ></modal-perevozchiki-component>
+        <modal-voditel-component
+            ref="modalComponentforActionVoditel"
+            vid="grade"
+            :gradeAddVoditel='gradeAddVoditel'
+        ></modal-voditel-component>
+        <modal-t-s-component
+            ref="modalComponentforActionVoditel"
+            vid="grade"
+            :gradeAddTSModal='gradeAddTSModal'
+        ></modal-t-s-component>
+        <modal-p-p-component
+            ref="modalComponentforActionVoditel"
+            vid="grade"
+            :gradeAddPPModal='gradeAddPPModal'
+        ></modal-p-p-component>
         <div class="row main_grade_div">
             <div class="col-12 row grade_head_row " >
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
@@ -92,7 +112,12 @@
 
                 <div class="col-10">
 <!--                    модалочка-->
-                    <modal-pogruzka-component :get_gruzootpravitel_list='get_gruzootpravitel_list' :select_gruzootpravitel='select_gruzootpravitel'></modal-pogruzka-component>
+                    <modal-pogruzka-component
+                        :get_gruzootpravitel_list='get_gruzootpravitel_list'
+                        :select_gruzootpravitel='select_gruzootpravitel'
+                        allNew=true
+                        vid="GradeComponent"
+                    ></modal-pogruzka-component>
 <!--                    конец модалочки-->
 
 
@@ -157,7 +182,7 @@
                                 {{ data_dostavki }}
                             </div>
                             <div class="col-2 grade_header_col">
-                                {{elem.ob_summa}}р .
+                                {{elem.stavka_summa}}р .
                                 <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteTSFromRightColumn(elem,key)">-</button>
                             </div>
                         </div>
@@ -172,12 +197,6 @@
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Данные о перевозчике</div>
                                     <div  class="create_orders_date_title_1 lit_marg_grade">Тип ТС:</div>
-<!--                                    <select  @blur="update_one_data(elem1,'vid_TS')" class="create_orders_date_title_int_1 grade_marg_bot" v-model="elem.vid_TS">-->
-<!--                                        <option v-bind:value="0" class="sel_cust">Автоперевозка</option>-->
-<!--                                        <option v-bind:value="1" class="sel_cust">Самолётом</option>-->
-<!--                                        <option v-bind:value="2" class="sel_cust">Кораблём</option>-->
-<!--                                        <option v-bind:value="3" class="sel_cust">На верблюде</option>-->
-<!--                                    </select>-->
                                            <auto-input-global-component class="select_width_grade"
                                                                         :order_id="order_id"
                                                                         :vidTsFromParent="elem1.vid_TSNazvanie"
@@ -185,10 +204,11 @@
                                                                         @childReturnMethod="parentMethodFromAutoinputVidts"
                                                                         ref="AutoSelectComponent_vid_TS"
                                            ></auto-input-global-component>
-                                    <div  class="create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-<!--                                    <input @blur="update_one_data(elem1,'perevozchik')" class="border_input grade_marg_bot" v-model="elem1.perevozchik"  />-->
+
+                                    <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:
+                            <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik()">Добавить</span></div>
                             <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp" v-on:click="pogruzkaShowInpChange()">{{ elem1.perevozchik_TSNazvanie }}</div>
-                            <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp&&elem1.perevozchik_TSNazvanie==''" v-on:click="pogruzkaShowInpChange()">Выбрать перевозчика</div>
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!pogruzkaShowInp&&elem1.perevozchik_TSNazvanie==''" v-on:click="pogruzkaShowInpChange()">Выбрать перевозчика</div>
 
                                     <auto-input-perevozka-component v-if="pogruzkaShowInp" class="select_width_grade"
                                                                  :order_id="order_id"
@@ -197,29 +217,43 @@
                                                                  @childReturnMethod="parentMethodFromAutoinputPerevozka"
                                                                  ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-perevozka-component>
-                                    <div  class="create_orders_date_title_1 lit_marg_grade">Водитель:</div>
-                                    <input @blur="update_one_data(elem1,'voditel')" class="border_input grade_marg_bot" v-model="elem1.voditel"  />
+
+                                    <div  class="create_orders_date_title_1 lit_marg_grade_auto">Водитель:
+                                    <span class="col add_button_grade no_wrap_text" v-b-modal.voditelMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                            <div class="cr_ord_inp_n_1" v-if="!voditelShowInp" v-on:click="voditelShowInpChange()">{{ elem1.voditel_TSNazvanie }}</div>
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!voditelShowInp&&elem1.voditel_TSNazvanie==''" v-on:click="voditelShowInpChange()">Выбрать водителя</div>
+                                    <auto-input-voditel-component v-if="voditelShowInp" class="select_width_grade"
+                                                                    :order_id="order_id"
+                                                                    :vidTsFromParent="elem1.voditel_TSNazvanie"
+                                                                    :elem1="elem1"
+                                                                    @childReturnMethod="parentMethodFromAutoinputVoditel"
+                                                                    ref="AutoSelectComponent_vid_TS"
+                                    ></auto-input-voditel-component>
 
                                     <div class="col-12 row grade_marg_bot">
-                                    <div class="col-6 min_ts min_ts_marg ">
-                                        <div  class="create_orders_date_title_1 lit_marg_grade">Номер ТС:</div>
-                                        <select  @blur="update_one_data(elem1,'nomer_TS')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem1.nomer_TS">
-                                            <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
-                                            <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
-                                            <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
-                                            <option v-bind:value="3" class="sel_cust">Путин В.В.</option>
-                                        </select>
-                                        <span class="add_button_grade ">Добавить</span>
-                                    </div>
+                            <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
+                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                            <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!TSShowInp&&elem1.TS_TSNazvanie==''" v-on:click="TSShowInpChange()">Выбрать номер ТС</div>
+                                    <auto-input-t-s-component v-if="TSShowInp" class="select_width_grade"
+                                                                  :order_id="order_id"
+                                                                  :vidTsFromParent="elem1.TS_TSNazvanie"
+                                                                  :elem1="elem1"
+                                                                  @childReturnMethod="parentMethodFromAutoinputTSModal"
+                                                                  ref="AutoSelectComponent_vid_TS"
+                                    ></auto-input-t-s-component>
                                     <div class="col-6 min_ts">
-                                        <div  class="create_orders_date_title_1 lit_marg_grade">Номер ПП:</div>
-                                        <select  @blur="update_one_data(elem1,'nomer_PP')" class="create_orders_date_title_int_1 inp_max_width" v-model="elem1.nomer_PP">
-                                            <option v-bind:value="0" class="sel_cust">Константин Константинович</option>
-                                            <option v-bind:value="1" class="sel_cust">Иван Иванович</option>
-                                            <option v-bind:value="2" class="sel_cust">Джек Воробей</option>
-                                            <option v-bind:value="3" class="sel_cust">Путин В.В.</option>
-                                        </select>
-                                        <span class="add_button_grade ">Добавить</span>
+                                        <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ПП:
+                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                            <div class="cr_ord_inp_n_1" v-if="!PPShowInp" v-on:click="PPShowInpChange()">{{ elem1.PP_Nazvanie }}</div>
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!PPShowInp&&elem1.PP_Nazvanie==''" v-on:click="PPShowInpChange()">Выбрать номер ПП</div>
+                                    <auto-input-p-p-component v-if="PPShowInp" class="select_width_grade"
+                                                              :order_id="order_id"
+                                                              :vidTsFromParent="elem1.PP_Nazvanie"
+                                                              :elem1="elem1"
+                                                              @childReturnMethod="parentMethodFromAutoinputPP"
+                                                              ref="AutoSelectComponent_vid_TS"
+                                    ></auto-input-p-p-component>
                                     </div>
                                     </div>
                                         <div class="col-12 grade_bold_dark grade_marg_bot">Информация о грузе</div>
@@ -241,13 +275,13 @@
                                 <div class="col-3">
 <!--                                        {{ adres_pogr }}-->
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата погрузки</div>
-                                    <span v-for="(adres_pogr,key1) in elem1.adres_pogruzki_TS">
+                                    <span v-on:click="add_new_adres_pogruzka(key,1)" class="col add_button_grade no_wrap_text">Новый</span>
+                                    <span v-for="(adres_pogr,key1) in elem1.adres_pogruzki_TS" :key="adres_pogr.id_pogruzka">
                                     <div class="col-12 row">
-                                        <div class="col-6 little_title_grade pogr_marg_grade">
+                                        <div class="col-8 little_title_grade pogr_marg_grade">
                                             Адрес погрузки {{ key1 + 1 }}
                                         </div>
-                                        <div class="col-6 row">
-                                            <span v-on:click="add_new_adres_pogruzka(key,1)" class="col add_button_grade no_wrap_text">Новый</span>
+                                        <div class="col-4 row">
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
@@ -303,29 +337,25 @@
 <!--                </form>-->
 <!--                                    <input hidden="true" type="file" id="files" ref="files"/>-->
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
+                                    <div v-if="!adres_pogr.doc_name" class="col add_vod_button1 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
+                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
+                                    </span>
 
-                              </span>
                                 </div>
 
 <!--                                третья колонка-->
                                 <div class="col-3">
                                     <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата выгрузки</div>
-                                    <span v-for="(adres_vygr,key2) in elem1.adres_vygr_TS">
+                                    <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый</span>
+                                    <span v-for="(adres_vygr,key2) in elem1.adres_vygr_TS" :key="adres_vygr.id_pogruzka">
                                         <div class="col-12 row">
-                                        <div class="col-6 little_title_grade pogr_marg_grade">
+                                        <div class="col-8 little_title_grade pogr_marg_grade">
                                             Адрес выгрузки {{ key2 + 1 }}
                                         </div>
-                                        <div class="col-6 row">
-                                            <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый</span>
+                                        <div class="col-4 row">
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
-<!--                                        {{ adres_vygr }}-->
-<!--                                         <select @blur="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_vygr.adres_pogruzki">-->
-<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                        </select>-->
-
                                          <auto-input-component class="cr_ord_inp_n_1"
                                                                inp_type='grade_vygruzka'
                                                                :adres_pogruzke_show="flag_pogruz"
@@ -350,7 +380,6 @@
                         <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
                                      format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
 
-
                                         </div>
                                         <div class="col-6">
                                             <div class="little_title_grade">Время</div>
@@ -373,6 +402,7 @@
                                     </div>
                                      <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
                                     <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>
+                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
                                     </span>
 
                                     <div class="col-12 row grade_underline"></div>
@@ -398,7 +428,6 @@
                                      <div class="col-12 row">
                                     <div class="col-8">
                                         <div class="little_title_grade">Сумма</div>
-<!--                                        <input class="border_input inp_date" v-model="elem1.ob_summa"/>-->
                                         <input @blur="update_one_data(elem1,'stavka_summa')" class="border_input inp_date" v-model="elem1.stavka_summa"/>
                                         <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
                                            НДС
@@ -414,19 +443,18 @@
                                         <span class="grade_bold_dark_1">{{ elem1.ne_oplacheno }}р.</span>
                                     </div>
                                     <div class="col-12 little_title_grade">Оплата:</div>
+                                    <div class="col add_button_grade no_wrap_text" v-on:click="add_summ(key)">Добавить сумму</div>
 
                                     <div class="col-12 row" v-for="(sum,key2) in elem1.summa_list">
-                                    <div class="col little_title_grade_1">
-                                        Сумма {{ key2 +1 }}
-                                    </div>
-                                        <div class="col add_button_grade no_wrap_text" v-on:click="add_summ(key)">Добавить сумму</div>
+                                    <div class="col little_title_grade_1">Сумма {{ key2 +1 }}</div>
+                                    <div class="col add_button_grade no_wrap_text" v-on:click="deleteSumm(sum.id,key,key2)">Удалить сумму</div>
                                      <div class="col-12">
                                         <input @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
                                                class=" border_input add_summ_grade_inp" v-model="sum.summa"  />
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
-                                         <date-picker   v-model="sum.data" valueType="format" type="time"
-                                                        format=" H:m" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
+                                         <date-picker   v-model="sum.data" valueType="format" type="date"
+                                                        format="DD.MM.YYYY" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
                                          </date-picker>
                                      </div>
                                     </div>
@@ -622,7 +650,11 @@
                 flag_pogruz:'',
                 role:'',
                 deleteFlag:false,
-                pogruzkaShowInp:false
+                pogruzkaShowInp:false,
+                voditelShowInp:false,
+                TSShowInp:false,
+                PPShowInp:false,
+                showTsList:true
 
 
             }
@@ -647,9 +679,12 @@
         computed: {
 
             dolg: function () {
-                    return this.ob_budzet_down-this.oplacheno
-                },
-
+                let summNeOpl=0;
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    summNeOpl=summNeOpl+this.spisokTShead[i].ne_oplacheno;
+                }
+                return summNeOpl
+            },
             stavka_TS_za_km: function () {
                 if(this.stavka_TS==''||this.rasstojanie_TS=='')
                 {
@@ -789,22 +824,150 @@
             {
 
             },
+            //сохраняем пепевозчика из модального окна
+            gradeAddPerevozchik(id,nazvanie)
+            {
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==this.right_current_TS)
+                    {
+                        this.spisokTShead[i]['perevozchik']=id
+                        this.spisokTShead[i]['perevozchik_TSNazvanie']=nazvanie
+                        this.update_one_data(this.spisokTShead[i],'perevozchik')
+                    }
+                }
+
+            },
+            gradeAddVoditel(id,nazvanie)
+            {
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==this.right_current_TS)
+                    {
+                        this.spisokTShead[i]['voditel']=id
+                        this.spisokTShead[i]['voditel_TSNazvanie']=nazvanie
+                        this.update_one_data(this.spisokTShead[i],'voditel')
+                    }
+                }
+            },
+            gradeAddTSModal(id,nazvanie)
+            {
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==this.right_current_TS)
+                    {
+                        this.spisokTShead[i]['nomer_TS']=id
+                        this.spisokTShead[i]['TS_TSNazvanie']=nazvanie
+                        this.update_one_data(this.spisokTShead[i],'nomer_TS')
+                    }
+                }
+            },
+            gradeAddPPModal(id,nazvanie)
+            {
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==this.right_current_TS)
+                    {
+                        this.spisokTShead[i]['nomer_PP']=id
+                        this.spisokTShead[i]['PP_Nazvanie']=nazvanie
+                        this.update_one_data(this.spisokTShead[i],'nomer_PP')
+                    }
+                }
+            },
+            newPerevozchik()
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.newPerevozchik()
+            },
+            newVoditel()
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforActionVoditel.newPerevozchik()
+            },
+            //метод удаления из массив корректный
+            deleteFromArrTS(key,id_pogruzka,pogruzka_or_vygruzka)
+            {
+
+                if(pogruzka_or_vygruzka==1)
+                {
+                    this.spisokTShead[key].adres_pogruzki_TS = this.spisokTShead[key].adres_pogruzki_TS.filter(item => item.id_pogruzka !== id_pogruzka);
+                }
+                else
+                {
+                    this.spisokTShead[key].adres_vygr_TS = this.spisokTShead[key].adres_vygr_TS.filter(item => item.id_pogruzka !== id_pogruzka);
+                }
+            },
+            deletePogVygInTS(id_pogruzka, id_doc_type, pogruzka_or_vygruzka,key)
+            {
+
+                this.deleteFromArrTS(key,id_pogruzka,pogruzka_or_vygruzka)
+
+                // this.showTsList=false
+                // console.log('key')
+                // console.log(key)
+                // console.log('key1')
+                // console.log(key1)
+                // console.log('pogruzka_or_vygruzka')
+                // console.log(pogruzka_or_vygruzka)
+                // console.log('список ДО')
+                // console.log(this.spisokTShead[key].adres_pogruzki_TS)
+                // this.spisokTShead[key].adres_pogruzki_TS.splice(key1,1)
+                // // let tempArr=this.spisokTShead[key].adres_pogruzki_TS;
+                // // this.spisokTShead[key].adres_pogruzki_TS=[];
+                // // this.spisokTShead[key].adres_pogruzki_TS=tempArr;
+                // console.log('список после')
+                // console.log(this.spisokTShead[key].adres_pogruzki_TS)
+                //  console.log('showTsList')
+                // this.showTsList=true
+                axios
+                    .post('/deletePogVygInTS',{
+                        id_ts:this.right_current_TS,
+                        grade_id:this.order_id,
+                        id_pogruzka:id_pogruzka,
+                        id_doc_type:id_doc_type,
+                        pogruzka_or_vygruzka:pogruzka_or_vygruzka,
+
+                    })
+                    .then(response => {
+                        // console.log(response.data.file)
+                       // window.location.assign('/get_finall_doc_pdf_file/templates/'+response.data.file) ;
+                        if(pogruzka_or_vygruzka==1)
+                        {
+                            //получим id данной перевозки ИМЕННО ID
+                            // this.deleteFromArrTS(key,response.data.id)
+                            // this.spisokTShead[key].adres_pogruzki_TS.splice(key1,1)
+
+                        }
+                        // else
+                        // {
+                        //     this.spisokTShead[key].adres_vygr_TS[key1].splice(id_pogruzka,1)
+                        //
+                        // }
+                    })
+            },
             //добавление пустой погрузки или выгрузки
             update_one_gruzzootpravitel_from_select(data)
             {
-                console.log(this.order_id)
+                //ПРОВЕРИТЬ РАБОЧЕСТЬ ДОБАВЛЕНИЯ АДРЕСА ПОГРУЗКИ И ДОБАВИТЬ В ВЫГРУЗКУ
+                // console.log(this.order_id)
                 //номер транспортного средства по порядку среди всех ТС в данной grade(заявке)
-                console.log(data.id_ts)
                 //ключ , это номер по порядку в данном ТС
+                let newKey=0;
+                if(data.pogr_or_vygr=='1')
+                {
+                    newKey= this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[data.key].id_pogruzka
+                }
+                if(data.pogr_or_vygr=='2')
+                {
+                    newKey= this.spisokTShead[this.right_current_TS].adres_vygr_TS[data.key].id_pogruzka
+                }
+
+                console.log('data.key')
                 console.log(data.key)
                 //погрузка - 1 или выгрузка - 2
-                console.log(data.pogr_or_vygr)
+                // console.log(data.pogr_or_vygr)
                 //id грузоотправителя
-                console.log(data.inp_pog_id)
+                // console.log(data.inp_pog_id)
                 //то что в инпуте
-                console.log(data.nazvanie)
+                // console.log(data.nazvanie)
                 //обновим в базе данных
-                this.up_in_db_gruzootpravitel(this.order_id,data.id_ts,data.key,data.pogr_or_vygr,data.inp_pog_id)
+                this.up_in_db_gruzootpravitel(this.order_id,data.id_ts,newKey,data.pogr_or_vygr,data.inp_pog_id)
                 //обновим на фронте
                 let pog_vyg='';
                 let pog_vyg_show='';
@@ -864,8 +1027,12 @@
             {
              console.log('spisokTShead')
              console.log(this.spisokTShead)
-             console.log('spisokTSarr')
-             console.log(this.spisokTSarr)
+             // console.log('spisokTSarr')
+             // console.log(this.spisokTSarr)
+             //    console.log('spisokTSheadadres_pogruzki_TS')
+             //    console.log(this.spisokTShead[0].adres_pogruzki_TS)
+
+
             },
             deleteTSFromRightColumn(elem,key)
             {
@@ -912,7 +1079,7 @@
                             {
 
                                 this.spisokTShead[this.add_gruzoot_key]['adres_pogruzki_TS'][this.add_gruzoot_key1]['adres_pogruzki']=response.data.gruzootpravitel.id,
-                                    this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
+                                this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
                                 pog_vyg='adres_pogruzki_TS'
                                 pog_vyg_show='adres_pogruzki_show'
                                 ref_link='AutoSelectComponent_grade_pogruzka'
@@ -920,7 +1087,7 @@
                             if(this.add_gruzoot_pogr_vygr=='vygruzka')
                             {
                                 this.spisokTShead[this.add_gruzoot_key]['adres_vygr_TS'][this.add_gruzoot_key1]['adres_pogruzki']=response.data.gruzootpravitel.id,
-                                    this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
+                                this.update_one_data_pogruzka(this.p1,this.p2,this.p3,response.data.gruzootpravitel.id,this.p5)
                                 pog_vyg='adres_vygr_TS'
                                 pog_vyg_show='adres_vygruzki_show'
                                 ref_link='AutoSelectComponent_grade_vygruzka'
@@ -937,6 +1104,18 @@
             pogruzkaShowInpChange()
             {
                this.pogruzkaShowInp=!this.pogruzkaShowInp
+            },
+            voditelShowInpChange()
+            {
+                this.voditelShowInp=!this.voditelShowInp
+            },
+            TSShowInpChange()
+            {
+                this.TSShowInp=!this.TSShowInp
+            },
+            PPShowInpChange()
+            {
+                this.PPShowInp=!this.PPShowInp
             },
             addPerevozchikShowId(id_ts)
             {
@@ -1021,28 +1200,47 @@
                         )
                     );
             },
+            //получим ключ id_pogruzka по значению поля
+            getKeyInListByItem(whereSearch,columnNameWhere,whatSearch)
+            {
+                console.log('whereSearch')
+                console.log(whereSearch)
+                for (let i = 0; i < whereSearch.length; i++) {
+
+                    if(whereSearch[i].id_pogruzka==whatSearch)
+                    {
+                        return i;
+                        break;
+                    }
+                }
+            },
             openDPpogr(id_pogruzka,date_or_time,pogr_or_vygr)
             {
+                console.log('id_pogruzka')
+                console.log(id_pogruzka)
+
                 if(pogr_or_vygr==1)
                 {
+                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_current_TS].adres_pogruzki_TS,'id_pogruzka',id_pogruzka)
                     if(date_or_time==1)
                     {
-                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[id_pogruzka].show_DP_date=true;
+                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[newKey].show_DP_date=true;
                     }
                     else
                     {
-                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[id_pogruzka].show_DP_time=true;
+                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[newKey].show_DP_time=true;
                     }
                 }
                 else
                 {
+                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_current_TS].adres_vygr_TS,'id_pogruzka',id_pogruzka)
                     if(date_or_time==1)
                     {
-                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[id_pogruzka].show_DP_date=true;
+                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[newKey].show_DP_date=true;
                     }
                     else
                     {
-                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[id_pogruzka].show_DP_time=true;
+                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[newKey].show_DP_time=true;
                     }
                 }
             },
@@ -1058,20 +1256,6 @@
             {
                 this.current_id_pogruzka=id_pogruzka;
                 this.current_id_doc_type=id_doc_type;
-
-                // for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_pogruzki_TS.length; i++) {
-                //     if(this.current_id_pogruzka== this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].id_pogruzka)
-                //     {
-                //         let temp=''
-                //         this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].doc_name=''
-                //         if(this.right_col_down_show==true)
-                //         {
-                //             this.right_col_down_show=false;
-                //         }
-                //         this.right_col_down_show=true;
-                //     }
-                // }
-
 
                  axios.post( '/delete_file_grade',
                      {
@@ -1275,6 +1459,10 @@
             },
             update_one_data_summa(elem,id_summa,name,data_to_up)
             {
+                if(data_to_up=='')
+                {
+                    data_to_up=0
+                }
                 axios
                     .post('/update_one_data_summa',{
                         elem:elem,
@@ -1322,6 +1510,9 @@
                                         vid_TS : entry.vid_TS,
                                         vid_TSNazvanie:entry.vid_TSNazvanie,
                                         perevozchik_TSNazvanie:entry.perevozchik_TSNazvanie,
+                                        voditel_TSNazvanie:entry.voditel_TSNazvanie,
+                                        TS_TSNazvanie:entry.TS_TSNazvanie,
+                                        PP_Nazvanie:entry.PP_Nazvanie,
                                         perevozchik : entry.perevozchik,
                                         voditel : entry.voditel,
                                         nomer_TS : entry.nomer_TS,
@@ -1403,6 +1594,9 @@
                     objToPush['vid_TS'] = this.spisokTSarr[key].vid_TS;
                     objToPush['vid_TSNazvanie'] = this.spisokTSarr[key].vid_TSNazvanie;
                     objToPush['perevozchik_TSNazvanie'] = this.spisokTSarr[key].perevozchik_TSNazvanie;
+                    objToPush['voditel_TSNazvanie'] = this.spisokTSarr[key].voditel_TSNazvanie;
+                    objToPush['TS_TSNazvanie'] = this.spisokTSarr[key].TS_TSNazvanie;
+                    objToPush['PP_Nazvanie'] = this.spisokTSarr[key].PP_Nazvanie;
                     objToPush['rasstojanie_TS'] = this.spisokTSarr[key].rasstojanie_TS;
 
                     // objToPush['adres_pogruzki_TS'] = this.spisokTSarr[key].adres_pogruzki_TS;
@@ -1606,6 +1800,7 @@
             add_summ (key)
             {
                 let objToPush1= {};
+                objToPush1['id'] = '';
                 objToPush1['summa'] = '';
                 objToPush1['data'] = '';
                 objToPush1['show_DP_date'] =false;
@@ -1617,6 +1812,19 @@
                         grade_id:this.order_id,
                         id_summa:objToPush1['id_summa']
                     })
+                 .then(response => {
+                     this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id = response.data.id;
+                  })
+            },
+            deleteSumm(id,keyTS,keySumma)
+            {
+                axios
+                    .post('/deleteSumm',{
+                        id:id
+                    })
+                   .then(response => {
+                       this.spisokTShead[keyTS].summa_list.splice(keySumma,1)
+                   })
             },
             save_start_summa()
             {
@@ -1667,6 +1875,9 @@
                                     vid_TS : entry.vid_TS,
                                     vid_TSNazvanie : entry.vid_TSNazvanie,
                                     perevozchik_TSNazvanie : entry.perevozchik_TSNazvanie,
+                                    voditel_TSNazvanie : entry.voditel_TSNazvanie,
+                                    TS_TSNazvanie : entry.TS_TSNazvanie,
+                                    PP_Nazvanie : entry.PP_Nazvanie,
                                     stavka_TS : entry.stavka_TS,
                                     stavka_TS_za_km : entry.stavka_TS_za_km,
                                     stavka_kp_TS : entry.stavka_kp_TS,
@@ -1785,10 +1996,50 @@
                 }
             this.pogruzkaShowInp=false
 
+            },
+            //сохранить то что пришло на фронте Водитель и записать на бэк
+            parentMethodFromAutoinputVoditel(data)
+            {
+                data.elem1.voditel=data.id
+                this.update_one_data(data.elem1,'voditel')
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
+                    {
+                       // this.spisokTShead[i]['voditel']=data.vid_TS
+                        this.spisokTShead[i]['voditel_TSNazvanie']=data.ts_name
+                    }
+                }
+                this.voditelShowInp=false
+            },
+            //сохранить то что пришло на фронте Водитель и записать на бэк
+            parentMethodFromAutoinputTSModal(data)
+            {
+                data.elem1.nomer_TS=data.id
+                this.update_one_data(data.elem1,'nomer_TS')
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
+                    {
+                        // this.spisokTShead[i]['voditel']=data.vid_TS
+                        this.spisokTShead[i]['TS_TSNazvanie']=data.ts_name
+                    }
+                }
+                this.TSShowInp=false
+            },
+            //сохранить то что пришло на фронте Водитель и записать на бэк
+            parentMethodFromAutoinputPP(data)
+            {
+                console.log(data.elem1)
+                data.elem1.nomer_PP=data.id
+                this.update_one_data(data.elem1,'nomer_PP')
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+                    if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
+                    {
+                        // this.spisokTShead[i]['voditel']=data.vid_TS
+                        this.spisokTShead[i]['PP_Nazvanie']=data.ts_name
+                    }
+                }
+                this.PPShowInp=false
             }
-
-
-
         }
     }
 </script>

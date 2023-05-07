@@ -16,5 +16,10 @@ class GradeSumma extends Model
             ->where('id_ts',$id_ts)
             ->delete();
     }
+    public function delById()
+    {
+        GradeSumma:: where('id',request('id'))
+            ->delete();
+    }
 
 }

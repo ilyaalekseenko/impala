@@ -156,14 +156,16 @@ class GruzootpravitelController extends Controller
 
              if($current_gruzootpravitel_id=='')
              {
+
                  //сохраняем нового грузоотправителя
-                 $this->gruzootpravitelService->saveNewGruzootpravitel(request('forma'),request('nazvanie'),request('data_registracii'),request('INN'),request('OGRN'),request('telefon'),
+              $gruzootpravitelId=$this->gruzootpravitelService->saveNewGruzootpravitel(request('forma'),request('nazvanie'),request('data_registracii'),request('INN'),request('OGRN'),request('telefon'),
                      request('email'),request('generalnii_direktor'),request('telefon_gen_dir'),request('YR_adres'),request('pochtovyi_adres'),request('kontakty'),request('adresa'),request('bank_arr')
                      ,request('doc_files')
                  );
                  return response()->json([
                      'status' => 'success',
                      'message' =>'Успешно сохранено',
+                     'id' => $gruzootpravitelId
                  ], 200);
              }
              //если редактируем уже существуюющие модальное окно
@@ -181,6 +183,7 @@ class GruzootpravitelController extends Controller
                  return response()->json([
                      'status' => 'success',
                      'message' =>'Успешно сохранено',
+                     'id' => ''
                  ], 200);
              }
 

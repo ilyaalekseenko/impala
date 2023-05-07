@@ -1,8 +1,8 @@
 <template>
-    <div class="container">
+    <div class="container" >
         <div class="row justify-content-center">
             <div class="col-10">
-                <b-modal ref="my-modal" id="modal-xl" size="lg" hide-footer hide-header>
+                <b-modal ref="my-modal"  id="perevozkaMod" size="lg" hide-footer hide-header>
                     <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
                         <div class="col-8">Новый перевозчик:</div>
                         <div class="col-4 row d-flex justify-content-end">
@@ -196,7 +196,7 @@ import vClickOutside from 'v-click-outside'
  import VueMask from 'v-mask'
 Vue.use(VueMask)
     export default {
-        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel','change_one_gruzzotpravitel','addOnePerevozchik'],
+        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel','change_one_gruzzotpravitel','addOnePerevozchik','vid','gradeAddPerevozchik'],
         directives: {
             vClickOutside: vClickOutside.directive
         },
@@ -639,7 +639,16 @@ Vue.use(VueMask)
                          doc_files:this.doc_files
                     })
                     .then(response => {
-                        //если редактируем уже существующего перевозчка то в виде выше меняем его данные
+                        //если вид grade
+                        if(this.vid=='grade')
+                        {
+                            //вызвать метод из вида grade сохраняий название
+                            this.gradeAddPerevozchik(response.data.perevozkaID,this.nazvanie)
+                        }
+                        //если другой вид, не grade
+                        else
+                        {
+                            //если редактируем уже существующего перевозчка то в виде выше меняем его данные
                         if(this.current_gruzootpravitel_id)
                         {
                             this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty)
@@ -648,6 +657,7 @@ Vue.use(VueMask)
                         else
                         {
                             this.addOnePerevozchik(response.data.perevozkaID,this.nazvanie,this.yridicheskii_adres,this.kontakty);
+                        }
                         }
                         this.hideModal()
                     })

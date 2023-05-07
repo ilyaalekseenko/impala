@@ -10830,7 +10830,7 @@ aside {
 }
 
 .dropmenu {
-  z-index: 99999;
+  z-index: 5;
   width: 200px;
 }
 

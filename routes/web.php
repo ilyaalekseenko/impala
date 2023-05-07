@@ -42,7 +42,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/delete_oplata_summa', [App\Http\Controllers\OrdersController::class, 'delete_oplata_summa'])->name('delete_oplata_summa');
     Route::post('/save_ts', [App\Http\Controllers\TSController::class, 'save_ts'])->name('save_ts');
     Route::post('/get_vid_TS_list', [App\Http\Controllers\TSController::class, 'get_vid_TS_list'])->name('get_vid_TS_list');
+    Route::post('/getVoditeliList', [App\Http\Controllers\VoditelController::class, 'getVoditeliList'])->name('getVoditeliList');
+    Route::post('/getTSModalList', [App\Http\Controllers\TSModalController::class, 'getTSModalList'])->name('getTSModalList');
+    Route::post('/getPPList', [App\Http\Controllers\PPController::class, 'getPPList'])->name('getPPList');
     Route::post('/delete_vid_TS', [App\Http\Controllers\TSController::class, 'delete_vid_TS'])->name('delete_vid_TS');
+    Route::post('/deleteFromSettings', [App\Http\Controllers\GradeController::class, 'deleteFromSettings'])->name('deleteFromSettings');
     Route::post('/update_vid_TS', [App\Http\Controllers\TSController::class, 'update_vid_TS'])->name('update_vid_TS');
     Route::post('/create_vid_TS', [App\Http\Controllers\TSController::class, 'create_vid_TS'])->name('create_vid_TS');
     Route::post('/delete_TS', [App\Http\Controllers\TSController::class, 'delete_TS'])->name('delete_TS');
@@ -52,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
     Route::post('/getVidTSNazvanie', [App\Http\Controllers\TSController::class, 'getVidTSNazvanie'])->name('getVidTSNazvanie');
     Route::post('/getPerevozkaNazvanie', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaNazvanie'])->name('getPerevozkaNazvanie');
+    Route::post('/getVoditelNazvanie', [App\Http\Controllers\VoditelController::class, 'getVoditelNazvanie'])->name('getVoditelNazvanie');
+    Route::post('/getTSModalNazvanie', [App\Http\Controllers\TSModalController::class, 'getTSModalNazvanie'])->name('getTSModalNazvanie');
+    Route::post('/getPPNazvanie', [App\Http\Controllers\PPController::class, 'getPPNazvanie'])->name('getPPNazvanie');
     // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
     Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');
     Route::post('/getOrderStatus', [App\Http\Controllers\OrdersController::class, 'getOrderStatus'])->name('getOrderStatus');
@@ -63,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save_start_summa', [App\Http\Controllers\GradeController::class, 'save_start_summa'])->name('save_start_summa');
     Route::post('/add_new_adres_pogruzka', [App\Http\Controllers\GradeController::class, 'add_new_adres_pogruzka'])->name('add_new_adres_pogruzka');
     Route::post('/add_summ', [App\Http\Controllers\GradeController::class, 'add_summ'])->name('add_summ');
+    Route::post('/deleteSumm', [App\Http\Controllers\GradeController::class, 'deleteSumm'])->name('deleteSumm');
     Route::post('/get_final_grades_data', [App\Http\Controllers\GradeController::class, 'get_final_grades_data'])->name('get_final_grades_data');
     Route::post('/deleteTSFromRightColumn', [App\Http\Controllers\GradeController::class, 'deleteTSFromRightColumn'])->name('deleteTSFromRightColumn');
     Route::post('/update_one_data', [App\Http\Controllers\GradeController::class, 'update_one_data'])->name('update_one_data');
@@ -74,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add_to_naznachenie_stavki', [App\Http\Controllers\GradeController::class, 'add_to_naznachenie_stavki'])->name('add_to_naznachenie_stavki');
     Route::post('/add_to_work', [App\Http\Controllers\GradeController::class, 'add_to_work'])->name('add_to_work');
     Route::post('/delete_file_grade', [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
+    Route::post('/deletePogVygInTS', [App\Http\Controllers\GradeController::class, 'deletePogVygInTS'])->name('deletePogVygInTS');
     Route::post('/get_ob_budzet_down', [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
     Route::post('/get_logist_list', [App\Http\Controllers\GradeController::class, 'get_logist_list'])->name('get_logist_list');
     Route::post('/get_templ_names', [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
@@ -86,8 +95,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_xlsx_file/images/orders_xlsx/{filename}', [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
     Route::post('/get_gruzootpravitel_modal', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_modal'])->name('get_gruzootpravitel_modal');
     Route::post('/getPerevozkaModal', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaModal'])->name('getPerevozkaModal');
+    Route::post('/getVoditeliModal', [App\Http\Controllers\VoditelController::class, 'getVoditeliModal'])->name('getVoditeliModal');
+    Route::post('/getTSModal', [App\Http\Controllers\TSModalController::class, 'getTSModal'])->name('getTSModal');
+    Route::post('/getPP', [App\Http\Controllers\PPController::class, 'getPP'])->name('getPP');
     Route::post('/save_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'save_gruzootpravitel'])->name('save_gruzootpravitel');
     Route::post('/savePerevozchik', [App\Http\Controllers\PerevozchikiController::class, 'savePerevozchik'])->name('savePerevozchik');
+    Route::post('/saveVoditel', [App\Http\Controllers\VoditelController::class, 'saveVoditel'])->name('saveVoditel');
+    Route::post('/saveTSModal', [App\Http\Controllers\TSModalController::class, 'saveTSModal'])->name('saveTSModal');
+    Route::post('/savePP', [App\Http\Controllers\PPController::class, 'savePP'])->name('savePP');
     Route::post('/store_modal_file_temp', [App\Http\Controllers\GruzootpravitelController::class, 'store_modal_file_temp'])->name('store_modal_file_temp');
     Route::post('/delete_files_modal', [App\Http\Controllers\GruzootpravitelController::class, 'delete_files_modal'])->name('delete_files_modal');
     Route::post('/delete_one_file_modal', [App\Http\Controllers\GruzootpravitelController::class, 'delete_one_file_modal'])->name('delete_one_file_modal');

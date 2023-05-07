@@ -1,7 +1,12 @@
 <template>
     <div class="container orders_main">
         <div class="row orders_title_div">
-            <modal-pogruzka-component ref="modalComponentforAction" edit_flag=true :change_one_gruzzotpravitel='change_one_gruzzotpravitel'></modal-pogruzka-component>
+            <modal-pogruzka-component ref="modalComponentforAction"
+                                      edit_flag=true
+                                      :change_one_gruzzotpravitel='change_one_gruzzotpravitel'
+                                      :addRowGruzoot='addRowGruzoot'
+                                      vid="GruzzotpravitelComponent"
+            ></modal-pogruzka-component>
             <div class="col-12 row">
                 <div class="col-6 orders_title">
                     Грузоотправитель/грузополучатель
@@ -15,6 +20,7 @@
                         <span class="under_colored_title head_font" v-on:click="delete_gruzootpravitel()">Удалить</span>
                         <span class="under_colored_title head_font">Переместить</span>
                         <span class="under_colored_title head_font" v-on:click="mix_mark_as_important(gruzootpravitel_arr,'Gruzootpravitel')" >Важное</span>
+                        <span class="col add_button_perevozchiki" v-b-modal.modal-xl variant="primary" v-on:click="newModal()">Добавить</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
@@ -26,19 +32,19 @@
                             <div class="col-8 orders_title_table_main head_font">Контактное лицо</div>
                         </div>
                         <div v-on:click="show_mod_edit(gruzootpravitel.id)"  v-for="(gruzootpravitel,key) in gruzootpravitel_arr" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: gruzootpravitel.important==1 }">
-                        <div class="col-2 orders_title_table text-start row">
-                            <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
-                            <div class="col-10" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.forma_id }} {{ gruzootpravitel.nazvanie }}</div>
-                        </div>
-                        <div class="col-2 orders_title_table" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.YR_adres }}</div>
-                        <div class="col-8 orders_title_table t1" v-b-modal.modal-xl variant="primary">
-                            <div v-for="(kont_lico,key) in gruzootpravitel.kontaktnoe_lico">
-                            <span>{{ kont_lico.FIO }} </span>
-                            <span>{{ kont_lico.dolznost }} </span>
-                            <span>{{ kont_lico.telefon }} </span>
-                            <span>{{ kont_lico.email }} </span>
+                            <div class="col-2 orders_title_table text-start row">
+                                <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
+                                <div class="col-10" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.forma_id }} {{ gruzootpravitel.nazvanie }}</div>
                             </div>
-                        </div>
+                            <div class="col-2 orders_title_table" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.YR_adres }}</div>
+                            <div class="col-8 orders_title_table t1" v-b-modal.modal-xl variant="primary">
+                                <div v-for="(kont_lico,key) in gruzootpravitel.kontaktnoe_lico">
+                                <span>{{ kont_lico.FIO }} </span>
+                                <span>{{ kont_lico.dolznost }} </span>
+                                <span>{{ kont_lico.telefon }} </span>
+                                <span>{{ kont_lico.email }} </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -128,6 +134,7 @@ Vue.filter('formatDate', function(value) {
             // this.get_type_per_list(this.type_per_list);
         },
         methods: {
+
             change_one_gruzzotpravitel(id,nazvanie,yr_adres,kontakty,forma_id)
             {
 
@@ -238,7 +245,22 @@ Vue.filter('formatDate', function(value) {
 
                     );
             },
+            newModal()
+            {
+                this.$refs.modalComponentforAction.newModal()
+            },
+            addRowGruzoot(id,nazvanie,yr_adres,kontakty,forma_id)
+            {
+                //метод вызываемый из дочернего компонента
+                let objToPush= {};
+                objToPush['id'] = id;
+                objToPush['nazvanie'] = nazvanie;
+                objToPush['YR_adres'] = yr_adres;
+                objToPush['kontaktnoe_lico'] = kontakty;
+                objToPush['forma_id'] = forma_id;
+                this.gruzootpravitel_arr.push(objToPush);
 
+            },
             prev_page()
             {
                 if(this.current_page!=1)

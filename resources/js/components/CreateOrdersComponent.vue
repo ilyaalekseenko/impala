@@ -4,6 +4,8 @@
             <modal-pogruzka-component
                 :get_gruzootpravitel_list='get_gruzootpravitel_list'
                 :select_gruzootpravitel='select_gruzootpravitel'
+                allNew=true
+                vid="CreateOrdersComponent"
             ></modal-pogruzka-component>
             <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">

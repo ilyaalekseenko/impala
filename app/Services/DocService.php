@@ -46,6 +46,50 @@ class DocService
             }
         }
     }
+    public function deleteOneGradeDoc($grade_id,$id_ts,$id_pogruzka,$id_doc_type)
+    {
+        $grade_path = GradeDocuments::
+        where('grade_id', '=', $grade_id)
+            -> where('id_ts', '=', $id_ts)
+            -> where('id_pogruzka', '=', $id_pogruzka)
+            -> where('id_doc_type', '=', $id_doc_type)
+            ->get();
+
+        if (!$grade_path->isEmpty()) {
+            try {
+                $path_to_del = public_path() . "/grade_doc/" . $grade_path[0]['path_doc'];
+                unlink($path_to_del);
+                $grade_path = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    -> where('id_ts', '=', $id_ts)
+                    -> where('id_pogruzka', '=', $id_pogruzka)
+                    -> where('id_doc_type', '=', $id_doc_type)
+                    ->delete();
+            }
+            catch (\Throwable $e)
+            {
+
+            }
+        }
+    }
+    public function deleteDocFromDBUn()
+    {
+        $filesModel=request('filesModel');
+        $filesModel = 'App\Models\\' . $filesModel;
+        $getFilesNames=$filesModel::where(request('searchColumn'),request('id'))->get();
+        foreach ($getFilesNames as $old_doc)
+        {
+            try {
+                $path_to_del = public_path() . "/modal/" . $old_doc['server_name'];
+                unlink($path_to_del);
+                $filesModel::where('id',$old_doc['id'])->delete();
+            }
+            catch (\Throwable $e)
+            {
+
+            }
+        }
+    }
 
 
 }

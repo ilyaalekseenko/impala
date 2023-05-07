@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateGruzootpravitelRequest;
+use App\Models\FinalGrade;
 use App\Models\Perevozka;
 use App\Models\PerevozkaBanks;
 use App\Models\PerevozkaContacts;
@@ -19,14 +20,16 @@ class PerevozchikiController extends Controller
     protected $perevozchikContacsModel;
     protected $perevozchikBanksModel;
     protected $perevozchikFilesModel;
+    protected $finalGradeModel;
 
-    public function __construct(PerevozchikService $perevozchikService, Perevozka $perevozchikModel, PerevozkaContacts $perevozchikContacsModel, PerevozkaBanks $perevozchikBanksModel, PerevozkaFiles $perevozchikFilesModel)
+    public function __construct(PerevozchikService $perevozchikService, Perevozka $perevozchikModel, PerevozkaContacts $perevozchikContacsModel, PerevozkaBanks $perevozchikBanksModel, PerevozkaFiles $perevozchikFilesModel, FinalGrade $finalGradeModel)
     {
         $this->perevozchikService=$perevozchikService;
         $this->perevozchikModel=$perevozchikModel;
         $this->perevozchikContacsModel=$perevozchikContacsModel;
         $this->perevozchikBanksModel=$perevozchikBanksModel;
         $this->perevozchikFilesModel=$perevozchikFilesModel;
+        $this->finalGradeModel=$finalGradeModel;
     }
 
     public function perevozchiki(Request $request)
@@ -97,7 +100,7 @@ class PerevozchikiController extends Controller
             $this->perevozchikContacsModel->deleteContact($id);
             $this->perevozchikBanksModel->deleteBank($id);
             $this->perevozchikModel->deletePerevozka($id);
-
+            $this->finalGradeModel->upFinalGradePerevozka($id);
         }
         return response()->json([
             'status' => 'success',

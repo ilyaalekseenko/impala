@@ -194,24 +194,26 @@
                             <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
                             <div class="col-12 grade_title_lit cont_header_1">Файлы:</div>
                             <div class="cont_header_2" v-for="(loc_file,key) in doc_files">
-                            <div class="col-12 row" v-if="loc_file.file_name">
-                                <div class="col-12 lit_marg_grade add_button_grade_modal no_wrap_text"><span v-on:click="show_inp_doc(key)">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
-                                    <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20"
-                                                  v-if="loc_file.file_name"    height="20" v-on:click="delete_one_file_modal(key)"></iconify-icon>
+
+                                <div class="col-12 row" v-if="loc_file.file_name">
+                                    <div class="col-12 lit_marg_grade add_button_grade_modal no_wrap_text"><span v-on:click="show_inp_doc(key)">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
+                                        <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20"
+                                                      v-if="loc_file.file_name"    height="20" v-on:click="delete_one_file_modal(key)"></iconify-icon>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-6" v-if="loc_file.show_inp">
-                                    <input v-click-outside="focus_out_from_inp" class="col-12 lit_marg_grade border_input"
-                                            v-model="loc_file.file_name"/>
+
+                                <div class="col-12 row">
+                                    <div class="col-6" v-if="loc_file.show_inp">
+                                        <input v-click-outside="focus_out_from_inp" class="col-12 lit_marg_grade border_input"
+                                                v-model="loc_file.file_name"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="choose_file_grade " v-on:click="addFiles(key)">Загрузить файл</span>
+                                        <span class="excel_set" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
+                                    <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                    </span>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <span class="choose_file_grade " v-on:click="addFiles(key)">Загрузить файл</span>
-                                    <span class="excel_set" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
-                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                                </div>
-                            </div>
                             </div>
                             <div class="col-12 add_cont_grade cont_header_2" v-on:click="dobavit_doc()">Добавить документ</div>
                         </div>
@@ -227,7 +229,15 @@
 
 import vClickOutside from 'v-click-outside'
     export default {
-        props: ['edit_flag','gruzootpravitel_id','get_gruzootpravitel_list','select_gruzootpravitel','change_one_gruzzotpravitel'],
+        props: ['edit_flag',
+            'gruzootpravitel_id',
+            'get_gruzootpravitel_list',
+            'select_gruzootpravitel',
+            'change_one_gruzzotpravitel',
+            'addRowGruzoot',
+            'allNew',
+            'vid'
+        ],
         directives: {
             vClickOutside: vClickOutside.directive
         },
@@ -278,14 +288,45 @@ import vClickOutside from 'v-click-outside'
 
                 alert_list: [],
                 show_alert:false,
+                flagNewModal:false
 
             }},
         methods: {
+            //если новая погрузка
+            newModal()
+            {
+                    this.flagNewModal=true
+                    this.forma='',
+                    this.nazvanie='',
+                    this.data_registracii='',
+                    this.INN='',
+                    this.OGRN='',
+                    this.telefon='',
+                    this.email='',
+                    this.generalnii_direktor='',
+                    this.telefon_gen_dir='',
+                    this.yridicheskii_adres='',
+                    this.pochtovyi_adres='',
+                    this.menedzer_zakazchik='',
+                    this.kontakty=[],
+                    this.adresa=[],
+                    this.openDP=false,
+                    this.bank_arr=[],
+                    this.files=[],
+                    this.doc_files=[],
+                    this.alert_arr=[],
+                    this.alert=false,
+                    this.temp_file_id='',
+                    this.current_opened_inp='',
+                    this.current_gruzootpravitel_id=''
+            },
             //методы редактирования
             //общий метод загрузки cтартовых данных
             //передаем из предыде вида
             get_modal_edit_data(id)
             {
+                console.log('id')
+                console.log(id)
                 if(this.edit_flag)
                 {
                         this.forma='',
@@ -629,7 +670,6 @@ import vClickOutside from 'v-click-outside'
                 //работа с алертом валидации
                 this.$refs.AlertListComponent.hide_alert_list()
                 this.$refs.AlertListComponent.clear_alert_list()
-
                 axios
                     .post('/save_gruzootpravitel',{
                         current_gruzootpravitel_id:this.current_gruzootpravitel_id,
@@ -657,11 +697,32 @@ import vClickOutside from 'v-click-outside'
                                 //метод автообновления в виде
                            // this.select_gruzootpravitel()
                         }
-                        if(this.change_one_gruzzotpravitel)
+                        //если новая погрузка
+                        if((this.flagNewModal)||(this.allNew))
                         {
-                            this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
+                            console.log('новая погрузка')
+                            //если добавляем новую из вида грузоотправителя
+                            if(this.vid=="GruzzotpravitelComponent")
+                            {
+                                //тут получить новый id перевозчика!
+                                this.addRowGruzoot(response.data.id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
+                               // this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
+                            }
+                            if(this.vid=="GradeComponent")
+                            {
+                               // this.select_gruzootpravitel()
+                            }
                         }
-
+                        //если редактируем погрузку
+                        else
+                        {
+                            //если редактируем из вида грузоотправителя
+                            if(this.vid=="GruzzotpravitelComponent")
+                            {
+                                this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
+                            }
+                        }
+                        this.flagNewModal=false
                         this.hideModal()
                     })
                     .catch(error => {

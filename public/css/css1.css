@@ -328,6 +328,9 @@
 .no_padding_left {
     padding-left: 0px;
 }
+.no_padding_left_imp {
+    padding-left: 0px!important;
+}
 .no_margin_top {
     margin-top: 0px;
 }
@@ -436,9 +439,9 @@
     cursor: pointer;
     text-decoration: underline;
 }
-.cont_header {
+.cont_header_vod {
     margin-top: 20px;
-    margin-bottom: 36px;
+    margin-bottom: 20px;
 }
 .cont_header_1 {
     margin-top: 20px;
@@ -520,6 +523,10 @@
 .lit_marg_grade {
     margin-bottom: 8px;
 }
+.lit_marg_grade_auto {
+    margin-bottom: 4px;
+    margin-top: 10px!important;
+}
 .little_title_grade_margin {
     margin-right: 10px;
 }
@@ -587,6 +594,17 @@
     font-size: 10px;
     color: #4D93F9;
 }
+.add_button_grade_perevozka {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    color: #4D93F9;
+}
+.add_button_grade_perevozka:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
 .add_button_grade_modal {
     font-family: 'Roboto', sans-serif;
     font-style: normal;
@@ -597,6 +615,21 @@
 .add_button_grade_modal:hover {
     cursor: pointer;
     text-decoration: underline;
+}
+.add_button_grade_modal_vod {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+}
+.doc_vod_block {
+    margin-left: 0px!important;
+    margin-right: 4px!important;
+}
+.add_button_grade_modal_vod:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #4D93F9;
 }
 .no_wrap_text {
     white-space: nowrap;
@@ -843,6 +876,23 @@
     border-radius: 4px;
     margin-top: 4px;
     margin-right: 20px;
+}
+.add_vod_button1 {
+    max-width: 142px;
+    max-height: 36px;
+    background-color: #FFFFFF ;
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    /*padding-left: 13px;*/
+    cursor: pointer;
+    border: 1px solid;
+    margin-top: 20px!important;
+    margin-left: 10px;
 }
 .create_ord_underline{
     border-bottom: 1px solid #CED8DF;
@@ -1423,6 +1473,10 @@
     width: 36px!important;
     margin-left: 20px;
 }
+.grade_columns {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 .bottom_marg {
     margin-bottom: 40px;
 }
@@ -1706,3 +1760,38 @@
     }
 }
 /* конец модальное окно перевозчика*/
+/*модальное окно водителя*/
+.vod_fio {
+    min-width: 271px;
+}
+.vod_telefon {
+    min-width:139px
+}
+.vod_mar {
+    margin-bottom: 20px;
+}
+.voditeli_list_FIO:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.TS_mod_tip{
+    width: 90%!important;
+}
+.TS_mod_marka{
+    /*width: 271px!important;*/
+    width: 95%!important;}
+.TS_mod_nomer{
+    /*width: 139px!important;*/
+    width: 90%!important;}
+.TS_mod_tonn{
+    /*width: 117px!important;*/
+    width: 90%!important;}
+.TS_mod_nomer_doc{
+    /*width: 165px!important;*/
+    width: 95%!important;}
+.TS_mod_kompaniya{
+    /*width: 271px!important;*/
+    width: 100%!important;}
+.PP_mod_nomer{
+    /*width: 140px!important;*/
+    width: 80%!important;}
