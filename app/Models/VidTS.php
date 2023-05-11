@@ -76,4 +76,8 @@ class VidTS extends Authenticatable
         $vid=VidTS::where('id', $id)->get();
         return $vid[0]['ts_name'];
     }
+    public function getVidTSModalNazvanieInModel($nazvanie)
+    {
+        return VidTS::where('ts_name', $nazvanie)->get();
+    }
 }

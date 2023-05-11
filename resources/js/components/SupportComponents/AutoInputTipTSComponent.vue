@@ -20,7 +20,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','elem1'],
+        props: ['vidTsFromParent','key_in_arr','id_ts'],
         data(){
             return {
                 selectedValue: "",
@@ -38,10 +38,9 @@
         watch: {
             // отслеживаем изменения значений в родителе
 
-            // vidTsFromParent: function () {
-            //     alert('fine')
-            //         this.MainVarInInput=this.vidTsFromParent
-            // },
+            vidTsFromParent: function () {
+                    this.MainVarInInput=this.vidTsFromParent
+            },
             MainVarInInput: function () {
                 setTimeout(this.waitScrollTextarea, 1);
             }
@@ -106,15 +105,15 @@
                 axios
                     .post('/searchBack',{
                         searchWord:searchWord,
-                        model:'TSModal',
-                        fieldToSearch:'nomer',
+                        model:'VidTS',
+                        fieldToSearch:'ts_name',
                         searchOffset:this.searchOffset
                     })
                     .then(response => {
                         response.data.res.forEach(function(entry) {
                             inp.push({
                                 id:entry.id,
-                                nazvanie:entry.nomer,
+                                nazvanie:entry.ts_name,
                             });
                         })
 
@@ -199,7 +198,6 @@
                     //возвращаем обратно id
                     id:this.mainId,
                     ts_name:this.MainVarInInput,
-                    elem1:this.elem1
                 })
 
             },
@@ -214,7 +212,7 @@
             {
                  async function getData(MainVarInInputLOC) {
                      let res = await axios
-                        .post('/getTSModalNazvanie', {
+                        .post('/getTipTSNazvanie', {
                             nazvanie: MainVarInInputLOC,
                         })
                      return res.data

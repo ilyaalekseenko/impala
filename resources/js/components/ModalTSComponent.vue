@@ -21,8 +21,15 @@
                                 <div class="col-12 row">
                                     <div class="col no_padding_left_form lit_marg_grade">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Тип:</div>
-                                        <input class="border_input col-12 TS_mod_tip"
-                                               v-model="tip"/>
+<!--                                        <input class="border_input col-12 TS_mod_tip"-->
+<!--                                               v-model="tip"/>-->
+                                        <auto-input-tip-t-s-component class="col-12 TS_mod_tip"
+                                                                     :vidTsFromParent="tipNazvanie"
+                                                                     @childReturnMethod="parentMethodFromAutoinputVidts"
+                                                                     ref="AutoSelectComponent_vid_TS"
+                                        ></auto-input-tip-t-s-component>
+
+
                                     </div>
                                     <div class="col no_padding_right ">
                                         <div class="create_orders_date_title_1 lit_marg_grade col-12">Марка:</div>
@@ -42,7 +49,7 @@
                                         <input class="border_input TS_mod_nomer_doc" type="text" v-model="nomer_documenta" />
                                     </div>
                                     <div class="col no_padding_right">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Компания:</div>
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
                                         <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />
                                     </div>
                                 </div>
@@ -123,6 +130,7 @@ Vue.use(VueMask)
                 show_alert:false,
 
                 tip:'',
+                tipNazvanie:'',
                 marka:'',
                 nomer:'',
                 tonn:'',
@@ -188,6 +196,7 @@ Vue.use(VueMask)
                          this.tonn=data.voditel.tonn,
                          this.nomer_documenta=data.voditel.nomer_documenta,
                          this.kompaniya=data.voditel.kompaniya,
+                         this.tipNazvanie=data.tipNazvanie,
                              data.voditel_files.forEach(function(entry) {
                                  doc_files.push({
                                      id:entry.id,
@@ -382,6 +391,10 @@ Vue.use(VueMask)
                         }
                     });
 
+            },
+            parentMethodFromAutoinputVidts(data)
+            {
+                this.tip=data.id
             }
         }
     }

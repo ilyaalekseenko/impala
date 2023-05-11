@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/getPerevozkaNazvanie', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaNazvanie'])->name('getPerevozkaNazvanie');
     Route::post('/getVoditelNazvanie', [App\Http\Controllers\VoditelController::class, 'getVoditelNazvanie'])->name('getVoditelNazvanie');
     Route::post('/getTSModalNazvanie', [App\Http\Controllers\TSModalController::class, 'getTSModalNazvanie'])->name('getTSModalNazvanie');
+    Route::post('/getTipTSNazvanie', [App\Http\Controllers\TSModalController::class, 'getTipTSNazvanie'])->name('getTipTSNazvanie');
     Route::post('/getPPNazvanie', [App\Http\Controllers\PPController::class, 'getPPNazvanie'])->name('getPPNazvanie');
     // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
     Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');

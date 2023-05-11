@@ -11,12 +11,12 @@
             :gradeAddVoditel='gradeAddVoditel'
         ></modal-voditel-component>
         <modal-t-s-component
-            ref="modalComponentforActionVoditel"
+            ref="modalComponentforActionVoditel1"
             vid="grade"
             :gradeAddTSModal='gradeAddTSModal'
         ></modal-t-s-component>
         <modal-p-p-component
-            ref="modalComponentforActionVoditel"
+            ref="modalComponentforActionVoditel2"
             vid="grade"
             :gradeAddPPModal='gradeAddPPModal'
         ></modal-p-p-component>
@@ -762,7 +762,18 @@
                             let sum=Number(this.spisokTShead[i].summa_list[j].summa);
                             this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
                         }
-                        this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+
+                        if(((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1)<0)
+                        {
+                            this.spisokTShead[i].ne_oplacheno=0
+                        }
+                        else
+                        {
+                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+                        }
+                         //   this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+
+
                         // }
                     }
                 }
@@ -779,8 +790,17 @@
                             let sum=Number(this.spisokTShead[i].summa_list[j].summa);
                             this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
                         }
-                        this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
-                        // }
+                        if(((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1)<0)
+                        {
+                            this.spisokTShead[i].ne_oplacheno=0
+                        }
+                        else
+                        {
+                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+                        }
+
+                      //  this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+
                     }
                 }
             },

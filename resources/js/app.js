@@ -41,6 +41,7 @@ Vue.component('auto-input-global-component', require('./components/SupportCompon
 Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
 Vue.component('auto-input-voditel-component', require('./components/SupportComponents/AutoInputVoditelComponent').default);
 Vue.component('auto-input-t-s-component', require('./components/SupportComponents/AutoInputTSComponent').default);
+Vue.component('auto-input-tip-t-s-component', require('./components/SupportComponents/AutoInputTipTSComponent').default);
 Vue.component('auto-input-p-p-component', require('./components/SupportComponents/AutoInputPPComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);

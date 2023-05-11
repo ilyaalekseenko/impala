@@ -64,7 +64,7 @@
                                         v-model="propiska"/>
                             </div>
                             <div class="col-4 ">
-                                <div class="col create_orders_date_title_1 lit_marg_grade">Компания:</div>
+                                <div class="col create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
                                 <input  class="col-12 border_input"
                                         v-model="kompaniya"/>
                             </div>

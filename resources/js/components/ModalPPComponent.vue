@@ -41,7 +41,7 @@
                                         <input class="border_input TS_mod_nomer_doc" type="text" v-model="nomer_documenta" />
                                     </div>
                                     <div class="col no_padding_right">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Компания:</div>
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
                                         <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />
                                     </div>
                                 </div>

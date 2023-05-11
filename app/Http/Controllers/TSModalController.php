@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TSModalCreateRequest;
 use App\Models\TSModal;
 use App\Models\TSModalFiles;
+use App\Models\VidTS;
 use App\Services\TSModalService;
 use Illuminate\Http\Request;
 
@@ -12,13 +13,15 @@ class TSModalController extends Controller
 {
     protected $TSModalService;
     protected $TSModalModel;
+    protected $vidTSModel;
     protected $TSModalFilesModel;
 
-    public function __construct( TSModalService $TSModalService, TSModal $TSModalModel, TSModalFiles $TSModalFilesModel)
+    public function __construct( TSModalService $TSModalService, TSModal $TSModalModel, TSModalFiles $TSModalFilesModel, VidTS $vidTSModel)
     {
         $this->TSModalService=$TSModalService;
         $this->TSModalModel=$TSModalModel;
         $this->TSModalFilesModel=$TSModalFilesModel;
+        $this->vidTSModel=$vidTSModel;
     }
 
     public function saveTSModal(TSModalCreateRequest $request)
@@ -46,6 +49,25 @@ class TSModalController extends Controller
                 'message' =>'Успешно обновлено',
             ], 200);
         }
+    }
+
+    public function getTipTSNazvanie()
+    {
+        $ts=$this->vidTSModel->getVidTSModalNazvanieInModel(request('nazvanie'));
+        if (!$ts->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Тип ТС получен',
+                'isset_flag' =>'yes',
+                'idTSBack' =>$ts[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого Типа ТС',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
+        ], 200);
     }
 
     public function getTSModalNazvanie()
@@ -82,12 +104,21 @@ class TSModalController extends Controller
         $id = $request->input('id');
         $voditel = $this->TSModalModel->getTSModal(request('id'));
         $voditel_files = $this->TSModalFilesModel->getFilesList($id);
+        if($voditel[0]['tip']=='')
+        {
+            $tipNazvanie='';
+        }
+        else
+        {
+            $tipNazvanie = $this->vidTSModel->getTsNameBYId($voditel[0]['tip']);
+        }
 
         return response()->json([
             'status' => 'success',
             'message' =>'TSModal успешно получен',
             'voditel' =>$voditel[0],
             'voditel_files' =>$voditel_files,
+            'tipNazvanie' =>$tipNazvanie,
         ], 200);
     }
 
