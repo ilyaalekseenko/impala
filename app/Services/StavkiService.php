@@ -62,20 +62,19 @@ class StavkiService
         if($main_second=='main')
         {
             $grade_list=$this->finalGradeModel->getStavkiList();
-            return dd('1');
+
         }
         if($main_second=='second')
         {
             //переделать метод под grade которые мы получили ранее из поиска и вызывать метод поиска из search service
             $grade_list=$this->finalGradeModel->getGradeListByIds($oldstavki);
-            return dd('2');
-            return dd('3');
         }
         foreach ($grade_list as $grade)
         {
             //получаем список погрузок и выгрузок у данного ТС
             $TS_list_pogruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
             $TS_list_vygruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();
+
             //получаем имена погрузок и выгрузок
             foreach ($TS_list_pogruzka as $pogruzka)
             {
@@ -103,6 +102,7 @@ class StavkiService
                     $pogruzka['adres_vygruzki_show']=$adres_pogruzke_show;
                 }
             }
+            return dd('flag1');
             $grade['adres_pogruzki_TS']=$TS_list_pogruzka;
             $grade['adres_vygr_TS']=$TS_list_vygruzka;
             //добавляем название к типу ТС
