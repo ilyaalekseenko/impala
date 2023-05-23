@@ -62,12 +62,13 @@ class StavkiService
         if($main_second=='main')
         {
             $grade_list=$this->finalGradeModel->getStavkiList();
+            return dd('1');
         }
         if($main_second=='second')
         {
             //переделать метод под grade которые мы получили ранее из поиска и вызывать метод поиска из search service
             $grade_list=$this->finalGradeModel->getGradeListByIds($oldstavki);
-            return dd('TORA');
+            return dd('2');
         }
         foreach ($grade_list as $grade)
         {
