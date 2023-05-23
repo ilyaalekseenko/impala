@@ -65,7 +65,8 @@
             },
             // отслеживаем изменения значений количества выводимых записей
             countLimit: function () {
-                // console.log(this.countLimit)
+                 console.log('this.countLimit')
+                 console.log(this.countLimit)
                 this.limit=this.countLimit
                 this.countAllTypesLocal=this.countAllTypes
                 this.new_page(1)
@@ -79,17 +80,17 @@
             //перерисовка самой пагинации
             paginationCounter()
             {
-                console.log('countAllTypesLocal')
-                console.log(this.countAllTypesLocal)
+                // console.log('countAllTypesLocal')
+                // console.log(this.countAllTypesLocal)
                 //если всех записей не ноль
                 if(this.countAllTypesLocal!=0) {
 
                     //получаем количество всех страниц ( округляем в большую сторону)
                     let g = Math.ceil(this.countAllTypesLocal / this.limit);
-                    console.log('g')
-                    console.log(g)
-                    console.log('limit')
-                    console.log(this.limit)
+                    // console.log('g')
+                    // console.log(g)
+                    // console.log('limit')
+                    // console.log(this.limit)
                     //проверка на последнюю страничку
                             if(this.current_page==g)
                             {

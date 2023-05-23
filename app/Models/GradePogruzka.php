@@ -30,5 +30,9 @@ class GradePogruzka extends Model
             ->delete();
         return $id[0]['id'];
     }
+    public function getRowByPogruzka($adres_pogruzke,$pogr_vygr)
+    {
+        return GradePogruzka::where('adres_pogruzki',$adres_pogruzke)->where('pogruzka_or_vygruzka',$pogr_vygr)->get();
+    }
 
 }

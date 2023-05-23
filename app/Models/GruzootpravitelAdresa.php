@@ -71,5 +71,18 @@ class GruzootpravitelAdresa extends Model
             ->select('gruzootpravitel_adresas.*', 'gruzootpravitels.nazvanie', 'gruzootpravitels.forma_id')
             ->get();
     }
+    public function getAdresById($adresId)
+    {
+        $adres= GruzootpravitelAdresa::where('id',$adresId)->get();
+        return $adres[0]['adres'];
+    }
+    public function countAdresa()
+    {
+        return GruzootpravitelAdresa::count();
+    }
+    public function getAdresByName($fromto)
+    {
+        return GruzootpravitelAdresa::where('adres', 'like', '%'.$fromto.'%')->get();
+    }
 
 }

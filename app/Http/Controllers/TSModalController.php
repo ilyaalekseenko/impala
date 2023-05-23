@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TSModalCreateRequest;
+use App\Models\Perevozka;
 use App\Models\TSModal;
 use App\Models\TSModalFiles;
 use App\Models\VidTS;
@@ -15,13 +16,15 @@ class TSModalController extends Controller
     protected $TSModalModel;
     protected $vidTSModel;
     protected $TSModalFilesModel;
+    protected $perevozchikModel;
 
-    public function __construct( TSModalService $TSModalService, TSModal $TSModalModel, TSModalFiles $TSModalFilesModel, VidTS $vidTSModel)
+    public function __construct( TSModalService $TSModalService, TSModal $TSModalModel, TSModalFiles $TSModalFilesModel, VidTS $vidTSModel,Perevozka $perevozchikModel)
     {
         $this->TSModalService=$TSModalService;
         $this->TSModalModel=$TSModalModel;
         $this->TSModalFilesModel=$TSModalFilesModel;
         $this->vidTSModel=$vidTSModel;
+        $this->perevozchikModel=$perevozchikModel;
     }
 
     public function saveTSModal(TSModalCreateRequest $request)
@@ -103,22 +106,28 @@ class TSModalController extends Controller
     {
         $id = $request->input('id');
         $voditel = $this->TSModalModel->getTSModal(request('id'));
+
         $voditel_files = $this->TSModalFilesModel->getFilesList($id);
+
         if($voditel[0]['tip']=='')
         {
             $tipNazvanie='';
         }
         else
         {
+
             $tipNazvanie = $this->vidTSModel->getTsNameBYId($voditel[0]['tip']);
         }
+        //получим название перевозчика(компании)
 
+        $kompaniyaNazvanie=$this->perevozchikModel->getPerevozkaNameBYId($voditel[0]['kompaniya']);
         return response()->json([
             'status' => 'success',
             'message' =>'TSModal успешно получен',
             'voditel' =>$voditel[0],
             'voditel_files' =>$voditel_files,
             'tipNazvanie' =>$tipNazvanie,
+            'kompaniyaNazvanie' =>$kompaniyaNazvanie,
         ], 200);
     }
 

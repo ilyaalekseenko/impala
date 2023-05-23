@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Perevozka;
 use App\Models\PP;
 use App\Models\PPFiles;
 use App\Services\PPService;
@@ -13,12 +14,14 @@ class PPController extends Controller
     protected $PPService;
     protected $PPModel;
     protected $PPFilesModel;
+    protected $perevozchikModel;
 
-    public function __construct( PPService $PPService, PP $PPModel, PPFiles $PPFilesModel)
+    public function __construct( PPService $PPService, PP $PPModel, PPFiles $PPFilesModel,Perevozka $perevozchikModel)
     {
         $this->PPService=$PPService;
         $this->PPModel=$PPModel;
         $this->PPFilesModel=$PPFilesModel;
+        $this->perevozchikModel=$perevozchikModel;
     }
 
     public function getPP(Request $request)
@@ -26,12 +29,14 @@ class PPController extends Controller
         $id = $request->input('id');
         $voditel = $this->PPModel->getPP(request('id'));
         $voditel_files = $this->PPFilesModel->getFilesList($id);
+        $kompaniyaNazvanie=$this->perevozchikModel->getPerevozkaNameBYId($voditel[0]['kompaniya']);
 
         return response()->json([
             'status' => 'success',
             'message' =>'TSModal успешно получен',
             'voditel' =>$voditel[0],
             'voditel_files' =>$voditel_files,
+            'kompaniyaNazvanie' =>$kompaniyaNazvanie,
         ], 200);
     }
 

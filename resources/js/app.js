@@ -36,6 +36,7 @@ Vue.component('forma-gruzootpravitel-settings-component', require('./components/
 Vue.component('add-users-settings-component', require('./components/Settings/AddUsersSettingsComponent').default);
 Vue.component('gruzootpravitel-component', require('./components/GruzootpravitelComponent').default);
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
+Vue.component('stavki-component', require('./components/StavkiComponent').default);
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
 Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
 Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
@@ -43,6 +44,8 @@ Vue.component('auto-input-voditel-component', require('./components/SupportCompo
 Vue.component('auto-input-t-s-component', require('./components/SupportComponents/AutoInputTSComponent').default);
 Vue.component('auto-input-tip-t-s-component', require('./components/SupportComponents/AutoInputTipTSComponent').default);
 Vue.component('auto-input-p-p-component', require('./components/SupportComponents/AutoInputPPComponent').default);
+Vue.component('auto-input-perevozka-modal-component', require('./components/SupportComponents/AutoInputPerevozkaModalComponent').default);
+Vue.component('auto-input-stavki-component', require('./components/SupportComponents/AutoInputStavkiComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
 Vue.component('vid-t-s-component', require('./components/Settings/VidTSComponent').default);

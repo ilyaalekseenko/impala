@@ -79,4 +79,5 @@ class GruzootpravitelAdresService
         return $adres[0]['forma_id'].' '.$adres[0]['nazvanie'].' '.$adres[0]['adres'];
     }
 
+
 }

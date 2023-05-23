@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\isEmpty;
 
 class Perevozka extends Model
 {
@@ -71,7 +72,17 @@ class Perevozka extends Model
     public function getPerevozkaNameBYId($id)
     {
         $vid=Perevozka::where('id', $id)->get();
-        return $vid[0]['nazvanie'];
+        if ($vid->isEmpty()) {
+            return '';
+        }
+        else
+        {
+            return $vid[0]['nazvanie'];
+        }
+    }
+    public function getIDByNameSearch()
+    {
+        return Perevozka::where('nazvanie', 'like', '%'.request('perevozchik').'%')->get('id');
     }
 }
 

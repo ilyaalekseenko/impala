@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\VoditelCreateRequest;
+use App\Models\Perevozka;
 use App\Models\Voditel;
 use App\Models\VoditelFiles;
 use App\Services\VoditelService;
@@ -13,12 +14,15 @@ class VoditelController extends Controller
     protected $voditelService;
     protected $voditelModel;
     protected $voditelFilesModel;
+    protected $perevozchikModel;
 
-    public function __construct( VoditelService $voditelService, Voditel $voditelModel, VoditelFiles $voditelFilesModel)
+    public function __construct( VoditelService $voditelService, Voditel $voditelModel, VoditelFiles $voditelFilesModel,Perevozka $perevozchikModel)
     {
         $this->voditelService=$voditelService;
         $this->voditelModel=$voditelModel;
         $this->voditelFilesModel=$voditelFilesModel;
+        $this->perevozchikModel=$perevozchikModel;
+
     }
 
     public function  saveVoditel( VoditelCreateRequest $request )
@@ -81,12 +85,15 @@ class VoditelController extends Controller
         $id = $request->input('id');
         $voditel = $this->voditelModel->getVoditel(request('id'));
         $voditel_files = $this->voditelFilesModel->getFilesList($id);
+        //получим название перевозчика(компании)
+        $kompaniyaNazvanie=$this->perevozchikModel->getPerevozkaNameBYId($voditel[0]['kompaniya']);
 
         return response()->json([
             'status' => 'success',
             'message' =>'Перевозчик успешно получен',
             'voditel' =>$voditel[0],
             'voditel_files' =>$voditel_files,
+            'kompaniyaNazvanie' =>$kompaniyaNazvanie,
         ], 200);
     }
 }

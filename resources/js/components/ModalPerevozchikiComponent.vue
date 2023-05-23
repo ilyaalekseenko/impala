@@ -4,7 +4,7 @@
             <div class="col-10">
                 <b-modal ref="my-modal"  id="perevozkaMod" size="lg" hide-footer hide-header>
                     <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-                        <div class="col-8">Новый перевозчик:</div>
+                        <div class="col-8">{{ headerName }}:</div>
                         <div class="col-4 row d-flex justify-content-end">
                             <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
@@ -242,7 +242,8 @@ Vue.use(VueMask)
 
                 alert_list: [],
                 show_alert:false,
-                phoneMain:''
+                phoneMain:'',
+                headerName:'Новый перевозчик'
             }},
 
         methods: {
@@ -252,6 +253,7 @@ Vue.use(VueMask)
             //если кликнули на нового перевозчика
             newPerevozchik()
             {
+                this.headerName='Новый перевозчик'
                 this.forma='',
                     this.nazvanie='',
                     this.data_registracii='',
@@ -282,6 +284,7 @@ Vue.use(VueMask)
             //передаем из предыде вида
             get_modal_edit_data(id)
             {
+                this.headerName='Редактирование перевозчика'
                         this.forma='',
                         this.nazvanie='',
                         this.data_registracii='',

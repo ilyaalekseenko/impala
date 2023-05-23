@@ -17,7 +17,7 @@
                 <span class="top_menu_words  top_menu_words_settings" v-on:click="go_to_path('/perevozchiki')">
                     Перевозчики
                 </span>
-                <span class="top_menu_words top_menu_words_settings ">
+                <span class="top_menu_words top_menu_words_settings " v-on:click="go_to_path('/stavki')">
                     Ставки
                 </span>
             </div>

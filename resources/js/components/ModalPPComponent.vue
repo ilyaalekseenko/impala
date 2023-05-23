@@ -42,12 +42,18 @@
                                     </div>
                                     <div class="col no_padding_right">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                        <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--                        конец левой колонки модалка-->
+                                        <!--  <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />-->
+
+                                          <auto-input-perevozka-modal-component v-if="pogruzkaShowInp" class="select_width_grade"
+                                                                                :vidTsFromParent="kompaniyaNazvanie"
+                                                                                @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                          ></auto-input-perevozka-modal-component>
+
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <!--                        конец левой колонки модалка-->
                         <!--                    строка загрузки файлов-->
                         <div class="col-12 grade_title_lit cont_header_vod">Загрузка файлов:</div>
                         <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
@@ -127,7 +133,9 @@ export default {
             tonn:'',
             nomer_documenta:'',
             kompaniya:'',
+            kompaniyaNazvanie:'',
             doc_files:[],
+            pogruzkaShowInp:true,
         }},
 
     methods: {
@@ -135,7 +143,7 @@ export default {
             this.phoneMain = this.phoneMain.replace(/\D/g, '').slice(0, 10);
         },
         //если кликнули на нового перевозчика
-        newPerevozchik()
+        newPerevozchik(vidGrade,idPErevozchik,nazvaniePerevozchik)
         {
             this.current_gruzootpravitel_id='',
                 this.marka='',
@@ -143,7 +151,7 @@ export default {
                 this.dlina='',
                 this.tonn='',
                 this.nomer_documenta='',
-                this.kompaniya='',
+
 
                 this.doc_files=[],
                 this.files=[],
@@ -151,6 +159,20 @@ export default {
                 this.alert_arr=[],
                 this.alert=false,
                 this.temp_file_id=''
+
+            //если кликаем  из вида settings ну тоесть совсем новый водитель и название перевозчика(компании) не надо
+            if(!vidGrade)
+            {
+                this.kompaniya='',
+                    this.kompaniyaNazvanie=''
+            }
+            else
+            {
+
+                this.kompaniya=idPErevozchik,
+                    this.kompaniyaNazvanie=nazvaniePerevozchik
+
+            }
 
         },
         //методы редактирования
@@ -165,6 +187,7 @@ export default {
                 this.tonn='',
                 this.nomer_documenta='',
                 this.kompaniya='',
+                this.kompaniyaNazvanie=''
                 this.doc_files=[],
                 this.files=[],
                 this.openDP=false,
@@ -187,6 +210,7 @@ export default {
                             this.tonn=data.voditel.tonn,
                             this.nomer_documenta=data.voditel.nomer_documenta,
                             this.kompaniya=data.voditel.kompaniya,
+                            this.kompaniyaNazvanie=data.kompaniyaNazvanie,
                             data.voditel_files.forEach(function(entry) {
                                 doc_files.push({
                                     id:entry.id,
@@ -220,6 +244,7 @@ export default {
                 this.tonn='',
                 this.nomer_documenta='',
                 this.kompaniya='',
+                this.kompaniyaNazvanie='',
                 this.openDP=false,
                 this.bank_arr=[],
                 this.files=[],
@@ -369,6 +394,10 @@ export default {
                     }
                 });
 
+        },
+        parentMethodFromAutoinputPerevozka(data)
+        {
+            this.kompaniya=data.id
         }
     }
 }

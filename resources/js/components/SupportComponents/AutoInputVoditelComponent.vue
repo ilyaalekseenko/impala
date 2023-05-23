@@ -20,7 +20,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','elem1'],
+        props: ['vidTsFromParent','key_in_arr','id_ts','elem1','kompaniya'],
         data(){
             return {
                 selectedValue: "",
@@ -104,11 +104,12 @@
                 let searchArrTemp=[];
                 let searchWord=this.MainVarInInput;
                 axios
-                    .post('/searchBack',{
+                    .post('/searchBackKompaniya',{
                         searchWord:searchWord,
                         model:'Voditel',
                         fieldToSearch:'FIO',
-                        searchOffset:this.searchOffset
+                        searchOffset:this.searchOffset,
+                        kompaniya:this.kompaniya
                     })
                     .then(response => {
                         response.data.res.forEach(function(entry) {

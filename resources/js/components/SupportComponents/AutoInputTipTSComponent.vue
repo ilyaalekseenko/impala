@@ -107,7 +107,8 @@
                         searchWord:searchWord,
                         model:'VidTS',
                         fieldToSearch:'ts_name',
-                        searchOffset:this.searchOffset
+                        searchOffset:this.searchOffset,
+                        kompaniya:''
                     })
                     .then(response => {
                         response.data.res.forEach(function(entry) {

@@ -50,7 +50,12 @@
                                     </div>
                                     <div class="col no_padding_right">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                        <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />
+<!--                                        <input class="border_input TS_mod_kompaniya" type="text" v-model="kompaniya" />-->
+
+                                        <auto-input-perevozka-modal-component v-if="pogruzkaShowInp" class="select_width_grade"
+                                                                              :vidTsFromParent="kompaniyaNazvanie"
+                                                                              @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                        ></auto-input-perevozka-modal-component>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +141,9 @@ Vue.use(VueMask)
                 tonn:'',
                 nomer_documenta:'',
                 kompaniya:'',
+                kompaniyaNazvanie:'',
                 doc_files:[],
+                pogruzkaShowInp:true
             }},
 
         methods: {
@@ -144,7 +151,7 @@ Vue.use(VueMask)
                 this.phoneMain = this.phoneMain.replace(/\D/g, '').slice(0, 10);
             },
             //если кликнули на нового перевозчика
-            newPerevozchik()
+            newPerevozchik(vidGrade,idPErevozchik,nazvaniePerevozchik)
             {
                 this.current_gruzootpravitel_id='',
                 this.tip='',
@@ -152,14 +159,27 @@ Vue.use(VueMask)
                 this.nomer='',
                 this.tonn='',
                 this.nomer_documenta='',
-                this.kompaniya='',
-
                 this.doc_files=[],
                 this.files=[],
                 this.openDP=false,
                 this.alert_arr=[],
                 this.alert=false,
                 this.temp_file_id=''
+
+                //если кликаем  из вида settings ну тоесть совсем новый водитель и название перевозчика(компании) не надо
+                if(!vidGrade)
+                {
+                    this.kompaniya='',
+                        this.kompaniyaNazvanie=''
+                }
+                else
+                {
+
+                    this.kompaniya=idPErevozchik,
+                        this.kompaniyaNazvanie=nazvaniePerevozchik
+
+                }
+
 
             },
             //методы редактирования
@@ -174,6 +194,7 @@ Vue.use(VueMask)
                         this.tonn='',
                         this.nomer_documenta='',
                         this.kompaniya='',
+                        this.kompaniyaNazvanie='',
                     this.doc_files=[],
                     this.files=[],
                     this.openDP=false,
@@ -196,6 +217,7 @@ Vue.use(VueMask)
                          this.tonn=data.voditel.tonn,
                          this.nomer_documenta=data.voditel.nomer_documenta,
                          this.kompaniya=data.voditel.kompaniya,
+                         this.kompaniyaNazvanie=data.kompaniyaNazvanie,
                          this.tipNazvanie=data.tipNazvanie,
                              data.voditel_files.forEach(function(entry) {
                                  doc_files.push({
@@ -229,6 +251,7 @@ Vue.use(VueMask)
                     this.tonn='',
                     this.nomer_documenta='',
                     this.kompaniya='',
+                    this.kompaniyaNazvanie='',
                 this.openDP=false,
                 this.bank_arr=[],
                 this.files=[],
@@ -395,6 +418,11 @@ Vue.use(VueMask)
             parentMethodFromAutoinputVidts(data)
             {
                 this.tip=data.id
+            }
+            ,
+            parentMethodFromAutoinputPerevozka(data)
+            {
+                this.kompaniya=data.id
             }
         }
     }

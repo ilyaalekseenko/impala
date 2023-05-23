@@ -497,6 +497,29 @@ class GradeController extends Controller
         ], 200);
 
     }
+    public function deleteStavka()
+    {
+        foreach (request('ids') as $stavka)
+        {
+            //получим grade_id id_ts
+            $grade=$this->finalGradeModel->getGradeIdTs($stavka);
+            //удалим все файлы связанные с этим ТС
+            $this->docService->deleteGradeDoc($grade[0]['grade_id'],$grade[0]['id_ts']);
+            //удалим погрузки связанные с этим ТС
+            $this->gradePogruzkaModel->delPogruzka($grade[0]['grade_id'],$grade[0]['id_ts']);
+            //удалим сумму
+            $this->gradeSummaModel->delSumma($grade[0]['grade_id'],$grade[0]['id_ts']);
+            //удалим из основной таблицы значения
+            $this->finalGradeModel->delGrade($grade[0]['grade_id'],$grade[0]['id_ts']);
+        }
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Grade успешно удалён',
+        ], 200);
+
+    }
     public function get_final_grades_data(Request $request)
     {
         $grade_id = $request->input('grade_id');
@@ -905,6 +928,14 @@ class GradeController extends Controller
         $this->finalGradeModel->upFinalGradeToNull();
         //удалим сам запрос из нужной таблицы
         $this->searchService->deleteMainSearch();
-
+    }
+    public function addPerevozchikToStavka()
+    {
+        //проапдейтим колонку перевозчика
+        $this->finalGradeModel->upFinalGradePerevozchik();
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Перевозчик успешно обновлён',
+        ], 200);
     }
 }

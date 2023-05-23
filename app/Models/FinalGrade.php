@@ -31,7 +31,54 @@ class FinalGrade extends Model
             ->update([
                 'perevozchik' => NULL,
             ]);
-
+    }
+    public function getGradeListByIds($ids)
+    {
+        return FinalGrade::whereIn('id',$ids)
+//              offset(request('offset'))
+//            ->limit(request('limit'))
+            ->get();
+    }
+    public function getStavkiList()
+    {
+            return FinalGrade::
+            offset(request('offset'))
+            ->limit(request('limit'))
+            ->get();
+    }
+    public function countGrades()
+    {
+        return FinalGrade::count();
+    }
+    public function upFinalGradePerevozchik()
+    {
+        FinalGrade:: where('id',request('finalGradeId'))
+            ->update([
+                'perevozchik' => request('perevozchikId'),
+            ]);
+    }
+    public function getGradeIdTs($id)
+    {
+      return FinalGrade:: where('id',$id)->get();
+    }
+    public function getIdByGrade($gradeId,$idTS)
+    {
+        return FinalGrade::where('grade_id',$gradeId)->where('id_ts',$idTS)->get();
+    }
+    public function getIdBYColumnId($columnName, $columnValue)
+    {
+        return FinalGrade:: where($columnName,$columnValue)->get();
+    }
+    public function checkIfExist($id,$field)
+    {
+        $field=FinalGrade::where($field,$id)->first();
+        if ($field === null) {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
 }

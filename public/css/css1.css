@@ -110,6 +110,10 @@
 .orders_title_div {
     margin-top: 20px;
 }
+/*.orders_title_marg{*/
+/*    margin-top: 16px!important;*/
+/*    margin-bottom: 16px!important;*/
+/*}*/
 .orders_title {
     font-family: 'Roboto', sans-serif;
     font-style: normal;
@@ -117,6 +121,8 @@
     font-size: 36px;
     line-height: 100%;
     color: #202020;
+    margin-top: 16px!important;
+    margin-bottom: 16px!important;
 }
 .create_orders_button {
     width: 214px;
@@ -253,7 +259,7 @@
     cursor: pointer;
 }
 .under_col_title_main {
-    margin-left: -12px;
+    /*margin-left: -12px;*/
     border: 1px solid #CED8DF;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -322,6 +328,9 @@
     color:#202020;
     margin-top: 35px;
 }
+.pagination_orders_stavki{
+    margin-top: 12px!important;
+}
 .no_padding_right {
     padding-right: 0px;
 }
@@ -330,6 +339,9 @@
 }
 .no_padding_left_imp {
     padding-left: 0px!important;
+}
+.no_padding_right_imp {
+    padding-right: 0px!important;
 }
 .no_margin_top {
     margin-top: 0px;
@@ -343,7 +355,7 @@
 .table_orders_column_settings {
     padding-right: 0px;
     padding-left: 0px;
-    margin-left: 0px;
+    margin-left: 12px!important;
 }
 .orders_create_title {
     font-family: 'Roboto', sans-serif;
@@ -877,6 +889,27 @@
     margin-top: 4px;
     margin-right: 20px;
 }
+.add_ts_button9_grade {
+    max-width: 124px;
+    background-color: #0066FA ;
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 100%;
+    color: #FFFFFF;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 3px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+@media (max-width: 1667px) {
+    .add_ts_button9_grade {
+        margin-top: 18px !important;
+    }
+}
 .add_vod_button1 {
     max-width: 142px;
     max-height: 36px;
@@ -1149,6 +1182,9 @@
 }
 .pagination_orders_right {
     margin-top: 24px;
+}
+.pagination_stavki {
+    margin-top: 24px!important;
 }
 .page_link_int:hover {
     cursor: pointer;
@@ -1795,3 +1831,19 @@
 .PP_mod_nomer{
     /*width: 140px!important;*/
     width: 80%!important;}
+.imgLoading{
+    margin-top: 40px;
+    margin-left: 44%;
+    margin-bottom: 40px;
+}
+.cross_stavki {
+    margin-top:20px!important;
+}
+.cross_stavki:hover {
+    cursor: pointer;
+    color: #4D93F9;
+}
+.cross_stavki_perevozka:hover{
+    cursor: pointer;
+    color: #4D93F9;
+}

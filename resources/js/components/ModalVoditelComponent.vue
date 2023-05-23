@@ -65,15 +65,21 @@
                             </div>
                             <div class="col-4 ">
                                 <div class="col create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                <input  class="col-12 border_input"
-                                        v-model="kompaniya"/>
-                            </div>
-                            </div>
-                            </div>
-                        </div>
+                                <!--       <input  class="col-12 border_input"
+                                               v-model="kompaniya"/>-->
+
+                                       <auto-input-perevozka-modal-component v-if="pogruzkaShowInp" class="select_width_grade"
+                                                                       :vidTsFromParent="kompaniyaNazvanie"
+                                                                       @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                       ></auto-input-perevozka-modal-component>
+
+                                   </div>
+                                   </div>
+                                   </div>
+                               </div>
 
 
-<!--                    строка загрузки файлов-->
+       <!--                    строка загрузки файлов-->
                         <div class="col-12 grade_title_lit cont_header_vod">Загрузка файлов:</div>
                         <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
                         <div class="container-fluid ">
@@ -154,7 +160,9 @@ Vue.use(VueMask)
                 kogdaVydan:'',
                 propiska:'',
                 kompaniya:'',
+                kompaniyaNazvanie:'',
                 doc_files:[],
+                pogruzkaShowInp:true
             }},
 
         methods: {
@@ -162,7 +170,7 @@ Vue.use(VueMask)
                 this.phoneMain = this.phoneMain.replace(/\D/g, '').slice(0, 10);
             },
             //если кликнули на нового перевозчика
-            newPerevozchik()
+            newPerevozchik(vidGrade,idPErevozchik,nazvaniePerevozchik)
             {
                 this.current_gruzootpravitel_id='',
                 this.FIO='',
@@ -172,13 +180,28 @@ Vue.use(VueMask)
                 this.kemVydan='',
                 this.kogdaVydan='',
                 this.propiska='',
-                this.kompaniya='',
+
                 this.doc_files=[],
                 this.files=[],
                 this.openDP=false,
                 this.alert_arr=[],
                 this.alert=false,
                 this.temp_file_id=''
+
+                //если кликаем  из вида settings ну тоесть совсем новый водитель и название перевозчика(компании) не надо
+                    if(!vidGrade)
+                    {
+                        this.kompaniya='',
+                        this.kompaniyaNazvanie=''
+                    }
+                    else
+                    {
+
+                        this.kompaniya=idPErevozchik,
+                        this.kompaniyaNazvanie=nazvaniePerevozchik
+
+                    }
+
 
             },
             //методы редактирования
@@ -195,6 +218,7 @@ Vue.use(VueMask)
                     this.kogdaVydan='',
                     this.propiska='',
                     this.kompaniya='',
+                    this.kompaniyaNazvanie='',
                     this.doc_files=[],
                     this.files=[],
                     this.openDP=false,
@@ -219,6 +243,7 @@ Vue.use(VueMask)
                          this.kogdaVydan=data.voditel.kogdaVydan,
                          this.propiska=data.voditel.propiska,
                          this.kompaniya=data.voditel.kompaniya,
+                         this.kompaniyaNazvanie=data.kompaniyaNazvanie,
                              data.voditel_files.forEach(function(entry) {
                                  doc_files.push({
                                      id:entry.id,
@@ -449,6 +474,10 @@ Vue.use(VueMask)
                         }
                     });
 
+            },
+            parentMethodFromAutoinputPerevozka(data)
+            {
+                this.kompaniya=data.id
             }
         }
     }

@@ -1,7 +1,7 @@
 <template>
-    <div class="container orders_main">
+    <div class="container no_padding_right_imp no_padding_left_imp orders_main">
         <div class="row orders_title_div">
-            <div class="col-12 row">
+            <div class="col-12 row no_padding_right_imp">
                 <div class="col-6 orders_title" >
                     Заявки
                 </div>
@@ -12,9 +12,8 @@
                     </div>
                 </div>
 
-                <div class="col-12 coloring_row row">
+                <div class="col-12 coloring_row no_padding_right_imp">
                     <div class="col-12 row coloring_row_1">
-
                         <div class="col-2  color_title_1 coloring_np" v-on:click="update_header_underscore(0,'zurnal_zaiavok')" :class="{ header_underscore_0: header_underscore_list_class[0] }">
                             <span class="col-12 row">
                             <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >

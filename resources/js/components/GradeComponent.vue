@@ -11,12 +11,12 @@
             :gradeAddVoditel='gradeAddVoditel'
         ></modal-voditel-component>
         <modal-t-s-component
-            ref="modalComponentforActionVoditel1"
+            ref="modalComponentforActionTS"
             vid="grade"
             :gradeAddTSModal='gradeAddTSModal'
         ></modal-t-s-component>
         <modal-p-p-component
-            ref="modalComponentforActionVoditel2"
+            ref="modalComponentforActionPP"
             vid="grade"
             :gradeAddPPModal='gradeAddPPModal'
         ></modal-p-p-component>
@@ -226,31 +226,34 @@
                                                                     :order_id="order_id"
                                                                     :vidTsFromParent="elem1.voditel_TSNazvanie"
                                                                     :elem1="elem1"
+                                                                    :kompaniya="elem1.perevozchik"
                                                                     @childReturnMethod="parentMethodFromAutoinputVoditel"
                                                                     ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-voditel-component>
 
                                     <div class="col-12 row grade_marg_bot">
                             <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
-                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span></div>
                             <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!TSShowInp&&elem1.TS_TSNazvanie==''" v-on:click="TSShowInpChange()">Выбрать номер ТС</div>
                                     <auto-input-t-s-component v-if="TSShowInp" class="select_width_grade"
                                                                   :order_id="order_id"
                                                                   :vidTsFromParent="elem1.TS_TSNazvanie"
                                                                   :elem1="elem1"
+                                                                    :kompaniya="elem1.perevozchik"
                                                                   @childReturnMethod="parentMethodFromAutoinputTSModal"
                                                                   ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-t-s-component>
                                     <div class="col-6 min_ts">
                                         <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ПП:
-                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newPPModal()">Добавить</span></div>
                             <div class="cr_ord_inp_n_1" v-if="!PPShowInp" v-on:click="PPShowInpChange()">{{ elem1.PP_Nazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!PPShowInp&&elem1.PP_Nazvanie==''" v-on:click="PPShowInpChange()">Выбрать номер ПП</div>
                                     <auto-input-p-p-component v-if="PPShowInp" class="select_width_grade"
                                                               :order_id="order_id"
                                                               :vidTsFromParent="elem1.PP_Nazvanie"
                                                               :elem1="elem1"
+                                                              :kompaniya="elem1.perevozchik"
                                                               @childReturnMethod="parentMethodFromAutoinputPP"
                                                               ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-p-p-component>
@@ -492,7 +495,7 @@
                                         </div>
                                         <div class="col-6">
                                             <div class="little_title_grade">Файлы</div>
-                                            <div class="col add_ts_button9 text-center" v-on:click="download_all_doc_grade()">Скачать всё</div>
+                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_all_doc_grade()">Скачать всё</div>
                                         </div>
                                     </div>
                                     <div class="col-12 row">
@@ -898,7 +901,15 @@
             newVoditel()
             {
                 //вызов метода дочернего компонента( модального окна )
-                this.$refs.modalComponentforActionVoditel.newPerevozchik()
+                this.$refs.modalComponentforActionVoditel.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
+            },
+            newTSModal()
+            {
+                this.$refs.modalComponentforActionTS.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
+            },
+            newPPModal()
+            {
+                this.$refs.modalComponentforActionPP.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
             },
             //метод удаления из массив корректный
             deleteFromArrTS(key,id_pogruzka,pogruzka_or_vygruzka)
@@ -1045,10 +1056,10 @@
             },
             deleteTs()
             {
-             console.log('spisokTShead')
-             console.log(this.spisokTShead)
-             // console.log('spisokTSarr')
-             // console.log(this.spisokTSarr)
+            // console.log('spisokTShead')
+             //console.log(this.spisokTShead)
+              console.log('spisokTSarr')
+              console.log(this.spisokTSarr)
              //    console.log('spisokTSheadadres_pogruzki_TS')
              //    console.log(this.spisokTShead[0].adres_pogruzki_TS)
 
@@ -1824,7 +1835,14 @@
                 objToPush1['summa'] = '';
                 objToPush1['data'] = '';
                 objToPush1['show_DP_date'] =false;
-                objToPush1['id_summa'] =Number(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)+Number(1);
+                if(this.spisokTShead[key].summa_list.length==0)
+                {
+                    objToPush1['id_summa'] =0;
+                }
+                else
+                {
+                    objToPush1['id_summa'] =Number(this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id_summa)+Number(1);
+                }
                 this.spisokTShead[key].summa_list.push(objToPush1);
                 axios
                     .post('/add_summ',{
@@ -1833,7 +1851,14 @@
                         id_summa:objToPush1['id_summa']
                     })
                  .then(response => {
-                     this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id = response.data.id;
+                     if(this.spisokTShead[key].summa_list.length==0)
+                     {
+                         this.spisokTShead[key].summa_list[0].id = response.data.id;
+                     }
+                     else
+                     {
+                         this.spisokTShead[key].summa_list[this.spisokTShead[key].summa_list.length-1].id = response.data.id;
+                     }
                   })
             },
             deleteSumm(id,keyTS,keySumma)
@@ -1928,7 +1953,7 @@
                     //если поставлена галочка на терминале
                     if(this.spisokTSarr[i].checked2==1)
                     {
-                        this.ob_budzet_left=Number(this.ob_budzet_left)+Number(this.spisokTSarr[i].stavka_TS)
+                        this.ob_budzet_left=Number(this.ob_budzet_left)+(Number(this.spisokTSarr[i].stavka_TS)*Number(this.spisokTSarr[i]['kol_TS_TS']))
 
                         let flag = false;
                         //проверяем может был такой терминал уже

@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/up_in_db_gruzootpravitel', [App\Http\Controllers\GradeController::class, 'up_in_db_gruzootpravitel'])->name('up_in_db_gruzootpravitel');
     Route::post('/update_one_gruzzootpravitel_from_select', [App\Http\Controllers\GradeController::class, 'update_one_gruzzootpravitel_from_select'])->name('update_one_gruzzootpravitel_from_select');
     Route::post('/update_one_data_summa', [App\Http\Controllers\GradeController::class, 'update_one_data_summa'])->name('update_one_data_summa');
+    Route::post('/deleteStavka', [App\Http\Controllers\GradeController::class, 'deleteStavka'])->name('deleteStavka');
     Route::post('/store_grade_file', [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
     Route::post('/add_to_naznachenie_stavki', [App\Http\Controllers\GradeController::class, 'add_to_naznachenie_stavki'])->name('add_to_naznachenie_stavki');
     Route::post('/add_to_work', [App\Http\Controllers\GradeController::class, 'add_to_work'])->name('add_to_work');
@@ -89,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_templ_names', [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
     Route::get('/download_all_doc_grade/{grade_id}/{ts_id}', [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');
     Route::post('/get_template_vars', [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');
+    Route::post('/addPerevozchikToStavka', [App\Http\Controllers\GradeController::class, 'addPerevozchikToStavka'])->name('addPerevozchikToStavka');
     Route::post('/get_finall_doc_pdf', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
     Route::get('/get_finall_doc_pdf_file/templates/{filename}', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
     Route::post('/download_current_doc', [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');
@@ -134,6 +136,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update_forma_settings', [App\Http\Controllers\SettingsController::class, 'update_forma_settings'])->name('update_forma_settings');
     Route::post('/logout', [App\Http\Controllers\ProfileController::class, 'logout'])->name('logout');
     Route::post('/searchBack', [App\Http\Controllers\SearchController::class, 'searchBack'])->name('searchBack');
+    Route::post('/searchBackStavkiInput', [App\Http\Controllers\SearchController::class, 'searchBackStavkiInput'])->name('searchBackStavkiInput');
+    Route::post('/searchBackKompaniya', [App\Http\Controllers\SearchController::class, 'searchBackKompaniya'])->name('searchBackKompaniya');
+    Route::post('/searchBackStavki', [App\Http\Controllers\SearchController::class, 'searchBackStavki'])->name('searchBackStavki');
 
 
     Route::get('/users_list', [App\Http\Controllers\AdminController::class, 'users_list'])->name('users_list');
@@ -145,6 +150,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/add_user', [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
     Route::get('/perevozchiki', [App\Http\Controllers\PerevozchikiController::class, 'perevozchiki'])->name('perevozchiki');
+    Route::get('/stavki', [App\Http\Controllers\StavkiController::class, 'stavki'])->name('stavki');
+    Route::post('/getStavkiList', [App\Http\Controllers\StavkiController::class, 'getStavkiList'])->name('getStavkiList');
 
 });
 Auth::routes();

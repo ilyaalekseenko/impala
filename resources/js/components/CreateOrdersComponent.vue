@@ -927,7 +927,7 @@
                 let budjet = 0;
                 for(var i = 0; i < this.spisokTSarr.length; i++)
                 {
-                    budjet=(Number(budjet)+Number(this.spisokTSarr[i]['stavka_TS']));
+                    budjet=(Number(budjet)+(Number(this.spisokTSarr[i]['stavka_TS'])*Number(this.spisokTSarr[i]['kol_TS_TS']) ) );
                 }
                 return budjet;
             },
