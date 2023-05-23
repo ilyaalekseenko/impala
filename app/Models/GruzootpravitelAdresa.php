@@ -74,6 +74,10 @@ class GruzootpravitelAdresa extends Model
     public function getAdresById($adresId)
     {
         $adres= GruzootpravitelAdresa::where('id',$adresId)->get();
+        if($adres->isEmpty())
+        {
+            return false;
+        }
         return $adres[0]['adres'];
     }
     public function countAdresa()

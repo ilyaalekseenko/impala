@@ -86,7 +86,14 @@ class StavkiService
                 {
                     //получаем изначальный адрес в инпут для показа
                     $adres_pogruzke_show=$this->gruzootpravitelAdresaModel->getAdresById($pogruzka['adres_pogruzki']);
-                    $pogruzka['adres_pogruzki_show']=$adres_pogruzke_show;
+                    if($adres_pogruzke_show==false)
+                    {
+                        $pogruzka['adres_pogruzki_show']='';
+                    }
+                    else
+                    {
+                        $pogruzka['adres_pogruzki_show']=$adres_pogruzke_show;
+                    }
                 }
 
             }
@@ -99,10 +106,17 @@ class StavkiService
                 else
                 {
                     $adres_pogruzke_show=$this->gruzootpravitelAdresaModel->getAdresById($pogruzka['adres_pogruzki']);
-                    $pogruzka['adres_vygruzki_show']=$adres_pogruzke_show;
+                    if($adres_pogruzke_show==false)
+                    {
+                        $pogruzka['adres_pogruzki_show']='';
+                    }
+                    else
+                    {
+                        $pogruzka['adres_vygruzki_show']=$adres_pogruzke_show;
+                    }
                 }
             }
-            return dd('flag3');
+           //тут уже не работает
             $grade['adres_pogruzki_TS']=$TS_list_pogruzka;
             $grade['adres_vygr_TS']=$TS_list_vygruzka;
             //добавляем название к типу ТС
