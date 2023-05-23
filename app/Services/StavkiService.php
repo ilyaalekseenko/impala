@@ -67,6 +67,7 @@ class StavkiService
         {
             //переделать метод под grade которые мы получили ранее из поиска и вызывать метод поиска из search service
             $grade_list=$this->finalGradeModel->getGradeListByIds($oldstavki);
+            return dd('TORA');
         }
         foreach ($grade_list as $grade)
         {
