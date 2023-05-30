@@ -1,5 +1,5 @@
 <template>
-    <div class="gruz_auto_select">
+    <div class="gruz_auto_select" v-my-click-outside="closeParentAutoInput">
 
         <div class="input-container inp_show" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
@@ -29,7 +29,8 @@
                 MainVarInInput:this.vidTsFromParent,
                 searchOffset:0,
                 inputHeight: 30,
-                mainId:0
+                mainId:0,
+                firstClose:true
             }
         },
         mounted() {
@@ -189,6 +190,19 @@
                 }
                   },
 
+            closeParentAutoInput()
+            {
+                if(this.firstClose)
+                {
+                    this.firstClose=false
+                }
+                else
+                {
+                    this.$emit('childCloseAutoInput', {
+                        varName:'PPShowInp',
+                    })
+                }
+            },
 
             returnDataToParent()
             {

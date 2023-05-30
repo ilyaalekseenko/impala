@@ -74,7 +74,6 @@ class StavkiService
             //получаем список погрузок и выгрузок у данного ТС
             $TS_list_pogruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
             $TS_list_vygruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();
-           //тут проверил
             //получаем имена погрузок и выгрузок
             foreach ($TS_list_pogruzka as $pogruzka)
             {
@@ -116,7 +115,6 @@ class StavkiService
                     }
                 }
             }
-           //тут уже не работает
             $grade['adres_pogruzki_TS']=$TS_list_pogruzka;
             $grade['adres_vygr_TS']=$TS_list_vygruzka;
             //добавляем название к типу ТС

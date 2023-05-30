@@ -91,4 +91,15 @@ class VidTS extends Authenticatable
     {
        return VidTS::where('ts_name', 'like', '%'.request('tipTS').'%')->get('id');
     }
+    public function getVidTsGlobal($searchOffset)
+    {
+        return VidTS::
+        offset($searchOffset)
+            ->limit(10)
+            ->get();
+    }
+    public function getVidTsGlobalStavki()
+    {
+        return VidTS::get();
+    }
 }

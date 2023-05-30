@@ -41,6 +41,7 @@ Vue.component('auto-input-component', require('./components/SupportComponents/Au
 Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
 Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
 Vue.component('auto-input-voditel-component', require('./components/SupportComponents/AutoInputVoditelComponent').default);
+Vue.component('auto-input-stavki-tip-t-s-component', require('./components/SupportComponents/AutoInputStavkiTipTSComponent').default);
 Vue.component('auto-input-t-s-component', require('./components/SupportComponents/AutoInputTSComponent').default);
 Vue.component('auto-input-tip-t-s-component', require('./components/SupportComponents/AutoInputTipTSComponent').default);
 Vue.component('auto-input-p-p-component', require('./components/SupportComponents/AutoInputPPComponent').default);
@@ -105,6 +106,9 @@ import MixinCheckShowBlock from './mixins/MixinCheckShowBlock'
 Vue.mixin(MixinCheckShowBlock);
 import MixinCheckOrderStatus from './mixins/MixinCheckOrderStatus'
 Vue.mixin(MixinCheckOrderStatus);
+//импортирую свою директиву my-click-outside
+import './directives/my-click-outside';
+
 const app = new Vue({
     el: '#app',
 });

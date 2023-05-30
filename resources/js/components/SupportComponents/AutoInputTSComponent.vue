@@ -1,7 +1,6 @@
 <template>
-    <div class="gruz_auto_select">
-
-        <div class="input-container inp_show" >
+    <div v-my-click-outside="closeParentAutoInput" class="gruz_auto_select">
+        <div  class="input-container inp_show" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
@@ -29,7 +28,8 @@
                 MainVarInInput:this.vidTsFromParent,
                 searchOffset:0,
                 inputHeight: 30,
-                mainId:0
+                mainId:0,
+                firstClose:true
             }
         },
         mounted() {
@@ -47,6 +47,11 @@
             }
         },
         methods: {
+            handleClickOutside(event)
+            {
+
+                console.log('клик в не элемента')
+            },
             //методы отображения скролла
             waitScrollTextarea()
             {
@@ -193,7 +198,19 @@
                 }
                   },
 
-
+            closeParentAutoInput()
+            {
+                if(this.firstClose)
+                {
+                    this.firstClose=false
+                }
+                else
+                {
+                    this.$emit('childCloseAutoInput', {
+                        varName:'TSShowInp',
+                    })
+                }
+            },
             returnDataToParent()
             {
                 this.$emit('childReturnMethod', {

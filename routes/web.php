@@ -139,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/searchBackStavkiInput', [App\Http\Controllers\SearchController::class, 'searchBackStavkiInput'])->name('searchBackStavkiInput');
     Route::post('/searchBackKompaniya', [App\Http\Controllers\SearchController::class, 'searchBackKompaniya'])->name('searchBackKompaniya');
     Route::post('/searchBackStavki', [App\Http\Controllers\SearchController::class, 'searchBackStavki'])->name('searchBackStavki');
+    Route::post('/searchBackTS', [App\Http\Controllers\SearchController::class, 'searchBackTS'])->name('searchBackTS');
+    Route::post('/searchBackTSStavki', [App\Http\Controllers\SearchController::class, 'searchBackTSStavki'])->name('searchBackTSStavki');
 
 
     Route::get('/users_list', [App\Http\Controllers\AdminController::class, 'users_list'])->name('users_list');

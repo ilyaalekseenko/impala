@@ -56,7 +56,9 @@ class SearchService
         {
             $modelIn = 'App\Models\\' . $model;
             $res=$modelIn::
-            where($fieldTosearch, 'like', '%'.$searchWord.'%')
+                when($searchWord!='', function($q) use ($fieldTosearch,$searchWord) {
+                    return $q->where($fieldTosearch, 'like', '%' . $searchWord . '%');
+                        })
                 ->get();
 
             foreach ($res as  $key =>$oneRes)

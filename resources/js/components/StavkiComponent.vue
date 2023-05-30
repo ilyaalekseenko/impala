@@ -16,20 +16,17 @@
                         <div class="col-12 row no_padding_right border_in_orders">
                             <div class="col-3 orders_title_table_main text-start row">
                                 <div class="col-2"></div>
-                                <div class="col-8 head_font no_padding_right_imp">Тип ТС
-                                    <auto-input-stavki-component class=""
-                                                                 @childReturnMethod="parentMethodStavki"
+                                <div class="col-8 head_font no_padding_right_imp">
+                                    <auto-input-stavki-tip-t-s-component
+                                                                 class="select_width_grade"
                                                                  tip="tipTS"
-                                                                 ref="AutoPogruzka"
-                                                                 :vidTsFromParent="tipTSSearch"
-                                                                 modelSearch="VidTS"
-                                                                 fieldToSearch="ts_name"
-                                                                 fieldToSearchFinalGrade="vid_TS"
-                                    ></auto-input-stavki-component>
+                                                                 @childReturnMethod="parentMethodStavki"
+                                                                 ref="AutoSelectComponent_vid_TS"
+                                    ></auto-input-stavki-tip-t-s-component>
                                 </div>
                                 <div v-if="tipTSSearch" class="col-2 cross_stavki" v-on:click="clearInput('tipTS')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
                             </div>
-                            <div class="col-2 orders_title_table_main head_font">Перевозчик
+                            <div class="col-2 orders_title_table_main head_font">
                                 <div class="row">
                                     <auto-input-stavki-component class="col-10 no_padding_right_imp"
                                                           @childReturnMethod="parentMethodStavki"
@@ -39,12 +36,13 @@
                                                           modelSearch="Perevozka"
                                                           fieldToSearch="nazvanie"
                                                           fieldToSearchFinalGrade="perevozchik"
+                                                          headerName="Перевозчик"
                                     ></auto-input-stavki-component>
                                     <div v-if="perevozchikSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('perevozchik')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
                                 </div>
                             </div>
                             <div class="col-2 orders_title_table_main head_font">Ставки</div>
-                            <div class="col-2 orders_title_table_main head_font">Откуда
+                            <div class="col-2 orders_title_table_main head_font">
                                 <div class="row">
                                     <auto-input-stavki-component class="col-10 no_padding_right_imp"
                                                                  @childReturnMethod="parentMethodStavki"
@@ -55,11 +53,12 @@
                                                                  fieldToSearch="adres"
                                                                  fieldToSearchFinalGrade="vid_TS"
                                                                  pogrVygrInp="1"
+                                                                 headerName="Откуда"
                                     ></auto-input-stavki-component>
                                     <div v-if="otkudaTSSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('otkuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
                                 </div>
                             </div>
-                            <div class="col-2 orders_title_table_main head_font">Куда
+                            <div class="col-2 orders_title_table_main head_font">
                                 <div class="row">
                                     <auto-input-stavki-component class="col-10 no_padding_right_imp"
                                                                  @childReturnMethod="parentMethodStavki"
@@ -70,6 +69,7 @@
                                                                  fieldToSearch="adres"
                                                                  fieldToSearchFinalGrade="vid_TS"
                                                                  pogrVygrInp="2"
+                                                                 headerName="Куда"
                                     ></auto-input-stavki-component>
                                     <div v-if="kudaSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('kuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
                                 </div>
@@ -173,6 +173,7 @@ Vue.filter('formatDate', function(value) {
             //метод очистки инпутов
             clearInput(type)
             {
+                this.$refs.AutoSelectComponent_vid_TS.setToDefaultState()
                 //очищаем инпут
                 this.setTip(type,'')
                 //устанавливаем пагинацию в ноль
@@ -198,7 +199,6 @@ Vue.filter('formatDate', function(value) {
             },
             change_one_gruzzotpravitel(id,nazvanie,yr_adres,kontakty)
             {
-                console.log(this.gruzootpravitel_arr[this.currentRow])
                 this.gruzootpravitel_arr[this.currentRow].perevozchik=id
                 this.gruzootpravitel_arr[this.currentRow].perevozchik_TSNazvanie=nazvanie
             },
@@ -327,6 +327,7 @@ Vue.filter('formatDate', function(value) {
             //главный метод поиска вызываемый из дочерних инпутов
             parentMethodStavki(data)
             {
+
                 //устанавливаем значения пришедшие из поисковых инпутов
                 this.setTip(data.tip,data.ts_name)
                 //устанавливаем пагинацию в ноль

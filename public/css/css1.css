@@ -1754,6 +1754,9 @@
      overflow: hidden;
      z-index: 20;
  }
+.gruz_auto_select .dropdown_TS {
+    border-top: 1px solid #ccc!important;
+}
 
 .gruz_auto_select ul {
      list-style: none;
@@ -1807,6 +1810,10 @@
     margin-bottom: 20px;
 }
 .voditeli_list_FIO:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.cust_pointer:hover {
     cursor: pointer;
     text-decoration: underline;
 }

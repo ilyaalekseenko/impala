@@ -3,7 +3,7 @@
 
         <div class="input-container inp_show" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <input type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <input readonly type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
@@ -20,7 +20,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','elem1'],
+        props: ['vidTsFromParent','key_in_arr','id_ts','elem1','tip'],
         data(){
             return {
                 selectedValue: "",
@@ -100,7 +100,7 @@
                 let searchArrTemp=[];
                 let searchWord=this.MainVarInInput;
                 axios
-                    .post('/searchBack',{
+                    .post('/searchBackTS',{
                         searchWord:searchWord,
                         model:'VidTS',
                         fieldToSearch:'ts_name',
@@ -191,7 +191,8 @@
                     //возвращаем обратно id
                     vid_TS:this.mainId,
                     ts_name:this.MainVarInInput,
-                    elem1:this.elem1
+                    elem1:this.elem1,
+                    tip:this.tip
                 })
 
             },

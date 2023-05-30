@@ -162,7 +162,7 @@
 <!--                        перебор в шапке-->
                         <div class="col-12 row create_ord_underline_1"></div>
                         <span v-for="(elem,key) in spisokTShead" class="ts_grade_margin">
-                        <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem)" v-bind:class="{ ts_podsvet: elem.id_ts===right_current_TS }">
+                        <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem,key)" v-bind:class="{ ts_podsvet: elem.id_ts===right_current_TS }">
                              <div class="col-12 row no_padding_left no_padding_right">
                             <div class="col-2 grade_header_col">
                                 <iconify-icon class="truck_grade no_padding_right no_padding_left" icon="carbon:delivery-truck" width="20" height="20"></iconify-icon>
@@ -215,6 +215,7 @@
                                                                  :vidTsFromParent="elem1.perevozchik_TSNazvanie"
                                                                  :elem1="elem1"
                                                                  @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                                                 @childCloseAutoInput="closeParentAutoInput"
                                                                  ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-perevozka-component>
 
@@ -228,7 +229,8 @@
                                                                     :elem1="elem1"
                                                                     :kompaniya="elem1.perevozchik"
                                                                     @childReturnMethod="parentMethodFromAutoinputVoditel"
-                                                                    ref="AutoSelectComponent_vid_TS"
+                                                                    @childCloseAutoInput="closeParentAutoInput"
+                                                                  ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-voditel-component>
 
                                     <div class="col-12 row grade_marg_bot">
@@ -236,12 +238,14 @@
                             <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span></div>
                             <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!TSShowInp&&elem1.TS_TSNazvanie==''" v-on:click="TSShowInpChange()">Выбрать номер ТС</div>
-                                    <auto-input-t-s-component v-if="TSShowInp" class="select_width_grade"
+                                    <auto-input-t-s-component
+                                                                  v-if="TSShowInp" class="select_width_grade"
                                                                   :order_id="order_id"
                                                                   :vidTsFromParent="elem1.TS_TSNazvanie"
                                                                   :elem1="elem1"
-                                                                    :kompaniya="elem1.perevozchik"
+                                                                  :kompaniya="elem1.perevozchik"
                                                                   @childReturnMethod="parentMethodFromAutoinputTSModal"
+                                                                  @childCloseAutoInput="closeParentAutoInput"
                                                                   ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-t-s-component>
                                     <div class="col-6 min_ts">
@@ -255,6 +259,7 @@
                                                               :elem1="elem1"
                                                               :kompaniya="elem1.perevozchik"
                                                               @childReturnMethod="parentMethodFromAutoinputPP"
+                                                              @childCloseAutoInput="closeParentAutoInput"
                                                               ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-p-p-component>
                                     </div>
@@ -431,7 +436,7 @@
                                      <div class="col-12 row">
                                     <div class="col-8">
                                         <div class="little_title_grade">Сумма</div>
-                                        <input @blur="update_one_data(elem1,'stavka_summa')" class="border_input inp_date" v-model="elem1.stavka_summa"/>
+                                        <input @keypress="onlyNumber" @blur="update_one_data(elem1,'stavka_summa')" class="border_input inp_date" v-model="elem1.stavka_summa"/>
                                         <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
                                            НДС
                                         </span>
@@ -450,10 +455,12 @@
 
                                     <div class="col-12 row" v-for="(sum,key2) in elem1.summa_list">
                                     <div class="col little_title_grade_1">Сумма {{ key2 +1 }}</div>
-                                    <div class="col add_button_grade no_wrap_text" v-on:click="deleteSumm(sum.id,key,key2)">Удалить сумму</div>
+                                    <div class="col  no_wrap_text" ><span v-on:click="deleteSumm(sum.id,key,key2)" class="add_button_grade">Удалить сумму</span></div>
                                      <div class="col-12">
-                                        <input @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
-                                               class=" border_input add_summ_grade_inp" v-model="sum.summa"  />
+                                        <input @keypress="onlyNumber" @input="checkSumma(elem1,sum.id_summa,sum.summa,key2)" @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
+                                               class="border_input add_summ_grade_inp" v-model="sum.summa"/>
+<!--                                               class=" border_input add_summ_grade_inp"  v-model="sum.summa"  maxlength="3"/>-->
+
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
                                          <date-picker   v-model="sum.data" valueType="format" type="date"
@@ -533,7 +540,8 @@
         </div>
         <div class="offset-1 col-10 row down_streak_grade">
             <div class="down_grade_text col-5">
-                Общий бюджет: {{ ob_budzet_down }} рубля
+<!--                Общий бюджет: {{ ob_budzet_down }} рубля-->
+                Общий бюджет: {{ ob_budzet_left }} рубля
             </div>
             <div class="down_grade_text col-4">
                 Оплачено: {{ oplacheno }} рублей
@@ -657,7 +665,10 @@
                 voditelShowInp:false,
                 TSShowInp:false,
                 PPShowInp:false,
-                showTsList:true
+                showTsList:true,
+                mainCount:100,
+                valTest:0,
+                right_currentTS_In_Arr:''
 
 
             }
@@ -682,6 +693,7 @@
         computed: {
 
             dolg: function () {
+
                 let summNeOpl=0;
                 for (let i = 0; i < this.spisokTShead.length; i++) {
                     summNeOpl=summNeOpl+this.spisokTShead[i].ne_oplacheno;
@@ -706,6 +718,23 @@
                     if(this.right_current_TS==this.spisokTShead[i].id_ts)
                     {
                         return this.spisokTShead[i].summa_list;
+                    }
+                }
+            },
+            //используем вычисляемое свойство для определения где поменялось значение
+            spisokTSheadSummaOne()
+            {
+                // console.log('this.right_current_TS!!!!!!!!!!!!!!!!!!!!!')
+                // console.log(this.right_current_TS)
+                //указываешь что должно поменяться
+                if(this.spisokTShead.length!=0)
+                {
+                    for (let i = 0; i < this.spisokTShead.length; i++) {
+
+                        if((this.right_current_TS==this.spisokTShead[i].id_ts)&&(this.right_current_TS!==''))
+                        {
+                            return this.spisokTShead[i].stavka_summa;
+                        }
                     }
                 }
             },
@@ -752,58 +781,36 @@
             }
         },
         watch:{
+            // 'spisokTShead.1': {
+            //     handler() {
+            //         console.log('Свойство myNestedArray[1] изменилось');
+            //     },
+            //     deep: true,
+            // },
 
+
+                valTest() {
+
+                    this.valTest = Math.max(1, 10);
+                },
             neOplachenoFlagList:{
                 deep: true,
                 handler(){
                     for (let i = 0; i < this.spisokTShead.length; i++) {
-                        // if(this.right_current_TS==this.spisokTShead[i].id_ts)
-                        // {
                         this.spisokTShead[i].ne_oplacheno=0;
                         this.spisokTShead[i].ob_summa=0;
                         for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
                             let sum=Number(this.spisokTShead[i].summa_list[j].summa);
                             this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
                         }
-
-                        if(((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1)<0)
+                        if((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)<0)
                         {
                             this.spisokTShead[i].ne_oplacheno=0
                         }
                         else
                         {
-                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
+                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)
                         }
-                         //   this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
-
-
-                        // }
-                    }
-                }
-            },
-            neOplachenoFlag:{
-                deep: true,
-                handler(){
-                    for (let i = 0; i < this.spisokTShead.length; i++) {
-                        // if(this.right_current_TS==this.spisokTShead[i].id_ts)
-                        // {
-                        this.spisokTShead[i].ne_oplacheno=0;
-                        this.spisokTShead[i].ob_summa=0;
-                        for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
-                            let sum=Number(this.spisokTShead[i].summa_list[j].summa);
-                            this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
-                        }
-                        if(((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1)<0)
-                        {
-                            this.spisokTShead[i].ne_oplacheno=0
-                        }
-                        else
-                        {
-                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
-                        }
-
-                      //  this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)*-1
-
                     }
                 }
             },
@@ -811,14 +818,32 @@
                  deep: true,
                 handler(){
                     for (let i = 0; i < this.spisokTShead.length; i++) {
-                        // if(this.right_current_TS==this.spisokTShead[i].id_ts)
-                        // {
                             this.spisokTShead[i].ob_summa=0;
                             for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
                                 let sum=Number(this.spisokTShead[i].summa_list[j].summa);
                                 this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
                             }
-                        // }
+                    }
+                }
+            },
+            spisokTSheadSummaOne: {
+                deep: true,
+                handler(){
+                    for (let i = 0; i < this.spisokTShead.length; i++) {
+                        this.spisokTShead[i].ne_oplacheno=0;
+                        this.spisokTShead[i].ob_summa=0;
+                        for (let j = 0; j < this.spisokTShead[i].summa_list.length; j++) {
+                            let sum=Number(this.spisokTShead[i].summa_list[j].summa);
+                            this.spisokTShead[i].ob_summa=this.spisokTShead[i].ob_summa+sum;
+                        }
+                        if((this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)<0)
+                        {
+                            this.spisokTShead[i].ne_oplacheno=0
+                        }
+                        else
+                        {
+                            this.spisokTShead[i].ne_oplacheno=(this.spisokTShead[i].stavka_summa-this.spisokTShead[i].ob_summa)
+                        }
                     }
                 }
             },
@@ -842,6 +867,26 @@
         },
 
         methods: {
+            //директива закрытия инпута если клик был в не элемента
+            closeParentAutoInput(data)
+            {
+                if(data.varName=='TSShowInp')
+                {
+                    this.TSShowInp=false
+                }
+                if(data.varName=='voditelShowInp')
+                {
+                    this.voditelShowInp=false
+                }
+                if(data.varName=='PPShowInp')
+                {
+                    this.PPShowInp=false
+                }
+                if(data.varName=='pogruzkaShowInp')
+                {
+                    this.pogruzkaShowInp=false
+                }
+            },
             //метод для проверки показывать ли инпут или текст в погрузке выгрузке, если есть значение то текст, если нету то инпут
             adresPogruzkiVygruzkiShowFunc(key, pogr_vygr)
             {
@@ -901,15 +946,15 @@
             newVoditel()
             {
                 //вызов метода дочернего компонента( модального окна )
-                this.$refs.modalComponentforActionVoditel.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
+                this.$refs.modalComponentforActionVoditel.newPerevozchik(true,this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik'],this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik_TSNazvanie'])
             },
             newTSModal()
             {
-                this.$refs.modalComponentforActionTS.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
+                this.$refs.modalComponentforActionTS.newPerevozchik(true,this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik'],this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik_TSNazvanie'])
             },
             newPPModal()
             {
-                this.$refs.modalComponentforActionPP.newPerevozchik(true,this.spisokTShead[this.right_current_TS]['perevozchik'],this.spisokTShead[this.right_current_TS]['perevozchik_TSNazvanie'])
+                this.$refs.modalComponentforActionPP.newPerevozchik(true,this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik'],this.spisokTShead[this.right_currentTS_In_Arr]['perevozchik_TSNazvanie'])
             },
             //метод удаления из массив корректный
             deleteFromArrTS(key,id_pogruzka,pogruzka_or_vygruzka)
@@ -972,21 +1017,19 @@
                         // }
                     })
             },
-            //добавление пустой погрузки или выгрузки
+            //обновление из инпута поиска грузоотправителя
             update_one_gruzzootpravitel_from_select(data)
             {
-                //ПРОВЕРИТЬ РАБОЧЕСТЬ ДОБАВЛЕНИЯ АДРЕСА ПОГРУЗКИ И ДОБАВИТЬ В ВЫГРУЗКУ
-                // console.log(this.order_id)
                 //номер транспортного средства по порядку среди всех ТС в данной grade(заявке)
                 //ключ , это номер по порядку в данном ТС
                 let newKey=0;
                 if(data.pogr_or_vygr=='1')
                 {
-                    newKey= this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[data.key].id_pogruzka
+                    newKey= this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[data.key].id_pogruzka
                 }
                 if(data.pogr_or_vygr=='2')
                 {
-                    newKey= this.spisokTShead[this.right_current_TS].adres_vygr_TS[data.key].id_pogruzka
+                    newKey= this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[data.key].id_pogruzka
                 }
 
                 console.log('data.key')
@@ -1012,7 +1055,7 @@
                     pog_vyg='adres_vygr_TS'
                     pog_vyg_show='adres_vygruzki_show'
                 }
-                this.up_gruz_in_front(data.id_ts,pog_vyg,data.key,pog_vyg_show,data.nazvanie)
+                this.up_gruz_in_front_new(pog_vyg,data.key,pog_vyg_show,data.nazvanie)
             },
 
             //метод обновляющий данные грузоотправителя из инпута
@@ -1037,10 +1080,23 @@
                         name:name,
                     })
             },
-            //обновим данные на фронте в списке грузоотправителей после работы с селектом
+            //обновим данные на фронте в списке грузоотправителей после работы с селектом НЕ РАБОТАЕТ ИЗ МОДАЛКИ ДОБАВЛЕНИЯ ГРУЗООТПРАВИТЕЛЯ
             up_gruz_in_front(id_ts,pog_vyg,key,pog_vyg_show,nazvanie)
             {
                 this.spisokTShead[id_ts][pog_vyg][key][pog_vyg_show]=nazvanie
+            },
+            up_gruz_in_front_new(pog_vyg,key,pog_vyg_show,nazvanie)
+            {
+                console.log('СПИСОК ОТСЮДА')
+                console.log('pog_vyg')
+                console.log(pog_vyg)
+                console.log('key')
+                console.log(key)
+                console.log('pog_vyg_show')
+                console.log(pog_vyg_show)
+                console.log('nazvanie')
+                console.log(nazvanie)
+                this.spisokTShead[this.right_currentTS_In_Arr][pog_vyg][key][pog_vyg_show]=nazvanie
             },
             update_unread_status_v_rabote()
             {
@@ -1056,10 +1112,10 @@
             },
             deleteTs()
             {
-            // console.log('spisokTShead')
-             //console.log(this.spisokTShead)
-              console.log('spisokTSarr')
-              console.log(this.spisokTSarr)
+            console.log('spisokTShead')
+             console.log(this.spisokTShead)
+             //  console.log('spisokTSarr')
+             //  console.log(this.spisokTSarr)
              //    console.log('spisokTSheadadres_pogruzki_TS')
              //    console.log(this.spisokTShead[0].adres_pogruzki_TS)
 
@@ -1092,6 +1148,7 @@
                 this.p4=p4
                 this.p5=p5
             },
+            //обновление из модального окна грузоотправителя
             select_gruzootpravitel()
             {
 
@@ -1124,7 +1181,12 @@
                                 ref_link='AutoSelectComponent_grade_vygruzka'
 
                             }
-                            this.up_gruz_in_front(this.p1.id_ts,pog_vyg,this.p2,pog_vyg_show,response.data.gruzootpravitel.nazvanie)
+
+                           // console.log(this.p1)
+                            console.log('this.add_gruzoot_key')
+                            console.log(this.add_gruzoot_key)
+                            this.up_gruz_in_front_new(pog_vyg,this.p2,pog_vyg_show,response.data.gruzootpravitel.nazvanie)
+                            //this.up_gruz_in_front(this.p1.id_ts,pog_vyg,this.p2,pog_vyg_show,response.data.gruzootpravitel.nazvanie)
                             //обновим в input
                             //передаём в селект название и отображаем там
 
@@ -1252,32 +1314,32 @@
 
                 if(pogr_or_vygr==1)
                 {
-                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_current_TS].adres_pogruzki_TS,'id_pogruzka',id_pogruzka)
+                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS,'id_pogruzka',id_pogruzka)
                     if(date_or_time==1)
                     {
-                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[newKey].show_DP_date=true;
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[newKey].show_DP_date=true;
                     }
                     else
                     {
-                        this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[newKey].show_DP_time=true;
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[newKey].show_DP_time=true;
                     }
                 }
                 else
                 {
-                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_current_TS].adres_vygr_TS,'id_pogruzka',id_pogruzka)
+                    let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS,'id_pogruzka',id_pogruzka)
                     if(date_or_time==1)
                     {
-                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[newKey].show_DP_date=true;
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[newKey].show_DP_date=true;
                     }
                     else
                     {
-                        this.spisokTShead[this.right_current_TS].adres_vygr_TS[newKey].show_DP_time=true;
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[newKey].show_DP_time=true;
                     }
                 }
             },
             openDPsumma(summa_numb_in_arr)
             {
-                    this.spisokTShead[this.right_current_TS].summa_list[summa_numb_in_arr].show_DP_date=true
+                    this.spisokTShead[this.right_currentTS_In_Arr].summa_list[summa_numb_in_arr].show_DP_date=true
             },
             handleChange0()
             {
@@ -1302,11 +1364,11 @@
                          if(response.data.id_doc_type=='1')
                          {
 
-                             for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_pogruzki_TS.length; i++) {
-                                 if(this.current_id_pogruzka== this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].id_pogruzka)
+                             for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS.length; i++) {
+                                 if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].id_pogruzka)
                                  {
 
-                                              this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].doc_name=''
+                                              this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name=''
                                               if(this.right_col_down_show==true)
                                               {
                                                   this.right_col_down_show=false;
@@ -1318,10 +1380,10 @@
 
                          if(response.data.id_doc_type=='2')
                          {
-                             for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_vygr_TS.length; i++) {
-                                 if(this.current_id_pogruzka== this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].id_pogruzka)
+                             for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS.length; i++) {
+                                 if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].id_pogruzka)
                                  {
-                                     this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].doc_name =''
+                                     this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name =''
                                      if (this.right_col_down_show == true) {
                                          this.right_col_down_show = false;
                                      }
@@ -1332,7 +1394,7 @@
 
                          if(response.data.id_doc_type=='3')
                          {
-                             this.spisokTShead[this.right_current_TS].podpisannaya_doc_name=''
+                             this.spisokTShead[this.right_currentTS_In_Arr].podpisannaya_doc_name=''
                              if (this.right_col_down_show == true) {
                                  this.right_col_down_show = false;
                              }
@@ -1340,7 +1402,7 @@
                          }
                          if(response.data.id_doc_type=='4')
                          {
-                             this.spisokTShead[this.right_current_TS].schet_doc_name=''
+                             this.spisokTShead[this.right_currentTS_In_Arr].schet_doc_name=''
                              if (this.right_col_down_show == true) {
                                  this.right_col_down_show = false;
                              }
@@ -1348,7 +1410,7 @@
                          }
                          if(response.data.id_doc_type=='5')
                          {
-                             this.spisokTShead[this.right_current_TS].faktura_doc_name=''
+                             this.spisokTShead[this.right_currentTS_In_Arr].faktura_doc_name=''
                              if (this.right_col_down_show == true) {
                                  this.right_col_down_show = false;
                              }
@@ -1356,7 +1418,7 @@
                          }
                          if(response.data.id_doc_type=='6')
                          {
-                             this.spisokTShead[this.right_current_TS].TN_doc_name=''
+                             this.spisokTShead[this.right_currentTS_In_Arr].TN_doc_name=''
                              if (this.right_col_down_show == true) {
                                  this.right_col_down_show = false;
                              }
@@ -1414,17 +1476,17 @@
                             if(response.data.id_doc_type==='1')
                             {
 
-                                for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_pogruzki_TS.length; i++) {
-                                    if(this.current_id_pogruzka== this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].id_pogruzka)
+                                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS.length; i++) {
+                                    if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].id_pogruzka)
                                     {
                                         console.log('current_pogruzka')
                                         console.log(i)
 
                                 let temp=''
-                                temp=this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].adres_pogruzki
-                                this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].adres_pogruzki=''
-                                 this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].adres_pogruzki=temp
-                                this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i].doc_name=response.data.name_doc
+                                temp=this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki
+                                this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki=''
+                                 this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki=temp
+                                this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name=response.data.name_doc
                                         if(this.right_col_down_show==true)
                                         {
                                             this.right_col_down_show=false;
@@ -1436,14 +1498,14 @@
 
                             if(response.data.id_doc_type==='2')
                             {
-                                for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_vygr_TS.length; i++) {
-                                    if(this.current_id_pogruzka== this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].id_pogruzka)
+                                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS.length; i++) {
+                                    if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].id_pogruzka)
                                     {
                                     let temp = ''
-                                    temp = this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].adres_pogruzki
-                                    this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].adres_pogruzki = ''
-                                    this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].adres_pogruzki = temp
-                                    this.spisokTShead[this.right_current_TS].adres_vygr_TS[i].doc_name = response.data.name_doc
+                                    temp = this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].adres_pogruzki
+                                    this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].adres_pogruzki = ''
+                                    this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].adres_pogruzki = temp
+                                    this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name = response.data.name_doc
                                     if (this.right_col_down_show == true) {
                                         this.right_col_down_show = false;
                                     }
@@ -1454,7 +1516,7 @@
 
                             if(response.data.id_doc_type==='3')
                             {
-                                this.spisokTShead[this.right_current_TS].podpisannaya_doc_name=response.data.name_doc
+                                this.spisokTShead[this.right_currentTS_In_Arr].podpisannaya_doc_name=response.data.name_doc
                                 if (this.right_col_down_show == true) {
                                     this.right_col_down_show = false;
                                 }
@@ -1462,7 +1524,7 @@
                             }
                             if(response.data.id_doc_type==='4')
                             {
-                                this.spisokTShead[this.right_current_TS].schet_doc_name=response.data.name_doc
+                                this.spisokTShead[this.right_currentTS_In_Arr].schet_doc_name=response.data.name_doc
                                 if (this.right_col_down_show == true) {
                                     this.right_col_down_show = false;
                                 }
@@ -1470,7 +1532,7 @@
                             }
                             if(response.data.id_doc_type==='5')
                             {
-                                this.spisokTShead[this.right_current_TS].faktura_doc_name=response.data.name_doc
+                                this.spisokTShead[this.right_currentTS_In_Arr].faktura_doc_name=response.data.name_doc
                                 if (this.right_col_down_show == true) {
                                     this.right_col_down_show = false;
                                 }
@@ -1478,7 +1540,7 @@
                             }
                             if(response.data.id_doc_type==='6')
                             {
-                                this.spisokTShead[this.right_current_TS].TN_doc_name=response.data.name_doc
+                                this.spisokTShead[this.right_currentTS_In_Arr].TN_doc_name=response.data.name_doc
                                 if (this.right_col_down_show == true) {
                                     this.right_col_down_show = false;
                                 }
@@ -1487,6 +1549,50 @@
                         })
 
 
+            },
+            //важынй метод, получающий номер в массиве spisokTShead по id_ts
+            getCurrentTSId()
+            {
+                for (let i = 0; i < this.spisokTShead.length; i++) {
+
+                    if(this.right_current_TS==this.spisokTShead[i].id_ts)
+                    {
+                        return i;
+                    }
+                }
+            },
+            onlyNumber ($event) {
+
+
+
+                //console.log($event.keyCode); //keyCodes value
+                let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+                if ((keyCode < 48 || keyCode > 57)&& keyCode !== 46) { // 46 is dot
+                    $event.preventDefault();
+                }
+                // if (tempSumma>this.spisokTShead[this.right_currentTS_In_Arr].stavka_summa) { // 46 is dot
+                //     $event.preventDefault();
+                // }
+            },
+            checkSumma(elem1,id_summa,summa,key)
+            {
+                //сумма всех оплат
+                let tempSumma=0;
+                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].summa_list.length; i++) {
+                    tempSumma=Number(tempSumma)+Number(this.spisokTShead[this.right_currentTS_In_Arr].summa_list[i].summa)
+                }
+                //если сумма всех оплат больше общей суммы то вырезаем один знак
+                if(tempSumma>this.spisokTShead[this.right_currentTS_In_Arr].stavka_summa)
+                {
+                    let numberString = this.spisokTShead[this.right_currentTS_In_Arr].summa_list[key].summa.toString(); // Преобразование числа в строку
+                    let trimmedNumberString = numberString.slice(0, -1); // Удаление последнего символа
+                    if(trimmedNumberString.length=='')
+                    {
+                        trimmedNumberString=0
+                    }
+                    let trimmedNumber = parseInt(trimmedNumberString); // Преобразование строки обратно в число (если необходимо)
+                    this.spisokTShead[this.right_currentTS_In_Arr].summa_list[key].summa=trimmedNumber
+                }
             },
             update_one_data_summa(elem,id_summa,name,data_to_up)
             {
@@ -1518,7 +1624,13 @@
             update_one_data(elem,name)
             {
                 console.log(elem)
-
+                if(name=='stavka_summa')
+                {
+                    if(elem.stavka_summa=='')
+                    {
+                        elem.stavka_summa=0
+                    }
+                }
                 axios
                     .post('/update_one_data',{
                         elem:elem,
@@ -1571,13 +1683,12 @@
             },
             add_pogruzka_grade()
             {
-
                 let arr_to_DB=[];
-                for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_pogruzki_TS.length; i++) {
-                    arr_to_DB.push(this.spisokTShead[this.right_current_TS].adres_pogruzki_TS[i])
+                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS.length; i++) {
+                    arr_to_DB.push(this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i])
                 }
-                for (let i = 0; i < this.spisokTShead[this.right_current_TS].adres_vygr_TS.length; i++) {
-                    arr_to_DB.push(this.spisokTShead[this.right_current_TS].adres_vygr_TS[i])
+                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS.length; i++) {
+                    arr_to_DB.push(this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i])
                 }
 
                 axios
@@ -1616,8 +1727,22 @@
             },
             add_to_right_column(key)
             {
-                this.right_current_TS=this.spisokTShead.length;
+                //определяем id ts
+                if(this.spisokTShead.length==0)
+                    {
+                        this.right_current_TS=this.spisokTShead.length;
+                    }
+               else
+                    {
+                        this.right_current_TS=this.spisokTShead[this.spisokTShead.length-1].id_ts
+                        this.right_current_TS=Number(this.right_current_TS)+Number(1)
+                    }
 
+                this.right_currentTS_In_Arr=this.spisokTShead.length;
+                console.log('this.right_currentTS_In_Arr')
+                console.log(this.right_currentTS_In_Arr)
+                console.log('right_current_TS')
+                console.log(this.right_current_TS)
                     let objToPush= {};
                     objToPush['id_ts'] = this.right_current_TS;
                     objToPush['kol_gruz_TS'] = this.spisokTSarr[key].kol_gruz_TS;
@@ -1761,19 +1886,23 @@
                 this.right_col_down_show=true;
 
             },
-            click_on_right_col(elem)
+            click_on_right_col(elem,key)
             {
                 if(this.right_current_TS===elem.id_ts)
                 {
                     this.right_col_down_show=false;
                     this.right_current_TS=''
+                    this.right_currentTS_In_Arr=''
                 }
                 else
                 {
 
                     if(!this.deleteFlag)
                     {
+                        //переменная для id_ts текущего ТС в правой колонке
                         this.right_current_TS=elem.id_ts
+                        //переменная обозначающая место текущего ТС в массиве правой колонки
+                        this.right_currentTS_In_Arr=key
                         if(this.right_col_down_show==true)
                         {
                             this.right_col_down_show=false;
@@ -1785,7 +1914,10 @@
                         this.deleteFlag=false
                     }
                 }
-
+                console.log('TS')
+                console.log(this.right_current_TS)
+                console.log('right_currentTS_In_Arr')
+                console.log(this.right_currentTS_In_Arr)
             },
             add_new_adres_pogruzka(key,pogruzka_or_vygruzka)
             {
@@ -1881,8 +2013,6 @@
             },
             download_all_doc_grade (){
                 window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;
-
-
             },
             //получаем стартовые данные
             get_start_data_grade(inp,TSinp)

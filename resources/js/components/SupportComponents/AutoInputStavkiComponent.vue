@@ -1,8 +1,11 @@
 <template>
-    <div class="gruz_auto_select">
+    <div class="gruz_auto_select" v-my-click-outside="focus_out_from_select">
 
         <div class="input-container inp_show" >
-            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <div @click="clickMainHeader()" class="cust_pointer">{{ headerName }}</div>
+            <div v-if="!showInput">{{ MainVarInInput }}</div>
+            <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" @input="searchInpNew()" v-model="MainVarInInput" @click="clickSearchInp()"/>
+<!--            <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
@@ -19,7 +22,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','tip','modelSearch','fieldToSearch','fieldToSearchFinalGrade','pogrVygrInp'],
+        props: ['vidTsFromParent','key_in_arr','id_ts','tip','modelSearch','fieldToSearch','fieldToSearchFinalGrade','pogrVygrInp','headerName'],
         data(){
             return {
                 selectedValue: "",
@@ -32,10 +35,13 @@
 
                 filteredList: [],
                 showList: false,
+                showInput:false,
+                tempMainVarInInput:'',
+                clickHeaderVar:true
             }
         },
         mounted() {
-            this.setHeightTextarea()
+          //  this.setHeightTextarea()
         },
         watch: {
             // отслеживаем изменения значений в родителе
@@ -49,6 +55,28 @@
             }
         },
         methods: {
+            //клик по перевозчику
+            clickMainHeader()
+            {
+                if(this.clickHeaderVar)
+                {
+                    this.clickHeaderVar=false
+                    console.log('clickMainHeader')
+                    this.tempMainVarInInput=this.MainVarInInput
+                    this.MainVarInInput=''
+                    this.showInput=!this.showInput
+                    setTimeout(this.setHeightTextarea, 100);
+
+                    this.filteredList=[];
+                    this.searchOffset=0;
+                    this.searchBack(this.filteredList)
+                    this.showList = true;
+                    // ждём появления скролла и если он появился вызываем метод searchInpNext
+                    this.waitScroll()
+                }
+
+
+            },
             //методы отображения скролла
             waitScrollTextarea()
             {
@@ -56,49 +84,49 @@
             },
             waitScrollTextareaSec()
             {
-                if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
+                if(this.showList)
                 {
-                    this.inputHeight = this.$refs.auto_input.scrollHeight
-                    this.waitScrollTextarea()
+                    if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
+                    {
+                        this.inputHeight = this.$refs.auto_input.scrollHeight
+                        this.waitScrollTextarea()
+                    }
                 }
 
+
+            },
+            focus_out_from_select()
+            {
+                if(this.showList)
+                {
+                    this.clickHeaderVar=true
+                    this.showInput=false
+                    this.showList=false;
+                    this.MainVarInInput=this.tempMainVarInInput
+
+                }
             },
             select(item) {
 
+                this.clickHeaderVar=true
                 this.showList = false;
                 this.MainVarInInput = item.nazvanie;
                 this.mainId=item.id;
+                this.showInput=false
                 this.returnDataToParent()
 
             },
             //использую задержку в выполнении для проверки клика по листу
-            focus_out_from_select(event)
-            {
-                setTimeout(() => {
-
-                if(this.showList)
-                {
-                      this.showList = false;
-                        //проверяем есть ли впринципе такой вид ТС
-                        // let isset_gruz =this.checkIfVidTSIsset_in_db()
-                        // isset_gruz.then((value) => {
-                        //     //если есть такой перевозчик то записать результат
-                        //     if(value.isset_flag=="yes")
-                        //     {
-                        //         this.mainId=value.idTSBack;
-                        //         this.returnDataToParent();
-                        //     }
-                        //     //если нет такого перевозчика то записываем пустое значение
-                        //     else
-                        //     {
-                        //         this.mainId=null;
-                        //         this.MainVarInInput=''
-                        //         this.returnDataToParent();
-                        //     }
-                        // });
-                }
-                }, 200);
-            },
+            // focus_out_from_select(event)
+            // {
+            //     setTimeout(() => {
+            //
+            //     if(this.showList)
+            //     {
+            //           this.showList = false;
+            //     }
+            //     }, 200);
+            // },
             //метод поиска на бэке
             searchBack(inp)
             {
