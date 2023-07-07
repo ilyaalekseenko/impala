@@ -3,7 +3,10 @@
 
         <div class="input-container inp_show" >
             <div @click="clickMainHeader()" class="cust_pointer">{{ headerName }}</div>
-            <div v-if="!showInput">{{ MainVarInInput }}</div>
+            <span class="div-container">
+                <div v-if="!showInput">{{ MainVarInInput }}</div>
+                <div v-if="MainVarInInput" class="col-2 cross_stavki_perevozka" v-on:click="returnDataToParent1(tip)"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+             </span>
             <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" @input="searchInpNew()" v-model="MainVarInInput" @click="clickSearchInp()"/>
 <!--            <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <div class="dropdown" v-if="showList" >
@@ -22,7 +25,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','tip','modelSearch','fieldToSearch','fieldToSearchFinalGrade','pogrVygrInp','headerName'],
+        props: ['vidTsFromParent','key_in_arr','id_ts','tip','modelSearch','fieldToSearch','fieldToSearchFinalGrade','pogrVygrInp','headerName','tipTSParentId','perevozchikParentId','otkudaParentId','kudaParentId'],
         data(){
             return {
                 selectedValue: "",
@@ -45,6 +48,22 @@
         },
         watch: {
             // отслеживаем изменения значений в родителе
+            tipTSParentId: function () {
+                console.log('this.tipTSParent')
+                console.log(this.tipTSParentId)
+            },
+            perevozchikParentId: function () {
+                console.log('this.perevozchikParent')
+                console.log(this.perevozchikParentId)
+            },
+            otkudaParentId: function () {
+                console.log('this.otkudaParent')
+                console.log(this.otkudaParentId)
+            },
+            kudaParentId: function () {
+                console.log('this.kudaParent')
+                console.log(this.kudaParentId)
+            },
 
              vidTsFromParent: function () {
 
@@ -130,6 +149,7 @@
             //метод поиска на бэке
             searchBack(inp)
             {
+               // alert(this.otkudaParentId);
                 let searchArrTemp=[];
                 let searchWord=this.MainVarInInput;
                 axios
@@ -139,21 +159,33 @@
                         fieldToSearch:this.fieldToSearch,
                         fieldToSearchFinalGrade:this.fieldToSearchFinalGrade,
                         searchOffset:this.searchOffset,
-                        pogrVygrInp:this.pogrVygrInp
+                        pogrVygrInp:this.pogrVygrInp,
+                        tipTSParentId:this.tipTSParentId,
+                        perevozchikParentId:this.perevozchikParentId,
+                        otkudaParentId:this.otkudaParentId,
+                        kudaParentId:this.kudaParentId
                     })
                     .then(response => {
                         if(response.data.count!=0)
                         {
                             response.data.res.forEach(function(entry) {
+                                console.log(entry.id)
                                 inp.push({
-                                    id:entry.id,
+                                    id:entry.id ,
                                     nazvanie:entry.ts_name,
                                 });
                             })
+                            console.log(inp)
                         }
                     })
                 // return searchArrTemp
 
+            },
+            returnDataToParent1(tip)
+            {
+                this.$emit('childReturnMethod1', {
+                    tip:tip
+                })
             },
             clickSearchInp()
             {
@@ -224,7 +256,7 @@
             returnDataToParent()
             {
                 this.$emit('childReturnMethod', {
-                    // id:this.mainId,
+                     id:this.mainId,
                      ts_name:this.MainVarInInput,
                      tip:this.tip
                 })

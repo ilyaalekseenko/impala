@@ -92,6 +92,32 @@ class OrderService
         }
         return $orders;
     }
+    public function convertDateMonth($dateString)
+    {
+
+        $months = array(
+            '01'   => 'января',
+            '02'  => 'февраля',
+            '03'     => 'марта',
+            '04'     => 'апреля',
+            '05'       => 'мая',
+            '06'      => 'июня',
+            '07'      => 'июля',
+            '08'    => 'августа',
+            '09' => 'сентября',
+            '10'   => 'октября',
+            '11'  => 'ноября',
+            '12'  => 'декабря'
+        );
+        $dateParts = explode('.', $dateString);
+
+        $day = $dateParts[0];
+        $month = $months[$dateParts[1]];
+        $year = $dateParts[2];
+
+        $result = $day . ' ' . $month . ' ' . $year;
+        return $result;
+    }
 
 
 }

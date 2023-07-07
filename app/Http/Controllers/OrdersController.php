@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\DeleteOrderEvent;
 use App\Events\UpdateLogistEvent;
 use App\Events\UpdateNaznachenieStavkiHeaderEvent;
+use App\Models\DocList;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\Gruzootpravitel;
@@ -18,6 +19,9 @@ use App\Models\TS;
 use App\Models\LogistName;
 use App\Models\UnreadHeader;
 use App\Models\User;
+use App\Models\Voditel;
+use App\Models\GradePogruzka;
+use App\Models\GruzootpravitelAdresa;
 use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\ImportantService;
@@ -43,6 +47,8 @@ use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use PhpOffice\PhpWord\PhpWord;
 use Silverslice\ExcelTemplate\Template;
 use Dompdf\Dompdf;
+use Carbon\Carbon;
+
 
 class OrdersController extends Controller
 {
@@ -62,6 +68,13 @@ class OrdersController extends Controller
     private $UnreadHeadersModel;
     private $ButtonsService;
     private $gruzootpravitelAdresService;
+    private $gradePogruzkaModel;
+    private $finalGrade;
+    private $gruzootpravitelAdresa;
+    private $voditel;
+    private $docList;
+    private $gruzootpravitel;
+
 
     public function __construct(
         OrderService $orderService,
@@ -79,7 +92,13 @@ class OrdersController extends Controller
         LogistService $LogistService,
         UnreadHeader $UnreadHeadersModel,
         ButtonsService $ButtonsService,
-        GruzootpravitelAdresService $gruzootpravitelAdresService
+        GruzootpravitelAdresService $gruzootpravitelAdresService,
+        GradePogruzka $gradePogruzkaModel,
+        Voditel $voditel,
+        FinalGrade $finalGrade,
+        GruzootpravitelAdresa $gruzootpravitelAdresa,
+        DocList $docList,
+        Gruzootpravitel $gruzootpravitel
     )
     {
         $this->orderService = $orderService;
@@ -98,6 +117,12 @@ class OrdersController extends Controller
         $this->UnreadHeadersModel = $UnreadHeadersModel;
         $this->ButtonsService = $ButtonsService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
+        $this->gradePogruzkaModel = $gradePogruzkaModel;
+        $this->finalGrade = $finalGrade;
+        $this->gruzootpravitelAdresa = $gruzootpravitelAdresa;
+        $this->voditel = $voditel;
+        $this->docList = $docList;
+        $this->gruzootpravitel = $gruzootpravitel;
     }
 
 
@@ -396,8 +421,7 @@ class OrdersController extends Controller
                 $this->docsTemplMod->createDocFieldsInModel(request('doc_type'),request('full_name'));
             }
             //сохраняем
-            $this->docService->storeDoc(request('file_xlsx'),public_path('/templates/'),request('full_name'));
-
+        $this->docService->storeDoc(request('file_xlsx'),'/templates/',request('full_name'));
             return response()->json([
             'status' => 'success',
             'message' =>'Файл успешно сохранён',
@@ -464,48 +488,107 @@ class OrdersController extends Controller
 
 //            return response()->download(public_path('templates/отчёт.txt'))
 
-        $id = $request->input('id');
-        $doc_type = $request->input('doc_type');
-        $orders_list = Orders::where('id', '=', $id) ->get();
-        $grade_list = FinalGrade::where('grade_id', '=', $id) ->get();
 
+        $doc_type = $request->input('doc_type');
+
+        $id = $request->input('order_id');
+        $orders_list = Orders::where('id', '=', $id) ->get();
+        //получаю порядковый номер
+        $porNomer=$this->docList->getPorNomer($doc_type);
+        $finalGradeTS=$this->finalGrade->getIdByGrade(request('order_id'),request('id_ts'));
         if($doc_type=='1')
         {
             $TH = DocsTemplate::where('doc_type','TH')->get();
+            //получаю адреса погрузки и выгрузки
+            //вовзвращает массив в первом значении погрузка, во втором выгрузка
+            $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
+            //получаю место погрузки из orders
+            $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
+            //получаю водителя
+            $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+            //получаю имя шаблона
             $TH=$TH[0]['doc_name'];
+            //формирую имя документа
+            $fileName='TH_'.$orders_list[0]['id'].'_'.$voditel.'_'.$orders_list[0]['data_pogruzki'].'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
-                ->replace('por_nomer', $orders_list[0]['id'])
-                ->replace('adres_pogruzki', $orders_list[0]['adres_pogruzke'])
-                ->replace('adres_vygruzki', $orders_list[0]['adres_vygruski'])
-                ->replace('kol_gruzomest', $orders_list[0]['gruzomesta_big'])
+                ->replace('por_nomer',$porNomer)
+                ->replace('adres_pogruzki', $pogruzkaArr[0])
+                ->replace('adres_vygruzki', $pogruzkaArr[1])
+                ->replace('kol_gruzomest', $finalGradeTS[0]['kol_gruz_TS'])
                 ->replace('data_dostavki', $orders_list[0]['data_dostavki'])
                 ->replace('gruzootpravitel', 'Грузоотправитель')
-                ->replace('mesto_pogruzki', $orders_list[0]['adres_pogruzke'])
-                ->replace('voditel', $grade_list[0]['voditel'])
-                ->save(public_path('templates/fin_TH.xlsx'));
-
-            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-            $phpWord = $reader->load(public_path('templates/fin_TH.xlsx'));
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
-            $writer->writeAllSheets();
-            $writer->save(public_path('templates/TH.pdf'));
+                ->replace('mesto_pogruzki', $mesto[0]['full_name'])
+                ->replace('voditel', $voditel)
+                ->save(public_path('templates/'.$fileName));
+            //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
+              $this->docList->upPorNomer($doc_type,$porNomer,$fileName);
+//            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
+//            $phpWord = $reader->load(public_path('templates/fin_TH.xlsx'));
+//            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
+//            $writer->writeAllSheets();
+//            $writer->save(public_path('templates/TH.pdf'));
 
             return response()->json([
                 'status' => 'success',
-                'file' =>'TH.pdf',
+                'file' =>$fileName,
             ], 200);
         }
         if($doc_type=='2')
         {
+            //получаю поставщика
+            if($orders_list[0]['adres_pogruzke']==null)
+            {
+                $postavshik='';
+            }
+            else
+            {
+             $gruz=$this->gruzootpravitelAdresa->getAdresByIdWithGruz($orders_list[0]['adres_pogruzke']);
+                 if($gruz->isNotEmpty())
+                 {
+                     $postavshik=$this->gruzootpravitel->getGruzootpravitelByIdInModel($gruz[0]['gruzootpravitel_id']);
+                     if($postavshik->isNotEmpty())
+                     {
+                         $postavshik=$postavshik[0]['forma_id'].' '.$postavshik[0]['nazvanie'];
+                     }
+                 }
+                 else
+                 {
+                     $postavshik='';
+                 }
+            }
+            //высчитываем срок действия
+
+            $carbonDate = Carbon::createFromFormat('d.m.Y', $orders_list[0]['data_pogruzki']);
+            $srok_deist = $carbonDate->addMonth()->format('d.m.Y');
+            //получаю текстовый срок действия
+            $textDate=$this->orderService->convertDateMonth($orders_list[0]['data_pogruzki']);
+            $textDateSrokDeistv=$this->orderService->convertDateMonth($srok_deist);
+            //не работает перевод
+            //получаю ИМЯ ФАМИЛИЯ ОТЧЕСТВО водителя
+            $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+            //получаю полные данные водителя
+            $voditelFull=$this->voditel->getVoditel($finalGradeTS[0]['voditel']);
+            //организация это Импала, потом сделать инпут отдельный
+            $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
+
             $TH = DocsTemplate::where('doc_type','DOV')->get();
             $TH=$TH[0]['doc_name'];
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
-//                ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
+                ->replace('por_nomer', $porNomer)
+                ->replace('data_vydachi', $orders_list[0]['data_pogruzki'])
+                ->replace('srok_deist', $srok_deist)
+                ->replace('voditel', $voditel)
+                ->replace('postav', $postavshik)
+                ->replace('organizacia', $organizacia)
+                ->replace('vod_passport', $voditelFull[0]['seriyaPassporta'])
+                ->replace('vod_passport_kem', $voditelFull[0]['kemVydan'])
+                ->replace('vod_passport_kogda', $voditelFull[0]['kogdaVydan'])
+                ->replace('data_vydachi_text', $textDate.' г')
+                ->replace('deistv_do', $textDateSrokDeistv.' г')
                 ->save(public_path('templates/fin_DOV.xlsx'));
-
             $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
             $phpWord = $reader->load(public_path('templates/fin_DOV.xlsx'));
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
@@ -540,6 +623,7 @@ class OrdersController extends Controller
             ], 200);
         }
     }
+
 
     public function getOrderStatus(Request $request)
     {

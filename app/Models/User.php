@@ -29,7 +29,6 @@ class User extends Authenticatable
         'telefon',
         'data_rozdenia'
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *

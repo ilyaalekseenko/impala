@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\FinalGrade;
+use App\Models\GradePogruzka;
 use App\Models\VidTS;
 use App\Services\SearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class SearchController extends Controller
 {
@@ -13,16 +15,19 @@ class SearchController extends Controller
     protected $searchService;
     protected $vidTS;
     protected $finalGrade;
+    protected $gradePogruzka;
 
     public function __construct(
         SearchService $searchService,
         VidTS $vidTS,
-        FinalGrade $finalGrade
+        FinalGrade $finalGrade,
+        GradePogruzka $gradePogruzka,
     )
     {
         $this->searchService = $searchService;
         $this->vidTS = $vidTS;
         $this->finalGrade = $finalGrade;
+        $this->gradePogruzka=$gradePogruzka;
     }
 
     //метод поиска на бэке TS
@@ -52,13 +57,56 @@ class SearchController extends Controller
         //получаем результаты поиска
         $res=$this->vidTS->getVidTsGlobalStavki();
         $finalRes=[];
+        //подготовка к проверке откуда
+        if(request('otkudaParentId')!='')
+        {
+            $resultOtkudaArray=$this->searchService->otkudaKuda(request('otkudaParentId'),1);
+        }
+        //подготовка к проверке куда
+        if(request('kudaParentId')!='')
+        {
+            $resultKudaArray=$this->searchService->otkudaKuda(request('kudaParentId'),2);
+        }
         foreach ($res as $oneRes)
         {
+
+            //флаг проверки добавлять ли в результирующий массив
+            $nullFlag=true;
             $temp=$this->finalGrade->getIdBYColumnId('vid_TS',$oneRes['id']);
-            if(!$temp->isEmpty())
+            if($temp->isEmpty())
+            {
+                $nullFlag=false;
+            }
+            //смотрим есть ли у этого конкретного Типа ТС перевозчик из списка
+            if(request('perevozchikParentId')!='')
+            {
+                $issetPerevozchik=$this->finalGrade->getIssetVidTs($oneRes['id'],request('perevozchikParentId'));
+                if($issetPerevozchik->isEmpty())
+                {
+                    $nullFlag=false;
+                }
+            }
+            //смотрим есть ли у этого конкретного Типа ТС откуда из списка
+            if(request('otkudaParentId')!='')
+            {
+                if (!in_array($oneRes['id'], $resultOtkudaArray)) {
+                    $nullFlag=false;
+                }
+            }
+            //смотрим есть ли у этого конкретного Типа ТС откуда из списка
+            if(request('kudaParentId')!='')
+            {
+                if (!in_array($oneRes['id'], $resultKudaArray)) {
+                    $nullFlag=false;
+                }
+            }
+            //если все проверки пройдены то добавляем в результирующий массив
+            if($nullFlag)
             {
                 array_push($finalRes,$oneRes);
             }
+
+
         }
         return response()->json([
             'status' => 'success',
@@ -80,15 +128,6 @@ class SearchController extends Controller
     //метод поиска на бэке
     public function searchBackStavkiInput(Request $request)
     {
-//        if(request('searchWord')=='')
-//        {
-//            return response()->json([
-//                'status' => 'success',
-//                'message' =>'результаты поиска получены',
-//                'res' =>'',
-//                'count' =>0,
-//            ], 200);
-//        }
         //получаем результаты поиска
         $res=$this->searchService->searchBackStavkiInput(request('searchWord'),request('model'),request('fieldToSearch'),request('searchOffset'),request('fieldToSearchFinalGrade'));
         $count=$res->count();

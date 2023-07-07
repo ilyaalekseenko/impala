@@ -1846,11 +1846,24 @@
 .cross_stavki {
     margin-top:20px!important;
 }
+.cross_stavki_hov {
+    margin-left: 10px;
+}
+.cross_stavki_hov:hover {
+    cursor: pointer;
+    color: #4D93F9;
+}
 .cross_stavki:hover {
     cursor: pointer;
     color: #4D93F9;
 }
+.cross_stavki_perevozka {
+    margin-left: 10px;
+}
 .cross_stavki_perevozka:hover{
     cursor: pointer;
     color: #4D93F9;
+}
+.div-container {
+    display: flex;
 }

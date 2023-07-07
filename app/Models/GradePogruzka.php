@@ -34,5 +34,29 @@ class GradePogruzka extends Model
     {
         return GradePogruzka::where('adres_pogruzki',$adres_pogruzke)->where('pogruzka_or_vygruzka',$pogr_vygr)->get();
     }
+    public function getRowByPogruzkaPluck($adres_pogruzke,$pogr_vygr)
+    {
+        return GradePogruzka::where('adres_pogruzki',$adres_pogruzke)->where('pogruzka_or_vygruzka',$pogr_vygr)->pluck('grade_id');
+    }
+    public function getSecondPogruzka($pogr_vygr,$otkuda,$kuda)
+    {
+        if($pogr_vygr==1)
+        {
+            $pogr_vygr=2;
+            $searchField=$kuda;
+        }
+        else
+        {
+            $pogr_vygr=1;
+            $searchField=$otkuda;
+        }
+        return GradePogruzka::where('adres_pogruzki',$searchField)->where('pogruzka_or_vygruzka',$pogr_vygr)->get();
+    }
+    public function getPogruzka($grade_id,$id_ts)
+    {
+       return GradePogruzka::where('grade_id',$grade_id)
+            ->where('id_ts',$id_ts)
+            ->get();
+    }
 
 }

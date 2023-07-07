@@ -88,5 +88,12 @@ class GruzootpravitelAdresa extends Model
     {
         return GruzootpravitelAdresa::where('adres', 'like', '%'.$fromto.'%')->get();
     }
-
+    public function getFullName($pogrVygrIds)
+    {
+        return GruzootpravitelAdresa::whereIn('id',$pogrVygrIds)->get('full_name');
+    }
+    public function getOneName($id)
+    {
+        return GruzootpravitelAdresa::where('id',$id)->get('full_name');
+    }
 }

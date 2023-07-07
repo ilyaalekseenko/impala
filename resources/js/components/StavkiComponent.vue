@@ -21,10 +21,15 @@
                                                                  class="select_width_grade"
                                                                  tip="tipTS"
                                                                  @childReturnMethod="parentMethodStavki"
+                                                                 @childReturnMethod1="clearInput1"
                                                                  ref="AutoSelectComponent_vid_TS"
+                                                                 :tipTSParentId="tipTSParent"
+                                                                 :perevozchikParentId="perevozchikParent"
+                                                                 :otkudaParentId="otkudaParent"
+                                                                 :kudaParentId="kudaParent"
                                     ></auto-input-stavki-tip-t-s-component>
                                 </div>
-                                <div v-if="tipTSSearch" class="col-2 cross_stavki" v-on:click="clearInput('tipTS')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+<!--                                <div v-if="tipTSSearch" class="col-2 cross_stavki" v-on:click="clearInput('tipTS')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>-->
                             </div>
                             <div class="col-2 orders_title_table_main head_font">
                                 <div class="row">
@@ -36,9 +41,14 @@
                                                           modelSearch="Perevozka"
                                                           fieldToSearch="nazvanie"
                                                           fieldToSearchFinalGrade="perevozchik"
+                                                          @childReturnMethod1="clearInput1"
                                                           headerName="Перевозчик"
+                                                                 :tipTSParentId="tipTSParent"
+                                                                 :perevozchikParentId="perevozchikParent"
+                                                                 :otkudaParentId="otkudaParent"
+                                                                 :kudaParentId="kudaParent"
                                     ></auto-input-stavki-component>
-                                    <div v-if="perevozchikSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('perevozchik')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+<!--                                    <div v-if="perevozchikSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('perevozchik')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>-->
                                 </div>
                             </div>
                             <div class="col-2 orders_title_table_main head_font">Ставки</div>
@@ -54,8 +64,13 @@
                                                                  fieldToSearchFinalGrade="vid_TS"
                                                                  pogrVygrInp="1"
                                                                  headerName="Откуда"
+                                                                 @childReturnMethod1="clearInput1"
+                                                                 :tipTSParentId="tipTSParent"
+                                                                 :perevozchikParentId="perevozchikParent"
+                                                                 :otkudaParentId="otkudaParent"
+                                                                 :kudaParentId="kudaParent"
                                     ></auto-input-stavki-component>
-                                    <div v-if="otkudaTSSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('otkuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+<!--                                    <div v-if="otkudaTSSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('otkuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>-->
                                 </div>
                             </div>
                             <div class="col-2 orders_title_table_main head_font">
@@ -70,8 +85,13 @@
                                                                  fieldToSearchFinalGrade="vid_TS"
                                                                  pogrVygrInp="2"
                                                                  headerName="Куда"
+                                                                 @childReturnMethod1="clearInput1"
+                                                                 :tipTSParentId="tipTSParent"
+                                                                 :perevozchikParentId="perevozchikParent"
+                                                                 :otkudaParentId="otkudaParent"
+                                                                 :kudaParentId="kudaParent"
                                     ></auto-input-stavki-component>
-                                    <div v-if="kudaSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('kuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+<!--                                    <div v-if="kudaSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('kuda')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>-->
                                 </div>
                             </div>
                             <div class="col-1 orders_title_table_main head_font">Расстояние</div>
@@ -162,7 +182,11 @@ Vue.filter('formatDate', function(value) {
                 tipTSSearch:'',
                 perevozchikSearch:'',
                 otkudaTSSearch:'',
-                kudaSearch:''
+                kudaSearch:'',
+                tipTSParent:'',
+                perevozchikParent:'',
+                otkudaParent:'',
+                kudaParent:''
             }
         },
         created()
@@ -175,7 +199,7 @@ Vue.filter('formatDate', function(value) {
             {
                 this.$refs.AutoSelectComponent_vid_TS.setToDefaultState()
                 //очищаем инпут
-                this.setTip(type,'')
+                this.setTip(type,'','')
                 //устанавливаем пагинацию в ноль
                 this.setPaginationToNull()
                 //если хоть одно не пустое тогда ищем на бэке
@@ -188,7 +212,24 @@ Vue.filter('formatDate', function(value) {
                 {
                     this.get_gruzootpravitel_list();
                 }
-
+            },
+            clearInput1(data)
+            {
+                this.$refs.AutoSelectComponent_vid_TS.setToDefaultState()
+                //очищаем инпут
+                this.setTip(data.tip,'','')
+                //устанавливаем пагинацию в ноль
+                this.setPaginationToNull()
+                //если хоть одно не пустое тогда ищем на бэке
+                if(this.callSeacrh())
+                {
+                    this.searchOnBack()
+                }
+                //если всё пустое тогда вызываем общий метод поиска
+                else
+                {
+                    this.get_gruzootpravitel_list();
+                }
             },
             //метод вызываемый из дочернего компонента новый перевозчик
             addOnePerevozchik(newPerevId,nazvanie,yridicheskii_adres,kontakty)
@@ -327,9 +368,10 @@ Vue.filter('formatDate', function(value) {
             //главный метод поиска вызываемый из дочерних инпутов
             parentMethodStavki(data)
             {
-
+                console.log('data')
+                console.log(data)
                 //устанавливаем значения пришедшие из поисковых инпутов
-                this.setTip(data.tip,data.ts_name)
+                this.setTip(data.tip,data.ts_name,data.id)
                 //устанавливаем пагинацию в ноль
                 this.setPaginationToNull()
                 //если хоть одно не пустое тогда ищем на бэке
@@ -385,20 +427,27 @@ Vue.filter('formatDate', function(value) {
 
                         );
             },
-            setTip(searchRow,inpDataSearch)
+            setTip(searchRow,inpDataSearch,id)
             {
+                console.log('id')
+                console.log(id)
                 switch (searchRow) {
                     case 'tipTS':
                         this.tipTSSearch=inpDataSearch
+                        this.tipTSParent=id
                         break;
                     case 'perevozchik':
                         this.perevozchikSearch=inpDataSearch
+                        this.perevozchikParent=id
                         break;
                     case 'otkuda':
+
                         this.otkudaTSSearch=inpDataSearch
+                        this.otkudaParent=id
                         break;
                     case 'kuda':
                         this.kudaSearch=inpDataSearch
+                        this.kudaParent=id
                         break;
                 }
             },

@@ -80,5 +80,66 @@ class FinalGrade extends Model
             return true;
         }
     }
+    public function checkIfExistTipTS($perevozchikId,$vid_TS)
+    {
+        $field=FinalGrade::where('perevozchik',$perevozchikId)->where('vid_TS',$vid_TS)->first();
+        if ($field === null) {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public function getIssetVidTs($vidTsId,$perevozchikId)
+    {
+        return FinalGrade::where('vid_TS',$vidTsId)->where('perevozchik',$perevozchikId)->get();
+    }
+    public function getIssetOtkuda($vidTsId,$otkudaArr)
+    {
+        return FinalGrade::where('vid_TS',$vidTsId)->whereIn('grade_id',$otkudaArr)->get();
+    }
+    public function getVidTsPluck($grade_idArr)
+    {
+        return FinalGrade::whereIn('grade_id',$grade_idArr)->pluck('vid_TS');
+    }
+    public function getVidTsByGradeAndTs($onegrade)
+    {
+        return FinalGrade::where('grade_id',$onegrade['grade_id'])->where('id_ts',$onegrade['id_ts'])->pluck('vid_TS');
+    }
+    public function checkIfExistPer($perevozchik,$otkuda)
+    {
+        $flag=false;
+        foreach ($otkuda as $oneOtkuda)
+        {
+            $field=FinalGrade::where('perevozchik',$perevozchik)->where('grade_id',$oneOtkuda['grade_id'])->where('id_ts',$oneOtkuda['id_ts'])->first();
+            if ($field != null) {
+                $flag=true;
+            }
+        }
+        return $flag;
+    }
+    public function checkIfExistPerOne($id,$otkuda,$searchColumn)
+    {
+
+        $flag=false;
+
+            $field=FinalGrade::where($searchColumn,$id)->where('grade_id',$otkuda['grade_id'])->where('id_ts',$otkuda['id_ts'])->first();
+            if ($field != null) {
+                $flag=true;
+            }
+        return $flag;
+    }
+    public function checkIfExistPerOtkudaKuda($id_ts,$eqModel,$perevozchik,)
+    {
+        $flag=false;
+
+            $field=FinalGrade::where($eqModel,$perevozchik)->where('id_ts',$id_ts)->first();
+            if ($field != null) {
+                $flag=true;
+            }
+
+        return $flag;
+    }
 
 }

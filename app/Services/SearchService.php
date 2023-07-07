@@ -9,6 +9,7 @@ use App\Models\GruzootpravitelContact;
 use App\Models\Perevozka;
 use App\Models\TS;
 use App\Models\VidTS;
+use Illuminate\Support\Collection;
 
 class SearchService
 {
@@ -52,7 +53,7 @@ class SearchService
     public function searchBackStavkiInput($searchWord,$model,$fieldTosearch,$searchOffset,$fieldToSearchFinalGrade)
     {
         //если фильтруем по вид ТС или по перевозчику
-        if(($model=='VidTS')||($model=='Perevozka'))
+        if($model=='Perevozka')
         {
             $modelIn = 'App\Models\\' . $model;
             $res=$modelIn::
@@ -69,17 +70,92 @@ class SearchService
                 {
                     $res->forget($key);
                 }
-                if($model=='Perevozka')
-                {
                     $oneRes['ts_name']=$oneRes['nazvanie'];
+            }
+
+            if(request('tipTSParentId')!='')
+            {
+                //оставим в массиве $res только те значения которые совпадают с выбранным типом ТС
+                foreach ($res as  $key =>$oneRes)
+                {
+                    $existFinalGrade=$this->finalGrade->checkIfExistTipTS($oneRes['id'],request('tipTSParentId'));
+                    if(!$existFinalGrade)
+                    {
+                        $res->forget($key);
+                    }
                 }
             }
+            if(request('otkudaParentId')!='')
+            {
+                $otkuda=$this->otkudaKudaPer(request('otkudaParentId'),1);
+                foreach ($res as  $key =>$oneRes)
+                {
+                    //perevozchik grade id_ts в final_grade должны совпасть
+                    $existFinalGrade=$this->finalGrade->checkIfExistPer($oneRes['id'],$otkuda);
+                    if(!$existFinalGrade)
+                    {
+                        $res->forget($key);
+                    }
+                }
+
+            }
+            if(request('kudaParentId')!='')
+            {
+                $otkuda=$this->otkudaKudaPer(request('kudaParentId'),2);
+                foreach ($res as  $key =>$oneRes)
+                {
+                    //perevozchik grade id_ts в final_grade должны совпасть
+                    $existFinalGrade=$this->finalGrade->checkIfExistPer($oneRes['id'],$otkuda);
+                    if(!$existFinalGrade)
+                    {
+                        $res->forget($key);
+                    }
+                }
+
+            }
+
         }
+        //фильтруем по откуда и куда
         if($model=='GruzootpravitelAdresa')
         {
+
             $res=[];
-            $res=$this->fromToAdres($searchWord,request('pogrVygrInp'));
+            $res=$this->fromToAdres($searchWord,request('pogrVygrInp'),request('otkudaParentId'),request('kudaParentId'));
+                foreach ($res as  $key =>$oneRes)
+                {
+                  //  echo ($oneRes);
+                    //перевозчик
+                    if(request('perevozchikParentId')!='')
+                    {
+                        //perevozchik 79  id_ts 20 grade_id 226
+                        //perevozchik grade id_ts в final_grade должны совпасть
+                        $existFinalGrade=$this->finalGrade->checkIfExistPerOne(request('perevozchikParentId'),$oneRes,'perevozchik');
+                        if(!$existFinalGrade)
+                        {
+                            $res->forget($key);
+                        }
+
+                    }
+                    //вид ТС
+                    if(request('tipTSParentId')!='')
+                    {
+                        $existFinalGradeVidTS=$this->finalGrade->checkIfExistPerOne(request('tipTSParentId'),$oneRes,'vid_TS');
+                        if(!$existFinalGradeVidTS)
+                        {
+                            $res->forget($key);
+                        }
+                    }
+                }
+
+
+            //оставляем только уникальные элементы коллекции
+            $res = $res->groupBy('ts_name')->map(function ($group) {
+                return $group->first();
+            })->values();
         }
+
+
+
         //в отфильтрованном результате забираем 10 нужных нам записей
         $slicedItems = $res->splice($searchOffset, 10);
         return $slicedItems;
@@ -202,22 +278,95 @@ class SearchService
         }
         return $mainSearchArr;
     }
-    public function fromToAdres($from,$pogrVygr)
+    public function fromToAdres($from,$pogrVygr,$otkuda,$kuda)
     {
         //получаем все адреса погрузки выгрузки по названию
         $adresaId=$this->gruzootpravitelAdresa->getAdresByName($from);
+
+        $newCollectionAdresa = collect();
+        $testArr=[];
         //проверяем строки из таблицы grade_pogruzkas везде где наши id совпадают с колонкой adres_pogruzki
+       $counter=0;
+       //получаем не искомое поле откуда или куда
+
+        if($pogrVygr==1)
+        {
+            $searchField=$kuda;
+        }
+        else
+        {
+            $searchField=$otkuda;
+        }
+        if($searchField!='')
+        {
+            //получили все результаты не искомого поля
+            $rowPogruzkaSecond=$this->gradePogruzka->getSecondPogruzka($pogrVygr,$otkuda,$kuda);
+        }
+        else
+        {
+            $rowPogruzkaSecond='';
+        }
+
         foreach ($adresaId as $key =>$oneAdres)
         {
+
             $rowPogruzka=$this->gradePogruzka->getRowByPogruzka($oneAdres['id'],$pogrVygr);
+
             if($rowPogruzka->isEmpty())
             {
                 $adresaId->forget($key);
             }
-            $oneAdres['ts_name']=$oneAdres['adres'];
+            else
+            {
+
+                //добавить отдельный адрес ведь их несолько может быть
+                foreach ($rowPogruzka as $row)
+                {
+                    $counter++;
+//тут сравнение со вторым полем откуда иои куда чтобы искать только то что выбрано
+
+                    $flag=false;
+                    if($rowPogruzkaSecond=='')
+                    {
+                        $flag=true;
+                    }
+                    else
+                    {
+                        foreach ($rowPogruzkaSecond as $second)
+                        {
+                            if(($second['grade_id']==$row['grade_id'])&&($second['id_ts']==$row['id_ts']))
+                            {
+                                $flag=true;
+                            }
+                        }
+                    }
+
+
+                    if($flag)
+                    {
+                        $oneAdres['ts_name']=$oneAdres['adres'];
+                        $oneAdres['grade_id']=$row['grade_id'];
+                        $oneAdres['id_ts']=$row['id_ts'];
+
+
+
+                        array_push($testArr,
+                            array('ts_name'=> $oneAdres['adres'],'id_ts'=> $row['id_ts'],'grade_id'=> $row['grade_id'],'id'=> $oneAdres['id'],'nazvanie'=> $oneAdres['nazvanie'])
+                        );
+                    }
+
+                    //адрес есть но в итогов пропадает, вернее заменяется на оидакновый.
+                    //например перевозчик tyman, адрес2 id_ts должно быть 20 а его нету
+
+                }
+            }
+
         }
-        //получить строки где совпадают id
-        return $adresaId;
+       // $testArr=array_unique($testArr, SORT_REGULAR);
+
+        $collection = new Collection($testArr);
+        return $collection;
+       // return dd($adresaId);
     }
     public function fromTo($from,$pogrVygr)
     {
@@ -245,5 +394,43 @@ class SearchService
         }
         return $mainSearchArr;
     }
+
+    public function otkudaKudaPer($idPogrVygr,$pogrVygr)
+    {
+        $rowOtkuda=$this->gradePogruzka->getRowByPogruzka($idPogrVygr,$pogrVygr);
+        //из таблицы final_grades получаем соответствующие vid_TS
+        $rowOtkuda=$rowOtkuda->toArray();
+        return $rowOtkuda;
+    }
+
+    public function otkudaKuda($idPogrVygr,$pogrVygr)
+    {
+        //получаем все строки в колонке погрузка где есть наше id_pogruzka и забираем оттуда grade_id
+        //получается весь список транспортных средст на которых есть в колонке откуда
+        $rowOtkuda=$this->gradePogruzka->getRowByPogruzka($idPogrVygr,$pogrVygr);
+        //из таблицы final_grades получаем соответствующие vid_TS
+        $rowOtkuda=$rowOtkuda->toArray();
+        //нужно получить только те Vid_TS где и Grade и Id_ts совпадают с нашими
+        $tempOtkuda=[];
+        foreach($rowOtkuda as $onegrade)
+        {
+            $vidTSFromFinalGrade=$this->finalGrade->getVidTsByGradeAndTs($onegrade);
+            $vidTSFromFinalGrade=$vidTSFromFinalGrade->toArray();
+            //сформируем массив
+            $tempOtkuda[]=$vidTSFromFinalGrade;
+        }
+        // Результирующий массив
+        $resultOtkudaArray = [];
+        // Перебор внешнего массива
+        foreach ($tempOtkuda as $subArray) {
+            // Перебор внутреннего массива
+            foreach ($subArray as $element) {
+                // Добавление элемента в результирующий массив
+                $resultOtkudaArray[] = $element;
+            }
+        }
+        return $resultOtkudaArray;
+    }
+
 
 }

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\DocsTemplate;
 use App\Models\GradeDocuments;
 use App\Models\GruzootpravitelContact;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class DocService
 {
@@ -20,7 +22,9 @@ class DocService
     //откуда берём ( например из запроса), куда ложим и имя с которым сохраняем
     public function storeDoc($from_req, $to, $name)
     {
-        $from_req->move(public_path($to), $name);
+//        Storage::move($sourcePath, $destinationPath);
+//        Image::make($from_req)->save(public_path($to).$name);
+       $from_req->move(public_path($to), $name);
     }
     public function delDoc($path_to_del)
     {

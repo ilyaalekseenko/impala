@@ -127,39 +127,39 @@
                         <div  class="col-6 grade_create_title">
                             Список ТС:
                         </div>
-                        <div  class="col-6 row justify-content-end trio_but">
+                        <div v-if="right_current_TS!==''" class="col-6 row justify-content-end trio_but">
                             <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('1')">ТН</div>
                             <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
 
                             <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="get_finall_doc_pdf('2')">Доверенность</div>
-                            <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('3')">Заявка</div>
-                        </div>
-                    </div>
+                            <!--    <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('3')">Заявка</div>-->
+                           </div>
+                       </div>
 
-                    <div class="col-12 back_grade_right">
-                        <div class="container no_padding_left no_padding_right">
-                    <div class="col-12 row">
-                        <div class="col-2 grade_header_col">
-                            Вид ТС
-                        </div>
-                        <div class="col-2 grade_header_col">
-                            Перевозчик
-                        </div>
-                        <div class="col-2 grade_header_col">
-                            Маршрут
-                        </div>
-                        <div class="col-2 grade_header_col">
-                            Дата и время погрузки
-                        </div>
-                        <div class="col-2 grade_header_col">
-                            Дата и время выгрузки
-                        </div>
-                        <div class="col-2 grade_header_col">
-                            Ставка
-                        </div>
-                    </div>
-                    </div>
-<!--                        перебор в шапке-->
+                       <div class="col-12 back_grade_right">
+                           <div class="container no_padding_left no_padding_right">
+                       <div class="col-12 row">
+                           <div class="col-2 grade_header_col">
+                               Вид ТС
+                           </div>
+                           <div class="col-2 grade_header_col">
+                               Перевозчик
+                           </div>
+                           <div class="col-2 grade_header_col">
+                               Маршрут
+                           </div>
+                           <div class="col-2 grade_header_col">
+                               Дата и время погрузки
+                           </div>
+                           <div class="col-2 grade_header_col">
+                               Дата и время выгрузки
+                           </div>
+                           <div class="col-2 grade_header_col">
+                               Ставка
+                           </div>
+                       </div>
+                       </div>
+   <!--                        перебор в шапке-->
                         <div class="col-12 row create_ord_underline_1"></div>
                         <span v-for="(elem,key) in spisokTShead" class="ts_grade_margin">
                         <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem,key)" v-bind:class="{ ts_podsvet: elem.id_ts===right_current_TS }">
@@ -233,7 +233,7 @@
                                                                   ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-voditel-component>
 
-                                    <div class="col-12 row grade_marg_bot">
+                                    <div class="col-6 min_ts">
                             <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
                             <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span></div>
                             <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
@@ -1234,12 +1234,14 @@
             },
             get_finall_doc_pdf(doc_type)
             {
+                console.log(this.right_current_TS);
                 this.current_doc=doc_type
                 // window.location.href = '/get_finall_doc_pdf/'+doc_type;
                 axios
                     .post('/get_finall_doc_pdf',{
                          doc_type:this.current_doc,
-                         id:this.order_id,
+                         order_id:this.order_id,
+                         id_ts:this.right_current_TS
 
                     })
                     .then(response => {
@@ -2081,8 +2083,8 @@
                 //берём список старых терминалов
                 for (let i = 0; i < this.spisokTSarr.length; i++) {
                     //если поставлена галочка на терминале
-                    if(this.spisokTSarr[i].checked2==1)
-                    {
+                    // if(this.spisokTSarr[i].checked2==1)
+                    // {
                         this.ob_budzet_left=Number(this.ob_budzet_left)+(Number(this.spisokTSarr[i].stavka_TS)*Number(this.spisokTSarr[i]['kol_TS_TS']))
 
                         let flag = false;
@@ -2110,7 +2112,7 @@
                             this.na_terminale_arr.push(objToPush);
                          }
                         this.spisokTSarr[i]['show_arrow']=false
-                    }
+                    // }
                 };
                 for (let i = 0; i < this.na_terminale_arr.length; i++) {
                     for (let j = 0; j < this.termList.length; j++) {

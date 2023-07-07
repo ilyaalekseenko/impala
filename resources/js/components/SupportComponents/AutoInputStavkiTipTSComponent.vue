@@ -4,8 +4,11 @@
         <div class="input-container inp_show" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <div @click="clickSearchInp()" class="cust_pointer">Тип ТС</div>
-            <div @click="clickSearchInp()" ref="auto_input">{{ MainVarInInput }}</div>
-<!--            <input readonly type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
+            <span class="div-container">
+                <div @click="clickSearchInp()" ref="auto_input">{{ MainVarInInput }}</div>
+                <div v-if="MainVarInInput"  class="cross_stavki_hov" v-on:click="returnDataToParent1('tipTS')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+            </span>
+            <!--            <input readonly type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <div class="dropdown dropdown_TS" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
@@ -22,7 +25,7 @@
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->
 <script>
     export default {
-        props: ['vidTsFromParent','key_in_arr','id_ts','elem1','tip'],
+        props: ['vidTsFromParent','key_in_arr','id_ts','elem1','tip','tipTSParentId','perevozchikParentId','otkudaParentId','kudaParentId'],
         data(){
             return {
                 selectedValue: "",
@@ -44,6 +47,22 @@
             //     alert('fine')
             //         this.MainVarInInput=this.vidTsFromParent
             // },
+            tipTSParentId: function () {
+                console.log('this.tipTSParent')
+                console.log(this.tipTSParentId)
+            },
+            perevozchikParentId: function () {
+                console.log('this.perevozchikParent')
+                console.log(this.perevozchikParentId)
+            },
+            otkudaParentId: function () {
+                console.log('this.otkudaParent')
+                console.log(this.otkudaParentId)
+            },
+            kudaParentId: function () {
+                console.log('this.kudaParent')
+                console.log(this.kudaParentId)
+            },
             MainVarInInput: function () {
                 setTimeout(this.waitScrollTextarea, 1);
             }
@@ -90,15 +109,22 @@
                         searchWord:searchWord,
                         model:'VidTS',
                         fieldToSearch:'ts_name',
-                        searchOffset:this.searchOffset
+                        searchOffset:this.searchOffset,
+                        tipTSParentId:this.tipTSParentId,
+                        perevozchikParentId:this.perevozchikParentId,
+                        otkudaParentId:this.otkudaParentId,
+                        kudaParentId:this.kudaParentId
+
                     })
                     .then(response => {
+
                         response.data.res.forEach(function(entry) {
                             inp.push({
                                 id:entry.id,
                                 nazvanie:entry.ts_name,
                             });
                         })
+                        this.showList = true;
 
                     })
                // return searchArrTemp
@@ -106,25 +132,27 @@
             },
             clickSearchInp()
             {
+                this.showList = false;
                 if(this.MainVarInInput==undefined)
                 {
                     this.MainVarInInput=''
                     this.searchInp()
 
                 }
+                //если новй поиск
                 else
                 {
                     this.searchInpNew()
-                    this.showList = true;
+                   // this.showList = true;
                 }
             },
             //метод изначального выставления высоты
             setHeightTextarea()
             {
                 this.inputHeight = this.$refs.auto_input.scrollHeight
-                this.searchBack(this.filteredList)
+              //  this.searchBack(this.filteredList)
                 // ждём появления скролла и если он появился вызываем метод searchInpNext
-                this.waitScroll()
+               // this.waitScroll()
             },
             //метод при вводе нового значения в инпут
             searchInp()
@@ -141,7 +169,7 @@
                 this.filteredList=[];
                 this.searchOffset=0;
                 this.searchBack(this.filteredList)
-                this.showList = true;
+                //this.showList = true;
                 // ждём появления скролла и если он появился вызываем метод searchInpNext
                 this.waitScroll()
             },
@@ -176,12 +204,20 @@
                 this.$emit('childReturnMethod', {
                     //возвращаем обратно id
                     vid_TS:this.mainId,
+                    id:this.mainId,
                     ts_name:this.MainVarInInput,
                     elem1:this.elem1,
                     tip:this.tip
                 })
-
             },
+
+            returnDataToParent1()
+            {
+                this.$emit('childReturnMethod1', {
+                     tip:'tipTS'
+                })
+            },
+
             //метод проверки существует ли название такого ТС вообще
             //возвращает data с полями типа
             // adres_pogruzke: 162
