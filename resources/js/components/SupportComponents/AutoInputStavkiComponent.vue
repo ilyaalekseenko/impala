@@ -5,10 +5,9 @@
             <div @click="clickMainHeader()" class="cust_pointer">{{ headerName }}</div>
             <span class="div-container">
                 <div v-if="!showInput">{{ MainVarInInput }}</div>
-                <div v-if="MainVarInInput" class="col-2 cross_stavki_perevozka" v-on:click="returnDataToParent1(tip)"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+                <div v-if="showCross&&!showList" class="col-2 cross_stavki_perevozka" v-on:click="returnDataToParent1(tip)"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
              </span>
             <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" @input="searchInpNew()" v-model="MainVarInInput" @click="clickSearchInp()"/>
-<!--            <textarea v-if="showInput" type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
@@ -40,7 +39,8 @@
                 showList: false,
                 showInput:false,
                 tempMainVarInInput:'',
-                clickHeaderVar:true
+                clickHeaderVar:true,
+                showCross:false
             }
         },
         mounted() {
@@ -133,7 +133,7 @@
                 this.mainId=item.id;
                 this.showInput=false
                 this.returnDataToParent()
-
+                this.showCross=true
             },
             //использую задержку в выполнении для проверки клика по листу
             // focus_out_from_select(event)
@@ -183,6 +183,7 @@
             },
             returnDataToParent1(tip)
             {
+                this.showCross=false
                 this.$emit('childReturnMethod1', {
                     tip:tip
                 })
