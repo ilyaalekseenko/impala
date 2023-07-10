@@ -503,13 +503,47 @@ class OrdersController extends Controller
             //вовзвращает массив в первом значении погрузка, во втором выгрузка
             $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
             //получаю место погрузки из orders
-            $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
+            if($orders_list[0]['adres_pogruzke']==null)
+            {
+                $mesto='';
+            }
+            else
+            {
+                $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
+            }
             //получаю водителя
-            $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+            if($finalGradeTS[0]['voditel']==null)
+            {
+                $voditel='';
+            }
+            else
+            {
+                $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+            }
             //получаю имя шаблона
             $TH=$TH[0]['doc_name'];
             //формирую имя документа
+            if($orders_list[0]['id']==null)
+            {
+                $orders_list[0]['id']='';
+            }
+            if($orders_list[0]['data_pogruzki']==null)
+            {
+                $orders_list[0]['data_pogruzki']='';
+            }
             $fileName='TH_'.$orders_list[0]['id'].'_'.$voditel.'_'.$orders_list[0]['data_pogruzki'].'.xlsx';
+            if($finalGradeTS[0]['kol_gruz_TS']==null)
+            {
+                $finalGradeTS[0]['kol_gruz_TS']='';
+            }
+            if($finalGradeTS[0]['data_dostavki']==null)
+            {
+                $finalGradeTS[0]['data_dostavki']='';
+            }
+            if($mesto!=='')
+            {
+                $mesto=$mesto[0]['full_name'];
+            }
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
@@ -519,16 +553,11 @@ class OrdersController extends Controller
                 ->replace('kol_gruzomest', $finalGradeTS[0]['kol_gruz_TS'])
                 ->replace('data_dostavki', $orders_list[0]['data_dostavki'])
                 ->replace('gruzootpravitel', 'Грузоотправитель')
-                ->replace('mesto_pogruzki', $mesto[0]['full_name'])
+                ->replace('mesto_pogruzki', $mesto)
                 ->replace('voditel', $voditel)
                 ->save(public_path('templates/'.$fileName));
             //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
               $this->docList->upPorNomer($doc_type,$porNomer,$fileName);
-//            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-//            $phpWord = $reader->load(public_path('templates/fin_TH.xlsx'));
-//            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
-//            $writer->writeAllSheets();
-//            $writer->save(public_path('templates/TH.pdf'));
 
             return response()->json([
                 'status' => 'success',
@@ -560,16 +589,37 @@ class OrdersController extends Controller
             }
             //высчитываем срок действия
 
-            $carbonDate = Carbon::createFromFormat('d.m.Y', $orders_list[0]['data_pogruzki']);
-            $srok_deist = $carbonDate->addMonth()->format('d.m.Y');
-            //получаю текстовый срок действия
-            $textDate=$this->orderService->convertDateMonth($orders_list[0]['data_pogruzki']);
-            $textDateSrokDeistv=$this->orderService->convertDateMonth($srok_deist);
-            //не работает перевод
-            //получаю ИМЯ ФАМИЛИЯ ОТЧЕСТВО водителя
-            $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
-            //получаю полные данные водителя
-            $voditelFull=$this->voditel->getVoditel($finalGradeTS[0]['voditel']);
+            if($orders_list[0]['data_pogruzki']==null)
+            {
+                $carbonDate='';
+                $srok_deist='';
+                $textDate='';
+                $textDateSrokDeistv='';
+            }
+            else
+            {
+                $carbonDate = Carbon::createFromFormat('d.m.Y', $orders_list[0]['data_pogruzki']);
+                $srok_deist = $carbonDate->addMonth()->format('d.m.Y');
+                //получаю текстовый срок действия
+                $textDate=$this->orderService->convertDateMonth($orders_list[0]['data_pogruzki']);
+                $textDateSrokDeistv=$this->orderService->convertDateMonth($srok_deist);
+            }
+
+            if($finalGradeTS[0]['voditel']==null)
+            {
+                $voditel='';
+                $voditelFull[0]['kemVydan']='';
+                $voditelFull[0]['kogdaVydan']='';
+                $voditelFull[0]['seriyaPassporta']='';
+            }
+            else
+            {
+                //получаю ИМЯ ФАМИЛИЯ ОТЧЕСТВО водителя
+                $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+                //получаю полные данные водителя
+                $voditelFull=$this->voditel->getVoditel($finalGradeTS[0]['voditel']);
+            }
+
             //организация это Импала, потом сделать инпут отдельный
             $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
 

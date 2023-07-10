@@ -25,7 +25,14 @@ class TemplateVarSeeder extends Seeder
             ['gruzootpravitel','1','Грузоотправитель'],
             ['mesto_pogruzki','1','Место погрузки'],
             ['voditel','1','ФИО водителя'],
-            ['test2','2','ФИО водителя2'],
+            ['data_vydachi','2','дата выдачи'],
+            ['srok_deist','2','срок действия'],
+            ['voditel','2','водитель'],
+            ['postav','2','поставщик'],
+            ['organizacia','2','организация'],
+            ['vod_passport','2','серия паспорта водителя'],
+            ['vod_passport_kem','2','кем выдан'],
+            ['vod_passport_kogda','2','когда выдан выдан'],
             ['test3','3','ФИО водителя3'],
         ];
         foreach ($arr_to_ins as $loc)
