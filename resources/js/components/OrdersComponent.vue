@@ -109,8 +109,8 @@
                         </div>
                         <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
                             <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
-                            <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.ts_name }}</div>
-                        <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
+                            <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.perevozka_name }}</div>
+                            <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
                             <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_pogruzke">{{ gruz.nazvanie }}</div>
                         <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_vygruski">{{ gruz.nazvanie }}</div>
                         <div class="col-2 orders_title_table">{{ order.kompaniya_zakazchik }}</div>
@@ -241,7 +241,7 @@ Vue.filter('formatDate', function(value) {
                 this.header_underscore_list_class[this.order_by]=true
             }
             this.getOrderlist(this.orders_list)
-            this.get_type_per_list(this.type_per_list);
+            this.get_perevozka_list(this.type_per_list);
         },
         methods: {
 
@@ -312,6 +312,21 @@ Vue.filter('formatDate', function(value) {
                                 inp.push({
                                     id:entry.id,
                                     ts_name:entry.ts_name
+                                });
+                            })
+                        )
+                    );
+            },
+            get_perevozka_list(inp)
+            {
+                axios
+                    .post('/getVidPerevozki',{
+                    })
+                    .then(({ data }) => (
+                            data.perevozka_list.forEach(function(entry) {
+                                inp.push({
+                                    id:entry.id,
+                                    perevozka_name:entry.perevozka_name
                                 });
                             })
                         )
