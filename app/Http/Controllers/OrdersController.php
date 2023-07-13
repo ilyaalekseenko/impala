@@ -9,6 +9,7 @@ use App\Models\DocList;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\Gruzootpravitel;
+use App\Models\Impala;
 use App\Models\OplataOrders;
 use App\Models\Orders;
 use App\Models\Perevozka;
@@ -19,6 +20,7 @@ use App\Models\TS;
 use App\Models\LogistName;
 use App\Models\UnreadHeader;
 use App\Models\User;
+use App\Models\VidPerevozka;
 use App\Models\Voditel;
 use App\Models\GradePogruzka;
 use App\Models\GruzootpravitelAdresa;
@@ -74,6 +76,8 @@ class OrdersController extends Controller
     private $voditel;
     private $docList;
     private $gruzootpravitel;
+    private $impalaModel;
+    private $vidPerevozkaModel;
 
 
     public function __construct(
@@ -98,7 +102,9 @@ class OrdersController extends Controller
         FinalGrade $finalGrade,
         GruzootpravitelAdresa $gruzootpravitelAdresa,
         DocList $docList,
-        Gruzootpravitel $gruzootpravitel
+        Gruzootpravitel $gruzootpravitel,
+        Impala $impala,
+        VidPerevozka $vidPerevozka,
     )
     {
         $this->orderService = $orderService;
@@ -123,6 +129,9 @@ class OrdersController extends Controller
         $this->voditel = $voditel;
         $this->docList = $docList;
         $this->gruzootpravitel = $gruzootpravitel;
+        $this->impalaModel = $impala;
+        $this->vidPerevozkaModel = $vidPerevozka;
+
     }
 
 
@@ -159,6 +168,14 @@ class OrdersController extends Controller
     public function get_perevozka_list()
     {
         $perevozka = Perevozka::all();
+        return response()->json([
+            'status' => 'success',
+            'perevozka_list' =>$perevozka,
+        ], 200);
+    }
+    public function getVidPerevozki()
+    {
+        $perevozka=$this->vidPerevozkaModel->getAllVidPerevozka();
         return response()->json([
             'status' => 'success',
             'perevozka_list' =>$perevozka,
@@ -619,9 +636,15 @@ class OrdersController extends Controller
                 //получаю полные данные водителя
                 $voditelFull=$this->voditel->getVoditel($finalGradeTS[0]['voditel']);
             }
-
-            //организация это Импала, потом сделать инпут отдельный
-            $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
+            $organizacia=$this->impalaModel->getAdres();
+            if ($organizacia->isNotEmpty()) {
+                $organizacia=$organizacia[0]['adres'];
+            }
+            else
+            {
+                $organizacia='';
+            }
+           // $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
 
             $TH = DocsTemplate::where('doc_type','DOV')->get();
             $TH=$TH[0]['doc_name'];

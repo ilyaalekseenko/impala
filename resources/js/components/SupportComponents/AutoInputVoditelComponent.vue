@@ -2,7 +2,6 @@
     <div class="gruz_auto_select" v-my-click-outside="closeParentAutoInput">
 
         <div class="input-container inp_show" >
-<!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <input type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
@@ -55,15 +54,20 @@
             },
             waitScrollTextareaSec()
             {
-                if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
+                if(this.$refs.auto_input)
                 {
-                    this.inputHeight = this.$refs.auto_input.scrollHeight
-                    if(this.inputHeight<30)
+                    if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
                     {
-                        this.inputHeight=30
+                        this.inputHeight = this.$refs.auto_input.scrollHeight
+                        if(this.inputHeight<30)
+                        {
+                            this.inputHeight=30
+                        }
+                        this.waitScrollTextarea()
                     }
-                    this.waitScrollTextarea()
                 }
+
+
 
             },
             select(item) {

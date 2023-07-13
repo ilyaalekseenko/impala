@@ -28,13 +28,12 @@
             get_perevozka_list(inp)
             {
                 axios
-                    .post('/get_perevozka_list',{
+                    .post('/getVidPerevozki',{
                     })
                     .then(({ data }) => (
                             data.perevozka_list.forEach(function(entry) {
                                 inp.push({
                                     id:entry.id,
-                                    perevozka_id:entry.perevozka_id,
                                     perevozka_name:entry.perevozka_name
                                 });
                             })
@@ -46,7 +45,7 @@
                 if(this.perevozka_arr[key]['perevozka_name']!=='')
                 {
                 axios
-                    .post('/update_perevozka_settings',{
+                    .post('/updateVidPerevozka',{
                         perevozka:this.perevozka_arr[key],
                     })
                 }
@@ -54,7 +53,7 @@
             delete_perevozka_settings(key)
             {
                 axios
-                    .post('/delete_perevozka_settings',{
+                    .post('/deleteVidPerevozka',{
                         perevozka:this.perevozka_arr[key],
                     })
                 this.perevozka_arr.splice(key,1)
@@ -62,14 +61,12 @@
             },
             add_perevozka_settings(key)
             {
-                // this.perevozka_arr[this.perevozka_arr.length-1]
                 let objToPush= {};
                 objToPush['id'] ='';
-                objToPush['perevozka_id'] ='';
                 objToPush['perevozka_name'] ='';
                 this.perevozka_arr.push(objToPush);
                 axios
-                    .post('/add_perevozka_settings',{
+                    .post('/addVidPerevozka',{
                     })
                     .then(({ data }) => (
                         this.perevozka_arr[this.perevozka_arr.length-1].id=data.result.id

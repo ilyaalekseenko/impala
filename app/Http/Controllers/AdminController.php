@@ -6,6 +6,7 @@ use App\Mail\RegisterMail;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Impala;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,11 +19,13 @@ class AdminController extends Controller
 {
 
     private $userService;
+    private $impalaModel;
     public function __construct(
-        UserService $userService,
+        UserService $userService, Impala $impala
     )
     {
         $this->userService = $userService;
+        $this->impalaModel = $impala;
     }
 
     public function users_list(Request $request)
@@ -172,6 +175,28 @@ class AdminController extends Controller
         return response()->json([
             'status' => 'success',
             'user' => $user,
+        ], 201);
+    }
+    public function getImpalaAdres()
+    {
+        $adres=$this->impalaModel->getAdres();
+        if ($adres->isNotEmpty()) {
+            $adres=$adres[0]['adres'];
+        }
+        else
+        {
+            $adres='';
+        }
+        return response()->json([
+            'status' => 'success',
+            'adres' => $adres,
+        ], 201);
+    }
+    public function updateAdres()
+    {
+        $this->impalaModel->updateAdres(request('adres'));
+        return response()->json([
+            'status' => 'success',
         ], 201);
     }
 

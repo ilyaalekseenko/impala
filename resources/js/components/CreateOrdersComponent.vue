@@ -1096,13 +1096,12 @@
             get_perevozka_list(inp)
             {
                 axios
-                    .post('/get_perevozka_list',{
+                    .post('/getVidPerevozki',{
                     })
                     .then(({ data }) => (
                             data.perevozka_list.forEach(function(entry) {
                                 inp.push({
                                     id:entry.id,
-                                    perevozka_id:entry.perevozka_id,
                                     perevozka_name:entry.perevozka_name
                                 });
                             })

@@ -54,14 +54,17 @@
             },
             waitScrollTextareaSec()
             {
-                if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
+                if(this.$refs.auto_input)
                 {
-                    this.inputHeight = this.$refs.auto_input.scrollHeight
-                    if(this.inputHeight<30)
+                    if(this.inputHeight!=this.$refs.auto_input.scrollHeight)
                     {
-                        this.inputHeight=30
+                        this.inputHeight = this.$refs.auto_input.scrollHeight
+                        if(this.inputHeight<30)
+                        {
+                            this.inputHeight=30
+                        }
+                        this.waitScrollTextarea()
                     }
-                    this.waitScrollTextarea()
                 }
 
             },

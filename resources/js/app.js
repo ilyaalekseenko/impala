@@ -55,6 +55,7 @@ Vue.component('p-p-component', require('./components/Settings/PPComponent').defa
 Vue.component('modal-t-s-component', require('./components/ModalTSComponent').default);
 Vue.component('modal-p-p-component', require('./components/ModalPPComponent').default);
 Vue.component('t-s-modal-component', require('./components/Settings/TSModalComponent').default);
+Vue.component('impala-yr-adres-component', require('./components/Settings/ImpalaYrAdresComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

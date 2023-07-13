@@ -12,6 +12,11 @@
                                                             <li v-on:click="nav_menu_show(5)"><a href="#">Список пользователей</a></li>
                                                         </ul>
                                                     </li>
+                                                    <li class="dropmenu"><a href="#">Организация</a>
+                                                        <ul class="level2">
+                                                            <li v-on:click="nav_menu_show(10)"><a href="#">Организация</a></li>
+                                                        </ul>
+                                                    </li>
                     </ul>
                 </li>
 
@@ -65,6 +70,7 @@
                         <li v-on:click="nav_menu_show(7)"><a href="#">Водители</a></li>
                         <li v-on:click="nav_menu_show(8)"><a href="#">Номера ТС</a></li>
                         <li v-on:click="nav_menu_show(9)"><a href="#">Номера ПП</a></li>
+                        <li v-on:click="nav_menu_show(2)"><a href="#">Виды перевозок</a></li>
                     </ul>
                 </li>
             </ul>
@@ -80,6 +86,7 @@
         <voditeli-component v-if="nav_menu_show_var==7"></voditeli-component>
         <t-s-modal-component v-if="nav_menu_show_var==8"></t-s-modal-component>
         <p-p-component v-if="nav_menu_show_var==9"></p-p-component>
+        <impala-yr-adres-component v-if="nav_menu_show_var==10"></impala-yr-adres-component>
         </div>
 
         </div>

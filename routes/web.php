@@ -124,12 +124,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/select_gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'select_gruzootpravitel'])->name('select_gruzootpravitel');
     Route::get('/gruzootpravitel', [App\Http\Controllers\GruzootpravitelController::class, 'gruzootpravitel'])->name('gruzootpravitel');
     Route::post('/get_perevozka_list', [App\Http\Controllers\OrdersController::class, 'get_perevozka_list'])->name('get_perevozka_list');
+    Route::post('/getVidPerevozki', [App\Http\Controllers\OrdersController::class, 'getVidPerevozki'])->name('getVidPerevozki');
     Route::post('/check_buttons_show', [App\Http\Controllers\OrdersController::class, 'check_buttons_show'])->name('check_buttons_show');
     Route::post('/up_gruzoot_from_select', [App\Http\Controllers\OrdersController::class, 'up_gruzoot_from_select'])->name('up_gruzoot_from_select');
     Route::post('/update_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'update_perevozka_settings'])->name('update_perevozka_settings');
     Route::post('/delete_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'delete_perevozka_settings'])->name('delete_perevozka_settings');
+    Route::post('/deleteVidPerevozka', [App\Http\Controllers\SettingsController::class, 'deleteVidPerevozka'])->name('deleteVidPerevozka');
 //    Route::post('/delete_forma_settings', [App\Http\Controllers\SettingsController::class, 'delete_forma_settings'])->name('delete_forma_settings');
     Route::post('/add_perevozka_settings', [App\Http\Controllers\SettingsController::class, 'add_perevozka_settings'])->name('add_perevozka_settings');
+    Route::post('/addVidPerevozka', [App\Http\Controllers\SettingsController::class, 'addVidPerevozka'])->name('addVidPerevozka');
+    Route::post('/updateVidPerevozka', [App\Http\Controllers\SettingsController::class, 'updateVidPerevozka'])->name('updateVidPerevozka');
     Route::post('/add_forma_settings', [App\Http\Controllers\SettingsController::class, 'add_forma_settings'])->name('add_forma_settings');
     Route::post('/get_forma_gruzootpravitel_list', [App\Http\Controllers\SettingsController::class, 'get_forma_gruzootpravitel_list'])->name('get_forma_gruzootpravitel_list');
     Route::post('/update_user', [App\Http\Controllers\SettingsController::class, 'update_user'])->name('update_user');
@@ -149,6 +153,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/is_admin_settings', [App\Http\Controllers\AdminController::class, 'is_admin_settings'])->name('is_admin_settings');
     Route::post('/get_roles', [App\Http\Controllers\AdminController::class, 'get_roles'])->name('get_roles');
     Route::post('/getRoleUser', [App\Http\Controllers\AdminController::class, 'getRoleUser'])->name('getRoleUser');
+    Route::post('/getImpalaAdres', [App\Http\Controllers\AdminController::class, 'getImpalaAdres'])->name('getImpalaAdres');
+    Route::post('/updateAdres', [App\Http\Controllers\AdminController::class, 'updateAdres'])->name('updateAdres');
 
     Route::post('/add_user', [App\Http\Controllers\AdminController::class, 'add_user'])->name('add_user');
     Route::get('/perevozchiki', [App\Http\Controllers\PerevozchikiController::class, 'perevozchiki'])->name('perevozchiki');

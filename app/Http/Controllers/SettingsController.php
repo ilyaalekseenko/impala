@@ -6,10 +6,20 @@ use App\Models\FormaModal;
 use App\Models\Gruzootpravitel;
 use App\Models\Perevozka;
 use App\Models\User;
+use App\Models\VidPerevozka;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+
+    private $vidPerevozkaModel;
+    public function __construct(
+        VidPerevozka $vidPerevozka
+    )
+    {
+        $this->vidPerevozkaModel = $vidPerevozka;
+    }
+
     public function update_perevozka_settings(Request $request)
     {
         $perevozka=$request->input('perevozka');
@@ -60,6 +70,13 @@ class SettingsController extends Controller
         $perevozka=$request->input('perevozka');
         Perevozka::where('id', '=',$perevozka['id'])->delete();
     }
+    public function deleteVidPerevozka()
+    {
+        $this->vidPerevozkaModel->deleteVidPerevozka(request('perevozka'));
+        return response()->json([
+            'status' => 'success',
+        ], 200);
+    }
     public function delete_forma_settings(Request $request)
     {
         $forma=$request->input('forma');
@@ -76,7 +93,14 @@ class SettingsController extends Controller
             'status' => 'success',
             'result' =>$res,
         ], 200);
-
+    }
+    public function addVidPerevozka()
+    {
+        $res=$this->vidPerevozkaModel->createVidPerevozka();
+        return response()->json([
+            'status' => 'success',
+            'result' =>$res,
+        ], 200);
     }
     public function add_forma_settings(Request $request)
     {
@@ -90,4 +114,12 @@ class SettingsController extends Controller
             'result' =>$res,
         ], 200);
     }
+    public function updateVidPerevozka()
+    {
+       $this->vidPerevozkaModel->updateVidPerevozka(request('perevozka'));
+        return response()->json([
+            'status' => 'success',
+        ], 200);
+    }
+
 }
