@@ -19,7 +19,7 @@ class GruzootpravitelAdresa extends Model
             'FIO' => $adres['FIO'],
             'telefon' => $adres['telefon'],
             'email' => $adres['email'],
-            'full_name' => $forma.' '.$nazvanie.' '.$adres['adres']
+            'full_name' => $forma.' '.$nazvanie.' '.$adres['nazvanie'].' '.$adres['adres']
         ]);
     }
     public function delAdres($adresId)
@@ -46,7 +46,7 @@ class GruzootpravitelAdresa extends Model
                 'FIO' => $adres['FIO'],
                 'telefon' => $adres['telefon'],
                 'email' => $adres['email'],
-                'full_name'=>$forma.' '.$nazvanie.' '.$adres['adres']
+                'full_name'=>$forma.' '.$nazvanie.' '.$adres['nazvanie'].' '.$adres['adres']
             ]);
     }
     public function getAdresByIdWithGruz($adresId)

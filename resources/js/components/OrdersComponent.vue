@@ -111,8 +111,8 @@
                             <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
                             <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.perevozka_name }}</div>
                             <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
-                            <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_pogruzke">{{ gruz.nazvanie }}</div>
-                        <div class="col-2 orders_title_table" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==order.adres_vygruski">{{ gruz.nazvanie }}</div>
+                            <div class="col-2 orders_title_table" >{{ order.adres_pogruzke }}</div>
+                        <div class="col-2 orders_title_table" >{{ order.adres_vygruski }}</div>
                         <div class="col-2 orders_title_table">{{ order.kompaniya_zakazchik }}</div>
                         </div>
                     </div>
@@ -419,7 +419,18 @@ Vue.filter('formatDate', function(value) {
             {
                 this.limit=int
             },
-            create_order() {
+            create_order()
+            {
+                axios
+                    .post('/start_new_order',{
+                        data_vneseniya:new Date().toLocaleDateString('ru-RU')
+                    })
+                    .then(({ data }) => (
+                        window.location.href =('/create_orders/'+data.data['id'])
+                        )
+                    )
+            },
+            create_order_old() {
              //  this.countAllTypes=Number(this.countAllTypes)+Number(20);
              window.location.href =('/create_orders')
             },
@@ -458,8 +469,8 @@ Vue.filter('formatDate', function(value) {
                                         data_vneseniya:entry.data_vneseniya,
                                         status:entry.status,
                                         vid_perevozki:entry.vid_perevozki,
-                                        adres_pogruzke:entry.adres_pogruzke,
-                                        adres_vygruski:entry.adres_vygruski,
+                                        adres_pogruzke:entry.otkuda,
+                                        adres_vygruski:entry.kuda,
                                         kompaniya_zakazchik:entry.kompaniya_zakazchik,
                                         checked_order:false,
                                         important:entry.important

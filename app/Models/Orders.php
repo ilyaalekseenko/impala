@@ -163,30 +163,36 @@ class Orders extends Authenticatable
     {
         return Orders::
             when($columnName=='zurnal_zaiavok', function($q)use ($offset,$limit){
-                return $q->where('id','>',0)
+                return $q->where('orders.id','>',0)
                 ->offset($offset)
                 ->limit($limit);
             })
             ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
-                return $q->where($columnName,1)
+                return $q->where($columnName,1)->where('orders.id','>',0)
                     ->offset($offset)
                     ->limit($limit);
             })
+            ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
+            ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
+            ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
             ->get();
     }
     public function getColumnOrderListLogist($columnName,$offset,$limit)
     {
         return Orders::
         when($columnName=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
-            return $q->where('id','>',0)
+            return $q->where('orders.id','>',0)
                 ->offset($offset)
                 ->limit($limit);
         })
             ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
-                return $q->where($columnName,1)->where('logist',Auth::id())
+                return $q->where($columnName,1)->where('logist',Auth::id())->where('orders.id','>',0)
                     ->offset($offset)
                     ->limit($limit);
             })
+            ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
+            ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
+            ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
             ->get();
     }
     public function countColumnOrderListAdmin($columnName)
