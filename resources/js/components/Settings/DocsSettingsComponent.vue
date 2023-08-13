@@ -9,9 +9,9 @@
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('DOV')">Показать переменные Доверенность</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('DOV')">Скачать шаблон Доверенность</div>
                     <div class="doc_set_marg">{{ DOV_name }}</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('ZAI')">Загрузить шаблон Заявка</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Показать переменные Заявка</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Заявка</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('ZAI')">Загрузить шаблон Запроса</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Показать переменные Запроса</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Запроса</div>
                     <div class="doc_set_marg">{{ ZAI_name }}</div>
                     <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
                 </div>

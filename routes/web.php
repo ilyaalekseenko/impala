@@ -140,6 +140,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update_forma_settings', [App\Http\Controllers\SettingsController::class, 'update_forma_settings'])->name('update_forma_settings');
     Route::post('/logout', [App\Http\Controllers\ProfileController::class, 'logout'])->name('logout');
     Route::post('/searchBack', [App\Http\Controllers\SearchController::class, 'searchBack'])->name('searchBack');
+    Route::post('/searchBackAvtor', [App\Http\Controllers\SearchController::class, 'searchBackAvtor'])->name('searchBackAvtor');
     Route::post('/searchBackStavkiInput', [App\Http\Controllers\SearchController::class, 'searchBackStavkiInput'])->name('searchBackStavkiInput');
     Route::post('/searchBackKompaniya', [App\Http\Controllers\SearchController::class, 'searchBackKompaniya'])->name('searchBackKompaniya');
     Route::post('/searchBackStavki', [App\Http\Controllers\SearchController::class, 'searchBackStavki'])->name('searchBackStavki');

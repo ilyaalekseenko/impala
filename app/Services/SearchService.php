@@ -50,6 +50,30 @@ class SearchService
             ->limit(10)
             ->get();
     }
+    public function getSearchResultsAvtor($searchWord,$model,$fieldTosearch,$searchOffset)
+    {
+        $model = 'App\Models\\' . $model;
+        $data= $model::
+        where($fieldTosearch, 'like', '%'.$searchWord.'%')
+            ->offset($searchOffset)
+            ->limit(10)
+            ->orderBy('gruzootpravitel_id')
+            ->leftJoin('gruzootpravitels', 'gruzootpravitel_adresas.gruzootpravitel_id', '=', 'gruzootpravitels.id')
+            ->select('gruzootpravitel_adresas.*', 'gruzootpravitels.forma_id','gruzootpravitels.nazvanie as nazvGruz')
+            ->get();
+
+        foreach ($data as $value) {
+          if($value['forma_id']===null)
+          {
+              $value['forma_id']='';
+          }
+          if($value['nazvGruz']===null)
+          {
+              $value['nazvGruz']='';
+          }
+        }
+        return $data;
+    }
     public function searchBackStavkiInput($searchWord,$model,$fieldTosearch,$searchOffset,$fieldToSearchFinalGrade)
     {
         //если фильтруем по вид ТС или по перевозчику

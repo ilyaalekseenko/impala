@@ -125,6 +125,17 @@ class SearchController extends Controller
             'res' =>$res,
         ], 200);
     }
+//    //метод поиска на с грузоотправителями
+    public function searchBackAvtor(Request $request)
+    {
+        //получаем результаты поиска
+        $res=$this->searchService->getSearchResultsAvtor(request('searchWord'),request('model'),request('fieldToSearch'),request('searchOffset'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'результаты поиска получены',
+            'res' =>$res,
+        ], 200);
+    }
     //метод поиска на бэке
     public function searchBackStavkiInput(Request $request)
     {

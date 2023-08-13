@@ -3,12 +3,12 @@
         <div class="row orders_title_div">
             <div class="col-12 row no_padding_right_imp">
                 <div class="col-6 orders_title" >
-                    Заявки
+                    Запросы
                 </div>
                 <div class="col-6 d-flex justify-content-end">
                     <div class="create_orders_button" v-on:click="create_order()">
                         <span class="iconify button_menu_block" data-icon="akar-icons:circle-plus" style="color: white;" data-width="24" data-height="24"></span>
-                        <span class="button_menu_block" >Создать заявку</span>
+                        <span class="button_menu_block" >Создать запрос</span>
                     </div>
                 </div>
 
@@ -16,8 +16,8 @@
                     <div class="col-12 row coloring_row_1">
                         <div class="col-2  color_title_1 coloring_np" v-on:click="update_header_underscore(0,'zurnal_zaiavok')" :class="{ header_underscore_0: header_underscore_list_class[0] }">
                             <span class="col-12 row">
-                            <div class="col-6 coloring_row_text coloring_np head_font">Журнал заявок</div >
-                            <div class="col-6 row text-end coloring_np">
+                            <div class="offset-1 col-7 coloring_row_text coloring_np head_font">Журнал запросов</div >
+                            <div class="col-4 row text-end coloring_np">
                                 <div class="col-12 coloring_np">
                                     <span class="coloring_integer">{{ zurnal_zaiavok }}</span>
                                 </div>
@@ -93,7 +93,7 @@
                         <div class="col-12 row no_padding_right border_in_orders">
                             <div class="col-1 orders_title_table_main text-start row">
                                 <div class="col-2"></div>
-                                <div class="col-10 head_font">Номер заявки</div>
+                                <div class="col-10 head_font">Номер запроса</div>
                             </div>
                             <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
                             <div class="col-1 orders_title_table_main head_font" v-show="checkRolePermissionMixin([1])">Статус</div>
@@ -267,7 +267,7 @@ Vue.filter('formatDate', function(value) {
                         }
                         else
                         {
-                            alert('Заявка удалена')
+                            alert('Запрос удалена')
                         }
 
                     })

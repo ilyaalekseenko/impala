@@ -26,6 +26,7 @@ Vue.component('orders-component', require('./components/OrdersComponent.vue').de
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
+Vue.component('modal-author-component', require('./components/ModalAuthorComponent').default);
 Vue.component('modal-perevozchiki-component', require('./components/ModalPerevozchikiComponent').default);
 Vue.component('modal-voditel-component', require('./components/ModalVoditelComponent').default);
 Vue.component('users-list-component', require('./components/Settings/UsersListComponent').default);
@@ -38,6 +39,7 @@ Vue.component('gruzootpravitel-component', require('./components/Gruzootpravitel
 Vue.component('perevozchiki-component', require('./components/PerevozchikiComponent').default);
 Vue.component('stavki-component', require('./components/StavkiComponent').default);
 Vue.component('auto-input-component', require('./components/SupportComponents/AutoInputComponent').default);
+Vue.component('auto-input-author-component', require('./components/SupportComponents/AutoInputAuthorComponent').default);
 Vue.component('auto-input-global-component', require('./components/SupportComponents/AutoInputGlobalComponent').default);
 Vue.component('auto-input-perevozka-component', require('./components/SupportComponents/AutoInputPerevozkaComponent').default);
 Vue.component('auto-input-voditel-component', require('./components/SupportComponents/AutoInputVoditelComponent').default);

@@ -25,7 +25,7 @@
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
 
                 <div  class="col-6 orders_create_title">
-                    Заявки: В работе > №{{ order_id }}
+                    Запросы: В работе > №{{ order_id }}
                 </div>
                 <div  class="col-6 row justify-content-end trio_but">
                     <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
@@ -38,7 +38,7 @@
 <!--               маленькая левая колонка-->
                 <div class="col-2 grade_left_column">
                     <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-6 grade_left_column_text_first">Номер заявки:</div>
+                        <div class="col-6 grade_left_column_text_first">Номер запроса:</div>
                         <div class="col-6 grade_left_column_text_sec">{{ order_id }}</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
@@ -132,7 +132,6 @@
                             <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
 
                             <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="get_finall_doc_pdf('2')">Доверенность</div>
-                            <!--    <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('3')">Заявка</div>-->
                            </div>
                        </div>
 
@@ -469,7 +468,7 @@
                                      </div>
                                     </div>
 
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Договор-заявка:</div>
+                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Договор-запрос:</div>
                                    <div class="col-12 row">
                                     <div class="col-6">
                                     <div class="little_title_grade">Подписанная</div>

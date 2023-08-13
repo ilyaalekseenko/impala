@@ -1772,10 +1772,73 @@
 .gruz_auto_select li:hover {
      background-color: #f2f2f2;
  }
+
 .gruz_auto_select .select_list_gruzoot {
     max-height: 200px;
     overflow: auto;
 }
+
+/*начало поиска с авторами*/
+.gruz_auto_select_avtor .input-container {
+    position: relative;
+}
+
+.gruz_auto_select_avtor input {
+    /*width: 100%;*/
+    width: 100px;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.gruz_auto_select_avtor .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+    z-index: 20;
+}
+.gruz_auto_select_avtor .dropdown_TS {
+    border-top: 1px solid #ccc!important;
+}
+
+.gruz_auto_select_avtor ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.gruz_auto_select_avtor li .nazvanie_gruz{
+    cursor: pointer;
+}
+.gruz_auto_select_avtor li .nazvanie_gruz:hover {
+    background-color: #f2f2f2;
+}
+.gruz_auto_select_avtor .select_list_gruzoot {
+    max-height: 200px;
+    overflow: auto;
+}
+.nazvanie_gruz {
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:6px;
+    align-items: center;
+}
+.avtor_gruz {
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:6px;
+    align-items: center;
+    background-color: #8f8996;
+}
+/*конец поиска с авторами*/
+
+
 .create_orders_status {
     text-align: right;
 }

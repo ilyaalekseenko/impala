@@ -79,7 +79,7 @@
                         </div>
                         <div class="col">
                             <div class="little_title_create_orders1">
-                                Номер заявки
+                                Номер запроса
                             </div>
                             <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="nomer_zayavki"  />
                         </div>
@@ -97,28 +97,28 @@
                             </div>
                             <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />
                         </div>
-                        <div class="col">
-                            <div class="little_title_create_orders">
-                                Проект ИСД (номер и название)
-                            </div>
-                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD"  />
-                        </div>
+<!--                        <div class="col">-->
+<!--                            <div class="little_title_create_orders">-->
+<!--                                Проект ИСД (номер и название)-->
+<!--                            </div>-->
+<!--                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD"  />-->
+<!--                        </div>-->
                         <div class="col-12 row" v-show="checkRolePermission([1])">
 <!--                        <div class="col-12 row" v-show="checkRolePermission(['admin':'show','logist':'show'])">-->
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
                                 <div class="little_title_create_orders no_wrap_text" >
-                                    Цена контракта
+                                    Бюджет контракта
                                 </div>
                                 <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
                             </span>
-                            <span class=" cr_ord_inp_n_2">
-                                <div class="little_title_create_orders no_wrap_text">
-                                    Дата контракта
-                                </div>
-                                <input @click="openDB4" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />
-                                <date-picker ref="datepicker4"  v-model="data_kontrakta" valueType="format"
-                                             format="DD.MM.YYYY" :open.sync="openDP4" @change="handleChange0"></date-picker>
-                            </span>
+<!--                            <span class=" cr_ord_inp_n_2">-->
+<!--                                <div class="little_title_create_orders no_wrap_text">-->
+<!--                                    Дата контракта-->
+<!--                                </div>-->
+<!--                                <input @click="openDB4" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />-->
+<!--                                <date-picker ref="datepicker4"  v-model="data_kontrakta" valueType="format"-->
+<!--                                             format="DD.MM.YYYY" :open.sync="openDP4" @change="handleChange0"></date-picker>-->
+<!--                            </span>-->
                         </div>
                         <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
@@ -135,11 +135,11 @@
                                 </span>
                             <span class="col-12 oplata_del" ><span v-on:click="delete_oplata_summa(oplata.id,key)" class="del_summa_text">удалить</span></span>
                         </div>
-                        <div class="col">
-                            <div class="add_button_plus" v-on:click="dobavit_oplatu()">
-                                +Добавить оплату
-                            </div>
-                        </div>
+<!--                        <div class="col">-->
+<!--                            <div class="add_button_plus" v-on:click="dobavit_oplatu()">-->
+<!--                                +Добавить оплату-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                     <div class="col fit_height row middle_block_cr_order ">
                         <div class="col cr_ord_mid_col">
@@ -167,7 +167,7 @@
                                 </div>
                             <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&adres_pogruzke_show==''" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
                             <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke_show }}</div>
-                            <auto-input-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"
+                            <auto-input-author-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"
                                 inp_type='adres_pogruzke'
                                 :adres_pogruzke_show="adres_pogruzke_show"
                                 :order_id="order_id"
@@ -175,7 +175,7 @@
                                 v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
                                 ref="AutoSelectComponent"
                                 @showHideText="showHideParent"
-                            ></auto-input-component>
+                            ></auto-input-author-component>
                             </div>
 
                         </div>
@@ -870,19 +870,19 @@
             console.log(this.ts_list_names)
             let adress=window.location.href;
             adress=(adress.split("/")[4])
-            //если новая заявка
+            //если новый запрос
             if(adress==null)
             {
                 this.data_vneseniya= new Date().toLocaleDateString('ru-RU');
                 this.start_new_order();
-                this.order_header_text='Создание заявки'
+                this.order_header_text='Создание запроса'
             }
-            //если редактируем заявку
+            //если редактируем запрос
             else
             {
                 this.order_id=adress;
                 this.checkButtonsShow();
-                this.order_header_text='Заявка номер: '+adress+' Дата внесения: '
+                this.order_header_text='Запрос номер: '+adress+' Дата внесения: '
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
                 this.update_unread_status()
                 this.update_unread_status_v_rabote()
@@ -954,6 +954,7 @@
                 return flag
 
             },
+
             inputShow(inpVar)
             {
 
@@ -1397,15 +1398,15 @@
                 let message=''
               if(columnName=='ocenka')
               {
-                  message = 'Заявка отправлена на оценку'
+                  message = 'Запрос отправлен на оценку'
               }
                if(columnName=='naznachenie_stavki')
               {
-                  message = 'Заявка отправлена на назначение ставки'
+                  message = 'Запрос отправлен на назначение ставки'
               }
               if(columnName=='v_rabote')
               {
-                  message = 'Заявка отправлена в работу'
+                  message = 'Запрос отправлен в работу'
               }
               return message;
             },
@@ -1500,7 +1501,7 @@
                     )
 
             },
-            //если новая заявка
+            //если новая запрос
             start_new_order()
             {
                 axios
@@ -1521,13 +1522,13 @@
                         order_id:this.order_id
                     })
                     .then(response => {
-                        alert('заявка добавлена в работу')
+                        alert('запрос добавлена в работу')
                     })
             },
             go_to_grade()
             {
                 // window.location.href =('/grade/'+this.order_id)
-                //отправляем заявку на вкладку назначение ставки
+                //отправляем запрос на вкладку назначение ставки
                 this.utverzdenie_show_button=false;
                 axios
                     .post('/add_to_naznachenie_stavki',{
@@ -1542,7 +1543,7 @@
                         //если утвердил админ
                         if(this.role==1)
                         {
-                            alert('заявка добавлена в назначение ставки')
+                            alert('запрос добавлен в назначение ставки')
                         }
 
                     })

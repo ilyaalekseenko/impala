@@ -163,7 +163,7 @@ Vue.filter('formatDate', function(value) {
                         }
                         else
                         {
-                            alert('Заявка удалена')
+                            alert('Запрос удалён')
                         }
 
                     })
