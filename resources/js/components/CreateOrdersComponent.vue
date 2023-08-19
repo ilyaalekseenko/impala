@@ -1055,7 +1055,6 @@
                 else
                 {
                     this.adres_pogruzke_show=''
-                     this.adres_pogruzke=null
                 }
                 //установим мордашку у адреса выгрузки
                  nazv=this.issetFrontNames(gruzColect,this.adres_vygruski)
@@ -1066,7 +1065,7 @@
                 else
                 {
                     this.adres_vygruski_show=''
-                    this.adres_vygruski=null
+
                 }
 
                 for(var i = 0; i < this.spisokTSarr.length; i++)
@@ -1081,7 +1080,7 @@
                         else
                         {
                             this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzke_show']=''
-                            this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzki']=''
+
                         }
                     }
                     for(var j = 0; j < this.spisokTSarr[i]['adres_vygr_TS'].length; j++)
@@ -1094,7 +1093,7 @@
                         else
                         {
                             this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_vygruzki_show']=''
-                            this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_pogruzki']=''
+
                         }
                     }
                 }
