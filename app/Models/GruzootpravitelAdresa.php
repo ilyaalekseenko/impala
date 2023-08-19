@@ -71,6 +71,14 @@ class GruzootpravitelAdresa extends Model
             ->select('gruzootpravitel_adresas.*', 'gruzootpravitels.nazvanie', 'gruzootpravitels.forma_id')
             ->get();
     }
+    public function getGruzNames($adresa)
+    {
+        return GruzootpravitelAdresa::
+              leftJoin('gruzootpravitels', 'gruzootpravitel_adresas.gruzootpravitel_id', '=', 'gruzootpravitels.id')
+            ->select('gruzootpravitel_adresas.*', 'gruzootpravitels.nazvanie', 'gruzootpravitels.forma_id')
+            ->whereIn('gruzootpravitel_adresas.id',$adresa)
+            ->get();
+    }
     public function getAdresById($adresId)
     {
         $adres= GruzootpravitelAdresa::where('id',$adresId)->get();

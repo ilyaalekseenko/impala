@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FinalGrade;
 use App\Models\GradePogruzka;
+use App\Models\GruzootpravitelAdresa;
 use App\Models\VidTS;
 use App\Services\SearchService;
 use Illuminate\Http\Request;
@@ -16,18 +17,21 @@ class SearchController extends Controller
     protected $vidTS;
     protected $finalGrade;
     protected $gradePogruzka;
+    protected $gruzootpravitelAdresa;
 
     public function __construct(
         SearchService $searchService,
         VidTS $vidTS,
         FinalGrade $finalGrade,
         GradePogruzka $gradePogruzka,
+        GruzootpravitelAdresa $gruzootpravitelAdresa,
     )
     {
         $this->searchService = $searchService;
         $this->vidTS = $vidTS;
         $this->finalGrade = $finalGrade;
         $this->gradePogruzka=$gradePogruzka;
+        $this->gruzootpravitelAdresa=$gruzootpravitelAdresa;
     }
 
     //метод поиска на бэке TS
@@ -169,6 +173,20 @@ class SearchController extends Controller
             'message' =>'Список ставок успешно получен',
             'stavkiList' =>$stavkiList[0],
             'tipesCount' =>$stavkiList[1],
+        ], 200);
+    }
+    public function chahgeFrontNames()
+    {
+        $adresa=$this->gruzootpravitelAdresa->getGruzNames(request('findAdresa'));
+        $gruzColect=collect([]);
+        foreach ($adresa as $gruz)
+        {
+            $gruzColect[]=['id'=>$gruz['id'], 'nazvanie'=>$gruz['forma_id'].' '.$gruz['nazvanie'].' '.$gruz['adres']];
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Список успешно получен',
+            'gruzColect' =>$gruzColect
         ], 200);
     }
 

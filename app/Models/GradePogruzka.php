@@ -58,5 +58,11 @@ class GradePogruzka extends Model
             ->where('id_ts',$id_ts)
             ->get();
     }
+    public function setToNullColumn($column,$value)
+    {
+        GradePogruzka::where($column, $value)->update([
+            $column =>null,
+        ]);
+    }
 
 }

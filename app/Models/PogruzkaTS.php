@@ -48,5 +48,10 @@ class PogruzkaTS extends Authenticatable
     {
        return PogruzkaTS::where('order_id',$id)->where('pogruzka_or_vygruzka', $pog_vyg)->where('id_ts', $ts)->get();
     }
-
+    public function setToNullColumn($column,$value)
+    {
+        PogruzkaTS::where($column, $value)->update([
+            $column =>null,
+        ]);
+    }
 }

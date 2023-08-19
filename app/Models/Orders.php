@@ -107,6 +107,12 @@ class Orders extends Authenticatable
             $field =>$data,
         ]);
     }
+    public function setToNullColumn($column,$value)
+    {
+        Orders::where($column, $value)->update([
+            $column =>null,
+        ]);
+    }
     public function whereInDeleteInModel($orders_id)
     {
         Orders::whereIn('id', $orders_id)->delete();

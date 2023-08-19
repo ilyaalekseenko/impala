@@ -379,6 +379,7 @@ class GruzootpravitelController extends Controller
         foreach ($gruzootpravitels_id as $gruzootpravitel_id)
         {
         $old_docs=GruzootpravitelFile::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->get();
+
         foreach ($old_docs as $old_doc)
         {
             try {
@@ -391,10 +392,12 @@ class GruzootpravitelController extends Controller
 
             }
         }
-            $gruzootpravitelService->deleteContact($gruzootpravitel_id);
+
+        $gruzootpravitelService->deleteContact($gruzootpravitel_id);
         GruzootpravitelBank::where('gruzootpravitel_id', '=',$gruzootpravitel_id)->delete();
         Gruzootpravitel::where('id', '=',$gruzootpravitel_id)->delete();
-
+        //удалить адреса и всё что с ними связано
+        $this->gruzootpravitelAdresService->deleteNotExistAdresa($gruzootpravitel_id,[]);
         }
         return response()->json([
             'status' => 'success',

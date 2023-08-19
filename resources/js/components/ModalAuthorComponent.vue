@@ -2,20 +2,21 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-10">
-                <b-modal ref="my-modal" id="modal-author" size="lg" hide-footer hide-header>
-                    <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-                        <div class="col-8">Грузоотправитель/грузополучатель:</div>
-                        <div class="col-4 row d-flex justify-content-end">
-                            <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
-                            <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
-                        </div>
+                        <b-modal ref="my-modal" id="modal-author" size="lg" hide-footer hide-header>
 
-                        <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
+                            <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
+                                <div class="col-8">Грузоотправитель/грузополучатель:</div>
+                                <div class="col-4 row d-flex justify-content-end">
+                                    <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
+                                    <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
+                                </div>
 
-                    </div>
+                                <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
 
-                    <div class="col-12 no_padding_right no_padding_left row mod_borders_bottom">
-                        <!--                        начало левой колонки модалка-->
+                            </div>
+
+                            <div class="col-12 no_padding_right no_padding_left row mod_borders_bottom">
+                                <!--                        начало левой колонки модалка-->
                         <div class="col-6">
                             <div class="container-fluid">
                                 <div class="col-12 row">
@@ -232,11 +233,12 @@ import vClickOutside from 'v-click-outside'
         props: ['edit_flag',
             'gruzootpravitel_id',
             'get_gruzootpravitel_list',
-            'select_gruzootpravitel',
+            'chahgeFrontNames',
             'change_one_gruzzotpravitel',
             'addRowGruzoot',
             'allNew',
-            'vid'
+            'vid',
+            'inp_type'
         ],
         directives: {
             vClickOutside: vClickOutside.directive
@@ -695,7 +697,7 @@ import vClickOutside from 'v-click-outside'
                         {
                             this.get_gruzootpravitel_list()
                                 //метод автообновления в виде
-                           // this.select_gruzootpravitel()
+
                         }
                         //если новая погрузка
                         if((this.flagNewModal)||(this.allNew))
@@ -710,13 +712,13 @@ import vClickOutside from 'v-click-outside'
                             }
                             if(this.vid=="GradeComponent")
                             {
-                               // this.select_gruzootpravitel()
+
                             }
                         }
                         //если редактируем погрузку
                         else
                         {
-                            this.select_gruzootpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.forma,this.adresa)
+                            this.chahgeFrontNames(this.current_gruzootpravitel_id,this.nazvanie,this.forma,this.adresa)
                             //если редактируем из вида грузоотправителя
                             // if(this.vid=="GruzzotpravitelComponent")
                             // {

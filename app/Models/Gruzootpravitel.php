@@ -68,5 +68,4 @@ class Gruzootpravitel extends Model
             ->get();
     }
 
-
 }
