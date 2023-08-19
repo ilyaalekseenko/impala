@@ -320,14 +320,14 @@
 
                                         </div>
                                         <div class="col-6">
-                                            <div class="little_title_grade">Время</div>
+                                            <div class="little_title_grade">Время111</div>
 
 <!--                                                    <input @blur="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"-->
 <!--                                                        class="border_input inp_time" v-model="adres_pogr.time_ts"  />-->
 <!--                        ВРЕМЯ ПОГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,2,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.time_ts"  />
                         <date-picker   v-model="adres_pogr.time_ts" valueType="format" type="time"
-                        format=" H:m" :open.sync=adres_pogr.show_DP_time @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"></date-picker>
+                        format=" H:mm" :open.sync=adres_pogr.show_DP_time @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"></date-picker>
 
                                         </div>
                                     </div>
@@ -396,9 +396,7 @@
 
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,2,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.time_ts"  />
                         <date-picker   v-model="adres_vygr.time_ts" valueType="format" type="time"
-                                     format=" H:m" :open.sync=adres_vygr.show_DP_time @change="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.time_ts,'time_ts')"></date-picker>
-
-
+                                     format=" H:mm" :open.sync=adres_vygr.show_DP_time @change="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.time_ts,'time_ts')"></date-picker>
                                         </div>
                                     </div>
                                     <div class="col-12 row doc_add_row_1">

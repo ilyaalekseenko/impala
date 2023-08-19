@@ -22,13 +22,18 @@
                 <div class="col-10 create_orders_second_title row">
                     <div class="col-3">
                         <span  class="create_orders_date_title">Дата внесения:</span>
-<!--                        <date-picker  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open="openDP"></date-picker>-->
                         <span class="create_orders_date_title_int">{{ data_vneseniya }}</span>
                         <span @click="openDB0">
-<!--                       <span @click="openEndDatePicker">-->
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                         <date-picker ref="datepicker0"  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" @change="handleChange0"></date-picker>
+                    <div>Время внесения:
+                        {{ headerTime1 }}
+                        <span @click="showHeaderTime(1)">
+                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
+                       </span>
+                        <date-picker   v-model="headerTime1" valueType="format" type="time" format=" H:mm" :open.sync=headerTimeShow1 @change="handleChange0"></date-picker>
+                    </div>
                     </div>
                     <div class="col-4" v-show="checkRolePermission([1])">
                         <span  class="create_orders_date_title">Логист:</span>
@@ -48,6 +53,13 @@
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                         <date-picker ref="datepicker1"  v-model="rasschitat_do" valueType="format" format="DD.MM.YYYY"  :open.sync="openDP1" @change="handleChange1"></date-picker>
+                        <div class="headerTimeDiv">Время рассчёта:
+                            {{ headerTime2 }}
+                            <span @click="showHeaderTime(2)">
+                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
+                       </span>
+                            <date-picker   v-model="headerTime2" valueType="format" type="time" format=" H:mm" :open.sync=headerTimeShow2 @change="handleChange0"></date-picker>
+                        </div>
                     </div>
                     <div class="col-2 justify-content-end" v-if="ocenka_show_button" v-on:click="setColumn('ocenka')">
                         <div class="col add_ts_button4 text-center">Оценка</div>
@@ -102,28 +114,15 @@
                             </div>
                             <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />
                         </div>
-<!--                        <div class="col">-->
-<!--                            <div class="little_title_create_orders">-->
-<!--                                Проект ИСД (номер и название)-->
-<!--                            </div>-->
-<!--                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="ISD"  />-->
-<!--                        </div>-->
+
                         <div class="col-12 row" v-show="checkRolePermission([1])">
-<!--                        <div class="col-12 row" v-show="checkRolePermission(['admin':'show','logist':'show'])">-->
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
                                 <div class="little_title_create_orders no_wrap_text" >
                                     Бюджет контракта
                                 </div>
                                 <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
                             </span>
-<!--                            <span class=" cr_ord_inp_n_2">-->
-<!--                                <div class="little_title_create_orders no_wrap_text">-->
-<!--                                    Дата контракта-->
-<!--                                </div>-->
-<!--                                <input @click="openDB4" class="cr_ord_inp_n_2 border_input" v-model="data_kontrakta"  />-->
-<!--                                <date-picker ref="datepicker4"  v-model="data_kontrakta" valueType="format"-->
-<!--                                             format="DD.MM.YYYY" :open.sync="openDP4" @change="handleChange0"></date-picker>-->
-<!--                            </span>-->
+
                         </div>
                         <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
                             <span class=" cr_ord_inp_n_2 cena_kont_marg">
@@ -858,7 +857,11 @@
                 vidTsNazavanie:'',
                 adresPogruzkiShowSpan:true,
                 adresVygruzkiShowSpan:true,
-                localFirstClick:false
+                localFirstClick:false,
+                headerTimeShow1:false,
+                headerTimeShow2:false,
+                headerTime1:'',
+                headerTime2:''
 
 
             }
@@ -965,7 +968,17 @@
                 return flag
 
             },
-
+            showHeaderTime(numb)
+            {
+                if(numb==1)
+                {
+                    this.headerTimeShow1=true
+                }
+                if(numb==2)
+                {
+                    this.headerTimeShow2=true
+                }
+            },
             inputShow(inpVar)
             {
 
@@ -1554,7 +1567,9 @@
                         ob_ob:this.ob_ob,
                         vid_perevozki:this.vid_perevozki,
                         oplata_arr:this.oplata_arr,
-                        start_flag:false
+                        start_flag:false,
+                        timeVneseniya:this.headerTime1,
+                        timeRasscheta:this.headerTime2
                     })
             },
             start_get_old_order(adress,inp,TSinp)
@@ -1565,6 +1580,8 @@
                     })
                     .then(({ data }) => (
                             this.data_vneseniya=data.data[0]['data_vneseniya'],
+                            this.headerTime1=data.data[0]['timeVneseniya'],
+                            this.headerTime2=data.data[0]['timeRasscheta'],
                             this.rasschitat_do=data.data[0]['rasschitat_do'],
                             this.nomenklatura=data.data[0]['nomenklatura'],
                             this.nomer_zayavki=data.data[0]['nomer_zayavki'],

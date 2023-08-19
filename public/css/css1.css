@@ -1930,3 +1930,9 @@
 .div-container {
     display: flex;
 }
+@media (min-width: 1864px)
+{
+    .headerTimeDiv {
+        margin-top: 21px;
+    }
+}

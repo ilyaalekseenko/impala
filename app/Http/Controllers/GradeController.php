@@ -157,6 +157,13 @@ class GradeController extends Controller
     public function get_logist_list()
     {
         $list_users= User::whereRelation('roles', 'role_id', '=', 2)->get();
+        foreach ($list_users as $user) {
+            foreach ($user->getAttributes() as $key => $value) {
+                if ($value === null) {
+                    $user->{$key} = '';
+                }
+            }
+        }
         return response()->json([
             'status' => 'success',
             'list_users' => $list_users

@@ -99,6 +99,8 @@ class Orders extends Authenticatable
             'ob_ves' =>request('ob_ves'),
             'ob_ob' =>request('ob_ob'),
             'vid_perevozki' =>request('vid_perevozki'),
+            'timeVneseniya' =>request('timeVneseniya'),
+            'timeRasscheta' =>request('timeRasscheta')
         ]);
     }
     public function updateOneFieldInOrderInModel($id,$field,$data)
