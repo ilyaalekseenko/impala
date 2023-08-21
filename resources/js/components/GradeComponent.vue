@@ -90,12 +90,12 @@
                         </span>
                     </div>
 
-                    <div class="offset-1 col-11 row grade_left_column_text_main" v-for="(elem,key) in na_terminale_arr" >
-                        <div class="col-6 grade_left_column_text_first no_padding_right">На терминале:</div>
-                        <div class="col-4 grade_left_column_text_sec  grade_left_column_text_sec_1 no_padding_left">{{ elem.kol_gruz_TS}} мест</div>
-                        <iconify-icon class="col-2 hide d-flex justify-content-center align-items-center" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                        <div class="col-12 grade_left_column_text_sec">{{ elem.terminal_name }}</div>
-                    </div>
+<!--                    <div class="offset-1 col-11 row grade_left_column_text_main" v-for="(elem,key) in na_terminale_arr" >-->
+<!--                        <div class="col-6 grade_left_column_text_first no_padding_right">На терминале:</div>-->
+<!--                        <div class="col-4 grade_left_column_text_sec  grade_left_column_text_sec_1 no_padding_left">{{ elem.kol_gruz_TS}} мест</div>-->
+<!--                        <iconify-icon class="col-2 hide d-flex justify-content-center align-items-center" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>-->
+<!--                        <div class="col-12 grade_left_column_text_sec">{{ elem.terminal_name }}</div>-->
+<!--                    </div>-->
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-12 grade_left_column_text_first">Общий бюджет:</div>

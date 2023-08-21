@@ -24,7 +24,7 @@
             <input class="col-6" type="email" v-model="email"  />
             <div class="col-6">Номер телефона</div>
 
-            <vue-tel-input  v-model="telefon" v-bind="vueTel.props"></vue-tel-input>
+            <phone-component  :initialPhoneNumber="telefon" :setPhoneNumber="setPhoneNumber"></phone-component>
 
             <div class="col-6">Роль</div>
             <select class="cr_ord_inp_n_1" v-model="role">
@@ -45,7 +45,7 @@
 
 import datepicker from 'vuejs-datepicker';
 import moment from 'moment'
-
+import VueMask from 'v-mask';
 import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 
@@ -63,6 +63,9 @@ Vue.filter('formatDate', function(value) {
         mounted() {
             this.get_roles(this.roles_list);
         },
+        directives: {
+            mask: VueMask.directive,
+        },
         data() {
             return {
                 name:'user',
@@ -79,23 +82,15 @@ Vue.filter('formatDate', function(value) {
                 openDP:false,
                 role:3,
                 roles_list:[],
-                vueTel: {
-                    phone: "",
-                    props: {
-                        preferredCountries: ["RU", "BY"],
-                        placeholder: "Введите номер телефона",
-                        mode: "international",
-                        defaultCountry:"RU",
-                        inputOptions: {
-                            showDialCode: true
-                        },
-                        disabledFormatting: false,
-                        wrapperClasses: "country-phone-input"
-                    }
-                },
+                lastCursorPosition: 0,
+
             }
         },
         methods: {
+            setPhoneNumber(newPhoneNumber)
+            {
+                this.telefon=newPhoneNumber
+            },
             add_new_user()
             {
                 this.alert_arr=[];

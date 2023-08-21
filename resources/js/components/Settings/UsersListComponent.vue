@@ -13,7 +13,6 @@
                     <th scope="col" v-on:click="sort_by('dolznost')">Должность</th>
                     <th scope="col" v-on:click="sort_by('telefon')">Телефон</th>
                     <th scope="col" v-on:click="sort_by('data_rozdenia')">Дата рождения</th>
-                    <th scope="col"></th>
                     <th scope="col" v-on:click="sort_by('status')">Статус</th>
                     <th scope="col" ></th>
                 </tr>
@@ -39,18 +38,16 @@
                     <td>
                         <input @click="show_flag=true" class="input_width_max_settings" @blur="update_user(user.id,'dolznost',user.dolznost)" v-model="user.dolznost" v-if="show_user_setting==user.id"  />
                         <span v-else>{{ user.dolznost }}</span></td>
-                    <td >
-<!--                        <input @click="show_flag=true" class="input_width_max_settings" @blur="update_user(user.id,'telefon',user.telefon)" v-model="user.telefon" v-if="show_user_setting==user.id"  />-->
-<!--                        <span v-else>{{ user.telefon }}</span>-->
-                       <span @click="show_flag=true">
-                        <vue-tel-input @click="show_flag=true" v-if="show_user_setting==user.id" v-model="user.telefon" v-bind="vueTel.props" @close="flag_close(user.id,'telefon',user.telefon)" @blur="update_user(user.id,'telefon',user.telefon)"  ></vue-tel-input>
-                                                <span v-else>{{ user.telefon }}</span>
-                           </span>
+                    <td>
+                        <span @click="show_flag=true">
+                        <phone-component :initialPhoneNumber="user.telefon" v-if="show_user_setting==user.id" :setPhoneNumber="setPhoneNumber"></phone-component>
+                       <span v-else>{{ user.telefon }}</span>
+                        </span>
+
                     </td>
                     <td>
                         <input @click="openDB0" class="input_width_max_settings" v-model="user.data_rozdenia" v-if="show_user_setting==user.id"  />
-                        <span v-else>{{ user.data_rozdenia }}</span></td>
-                    <td>
+                        <span v-else>{{ user.data_rozdenia }}</span>
                         <date-picker v-if="show_user_setting==user.id" ref="datepicker0" @change="update_user(user.id,'data_rozdenia',user.data_rozdenia)" v-model="user.data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
                     </td>
 
@@ -144,14 +141,16 @@ export default {
         this.get_roles(this.roles_list);
     },
     methods: {
-        flag_close(user_id,item,data)
+        setPhoneNumber(newPhoneNumber)
         {
-            axios
-                .post('/update_user',{
-                    user_id:user_id,
-                    search:item,
-                    data:data
-                })
+            for(let i=0; i<this.users_list.length; i++)
+            {
+                if(this.users_list[i]['id']==this.show_user_setting)
+                {
+                    this.users_list[i]['telefon']=newPhoneNumber
+                    this.update_user(this.show_user_setting,'telefon',newPhoneNumber)
+                }
+            }
         },
         openDB0()
         {

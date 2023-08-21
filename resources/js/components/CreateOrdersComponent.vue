@@ -309,15 +309,15 @@
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.ТС</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_TS_TS }}</div>
                                     </div>
-                                    <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Общий вес,кг</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ves_TS }}</div>
-                                    </div>
+<!--                                    <div class="col-2  no_padding_right">-->
+<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Общий вес2,кг</div>-->
+<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ves_TS }}</div>-->
+<!--                                    </div>-->
 
-                                    <div class="offset-1 col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text text_line mt_ts_text">Общий объём,м3</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ob_TS }}</div>
-                                    </div>
+<!--                                    <div class="offset-1 col-2  no_padding_right">-->
+<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text text_line mt_ts_text">Общий объём,м3</div>-->
+<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ob_TS }}</div>-->
+<!--                                    </div>-->
                                     <div class="col-2  no_padding_right">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
@@ -448,24 +448,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 row">
-                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
-                                            <div class="little_title_create_orders2">
-                                                Общий вес,кг
-                                            </div>
-                                            <div class="create_orders_bottom row">
-                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />
-                                            </div>
-                                        </div>
-                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
-                                            <div class="little_title_create_orders2 ob_ob_width">
-                                                Общий объём,м3
-                                            </div>
-                                            <div class="create_orders_bottom row">
-                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />
-                                            </div>
-                                        </div>
-                                    </div>
+<!--                                    <div class="col-12 row">-->
+<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
+<!--                                            <div class="little_title_create_orders2">-->
+<!--                                                Общий вес3,кг-->
+<!--                                            </div>-->
+<!--                                            <div class="create_orders_bottom row">-->
+<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
+<!--                                            <div class="little_title_create_orders2 ob_ob_width">-->
+<!--                                                Общий объём,м3-->
+<!--                                            </div>-->
+<!--                                            <div class="create_orders_bottom row">-->
+<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
                                     <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
@@ -530,25 +530,23 @@
                             </div>
                             <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
                         </div>
-                        <div class="col-12 right_comments">
-
-                            <div class="col-6 row checkbox2_row">
-                                <input class="col-2 checkbox_create_orders2 border_input checkbox_create_orders2_height" type="checkbox" id="checkbox1" v-model="checked2">
-                                <div class="col terminal_ts">На терминале</div>
-                            </div>
-                            <div v-if="checked2" class="col-6 terminal_cr_ord">
-                                <div class="little_title_create_orders">
-                                    Терминал
-                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>
-                                </div>
-                                <div class="create_orders_bottom row">
-                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">
-                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
+<!--                        <div class="col-12 right_comments">-->
+<!--                            <div class="col-6 row checkbox2_row">-->
+<!--                                <input class="col-2 checkbox_create_orders2 border_input checkbox_create_orders2_height" type="checkbox" id="checkbox1" v-model="checked2">-->
+<!--                                <div class="col terminal_ts">На терминале</div>-->
+<!--                            </div>-->
+<!--                            <div v-if="checked2" class="col-6 terminal_cr_ord">-->
+<!--                                <div class="little_title_create_orders">-->
+<!--                                    Терминал-->
+<!--                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>-->
+<!--                                </div>-->
+<!--                                <div class="create_orders_bottom row">-->
+<!--                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">-->
+<!--                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="col-11 save_buttons justify-content-end row ">
                             <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
@@ -640,24 +638,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 row">
-                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
-                                            <div class="little_title_create_orders2">
-                                                Общий вес,кг
-                                            </div>
-                                            <div class="create_orders_bottom row">
-                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />
-                                            </div>
-                                        </div>
-                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">
-                                            <div class="little_title_create_orders2 ob_ob_width">
-                                                Общий объём,м3
-                                            </div>
-                                            <div class="create_orders_bottom row">
-                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />
-                                            </div>
-                                        </div>
-                                    </div>
+<!--                                    <div class="col-12 row">-->
+<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
+<!--                                            <div class="little_title_create_orders2">-->
+<!--                                                Общий вес4,кг-->
+<!--                                            </div>-->
+<!--                                            <div class="create_orders_bottom row">-->
+<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
+<!--                                            <div class="little_title_create_orders2 ob_ob_width">-->
+<!--                                                Общий объём,м3-->
+<!--                                            </div>-->
+<!--                                            <div class="create_orders_bottom row">-->
+<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
 
                                     <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
@@ -723,25 +721,23 @@
                             </div>
                             <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
                         </div>
-                        <div class="col-12 right_comments">
-
-                            <div class="col-6 row checkbox2_row">
-                                <input class="col-2 checkbox_create_orders2 checkbox_create_orders2_height_d border_input" type="checkbox" id="checkbox1" v-model="checked2">
-                                <div class="col terminal_ts">На терминале</div>
-                            </div>
-                            <div v-if="checked2" class="col-6 terminal_cr_ord">
-                                <div class="little_title_create_orders">
-                                    Терминал
-                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>
-                                </div>
-                                <div class="create_orders_bottom row">
-                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">
-                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
+<!--                        <div class="col-12 right_comments">-->
+<!--                            <div class="col-6 row checkbox2_row">-->
+<!--                                <input class="col-2 checkbox_create_orders2 checkbox_create_orders2_height_d border_input" type="checkbox" id="checkbox1" v-model="checked2">-->
+<!--                                <div class="col terminal_ts">На терминале</div>-->
+<!--                            </div>-->
+<!--                            <div v-if="checked2" class="col-6 terminal_cr_ord">-->
+<!--                                <div class="little_title_create_orders">-->
+<!--                                    Терминал-->
+<!--                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>-->
+<!--                                </div>-->
+<!--                                <div class="create_orders_bottom row">-->
+<!--                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">-->
+<!--                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="col-11 save_buttons justify-content-end row">
                             <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>

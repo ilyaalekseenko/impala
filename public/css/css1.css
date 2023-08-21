@@ -1936,3 +1936,12 @@
         margin-top: 21px;
     }
 }
+.phoneInputV {
+    width:156px;
+}
+.selPhone {
+    width:50px;
+}
+.phoneTD {
+    min-width: 240px
+}

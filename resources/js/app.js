@@ -48,6 +48,7 @@ Vue.component('auto-input-t-s-component', require('./components/SupportComponent
 Vue.component('auto-input-tip-t-s-component', require('./components/SupportComponents/AutoInputTipTSComponent').default);
 Vue.component('auto-input-p-p-component', require('./components/SupportComponents/AutoInputPPComponent').default);
 Vue.component('auto-input-perevozka-modal-component', require('./components/SupportComponents/AutoInputPerevozkaModalComponent').default);
+Vue.component('phone-component', require('./components/SupportComponents/PhoneComponent').default);
 Vue.component('auto-input-stavki-component', require('./components/SupportComponents/AutoInputStavkiComponent').default);
 Vue.component('alert-error-list-component', require('./components/SupportComponents/AlertErrorListComponent').default);
 Vue.component('pagination-component', require('./components/SupportComponents/PaginationComponent').default);
@@ -97,6 +98,7 @@ Vue.use(VueTheMask);
 //маска для мобильн
 // import VueInputMask from 'vue-inputmask';
 // Vue.use(VueInputMask);
+
 
 //mixins
 import MixinGoTo from './mixins/MixinGoTo'
