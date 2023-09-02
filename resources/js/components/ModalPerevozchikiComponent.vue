@@ -37,9 +37,12 @@
                                     </div>
                                     <div class="col-5 grade_naz no_padding_left_form ">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-<!--                                        <input type="tel" v-mask="'+7 (###) ###-##-##'" v-model="phoneMain" placeholder="+7 (___) ___-__-__">-->
-<!--                                        <input type="tel" v-mask="'+7 (###) ###-##-##'" v-model="phoneMain" v-the-mask="phoneMask">-->
-                                        <input class="border_input" type="text" v-model="telefon" />
+                                        <phone-component class="phone_row" :initialPhoneNumber="telefon" typeNumber="mainNumber" :setPhoneNumber="setPhoneNumber"></phone-component>
+                                    </div>
+                                    <div class="col-3 grade_naz ">
+                                        <div class="create_orders_date_title_1 lit_marg_grade col-12">Город базирования</div>
+                                        <input class="border_input col-12"
+                                               v-model="gorod_bazirovania"/>
                                     </div>
                                 </div>
                             </div>
@@ -72,8 +75,7 @@
                                 </div>
                                 <div class=" col-4">
                                     <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                                    <input  class="col-12 border_input"
-                                           v-model="telefon_gen_dir"/>
+                                    <phone-component class="phone_row" :initialPhoneNumber="telefon_gen_dir" typeNumber="genDir" :setPhoneNumber="setPhoneNumber"></phone-component>
                                 </div>
                                 <div class="col-2 inn_width grade_marg_bot">
                                     <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
@@ -94,10 +96,9 @@
                                         <input  class="col-12 border_input inn_width"
                                                v-model="kontakty[key].FIO"/>
                                     </div>
-                                    <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                                        <input  class="col-12 border_input inn_width"
-                                               v-model="kontakty[key].telefon"/>
+                                        <phone-component class="phone_row" :initialPhoneNumber="kontakty[key].telefon" :rowKey="key" typeNumber="kontakty" :setPhoneNumber="setPhoneNumber"></phone-component>
                                     </div>
                                     <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
@@ -214,6 +215,7 @@ Vue.use(VueMask)
                 forma:'',
                 forma_list:[],
                 nazvanie:'',
+                gorod_bazirovania:'',
                 data_registracii:'',
                 INN:'',
                 OGRN:'',
@@ -247,6 +249,26 @@ Vue.use(VueMask)
             }},
 
         methods: {
+            setPhoneNumber(newPhoneNumber,type,key)
+            {
+                if(type=='mainNumber')
+                {
+                    this.telefon=newPhoneNumber
+                }
+                if(type=='genDir')
+                {
+                    this.telefon_gen_dir=newPhoneNumber
+                }
+                if(type=='kontakty')
+                {
+                    this.kontakty[key].telefon=newPhoneNumber
+                }
+                if(type=='adresa')
+                {
+                    this.adresa[key].telefon=newPhoneNumber
+                }
+
+            },
             formatPhone() {
                 this.phoneMain = this.phoneMain.replace(/\D/g, '').slice(0, 10);
             },
@@ -256,6 +278,7 @@ Vue.use(VueMask)
                 this.headerName='Новый перевозчик'
                 this.forma='',
                     this.nazvanie='',
+                    this.gorod_bazirovania='',
                     this.data_registracii='',
                     this.INN='',
                     this.OGRN='',
@@ -287,6 +310,7 @@ Vue.use(VueMask)
                 this.headerName='Редактирование перевозчика'
                         this.forma='',
                         this.nazvanie='',
+                        this.gorod_bazirovania='',
                         this.data_registracii='',
                         this.INN='',
                         this.OGRN='',
@@ -322,6 +346,7 @@ Vue.use(VueMask)
                  .then(({ data }) => (
                          this.forma=data.perevozka.forma_id,
                          this.nazvanie=data.perevozka.nazvanie,
+                         this.gorod_bazirovania=data.perevozka.gorod_bazirovania,
                          this.data_registracii=data.perevozka.data_registracii,
                          this.INN=data.perevozka.INN,
                          this.OGRN=data.perevozka.OGRN,
@@ -380,6 +405,7 @@ Vue.use(VueMask)
                         if (response.data.status === 'success') {
                             this.forma=response.data.forma,
                             this.nazvanie=response.data.nazvanie,
+                            this.gorod_bazirovania=response.data.gorod_bazirovania,
                             this.data_registracii=response.data.data_registracii,
                             this.OGRN=response.data.ogrn,
                             this.telefon=response.data.telefon,
@@ -445,6 +471,7 @@ Vue.use(VueMask)
             {
                 this.forma='',
                 this.nazvanie='',
+                this.gorod_bazirovania='',
                 this.data_registracii='',
                 this.INN='',
                 this.OGRN='',
@@ -625,6 +652,7 @@ Vue.use(VueMask)
                         current_gruzootpravitel_id:this.current_gruzootpravitel_id,
                         forma:this.forma,
                         nazvanie:this.nazvanie,
+                        gorod_bazirovania:this.gorod_bazirovania,
                         data_registracii:this.data_registracii,
                         telefon:this.telefon,
                         INN:this.INN,

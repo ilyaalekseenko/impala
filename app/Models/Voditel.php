@@ -10,7 +10,7 @@ class Voditel extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function saveVoditelModel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya)
+    public function saveVoditelModel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$nomer_vod_ud)
     {
         return Voditel::create([
             'FIO' => $FIO,
@@ -21,6 +21,7 @@ class Voditel extends Model
             'kogdaVydan' => $kogdaVydan,
             'propiska' => $propiska,
             'kompaniya' => $kompaniya,
+            'udostoverenie' => $nomer_vod_ud,
         ]);
     }
     public function getVoditelNameBYId($id)
@@ -47,7 +48,7 @@ class Voditel extends Model
     {
         return Voditel::where('id',$id)->get();
     }
-    public function updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya)
+    public function updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$nomer_vod_ud)
     {
         Voditel::where('id', $voditelId)->update([
             'FIO' => $FIO,
@@ -58,6 +59,7 @@ class Voditel extends Model
             'kogdaVydan' => $kogdaVydan,
             'propiska' => $propiska,
             'kompaniya' => $kompaniya,
+            'udostoverenie' => $nomer_vod_ud,
         ]);
     }
 }

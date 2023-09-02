@@ -18,10 +18,10 @@ class TSModalService
     }
 
     //сохраняем нового перевозчика
-    public function saveNewTSModal($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$doc_files)
+    public function saveNewTSModal($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$doc_files,$sts,$pts)
     {
         //сохраняем перевозчика
-        $main=$this->TSModalModel->saveTSModalModel($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya);
+        $main=$this->TSModalModel->saveTSModalModel($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$sts,$pts);
         //получаем id перевозчика
         $voditelId=$main['id'];
 
@@ -32,9 +32,9 @@ class TSModalService
         return $voditelId;
     }
     //обновляем перевозчика
-    public function updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya)
+    public function updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$sts,$pts)
     {
-        $this->TSModalModel->updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya);
+        $this->TSModalModel->updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$sts,$pts);
     }
 
 }

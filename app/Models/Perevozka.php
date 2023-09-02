@@ -12,7 +12,7 @@ class Perevozka extends Model
     protected $guarded = false;
 
 
-    public function savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres)
+    public function savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania)
     {
         return Perevozka::create([
             'forma_id' => $forma,
@@ -27,9 +27,10 @@ class Perevozka extends Model
             'email_gen_dir' => $email_gen_dir,
             'YR_adres' => $yridicheskii_adres,
             'pochtovyi_adres' => $pochtovyi_adres,
+            'gorod_bazirovania' => $gorod_bazirovania,
         ]);
     }
-    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres)
+    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania)
     {
         Perevozka::where('id', $perevozchikId)->update([
             'forma_id' => $forma,
@@ -44,6 +45,7 @@ class Perevozka extends Model
             'email_gen_dir' => $email_gen_dir,
             'YR_adres' => $yridicheskii_adres,
             'pochtovyi_adres' => $pochtovyi_adres,
+            'gorod_bazirovania' => $gorod_bazirovania
         ]);
     }
     public function getPerevozchiklInOnePage($offset,$limit)

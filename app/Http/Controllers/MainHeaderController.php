@@ -102,13 +102,14 @@ class MainHeaderController extends Controller
         //получаем всех админов
         $admins=$this->UserService->getAllAdminsId();
 
-        //если поменялось на назначение ставки
-        if(request('columnName')=='naznachenie_stavki')
+        //если поменялось на назначение ставки или контроль
+        if((request('columnName')=='naznachenie_stavki')||(request('columnName')=='kontrol'))
         {
             //получим логиста текущей заявки
             $logistId=$this->orderModel->getOneColumnByOrderId(request('id'),'logist');
             //поставим не прочитанной новую колонку первому а с ним и всем админам, заодно убираем оповещение у логиста
-            $this->UnreadHeadersModel->setUnreadToLogistModel($admins[0]['id'],request('id'),'naznachenie_stavki');
+//            $this->UnreadHeadersModel->setUnreadToLogistModel($admins[0]['id'],request('id'),'naznachenie_stavki');
+            $this->UnreadHeadersModel->setUnreadToLogistModel($admins[0]['id'],request('id'),request('columnName'));
         //обновим шапку у логиста
             if(($logistId!==null)&&($logistId!==0))
             {
@@ -147,8 +148,9 @@ class MainHeaderController extends Controller
         foreach($admins as $admin)
         {
             //получим количество всех не прочитанных заявок у логиста  ( зелёный цвет )
-            $unreadHeaderArr=$this->UnreadHeadersModel->getUnreadHeadersLogistModel($admin['id'],'admin');
-            //получим количество всех заявок у логиста ( белый цвет )
+//            $unreadHeaderArr=$this->UnreadHeadersModel->getUnreadHeadersLogistModel($admin['id'],'admin');
+            $unreadHeaderArr=$this->UnreadHeadersModel->getUnreadHeadersAdminModel($admin['id']);
+            //получим количество всех заявок ( белый цвет )
             $mainHeaderArr=$this->orderModel->allHeadersCountModel($admin['id'],'admin');
             //оповещение тому у кого эта заявка в работе
             broadcast(new UpdateMainLogistEvent($admin['id'],$unreadHeaderArr,$mainHeaderArr))->toOthers();

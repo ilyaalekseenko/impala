@@ -41,12 +41,12 @@
                                         <input class="border_input TS_mod_nomer" type="text" v-model="nomer" />
                                     </div>
                                     <div class="col no_padding_right">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Тоннаж,т:</div>
-                                        <input class="border_input TS_mod_tonn" type="text" v-model="tonn" />
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">СТС:</div>
+                                        <input class="border_input TS_mod_tonn" type="text" v-model="sts" />
                                     </div>
                                     <div class="col no_padding_right">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Номер документа:</div>
-                                        <input class="border_input TS_mod_nomer_doc" type="text" v-model="nomer_documenta" />
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">ПТС:</div>
+                                        <input class="border_input TS_mod_nomer_doc" type="text" v-model="pts" />
                                     </div>
                                     <div class="col no_padding_right">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
@@ -139,11 +139,14 @@ Vue.use(VueMask)
                 marka:'',
                 nomer:'',
                 tonn:'',
+                sts:'',
+                pts:'',
                 nomer_documenta:'',
                 kompaniya:'',
                 kompaniyaNazvanie:'',
                 doc_files:[],
                 pogruzkaShowInp:true
+
             }},
 
         methods: {
@@ -158,6 +161,8 @@ Vue.use(VueMask)
                 this.marka='',
                 this.nomer='',
                 this.tonn='',
+                this.sts='',
+                this.pts='',
                 this.nomer_documenta='',
                 this.doc_files=[],
                 this.files=[],
@@ -192,6 +197,8 @@ Vue.use(VueMask)
                         this.marka='',
                         this.nomer='',
                         this.tonn='',
+                        this.sts='',
+                        this.pts='',
                         this.nomer_documenta='',
                         this.kompaniya='',
                         this.kompaniyaNazvanie='',
@@ -215,6 +222,8 @@ Vue.use(VueMask)
                          this.marka=data.voditel.marka,
                          this.nomer=data.voditel.nomer,
                          this.tonn=data.voditel.tonn,
+                         this.sts=data.voditel.sts,
+                         this.pts=data.voditel.pts,
                          this.nomer_documenta=data.voditel.nomer_documenta,
                          this.kompaniya=data.voditel.kompaniya,
                          this.kompaniyaNazvanie=data.kompaniyaNazvanie,
@@ -249,6 +258,8 @@ Vue.use(VueMask)
                     this.marka='',
                     this.nomer='',
                     this.tonn='',
+                    this.sts='',
+                    this.pts='',
                     this.nomer_documenta='',
                     this.kompaniya='',
                     this.kompaniyaNazvanie='',
@@ -363,10 +374,11 @@ Vue.use(VueMask)
                         marka:this.marka,
                         nomer:this.nomer,
                         tonn:this.tonn,
+                        sts:this.sts,
+                        pts:this.pts,
                         nomer_documenta:this.nomer_documenta,
                         kompaniya:this.kompaniya,
-                        doc_files:this.doc_files,
-
+                        doc_files:this.doc_files
                     })
                     .then(response => {
                         //если вид grade

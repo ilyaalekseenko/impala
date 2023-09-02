@@ -35,9 +35,9 @@ class PPService
         return $voditelId;
     }
     //обновляем перевозчика
-    public function updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya)
+    public function updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya,$sts,$pts)
     {
-        $this->PPModel->updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya);
+        $this->PPModel->updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya,$sts,$pts);
     }
 
 }

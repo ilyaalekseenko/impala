@@ -66,4 +66,17 @@ class TS extends Authenticatable
             'vid_TS' =>null,
         ]);
     }
+    public function  getStavkaKM($orderId,$idTS)
+    {
+        $ord= TS::where('order_id', $orderId)->where('id_ts', $idTS)->get();
+        if(($ord[0]['stavka_TS']==null)||($ord[0]['rasstojanie_TS']==null)||($ord[0]['stavka_TS']=='')||($ord[0]['rasstojanie_TS']==''))
+        {
+            return 0;
+        }
+        else
+        {
+            return round($ord[0]['stavka_TS']/$ord[0]['rasstojanie_TS'],2);
+        }
+
+    }
 }

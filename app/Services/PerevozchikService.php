@@ -49,10 +49,10 @@ class PerevozchikService
         $gruzootpravitelContactModel->deleteContactMod($gruzootpravitel_id);
     }
     //сохраняем нового перевозчика
-    public function saveNewPerevozchik($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$bank_arr,$doc_files)
+    public function saveNewPerevozchik($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$bank_arr,$doc_files,$gorod_bazirovania)
     {
         //сохраняем перевозчика
-        $main=$this->perevozkaModel->savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres);
+        $main=$this->perevozkaModel->savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania);
         //получаем id перевозчика
         $perevozkaId=$main['id'];
 //        //создаём новые контакты адреса и банки
@@ -71,9 +71,9 @@ class PerevozchikService
         return $perevozkaId;
     }
     //обновляем перевозчика
-    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$bank_arr,$doc_files)
+    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$bank_arr,$doc_files,$gorod_bazirovania)
     {
-        $this->perevozkaModel->updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres);
+        $this->perevozkaModel->updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania);
 
        // $this->perevozkaModel->updateAdresa($perevozchikId,request('adresa'),request('forma'),request('nazvanie'));
 

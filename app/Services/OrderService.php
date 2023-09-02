@@ -46,7 +46,10 @@ class OrderService
     {
         $this->order->updateOrderMassInModel();
     }
-
+    public function updateOrderLoc()
+    {
+        $this->order->updateOneFieldInOrderInModel( request('id'),request('field'),request('data'));
+    }
     public function getOrdersListService($userStatus,$columnName,$offset,$limit)
     {
         if($userStatus=='admin')

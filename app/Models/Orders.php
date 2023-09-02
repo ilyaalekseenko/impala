@@ -40,7 +40,9 @@ class Orders extends Authenticatable
         'ob_ves',
         'ob_ob',
         'vid_perevozki',
-        'naznachenie_stavki'
+        'naznachenie_stavki',
+        'kontrol',
+        'zavershen',
     ];
 
     /**
@@ -71,9 +73,25 @@ class Orders extends Authenticatable
     }
     public function createNewOrderInModel($dataVneseniya)
     {
-        return Orders::create([
-            'data_vneseniya' => $dataVneseniya
+        // Получаем наибольшее значение поля nomer_zayavki
+        $maxNomerZayavki = Orders::max('nomer_zayavki');
+        if($maxNomerZayavki==null)
+        {
+            $maxNomerZayavki = Orders::max('id');
+        }
+        if($maxNomerZayavki==null)
+        {
+            $maxNomerZayavki = 0;
+        }
+// Увеличиваем значение на 1
+        $newNomerZayavki = $maxNomerZayavki + 1;
+
+// Создаем новую заявку с увеличенным значением поля nomer_zayavki
+        $newOrder = Orders::create([
+            'data_vneseniya' => $dataVneseniya,
+            'nomer_zayavki' => $newNomerZayavki,
         ]);
+        return $newOrder;
     }
     public function updateOrderMassInModel()
     {
@@ -125,6 +143,8 @@ class Orders extends Authenticatable
             'ocenka' =>null,
             'v_rabote' =>null,
             'naznachenie_stavki' =>null,
+            'kontrol' =>null,
+            'zavershen' =>null,
         ]);
     }
     public function getOneColumnByOrderId($orderId,$columnName)
@@ -135,7 +155,7 @@ class Orders extends Authenticatable
 
     public function allHeadersCountModel($logistId,$logistOradmin)
     {
-        $counterArr=['all'=>0,'ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,];
+        $counterArr=['all'=>0,'ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
         $counterArr['all']=Orders::all()->count();
         if($logistOradmin=='logist')
         {
@@ -160,6 +180,14 @@ class Orders extends Authenticatable
             {
                 $counterArr['vRabote']++;
             }
+            if($oneHeader['kontrol']==1)
+            {
+                $counterArr['kontrol']++;
+            }
+            if($oneHeader['zavershen']==1)
+            {
+                $counterArr['zavershen']++;
+            }
         }
         return $counterArr;
     }
@@ -183,6 +211,7 @@ class Orders extends Authenticatable
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
             ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
+            ->orderBy('nomer_zayavki', 'desc')
             ->get();
     }
     public function getColumnOrderListLogist($columnName,$offset,$limit)
@@ -201,6 +230,7 @@ class Orders extends Authenticatable
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
             ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
+            ->orderBy('nomer_zayavki', 'desc')
             ->get();
     }
     public function countColumnOrderListAdmin($columnName)
@@ -213,6 +243,7 @@ class Orders extends Authenticatable
                 return $q->where($columnName,1)
                     ;
             })
+            ->orderBy('nomer_zayavki', 'desc')
             ->count();
     }
     public function countColumnOrderListLogist($columnName)
@@ -225,6 +256,17 @@ class Orders extends Authenticatable
                 return $q->where($columnName,1)->where('logist',Auth::id())
                     ;
             })
+            ->orderBy('nomer_zayavki', 'desc')
             ->count();
+    }
+    public function issetByColumn($columnName,$columnData)
+    {
+        $exists = Orders::where($columnName, $columnData)->exists();
+
+        if ($exists) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

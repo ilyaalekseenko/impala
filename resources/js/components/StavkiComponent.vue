@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
-                            <div class="col-3 orders_title_table_main text-start row">
+                            <div class="col-2 orders_title_table_main text-start row">
                                 <div class="col-2"></div>
                                 <div class="col-8 head_font no_padding_right_imp">
                                     <auto-input-stavki-tip-t-s-component
@@ -51,7 +51,9 @@
 <!--                                    <div v-if="perevozchikSearch" class="col-2 cross_stavki_perevozka" v-on:click="clearInput('perevozchik')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>-->
                                 </div>
                             </div>
-                            <div class="col-2 orders_title_table_main head_font">Ставки</div>
+                            <div class="col-1 orders_title_table_main head_font">Ставки</div>
+                            <div class="col-1 orders_title_table_main head_font">Дата</div>
+                            <div class="col-1 orders_title_table_main head_font">Ставка за км.</div>
                             <div class="col-2 orders_title_table_main head_font">
                                 <div class="row">
                                     <auto-input-stavki-component class="col-10 no_padding_right_imp"
@@ -98,12 +100,26 @@
                         </div>
 
                         <div v-if="!paginationGif"  v-for="(gruzootpravitel,key) in gruzootpravitel_arr" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: gruzootpravitel.important==1 }">
-                        <div class="col-3 orders_title_table text-start row">
+
+
+                        <div class="col-2 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
                             <div class="col-10" >{{ gruzootpravitel.vid_TSNazvanie }}</div>
                         </div>
                         <div class="col-2 orders_title_table" v-on:click="show_mod_edit(gruzootpravitel.perevozchik,key)" v-b-modal.perevozkaMod variant="primary">{{ gruzootpravitel.perevozchik_TSNazvanie }}</div>
-                        <div class="col-2 orders_title_table" >{{ gruzootpravitel.stavka_summa }}р. {{ gruzootpravitel.NDS_check }}</div>
+                            <!--ставки-->
+                            <div class="col-1 orders_title_table" >{{ gruzootpravitel.stavka_summa }}р. {{ gruzootpravitel.NDS_check }}</div>
+                            <!--дата перевозки-->
+                            <div class="col-1 orders_title_table">
+                                <div>
+                                    <span>{{ gruzootpravitel.data_pogruzki }}</span>
+                                </div>
+                            </div>
+                            <div class="col-1 orders_title_table">
+                                <div>
+                                    <span>{{ gruzootpravitel.stavkaZaKM }} .р</span>
+                                </div>
+                            </div>
                             <!--откуда-->
                         <div class="col-2 orders_title_table">
                             <div v-for="(adres) in gruzootpravitel.adres_pogruzki_TS">
@@ -339,10 +355,12 @@ Vue.filter('formatDate', function(value) {
                                     vid_TSNazvanie:entry.vid_TSNazvanie,
                                     perevozchik_TSNazvanie:entry.perevozchik_TSNazvanie,
                                     stavka_summa:entry.stavka_summa,
+                                    data_pogruzki:entry.data_pogruzki,
                                     NDS_check:entry.NDS_check,
                                     adres_pogruzki_TS:entry.adres_pogruzki_TS,
                                     adres_vygr_TS:entry.adres_vygr_TS,
-                                    rasstojanie_TS:entry.rasstojanie_TS
+                                    rasstojanie_TS:entry.rasstojanie_TS,
+                                    stavkaZaKM:entry.stavkaZaKM,
                                 });
                             }),
                          this.paginationGif=false

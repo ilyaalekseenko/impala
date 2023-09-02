@@ -33,7 +33,7 @@ class VoditelController extends Controller
         {
             //сохраняем нового перевозчика
             $perevozkaID=$this->voditelService->saveNewVoditel(request('FIO'),request('telefon'),request('dataRozdeniya'),request('seriyaPassporta'),request('kemVydan'),request('kogdaVydan'),request('propiska')
-                ,request('kompaniya'),request('doc_files')
+                ,request('kompaniya'),request('doc_files'),request('nomer_vod_ud')
             );
             return response()->json([
                 'status' => 'success',
@@ -43,7 +43,7 @@ class VoditelController extends Controller
         }
         else
         {
-            $this->voditelService->updateVoditel($currentVoditel,request('FIO'),request('telefon'),request('dataRozdeniya'),request('seriyaPassporta'),request('kemVydan'),request('kogdaVydan'),request('propiska'),request('kompaniya'));
+            $this->voditelService->updateVoditel($currentVoditel,request('FIO'),request('telefon'),request('dataRozdeniya'),request('seriyaPassporta'),request('kemVydan'),request('kogdaVydan'),request('propiska'),request('kompaniya'),request('nomer_vod_ud'));
             $this->voditelFilesModel->updateOldFiles(request('doc_files'),$currentVoditel);
             return response()->json([
                 'status' => 'success',

@@ -59,22 +59,24 @@
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_5 coloring_np" v-on:click="update_header_underscore(4)" :class="{ header_underscore_4: header_underscore_list_class[4] }">
+                    <div class="col-2 color_title_5 coloring_np" v-on:click="update_header_underscore(4,'kontrol')" :class="{ header_underscore_4: header_underscore_list_class[4] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Контроль</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer head_font">0</span>
+                                <span class="coloring_integer head_font">{{ kontrol }}</span>
+                                <span class="coloring_integer_green" v-if="kontrol_unread_count!==0">+{{ kontrol_unread_count }}</span>
                             </div>
                         </div>
                             </span>
                     </div>
-                    <div class="col-2 color_title_6 coloring_np" v-on:click="update_header_underscore(5)" :class="{ header_underscore_5: header_underscore_list_class[5] }">
+                    <div class="col-2 color_title_6 coloring_np" v-on:click="update_header_underscore(5,'zavershen')" :class="{ header_underscore_5: header_underscore_list_class[5] }">
                         <span class="col-12 row">
                         <div class="col-4 coloring_row_text coloring_np head_font">Завершён</div >
                         <div class="col-8 row text-end coloring_np">
                             <div class="col-12 coloring_np">
-                                <span class="coloring_integer head_font">0</span>
+                                <span class="coloring_integer head_font">{{ zavershen }}</span>
+                                <span class="coloring_integer_green" v-if="zavershen_unread_count!==0">+{{ zavershen_unread_count }}</span>
                             </div>
                         </div>
                             </span>
@@ -105,7 +107,7 @@
                         <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: order.important==1 }">
                         <div class="col-1 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="order.checked_order">
-                            <div class="col-10">{{ order.id }}</div>
+                            <div class="col-10">{{ order.nomer_zayavki }}</div>
                         </div>
                         <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
                             <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
@@ -160,7 +162,7 @@ Vue.filter('formatDate', function(value) {
             this.role=this.auth_user['role_perm']['role']
             window.Echo.private('logist')
                 .listen('UpdateMainLogistEvent',(e) => {
-                    console.log(e.unreadHeaderArr.naznachenieStavki)
+                    console.log(e)
                     //если номер id пришедшего обновления совпадает с номером пользователя
                     if(e.logistId==this.auth_user.id)
                     {
@@ -169,11 +171,14 @@ Vue.filter('formatDate', function(value) {
                         this.ocenka=e.mainHeaderArr.ocenka
                         this.naznachenie_stavki=e.mainHeaderArr.naznachenieStavki
                         this.v_rabote=e.mainHeaderArr.vRabote
+                        this.kontrol=e.mainHeaderArr.kontrol
+                        this.zavershen=e.mainHeaderArr.vRabote
                         //зелёная оповещения
                         this.ocenka_counter=e.unreadHeaderArr.ocenka
                         this.naznachenie_stavki_unread_count=e.unreadHeaderArr.naznachenieStavki
                         this.v_rabote_unread_count=e.unreadHeaderArr.vRabote
-
+                        this.kontrol_unread_count=e.unreadHeaderArr.kontrol
+                        this.zavershen_unread_count=e.unreadHeaderArr.zavershen
                     }
                 }),
                 window.Echo.private('delete-order-channel')
@@ -224,6 +229,10 @@ Vue.filter('formatDate', function(value) {
                 naznachenie_stavki_unread_count:0,
                 v_rabote:0,
                 v_rabote_unread_count:0,
+                kontrol:0,
+                kontrol_unread_count:0,
+                zavershen:0,
+                zavershen_unread_count:0,
                 permissions:[],
                 columnName:'zurnal_zaiavok',
                 offset_from_start:0,
@@ -445,10 +454,14 @@ Vue.filter('formatDate', function(value) {
                 this.ocenka=data.mainHeaderArr.ocenka,
                 this.naznachenie_stavki=data.mainHeaderArr.naznachenieStavki,
                 this.v_rabote=data.mainHeaderArr.vRabote,
+                this.kontrol=data.mainHeaderArr.kontrol,
+                this.zavershen=data.mainHeaderArr.zavershen,
                 //зелёная оповещения
                 this.ocenka_counter=data.unreadHeaderArr.ocenka,
                 this.naznachenie_stavki_unread_count=data.unreadHeaderArr.naznachenieStavki,
-                this.v_rabote_unread_count=data.unreadHeaderArr.vRabote
+                this.v_rabote_unread_count=data.unreadHeaderArr.vRabote,
+                this.kontrol_unread_count=data.unreadHeaderArr.kontrol,
+                this.zavershen_unread_count=data.unreadHeaderArr.zavershen
                         )
                     );
             },
@@ -473,7 +486,8 @@ Vue.filter('formatDate', function(value) {
                                         adres_vygruski:entry.kuda,
                                         kompaniya_zakazchik:entry.kompaniya_zakazchik,
                                         checked_order:false,
-                                        important:entry.important
+                                        important:entry.important,
+                                        nomer_zayavki:entry.nomer_zayavki
                                     });
                                 })
                                 // this.pagination_counter()

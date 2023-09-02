@@ -6,8 +6,10 @@ use App\Models\FinalGrade;
 use App\Models\GradePogruzka;
 use App\Models\GruzootpravitelAdresa;
 use App\Models\GruzootpravitelContact;
+use App\Models\Orders;
 use App\Models\Perevozka;
 use App\Models\TS;
+use App\Models\TSModal;
 use App\Models\VidTS;
 
 class StavkiService
@@ -69,6 +71,7 @@ class StavkiService
             //переделать метод под grade которые мы получили ранее из поиска и вызывать метод поиска из search service
             $grade_list=$this->finalGradeModel->getGradeListByIds($oldstavki);
         }
+
         foreach ($grade_list as $grade)
         {
             //получаем список погрузок и выгрузок у данного ТС
@@ -149,7 +152,18 @@ class StavkiService
                 $grade['NDS_check']="С НДС";
             }
 
+            if($main_second=='main')
+            {
+            $dataPogruzki = Orders::where('id', $grade['grade_id'])->get();
+            $grade['data_pogruzki']=$dataPogruzki[0]['data_pogruzki'];
+            }
+            //получить ставку за КМ stavka_TS/rasstojanie_TS таблица TS
+            if($main_second=='main')
+            {
+                $grade['stavkaZaKM'] = $this->TS->getStavkaKM($grade['grade_id'],$grade['id_ts']);
+            }
         }
+
 
         return $grade_list;
 

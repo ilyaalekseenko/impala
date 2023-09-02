@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/start_new_order', [App\Http\Controllers\OrdersController::class, 'startNewOrder'])->name('startNewOrder');
     Route::post('/start_get_old_order', [App\Http\Controllers\OrdersController::class, 'startGetOldOrder'])->name('startGetOldOrder');
     Route::post('/update_order', [App\Http\Controllers\OrdersController::class, 'updateOrder'])->name('updateOrder');
+    Route::post('/updateOrderLoc', [App\Http\Controllers\OrdersController::class, 'updateOrderLoc'])->name('updateOrderLoc');
     Route::post('/store_xlsx', [App\Http\Controllers\OrdersController::class, 'storeXlsx'])->name('storeXlsx');
     Route::post('/store_doc', [App\Http\Controllers\OrdersController::class, 'store_doc'])->name('store_doc');
     Route::post('/store_doc_templ', [App\Http\Controllers\OrdersController::class, 'storeDocTempl'])->name('storeDocTempl');
@@ -63,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::post('/get_orders_list_new', [App\Http\Controllers\OrdersController::class, 'get_orders_list_new'])->name('get_orders_list_new');
     Route::post('/getOrderlist', [App\Http\Controllers\OrdersController::class, 'getOrderlist'])->name('getOrderlist');
     Route::post('/getOrderStatus', [App\Http\Controllers\OrdersController::class, 'getOrderStatus'])->name('getOrderStatus');
+    Route::post('/updateOrderNomerZaprosa', [App\Http\Controllers\OrdersController::class, 'updateOrderNomerZaprosa'])->name('updateOrderNomerZaprosa');
     Route::post('/checkOrderStatusName', [App\Http\Controllers\OrdersController::class, 'checkOrderStatusName'])->name('checkOrderStatusName');
     Route::post('/header_counter_orders', [App\Http\Controllers\MainHeaderController::class, 'headerCounterOrders'])->name('headerCounterOrders');
     Route::post('/get_start_data_grade', [App\Http\Controllers\GradeController::class, 'get_start_data_grade'])->name('get_start_data_grade');

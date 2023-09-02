@@ -34,7 +34,8 @@ class TSModalController extends Controller
         if($currentTSModal=='')
         {
             //сохраняем нового ТС номер
-            $perevozkaID=$this->TSModalService->saveNewTSModal(request('tip'),request('marka'),request('nomer'),request('tonn'),request('nomer_documenta'),request('kompaniya'),request('doc_files')
+            $perevozkaID=$this->TSModalService->saveNewTSModal(request('tip'),request('marka'),request('nomer'),request('tonn'),request('nomer_documenta'),request('kompaniya'),request('doc_files'),
+                request('sts'),request('pts')
             );
             return response()->json([
                 'status' => 'success',
@@ -45,7 +46,7 @@ class TSModalController extends Controller
         //редактируем ТС номер
         else
         {
-            $this->TSModalService->updateTSModal($currentTSModal,request('tip'),request('marka'),request('nomer'),request('tonn'),request('nomer_documenta'),request('kompaniya'));
+            $this->TSModalService->updateTSModal($currentTSModal,request('tip'),request('marka'),request('nomer'),request('tonn'),request('nomer_documenta'),request('kompaniya'), request('sts'),request('pts'));
             $this->TSModalFilesModel->updateOldFiles(request('doc_files'),$currentTSModal);
             return response()->json([
                 'status' => 'success',

@@ -53,10 +53,9 @@
                                         <input class="col-12 border_input inn_width"
                                                v-model="OGRN"/>
                                     </div>
-                                    <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                                        <input class="col-12 border_input inn_width"
-                                               v-model="telefon"/>
+                                        <phone-component class="phone_row" :initialPhoneNumber="telefon" typeNumber="mainNumber" :setPhoneNumber="setPhoneNumber"></phone-component>
                                     </div>
                                     <div class="col-2 inn_width no_padding_left_form grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
@@ -75,8 +74,7 @@
                                 </div>
                                 <div class="offset-1 col-4">
                                     <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                                    <input  class="col-12 border_input"
-                                           v-model="telefon_gen_dir"/>
+                                    <phone-component class="phone_row" :initialPhoneNumber="telefon_gen_dir" typeNumber="genDir" :setPhoneNumber="setPhoneNumber"></phone-component>
                                 </div>
                             </div>
                             <div class="col-12 grade_title_lit cont_header">Контакты:</div>
@@ -92,10 +90,9 @@
                                         <input  class="col-12 border_input inn_width"
                                                v-model="kontakty[key].FIO"/>
                                     </div>
-                                    <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                                        <input  class="col-12 border_input inn_width"
-                                               v-model="kontakty[key].telefon"/>
+                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                        <div class="col create_orders_date_title_1 lit_marg_grade">Телефон</div>
+                                        <phone-component class="phone_row"  :initialPhoneNumber="kontakty[key].telefon" :rowKey="key" typeNumber="kontakty" :setPhoneNumber="setPhoneNumber"></phone-component>
                                     </div>
                                     <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
@@ -125,12 +122,11 @@
                                         <input  class="col-12 border_input inn_width"
                                                 v-model="adresa[key].FIO"/>
                                     </div>
-                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                    <div class="col-4 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">телефон</div>
-                                        <input  class="col-12 border_input inn_width"
-                                                v-model="adresa[key].telefon"/>
+                                        <phone-component class="phone_row" :initialPhoneNumber="adresa[key].telefon" :rowKey="key" typeNumber="adresa" :setPhoneNumber="setPhoneNumber"></phone-component>
                                     </div>
-                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
+                                    <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
                                         <input  class="col-12 border_input inn_width"
                                                 v-model="adresa[key].email"/>
@@ -292,6 +288,26 @@ import vClickOutside from 'v-click-outside'
 
             }},
         methods: {
+            setPhoneNumber(newPhoneNumber,type,key)
+            {
+                if(type=='mainNumber')
+                {
+                    this.telefon=newPhoneNumber
+                }
+                if(type=='genDir')
+                {
+                    this.telefon_gen_dir=newPhoneNumber
+                }
+                if(type=='kontakty')
+                {
+                    this.kontakty[key].telefon=newPhoneNumber
+                }
+                if(type=='adresa')
+                {
+                    this.adresa[key].telefon=newPhoneNumber
+                }
+
+            },
             //если новая погрузка
             newModal()
             {

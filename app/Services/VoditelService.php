@@ -18,10 +18,10 @@ class VoditelService
     }
 
     //сохраняем нового перевозчика
-    public function saveNewVoditel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$doc_files)
+    public function saveNewVoditel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$doc_files,$nomer_vod_ud)
     {
         //сохраняем перевозчика
-        $main=$this->voditelModel->saveVoditelModel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya);
+        $main=$this->voditelModel->saveVoditelModel($FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$nomer_vod_ud);
         //получаем id перевозчика
         $voditelId=$main['id'];
 
@@ -32,9 +32,9 @@ class VoditelService
         return $voditelId;
     }
     //обновляем перевозчика
-    public function updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya)
+    public function updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$nomer_vod_ud)
     {
-        $this->voditelModel->updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya);
+        $this->voditelModel->updateVoditel($voditelId,$FIO,$telefon,$dataRozdeniya,$seriyaPassporta,$kemVydan,$kogdaVydan,$propiska,$kompaniya,$nomer_vod_ud);
     }
 //    //меняем данные у грузоотправителя
 //    public function updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$adresa,$bank_arr,$doc_files)

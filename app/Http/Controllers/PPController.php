@@ -58,7 +58,7 @@ class PPController extends Controller
         //редактируем ПП номер
         else
         {
-            $this->PPService->updatePP($currentTSModal,request('marka'),request('nomer'),request('dlina'),request('tonn'),request('nomer_documenta'),request('kompaniya'));
+            $this->PPService->updatePP($currentTSModal,request('marka'),request('nomer'),request('dlina'),request('tonn'),request('nomer_documenta'),request('kompaniya'),request('sts'),request('pts'));
             $this->PPFilesModel->updateOldFiles(request('doc_files'),$currentTSModal);
             return response()->json([
                 'status' => 'success',

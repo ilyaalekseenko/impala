@@ -24,10 +24,9 @@
                                         <input class="border_input col-12 "
                                                v-model="FIO"/>
                                     </div>
-                                    <div class="col-2 grade_naz vod_telefon">
+                                    <div class="col-5 vod_telefon vod_mar">
                                         <div class="create_orders_date_title_1 lit_marg_grade col-12">Телефон:</div>
-                                        <input class="border_input col-12"
-                                               v-model="telefon"/>
+                                        <phone-component class="phone_row" :initialPhoneNumber="telefon" typeNumber="mainNumber" :setPhoneNumber="setPhoneNumber"></phone-component>
                                     </div>
                                     <div class="col-3 date_width_col no_padding_left_form ">
                                         <div class="create_orders_date_title_1 lit_marg_grade col-12 no_wrap_text">Дата рождения:</div>
@@ -35,9 +34,23 @@
                                                v-model="dataRozdeniya"/>
                                         <date-picker ref="datepicker0"  v-model="dataRozdeniya" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
                                     </div>
-                                    <div class="col-4 grade_naz no_padding_left_form vod_passport">
-                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Серия и номер паспорта:</div>
-                                        <input class="border_input" type="text" v-model="seriyaPassporta" />
+                                </div>
+                                <div class="col-12 row">
+                                    <div class="col-3 no_padding_left_form vod_fio">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade">Номер вод.удостоверения:</div>
+                                        <input class="border_input col-12 "
+                                               v-model="nomer_vod_ud"/>
+                                    </div>
+                                    <div class="col-5 vod_mar">
+                                        <div class="col create_orders_date_title_1 lit_marg_grade ">Кем выдано:</div>
+                                        <input  class="col-12 border_input"
+                                                v-model="kemVydan"/>
+                                    </div>
+                                    <div class="col-3 no_padding_left_form">
+                                        <div class="col create_orders_date_title_1 lit_marg_grade">Когда выдан:</div>
+                                        <input  class="col-12 border_input" @click="openDB1"
+                                                v-model="kogdaVydan"/>
+                                        <date-picker ref="datepicker0"  v-model="kogdaVydan" valueType="format" format="DD.MM.YYYY" :open.sync="openDP1" ></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -47,17 +60,12 @@
                         <!--                        начало правой колонки модалка-->
                         <div class="col-6">
                             <div class="container-fluid perevoz_m_bottom">
+                                <div class="col-12 grade_naz no_padding_left_form vod_passport vod_mar">
+                                    <div class="col-12 create_orders_date_title_1 lit_marg_grade">Серия и номер паспорта:</div>
+                                    <input class="border_input" type="text" v-model="seriyaPassporta" />
+                                </div>
                                 <div class="col-12 row">
-                            <div class="col-4 vod_mar">
-                                <div class="col create_orders_date_title_1 lit_marg_grade ">Кем выданс:</div>
-                                <input  class="col-12 border_input"
-                                       v-model="kemVydan"/>
-                            </div>
-                            <div class="col-3 ">
-                                <div class="col create_orders_date_title_1 lit_marg_grade">Когда выдан:</div>
-                                <input  class="col-12 border_input"
-                                       v-model="kogdaVydan"/>
-                            </div>
+
                             <div class="col-5 ">
                                 <div class="col create_orders_date_title_1 lit_marg_grade">Прописка:</div>
                                 <input  class="col-12 border_input"
@@ -65,9 +73,6 @@
                             </div>
                             <div class="col-4 ">
                                 <div class="col create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                                <!--       <input  class="col-12 border_input"
-                                               v-model="kompaniya"/>-->
-
                                        <auto-input-perevozka-modal-component v-if="pogruzkaShowInp" class="select_width_grade"
                                                                        :vidTsFromParent="kompaniyaNazvanie"
                                                                        @childReturnMethod="parentMethodFromAutoinputPerevozka"
@@ -141,6 +146,7 @@ Vue.use(VueMask)
         data() {
             return {
                 openDP:false,
+                openDP1:false,
                 files:[],
                 alert_arr:[],
                 alert:false,
@@ -153,6 +159,7 @@ Vue.use(VueMask)
                 alert_list: [],
                 show_alert:false,
                 FIO:'',
+                nomer_vod_ud:'',
                 telefon:'',
                 dataRozdeniya:'',
                 seriyaPassporta:'',
@@ -166,6 +173,14 @@ Vue.use(VueMask)
             }},
 
         methods: {
+            setPhoneNumber(newPhoneNumber,type,key)
+            {
+                if(type=='mainNumber')
+                {
+                    this.telefon=newPhoneNumber
+                }
+
+            },
             formatPhone() {
                 this.phoneMain = this.phoneMain.replace(/\D/g, '').slice(0, 10);
             },
@@ -174,6 +189,7 @@ Vue.use(VueMask)
             {
                 this.current_gruzootpravitel_id='',
                 this.FIO='',
+                this.nomer_vod_ud='',
                 this.telefon='',
                 this.dataRozdeniya='',
                 this.seriyaPassporta='',
@@ -211,6 +227,7 @@ Vue.use(VueMask)
             {
                     this.current_gruzootpravitel_id=id,
                     this.FIO='',
+                    this.nomer_vod_ud='',
                     this.telefon='',
                     this.dataRozdeniya='',
                     this.seriyaPassporta='',
@@ -236,6 +253,7 @@ Vue.use(VueMask)
                     })
                  .then(({ data }) => (
                          this.FIO=data.voditel.FIO,
+                         this.nomer_vod_ud=data.voditel.udostoverenie,
                          this.telefon=data.voditel.telefon,
                          this.dataRozdeniya=data.voditel.dataRozdeniya,
                          this.seriyaPassporta=data.voditel.seriyaPassporta,
@@ -324,7 +342,10 @@ Vue.use(VueMask)
             {
                 this.openDP=true
             },
-
+            openDB1()
+            {
+                this.openDP1=true
+            },
 
             show_inp_doc(key)
             {
@@ -418,6 +439,7 @@ Vue.use(VueMask)
                     .post('/saveVoditel',{
                         voditelId:this.current_gruzootpravitel_id,
                         FIO:this.FIO,
+                        nomer_vod_ud:this.nomer_vod_ud,
                         telefon:this.telefon,
                         dataRozdeniya:this.dataRozdeniya,
                         seriyaPassporta:this.seriyaPassporta,

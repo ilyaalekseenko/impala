@@ -12,6 +12,12 @@
                                       :chahgeFrontNames='chahgeFrontNames'
                                       vid="GruzzotpravitelComponent"
             ></modal-author-component>
+            <modal-zakazchik-component
+                :get_gruzootpravitel_list='get_gruzootpravitel_list'
+                :select_gruzootpravitel='select_gruzootpravitel'
+                allNew=true
+                vid="CreateOrdersComponent"
+            ></modal-zakazchik-component>
             <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
@@ -26,14 +32,7 @@
                         <span @click="openDB0">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <date-picker ref="datepicker0"  v-model="data_vneseniya" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" @change="handleChange0"></date-picker>
-                    <div>Время внесения:
-                        {{ headerTime1 }}
-                        <span @click="showHeaderTime(1)">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                       </span>
-                        <date-picker   v-model="headerTime1" valueType="format" type="time" format=" H:mm" :open.sync=headerTimeShow1 @change="handleChange0"></date-picker>
-                    </div>
+                        <date-picker ref="datepicker0" v-model="data_vneseniya" type="datetime" valueType="format"  format="DD.MM.YYYY H:mm" :open.sync="openDP" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"></date-picker>
                     </div>
                     <div class="col-4" v-show="checkRolePermission([1])">
                         <span  class="create_orders_date_title">Логист:</span>
@@ -52,14 +51,7 @@
                         <span @click="openDB1">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <date-picker ref="datepicker1"  v-model="rasschitat_do" valueType="format" format="DD.MM.YYYY"  :open.sync="openDP1" @change="handleChange1"></date-picker>
-                        <div class="headerTimeDiv">Время рассчёта:
-                            {{ headerTime2 }}
-                            <span @click="showHeaderTime(2)">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                       </span>
-                            <date-picker   v-model="headerTime2" valueType="format" type="time" format=" H:mm" :open.sync=headerTimeShow2 @change="handleChange0"></date-picker>
-                        </div>
+                        <date-picker ref="datepicker1"  v-model="rasschitat_do" type="datetime" valueType="format" format="DD.MM.YYYY H:mm"  :open.sync="openDP1" @change="updateOrderLoc('rasschitat_do',rasschitat_do)"></date-picker>
                     </div>
                     <div class="col-2 justify-content-end" v-if="ocenka_show_button" v-on:click="setColumn('ocenka')">
                         <div class="col add_ts_button4 text-center">Оценка</div>
@@ -83,7 +75,7 @@
                                 Вид перевозки
                             </div>
                             <div class="create_orders_bottom">
-                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="vid_perevozki">
+                                <select @blur="updateOrderLoc('vid_perevozki',vid_perevozki)" class="cr_ord_inp_n_1" v-model="vid_perevozki">
                                     <option v-for="(perevozka) in perevozka_arr" v-bind:value=perevozka.id  class="sel_cust">{{ perevozka.perevozka_name }}</option>
                                 </select>
                             </div>
@@ -98,12 +90,12 @@
                             <div class="little_title_create_orders1">
                                 Номер запроса
                             </div>
-                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="nomer_zayavki"  />
+                            <input @blur="updateOrderNomerZaprosa()" class="cr_ord_inp_n_1 border_input" v-model="new_nomer_zayavki"  />
                         </div>
                         <div class="col">
                             <div class="little_title_create_orders">
                                 Компания заказчик
-                                <span class="add_button n1">Добавить</span>
+                                <span class="add_button n1" v-b-modal.modal-zakazchik variant="primary">Добавить</span>
                             </div>
                             <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="kompaniya_zakazchik"  />
                         </div>
@@ -120,7 +112,7 @@
                                 <div class="little_title_create_orders no_wrap_text" >
                                     Бюджет контракта
                                 </div>
-                                <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
+                                <input @blur="updateOrderLoc('cena_kontrakta',cena_kontrakta)" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
                             </span>
 
                         </div>
@@ -192,7 +184,7 @@
                                     </div>
                                     <div class="data_pog_dost_height no_padding_right">
                                         <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
-                                        <date-picker ref="datepicker2"  v-model="data_pogruzki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP2" @change="handleChange0"></date-picker>
+                                        <date-picker ref="datepicker2" type="datetime" valueType="format" v-model="data_pogruzki" format="DD.MM.YYYY H:mm" :open.sync="openDP2" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -202,8 +194,8 @@
                                         Кол-во грузомест
                                     </div>
                                     <div class="create_orders_bottom right_menu_nom row">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
-                                        <input @blur="update_order()" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
+                                        <input @blur="updateOrderLoc('gruzomesta_big',gruzomesta_big)" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
+                                        <input @blur="updateOrderLoc('gruzomesta_small',gruzomesta_small)" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
                                     </div>
                                 </div>
                                 <div class=" col-6 no_padding_right no_padding_left">
@@ -211,7 +203,7 @@
                                         Расстояние, км
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
+                                        <input @blur="updateOrderLoc('rasstojanie',rasstojanie)" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +213,7 @@
                                         Общий вес, кг
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
+                                        <input @blur="updateOrderLoc('ob_ves',ob_ves)" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
                                     </div>
                                 </div>
                                 <div class="offset-1 col-6  no_padding_left no_padding_right">
@@ -229,7 +221,7 @@
                                         Общий объём, м3
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="update_order()" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
+                                        <input @blur="updateOrderLoc('ob_ob',ob_ob)" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
                                     </div>
                                 </div>
                             </div>
@@ -261,7 +253,7 @@
                                     </div>
                                     <div class="data_pog_dost_height no_padding_right">
                                         <input @click="openDB3" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
-                                        <date-picker ref="datepicker3"  v-model="data_dostavki" valueType="format" format="DD.MM.YYYY" :open.sync="openDP3" @change="handleChange0"></date-picker>
+                                        <date-picker ref="datepicker3" type="datetime" v-model="data_dostavki" valueType="format" format="DD.MM.YYYY H:mm" :open.sync="openDP3" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +262,7 @@
                             <div class="little_title_create_orders">
                                 Комментарий
                             </div>
-                            <textarea class="comm_settings_1" @blur="update_order()" v-model="komment_1" rows="6"  name="text"></textarea>
+                            <textarea class="comm_settings_1" @blur="updateOrderLoc('komment_1',komment_1)" v-model="komment_1" rows="6"  name="text"></textarea>
                         </div>
                     </div>
                 </div>
@@ -783,6 +775,7 @@
                 rasschitat_do:'',
                 logist:'',
                 nomer_zayavki:'',
+                new_nomer_zayavki:'',
                 kompaniya_zakazchik:'',
                 menedzer_zakazchik:'',
                 ISD:'',
@@ -892,7 +885,6 @@
             {
                 this.order_id=adress;
                 this.checkButtonsShow();
-                this.order_header_text='Запрос номер: '+adress+' Дата внесения: '
                 this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
                 this.update_unread_status()
                 this.update_unread_status_v_rabote()
@@ -903,7 +895,7 @@
         computed: {
 
             stavka_TS_za_km: function () {
-                if(this.stavka_TS==''||this.rasstojanie_TS=='')
+                if((this.stavka_TS==null)||(this.rasstojanie_TS==null))
                 {
                     return 0
                 }
@@ -974,6 +966,29 @@
                 {
                     this.headerTimeShow2=true
                 }
+            },
+            updateOrderNomerZaprosa()
+            {
+                axios
+                    .post('/updateOrderNomerZaprosa',{
+                        id:this.order_id,
+                        nomer_zayavki:this.new_nomer_zayavki
+                    })
+                    .then(response => {
+                        console.log(response.data.updated)
+                        //если такая заявка уже была
+                        if(response.data.updated=='false')
+                        {
+                            alert('Номер запроса уже существует')
+                            this.new_nomer_zayavki=this.nomer_zayavki
+                        }
+                        else
+                        {
+                            this.nomer_zayavki=this.new_nomer_zayavki
+                            this.order_header_text='Запрос номер: '+this.nomer_zayavki+' Дата внесения: '
+                        }
+
+                    })
             },
             inputShow(inpVar)
             {
@@ -1535,6 +1550,15 @@
               }
               return message;
             },
+            updateOrderLoc(field,data)
+            {
+                axios
+                    .post('/updateOrderLoc',{
+                        id:this.order_id,
+                        field:field,
+                        data:data
+                    })
+            },
             update_order()
             {
 
@@ -1544,7 +1568,6 @@
                         data_vneseniya:this.data_vneseniya,
                         rasschitat_do:this.rasschitat_do,
                         nomenklatura:this.nomenklatura,
-                        nomer_zayavki:this.nomer_zayavki,
                         kompaniya_zakazchik:this.kompaniya_zakazchik,
                         menedzer_zakazchik:this.menedzer_zakazchik,
                         ISD:this.ISD,
@@ -1581,6 +1604,7 @@
                             this.rasschitat_do=data.data[0]['rasschitat_do'],
                             this.nomenklatura=data.data[0]['nomenklatura'],
                             this.nomer_zayavki=data.data[0]['nomer_zayavki'],
+                            this.new_nomer_zayavki=data.data[0]['nomer_zayavki'],
                             this.kompaniya_zakazchik=data.data[0]['kompaniya_zakazchik'],
                             this.menedzer_zakazchik=data.data[0]['menedzer_zakazchik'],
                             this.ISD=data.data[0]['ISD'],
@@ -1625,7 +1649,8 @@
                                         terminal_TS : entry.terminal_TS,
 
                                     });
-                                })
+                                }),
+                                this.order_header_text='Запрос номер: '+this.nomer_zayavki+' Дата внесения: '
                         )
                     )
 

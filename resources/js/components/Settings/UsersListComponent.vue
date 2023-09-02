@@ -40,7 +40,7 @@
                         <span v-else>{{ user.dolznost }}</span></td>
                     <td>
                         <span @click="show_flag=true">
-                        <phone-component :initialPhoneNumber="user.telefon" v-if="show_user_setting==user.id" :setPhoneNumber="setPhoneNumber"></phone-component>
+                        <phone-component class="phone_row" :initialPhoneNumber="user.telefon" v-if="show_user_setting==user.id" :setPhoneNumber="setPhoneNumber"></phone-component>
                        <span v-else>{{ user.telefon }}</span>
                         </span>
 

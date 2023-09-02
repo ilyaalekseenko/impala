@@ -45,7 +45,7 @@ class PerevozchikiController extends Controller
             //сохраняем нового перевозчика
           $perevozkaID=$this->perevozchikService->saveNewPerevozchik(request('forma'),request('nazvanie'),request('data_registracii'),request('telefon'),request('INN'),request('OGRN'),request('email')
                 ,request('generalnii_direktor'),request('telefon_gen_dir'),request('email_gen_dir'),request('yridicheskii_adres'),request('pochtovyi_adres'),request('kontakty'),request('bank_arr')
-                ,request('doc_files')
+                ,request('doc_files'),request('gorod_bazirovania')
             );
             return response()->json([
                 'status' => 'success',
@@ -58,7 +58,7 @@ class PerevozchikiController extends Controller
         {
             $this->perevozchikService->updatePerevozchik($currentPerevozchik,request('forma'),request('nazvanie'),request('data_registracii'),request('telefon'),request('INN'),request('OGRN'),request('email')
                 ,request('generalnii_direktor'),request('telefon_gen_dir'),request('email_gen_dir'),request('yridicheskii_adres'),request('pochtovyi_adres'),request('kontakty'),request('bank_arr')
-                ,request('doc_files'));
+                ,request('doc_files'),request('gorod_bazirovania'));
             //удаляем те контакты которых нет ( их удалили в списке )
             //получаем все контакты старые, которые уже были
           $oldContacts=$this->perevozchikContacsModel->getContacts($currentPerevozchik);

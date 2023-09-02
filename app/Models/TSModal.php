@@ -10,7 +10,7 @@ class TSModal extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function saveTSModalModel($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya)
+    public function saveTSModalModel($tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$sts,$pts)
     {
         return TSModal::create([
                         'tip'=>$tip,
@@ -19,6 +19,8 @@ class TSModal extends Model
                         'tonn'=>$tonn,
                         'nomer_documenta'=>$nomer_documenta,
                         'kompaniya'=>$kompaniya,
+                        'sts'=>$sts,
+                        'pts'=>$pts,
         ]);
     }
     public function getTSModalNazvanieInModel($nazvanie)
@@ -45,7 +47,7 @@ class TSModal extends Model
     {
         return TSModal::where('id',$id)->get();
     }
-    public function updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya)
+    public function updateTSModal($voditelId,$tip,$marka,$nomer,$tonn,$nomer_documenta,$kompaniya,$sts,$pts)
     {
         TSModal::where('id', $voditelId)->update([
             'tip'=>$tip,
@@ -54,6 +56,8 @@ class TSModal extends Model
             'tonn'=>$tonn,
             'nomer_documenta'=>$nomer_documenta,
             'kompaniya'=>$kompaniya,
+            'sts'=>$sts,
+            'pts'=>$pts,
         ]);
     }
 

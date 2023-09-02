@@ -25,11 +25,11 @@
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
 
                 <div  class="col-6 orders_create_title">
-                    Запросы: В работе > №{{ order_id }}
+                    Запросы: В работе > №{{ nomer_zayavki }}
                 </div>
                 <div  class="col-6 row justify-content-end trio_but">
                     <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
-                    <div class="col add_ts_button2 text-center" v-on:click="save_TS()">На проверку</div>
+                    <div class="col add_ts_button2 text-center" v-on:click="toProverka()">На проверку</div>
                     <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Отменить</div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="col-2 grade_left_column">
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-6 grade_left_column_text_first">Номер запроса:</div>
-                        <div class="col-6 grade_left_column_text_sec">{{ order_id }}</div>
+                        <div class="col-6 grade_left_column_text_sec">{{ nomer_zayavki }}</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
@@ -315,21 +315,11 @@
 
 <!--                        ДАТА ЗАГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
-                        <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="date"
-                        format="DD.MM.YYYY" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
+                        <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="datetime"
+                        format="DD.MM.YYYY H:mm" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Время111</div>
 
-<!--                                                    <input @blur="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"-->
-<!--                                                        class="border_input inp_time" v-model="adres_pogr.time_ts"  />-->
-<!--                        ВРЕМЯ ПОГРУЗКИ-->
-                        <input @click="openDPpogr(adres_pogr.id_pogruzka,2,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.time_ts"  />
-                        <date-picker   v-model="adres_pogr.time_ts" valueType="format" type="time"
-                        format=" H:mm" :open.sync=adres_pogr.show_DP_time @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.time_ts,'time_ts')"></date-picker>
-
-                                        </div>
                                     </div>
                                     <div class="col-12 row doc_add_row_1">
                                         <div class="col-6 add_button_grade no_wrap_text">{{ adres_pogr.doc_name }}
@@ -384,19 +374,9 @@
 <!--                                                   class="border_input inp_date" v-model="adres_vygr.date_ts"  />-->
 
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
-                        <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
-                                     format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
+                        <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="datetime"
+                                     format="DD.MM.YYYY H:mm" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
 
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Время</div>
-
-<!--                                            <input @blur="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.time_ts,'time_ts')"-->
-<!--                                                   class="border_input inp_time" v-model="adres_vygr.time_ts"  />-->
-
-                                            <input @click="openDPpogr(adres_vygr.id_pogruzka,2,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.time_ts"  />
-                        <date-picker   v-model="adres_vygr.time_ts" valueType="format" type="time"
-                                     format=" H:mm" :open.sync=adres_vygr.show_DP_time @change="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.time_ts,'time_ts')"></date-picker>
                                         </div>
                                     </div>
                                     <div class="col-12 row doc_add_row_1">
@@ -460,8 +440,8 @@
 
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
-                                         <date-picker   v-model="sum.data" valueType="format" type="date"
-                                                        format="DD.MM.YYYY" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
+                                         <date-picker   v-model="sum.data" valueType="format" type="datetime"
+                                                        format="DD.MM.YYYY  H:mm" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
                                          </date-picker>
                                      </div>
                                     </div>
@@ -1210,6 +1190,17 @@
             addPerevozchikShowId(id_ts)
             {
                 this.pogruzkaShowArr.push(id_ts)
+            },
+            toProverka()
+            {
+                axios
+                    .post('/orderChangeColumn',{
+                        columnName:'kontrol',
+                        id:this.order_id
+                    })
+                    .then(response => {
+                         //    window.location.href = ('/')
+                    })
             },
             get_gruzootpravitel_list()
             {

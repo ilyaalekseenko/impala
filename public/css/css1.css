@@ -1166,7 +1166,7 @@
     margin-bottom: 6px;
 }
 .add_summ_grade_inp_1 {
-    width: 101px;
+    width: 150px;
 }
 .main_head_marg {
     margin-bottom: 20px!important;
@@ -1944,4 +1944,7 @@
 }
 .phoneTD {
     min-width: 240px
+}
+.phone_row {
+    width:235px!important;
 }

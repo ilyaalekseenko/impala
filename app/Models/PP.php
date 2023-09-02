@@ -14,7 +14,7 @@ class PP extends Model
 
     public function savePPModel($request)
     {
-        $PP=PP::create($request->only('marka', 'nomer', 'dlina', 'tonn', 'nomer_documenta', 'kompaniya'));
+        $PP=PP::create($request->only('marka', 'nomer', 'dlina', 'tonn', 'nomer_documenta', 'kompaniya','sts','pts'));
         return $PP;
     }
     public function getPPNazvanieInModel($nazvanie)
@@ -41,7 +41,7 @@ class PP extends Model
     {
         return PP::where('id',$id)->get();
     }
-    public function updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya)
+    public function updatePP($voditelId,$marka,$nomer,$dlina,$tonn,$nomer_documenta,$kompaniya,$sts,$pts)
     {
         PP::where('id', $voditelId)->update([
             'marka'=>$marka,
@@ -50,6 +50,8 @@ class PP extends Model
             'tonn'=>$tonn,
             'nomer_documenta'=>$nomer_documenta,
             'kompaniya'=>$kompaniya,
+            'sts'=>$sts,
+            'pts'=>$pts,
         ]);
     }
 

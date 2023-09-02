@@ -290,6 +290,10 @@ class OrdersController extends Controller
     {
         $this->orderService->updateOrderMass();
     }
+    public function updateOrderLoc()
+    {
+        $this->orderService->updateOrderLoc();
+    }
     public function update_order_oplata(Request $request)
     {
         $id=$request->input('id');
@@ -1073,6 +1077,8 @@ class OrdersController extends Controller
         $orders_id =  $request->input('orders_id');
         //удаляем все заявки по id
         $this->order_mod->whereInDeleteInModel(request('orders_id'));
+        //удаляем final grades они же ставки
+        $this->finalGrade->delFinalGradeByID($orders_id);
         //удаление не прочитанных шапок
         $this->UnreadHeadersService->delUnreadHeaders(request('orders_id'));
         broadcast(new DeleteOrderEvent($orders_id))->toOthers();
@@ -1116,6 +1122,27 @@ class OrdersController extends Controller
         Orders::where('id', $order_id)->update([
             $column_name =>$adres_pogruzke,
         ]);
+    }
+    public function updateOrderNomerZaprosa()
+    {
+            $issetMod=$this->order_mod->issetByColumn('nomer_zayavki',request('nomer_zayavki'));
+            //если такой номер заявки уже есть
+            if($issetMod)
+               {
+                   return response()->json([
+                       'status' => 'success',
+                       'updated' => 'false',
+                   ], 201);
+               }
+            else
+            {
+                //обновляем заявку
+                $this->order_mod->updateOneFieldInOrderInModel(request('id'),'nomer_zayavki',request('nomer_zayavki'));
+                return response()->json([
+                    'status' => 'success',
+                    'updated' => 'true',
+                ], 201);
+            }
     }
 //    public function checkOrderStatusName(Request $request)
 //    {

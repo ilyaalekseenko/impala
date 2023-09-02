@@ -141,5 +141,9 @@ class FinalGrade extends Model
 
         return $flag;
     }
-
+    public function delFinalGradeByID($grade_id)
+    {
+        FinalGrade:: whereIn('grade_id',$grade_id)
+            ->delete();
+    }
 }

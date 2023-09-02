@@ -44,12 +44,11 @@ class UnreadHeader extends Model
 
     public function getUnreadHeadersLogistModel($logistID,$logistOradmin)
     {
-        $counterArr=['ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,];
+        $counterArr=['ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
 
         if($logistOradmin=='logist')
         {
             $unreadOrders=UnreadHeader::where('logist_id',$logistID)->get();
-
             foreach ($unreadOrders as $oneHeader)
         {
             if($oneHeader['column_name']=="ocenka")
@@ -63,6 +62,14 @@ class UnreadHeader extends Model
             if($oneHeader['column_name']=="v_rabote")
             {
                 $counterArr['vRabote']++;
+            }
+            if($oneHeader['column_name']=="kontrol")
+            {
+                $counterArr['kontrol']++;
+            }
+            if($oneHeader['column_name']=="zavershen")
+            {
+                $counterArr['zavershen']++;
             }
         }
         }
@@ -79,6 +86,39 @@ class UnreadHeader extends Model
 
             }
         }
+        return $counterArr;
+    }
+    public function getUnreadHeadersAdminModel($logistID)
+    {
+        $counterArr=['ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
+
+
+            $unreadOrders=UnreadHeader::all();
+            foreach ($unreadOrders as $oneHeader)
+            {
+                if($oneHeader['column_name']=="ocenka")
+                {
+                    $counterArr['ocenka']++;
+                }
+                if($oneHeader['column_name']=="naznachenie_stavki")
+                {
+                    $counterArr['naznachenieStavki']++;
+                }
+                if($oneHeader['column_name']=="v_rabote")
+                {
+                    $counterArr['vRabote']++;
+                }
+                if($oneHeader['column_name']=="kontrol")
+                {
+                    $counterArr['kontrol']++;
+                }
+                if($oneHeader['column_name']=="zavershen")
+                {
+                    $counterArr['zavershen']++;
+                }
+            }
+
+
         return $counterArr;
     }
 

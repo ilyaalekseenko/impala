@@ -26,6 +26,7 @@ Vue.component('orders-component', require('./components/OrdersComponent.vue').de
 Vue.component('create-orders-component', require('./components/CreateOrdersComponent.vue').default);
 Vue.component('grade-component', require('./components/GradeComponent').default);
 Vue.component('modal-pogruzka-component', require('./components/ModalPogruzkaComponent').default);
+Vue.component('modal-zakazchik-component', require('./components/ModalZakazchikComponent').default);
 Vue.component('modal-author-component', require('./components/ModalAuthorComponent').default);
 Vue.component('modal-perevozchiki-component', require('./components/ModalPerevozchikiComponent').default);
 Vue.component('modal-voditel-component', require('./components/ModalVoditelComponent').default);
