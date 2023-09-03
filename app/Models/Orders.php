@@ -211,8 +211,8 @@ class Orders extends Authenticatable
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
             ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
-            ->orderBy('nomer_zayavki', 'desc')
-            ->get();
+           ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
+           ->get();
     }
     public function getColumnOrderListLogist($columnName,$offset,$limit)
     {
@@ -230,7 +230,7 @@ class Orders extends Authenticatable
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
             ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
-            ->orderBy('nomer_zayavki', 'desc')
+            ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->get();
     }
     public function countColumnOrderListAdmin($columnName)
@@ -243,7 +243,7 @@ class Orders extends Authenticatable
                 return $q->where($columnName,1)
                     ;
             })
-            ->orderBy('nomer_zayavki', 'desc')
+            ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->count();
     }
     public function countColumnOrderListLogist($columnName)
@@ -256,7 +256,7 @@ class Orders extends Authenticatable
                 return $q->where($columnName,1)->where('logist',Auth::id())
                     ;
             })
-            ->orderBy('nomer_zayavki', 'desc')
+            ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->count();
     }
     public function issetByColumn($columnName,$columnData)
