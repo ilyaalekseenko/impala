@@ -48,7 +48,9 @@
                     <td>
                         <input @click="openDB0" class="input_width_max_settings" v-model="user.data_rozdenia" v-if="show_user_setting==user.id"  />
                         <span v-else>{{ user.data_rozdenia }}</span>
-                        <date-picker v-if="show_user_setting==user.id" ref="datepicker0" @change="update_user(user.id,'data_rozdenia',user.data_rozdenia)" v-model="user.data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
+                        <span @click="show_flag=true">
+                        <date-picker  v-if="show_user_setting==user.id" ref="datepicker0" @change="update_user(user.id,'data_rozdenia',user.data_rozdenia)" v-model="user.data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
+                        </span>
                     </td>
 
                     <td>
@@ -167,7 +169,11 @@ export default {
             {
                 this.show_user_setting=''
             }
-            this.show_flag=false
+            if(this.openDP==false)
+            {
+                this.show_flag=false
+            }
+
         },
         update_user(user_id,item,data)
         {
