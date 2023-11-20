@@ -576,7 +576,7 @@ class OrdersController extends Controller
                    $data_pogruzki = $matches[1];
                }
            }
-            return dd('TIE');
+
             //получаю данные ГО
             if($orders_list[0]['adres_pogruzke']==null)
             {
@@ -595,7 +595,7 @@ class OrdersController extends Controller
             {
                 $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
             }
-
+            return dd('TIE1');
 //            //получаю место погрузки из orders
 //            if($orders_list[0]['adres_pogruzke']==null)
 //            {
