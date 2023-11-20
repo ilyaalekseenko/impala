@@ -29,6 +29,20 @@ class Voditel extends Model
         $vid=Voditel::where('id', $id)->get();
         return $vid[0]['FIO'];
     }
+    public function getFullVoditelBYId($id)
+    {
+        $vid=Voditel::where('id', $id)->get();
+        if($vid[0]['telefon']==null)
+        {
+            $telefon='';
+        }
+        else
+        {
+            $telefon=' тел.: '.$vid[0]['telefon'];
+        }
+
+        return $vid[0]['FIO'].' '.$vid[0]['udostoverenie'].$telefon;
+    }
     public function getVoditelNazvanieInModel($nazvanie)
     {
         return Voditel::where('FIO', $nazvanie)->get();

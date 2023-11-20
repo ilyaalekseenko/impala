@@ -19,16 +19,22 @@ class GruzootpravitelController extends Controller
     protected $gruzootpravitelService;
     protected $gruzootpravitelAdresService;
     protected $gruzootpravitelAdresa;
+    protected $gruzootpravitel;
+    protected $gruzootpravitelContact;
 
     public function __construct(
         GruzootpravitelService $gruzootpravitelService,
         GruzootpravitelAdresService $gruzootpravitelAdresService,
-        GruzootpravitelAdresa $gruzootpravitelAdresa
+        GruzootpravitelAdresa $gruzootpravitelAdresa,
+        Gruzootpravitel $gruzootpravitel,
+        GruzootpravitelContact $gruzootpravitelContact
     )
     {
         $this->gruzootpravitelService = $gruzootpravitelService;
         $this->gruzootpravitelAdresService = $gruzootpravitelAdresService;
         $this->gruzootpravitelAdresa = $gruzootpravitelAdresa;
+        $this->gruzootpravitel = $gruzootpravitel;
+        $this->gruzootpravitelContact = $gruzootpravitelContact;
     }
 
 
@@ -131,6 +137,42 @@ class GruzootpravitelController extends Controller
             'gruzootpravitel_contact' =>$gruzootpravitel_contact,
             'gruzootpravitel_files' =>$gruzootpravitel_files,
             'gruzootpravitel_adresa' =>$gruzootpravitel_adresa,
+        ], 200);
+    }
+    public function getGruzootpravitelNazvanie()
+    {
+        $ts=$this->gruzootpravitel->getGruzootpravitelNazvanieInModel(request('nazvanie'));
+        if (!$ts->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Грузоотправитель получен',
+                'isset_flag' =>'yes',
+                'idTSBack' =>$ts[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого грузоотправителя',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
+        ], 200);
+    }
+    public function getManagerNazvanie()
+    {
+        $ts=$this->gruzootpravitelContact->getManagerNazvanieInModel(request('nazvanie'),request('zakazchik_id'));
+        if (!$ts->isEmpty()) {
+            return response()->json([
+                'status' => 'success',
+                'message' =>'Менеджер получен',
+                'isset_flag' =>'yes',
+                'idTSBack' =>$ts[0]['id'],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Нет такого менеджера',
+            'isset_flag' =>'no',
+            'adres_pogruzke' =>0,
         ], 200);
     }
     public function save_gruzootpravitel(Request $request_back, CreateGruzootpravitelRequest $request)

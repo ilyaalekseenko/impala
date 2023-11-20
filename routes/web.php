@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_terminal_list', [App\Http\Controllers\TSController::class, 'get_terminal_list'])->name('get_terminal_list');
     Route::post('/getVidTSNazvanie', [App\Http\Controllers\TSController::class, 'getVidTSNazvanie'])->name('getVidTSNazvanie');
     Route::post('/getPerevozkaNazvanie', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaNazvanie'])->name('getPerevozkaNazvanie');
+    Route::post('/getGruzootpravitelNazvanie', [App\Http\Controllers\GruzootpravitelController::class, 'getGruzootpravitelNazvanie'])->name('getGruzootpravitelNazvanie');
+    Route::post('/getManagerNazvanie', [App\Http\Controllers\GruzootpravitelController::class, 'getManagerNazvanie'])->name('getManagerNazvanie');
     Route::post('/getVoditelNazvanie', [App\Http\Controllers\VoditelController::class, 'getVoditelNazvanie'])->name('getVoditelNazvanie');
     Route::post('/getTSModalNazvanie', [App\Http\Controllers\TSModalController::class, 'getTSModalNazvanie'])->name('getTSModalNazvanie');
     Route::post('/getTipTSNazvanie', [App\Http\Controllers\TSModalController::class, 'getTipTSNazvanie'])->name('getTipTSNazvanie');
@@ -148,6 +150,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/searchBackStavki', [App\Http\Controllers\SearchController::class, 'searchBackStavki'])->name('searchBackStavki');
     Route::post('/searchBackTS', [App\Http\Controllers\SearchController::class, 'searchBackTS'])->name('searchBackTS');
     Route::post('/searchBackTSStavki', [App\Http\Controllers\SearchController::class, 'searchBackTSStavki'])->name('searchBackTSStavki');
+    Route::post('/searchBackManager', [App\Http\Controllers\SearchController::class, 'searchBackManager'])->name('searchBackManager');
     Route::post('/chahgeFrontNames', [App\Http\Controllers\SearchController::class, 'chahgeFrontNames'])->name('chahgeFrontNames');
 
 

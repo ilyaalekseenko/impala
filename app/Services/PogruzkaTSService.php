@@ -65,7 +65,7 @@ class PogruzkaTSService
             }
             else
             {
-                $resPogr.=$onePogr['full_name'].', ';
+                $resPogr .= $onePogr['full_name'] . "\n";
             }
 
         }
@@ -77,7 +77,7 @@ class PogruzkaTSService
             }
             else
             {
-                $resVygr.=$onePogr['full_name'].', ';
+                $resVygr.=$onePogr['full_name']. "\n";
             }
         }
         $res=[$resPogr,$resVygr];

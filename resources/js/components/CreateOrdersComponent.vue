@@ -4,20 +4,18 @@
             <modal-pogruzka-component
                 :get_gruzootpravitel_list='get_gruzootpravitel_list'
                 :select_gruzootpravitel='select_gruzootpravitel'
+                :select_Manager='select_Manager'
                 allNew=true
+                edit_flag=true
                 vid="CreateOrdersComponent"
+                ref="modalComponentforAction"
             ></modal-pogruzka-component>
             <modal-author-component   ref="modalComponentforActionAuthor"
                                       edit_flag=true
                                       :chahgeFrontNames='chahgeFrontNames'
                                       vid="GruzzotpravitelComponent"
             ></modal-author-component>
-            <modal-zakazchik-component
-                :get_gruzootpravitel_list='get_gruzootpravitel_list'
-                :select_gruzootpravitel='select_gruzootpravitel'
-                allNew=true
-                vid="CreateOrdersComponent"
-            ></modal-zakazchik-component>
+
             <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
@@ -95,16 +93,34 @@
                         <div class="col">
                             <div class="little_title_create_orders">
                                 Компания заказчик
-                                <span class="add_button n1" v-b-modal.modal-zakazchik variant="primary">Добавить</span>
+                                <span class="add_button n1" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('zakazchik',0)">Добавить</span>
                             </div>
-                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="kompaniya_zakazchik"  />
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="zakazchikShowInp&&kompaniya_zakazchik_name==''" v-on:click="zakazchikShowInpChange()">Выбрать заказчика</div>
+                            <div class="cr_ord_inp_n_1" v-if="zakazchikShowInp" v-on:click="zakazchikShowInpChange()">{{ kompaniya_zakazchik_name }}</div>
+                            <auto-input-zakazchik-component v-if="!zakazchikShowInp" class="select_width_grade"
+                                                            :order_id="order_id"
+                                                            :vidTsFromParent="kompaniya_zakazchik_name"
+                                                            @childReturnMethod="parentMethodFromAutoinputZakazchik"
+                                                            @childCloseAutoInput="closeParentAutoInput"
+                                                            ref="AutoSelectComponent_vid_TS"
+                            ></auto-input-zakazchik-component>
                         </div>
                         <div class="col">
                             <div class="little_title_create_orders">
                                 Менеджер заказчика
-                                <span class="add_button n2">Добавить</span>
+                                <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-b-modal.modal-xl v-on:click="select_temp_var('manager',0)">Добавить</span>
                             </div>
-                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />
+<!--                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />-->
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="managerZakazchikShowInp&&managerZakazchik_name==''" v-on:click="managerShowInpChange()">Выбрать менеджера</div>
+                            <div class="cr_ord_inp_n_1" v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()">{{ managerZakazchik_name }}</div>
+                            <auto-input-manager-component v-if="!managerZakazchikShowInp" class="select_width_grade"
+                                                            :order_id="order_id"
+                                                            :vidTsFromParent="managerZakazchik_name"
+                                                            :zakazchikId="kompaniya_zakazchik_id"
+                                                            @childReturnMethod="parentMethodFromAutoinputManager"
+                                                            @childCloseAutoInput="closeParentAutoInputManager"
+                                                            ref="AutoSelectComponent_vid_TS"
+                            ></auto-input-manager-component>
                         </div>
 
                         <div class="col-12 row" v-show="checkRolePermission([1])">
@@ -776,7 +792,10 @@
                 logist:'',
                 nomer_zayavki:'',
                 new_nomer_zayavki:'',
-                kompaniya_zakazchik:'',
+                kompaniya_zakazchik_name:'',
+                kompaniya_zakazchik_id:'',
+                managerZakazchik_name:'',
+                managerZakazchik_id:'',
                 menedzer_zakazchik:'',
                 ISD:'',
                 cena_kontrakta:'',
@@ -850,7 +869,9 @@
                 headerTimeShow1:false,
                 headerTimeShow2:false,
                 headerTime1:'',
-                headerTime2:''
+                headerTime2:'',
+                zakazchikShowInp:true,
+                managerZakazchikShowInp:true,
 
 
             }
@@ -955,6 +976,14 @@
                 }
                 return flag
 
+            },
+            zakazchikShowInpChange()
+            {
+                this.zakazchikShowInp=!this.zakazchikShowInp
+            },
+            managerShowInpChange()
+            {
+                this.managerZakazchikShowInp=!this.managerZakazchikShowInp
             },
             showHeaderTime(numb)
             {
@@ -1266,11 +1295,25 @@
                         this.gruzootpravitel_arr=inp_temp,
                     );
             },
-
+            show_mod_edit(id)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.setNewModalStatusFalse()
+                this.$refs.modalComponentforAction.get_modal_edit_data(id)
+            },
             //работа из модального окна добавления грузоотправителя
             //метод выборки, адрес погрузки или адрес выгрузки поменяется динамически
             select_temp_var(pogr_or_vygr,key)
             {
+                if(pogr_or_vygr=='manager')
+                {
+                    this.show_mod_edit(this.kompaniya_zakazchik_id)
+                }
+                else
+                {
+                    this.newModal()
+                }
+
                 //погрузка 1 - pogruzka
                 //выгрузка 1 - vygruzka
                 //список ТС редактирование тс, погрузка - TS_pogruzka
@@ -1279,6 +1322,14 @@
                 //список ТС новое тс, выгрузка - TS_vygruzka_new
                 this.select_temp_pogr_or_vygr=pogr_or_vygr
                 this.select_temp_pogr_or_vygr_key=key
+            },
+            select_Manager(kontakty)
+            {
+                if(this.select_temp_pogr_or_vygr=='manager')
+                {
+                    console.log(kontakty)
+                }
+
             },
             select_gruzootpravitel()
             {
@@ -1550,6 +1601,10 @@
               }
               return message;
             },
+            newModal()
+            {
+                this.$refs.modalComponentforAction.newModal()
+            },
             updateOrderLoc(field,data)
             {
                 axios
@@ -1568,8 +1623,10 @@
                         data_vneseniya:this.data_vneseniya,
                         rasschitat_do:this.rasschitat_do,
                         nomenklatura:this.nomenklatura,
-                        kompaniya_zakazchik:this.kompaniya_zakazchik,
-                        menedzer_zakazchik:this.menedzer_zakazchik,
+                        kompaniya_zakazchik_name:this.kompaniya_zakazchik_name,
+                        kompaniya_zakazchik_id:this.kompaniya_zakazchik,
+                        managerZakazchik_name:this.menedzer_zakazchik_name,
+                        managerZakazchik_id:this.menedzer_zakazchik,
                         ISD:this.ISD,
                         cena_kontrakta:this.cena_kontrakta,
                         data_kontrakta:this.data_kontrakta,
@@ -1605,8 +1662,10 @@
                             this.nomenklatura=data.data[0]['nomenklatura'],
                             this.nomer_zayavki=data.data[0]['nomer_zayavki'],
                             this.new_nomer_zayavki=data.data[0]['nomer_zayavki'],
-                            this.kompaniya_zakazchik=data.data[0]['kompaniya_zakazchik'],
-                            this.menedzer_zakazchik=data.data[0]['menedzer_zakazchik'],
+                            this.kompaniya_zakazchik_id=data.data[0]['kompaniya_zakazchik'],
+                            this.kompaniya_zakazchik_name=data.data[0]['kompaniya_zakazchik_name'],
+                            this.managerZakazchik_name=data.data[0]['menedzer_zakazchik_name'],
+                            this.managerZakazchik_id=data.data[0]['menedzer_zakazchik'],
                             this.ISD=data.data[0]['ISD'],
                             this.cena_kontrakta=data.data[0]['cena_kontrakta'],
                             this.data_kontrakta=data.data[0]['data_kontrakta'],
@@ -1654,6 +1713,39 @@
                         )
                     )
 
+            },
+            parentMethodFromAutoinputZakazchik(data)
+            {
+                if(this.kompaniya_zakazchik_id!=data.id)
+                {
+                    //обнуляем менеджера
+                    this.managerZakazchik_name=''
+                    this.managerZakazchik_id=''
+                    this.updateOrderLoc('menedzer_zakazchik','')
+                }
+
+                this.kompaniya_zakazchik_name=data.ts_name
+                this.kompaniya_zakazchik_id=data.id
+                this.zakazchikShowInp=true
+                this.updateOrderLoc('kompaniya_zakazchik',data.id)
+
+            },
+            parentMethodFromAutoinputManager(data)
+            {
+                this.managerZakazchik_name=data.ts_name
+                this.managerZakazchik_id=data.id
+                this.managerZakazchikShowInp=true
+                this.updateOrderLoc('menedzer_zakazchik',data.id)
+
+            },
+            closeParentAutoInput(data)
+            {
+                console.log('closed')
+                    this.zakazchikShowInp=false
+            },
+            closeParentAutoInputManager(data)
+            {
+                this.managerZakazchikShowInp=false
             },
             //если новая запрос
             start_new_order()

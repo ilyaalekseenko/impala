@@ -67,5 +67,13 @@ class Gruzootpravitel extends Model
         return Gruzootpravitel::leftJoin('gruzootpravitel_adresas', 'gruzootpravitels.id', '=', 'gruzootpravitel_adresas.gruzootpravitel_id')
             ->get();
     }
-
+    public function getGruzootpravitelNazvanieInModel($nazvanie)
+    {
+        return Gruzootpravitel::where('nazvanie', $nazvanie)->get();
+    }
+    public function getFullNameGruzootpravitel($id)
+    {
+      $GO=Gruzootpravitel::where('id', $id) ->get();
+      return $GO[0]['forma_id'].' '.$GO[0]['nazvanie'].', ИНН '.$GO[0]['INN'].', '.$GO[0]['YR_adres'].' '.$GO[0]['telefon'];
+    }
 }

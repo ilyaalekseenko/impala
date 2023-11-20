@@ -102,4 +102,9 @@ class VidTS extends Authenticatable
     {
         return VidTS::get();
     }
+    public function getVidTSById($id)
+    {
+        $vid=VidTS::where('id', $id)->get();
+        return $vid[0]['ts_name'];
+    }
 }

@@ -129,6 +129,26 @@ class SearchController extends Controller
             'res' =>$res,
         ], 200);
     }
+    //метод поиска на бэке менеджера
+    public function searchBackManager(Request $request)
+    {
+        //если пустой заказчик
+//        if((request('zakazchik_id')==null)||(request('zakazchik_id')==''))
+//        {
+//            return response()->json([
+//                'status' => 'success',
+//                'message' =>'результаты поиска получены',
+//                'res' =>'',
+//            ], 200);
+//        }
+        //получаем результаты поиска
+        $res=$this->searchService->getSearchResultsmanager(request('searchWord'),request('model'),request('fieldToSearch'),request('searchOffset'),request('zakazchik_id'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'результаты поиска получены',
+            'res' =>$res,
+        ], 200);
+    }
 //    //метод поиска на с грузоотправителями
     public function searchBackAvtor(Request $request)
     {

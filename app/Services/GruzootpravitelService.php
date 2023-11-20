@@ -64,8 +64,39 @@ class GruzootpravitelService
     public function updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$adresa,$bank_arr,$doc_files)
     {
         $this->gruzootpravitel->updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres);
+        //полуим старые контакты и удалим те которы нету
+        $oldContacts=$this->gruzootpravitelContact->getContactsGruzootpravitel($gruzootpravitelId);
+
+        foreach($oldContacts as $oldContact)
+       {
+           $found = false;
+           foreach($kontakty as $newContact)
+           {
+               if ($oldContact['id'] == $newContact['id']) {
+                   $found = true;
+                   break; // Если элемент найден, выходим из цикла
+               }
+           }
+           //если не нал тогда удаляем контакт
+           if(!$found)
+           {
+               $this->gruzootpravitelContact->deleteContact($oldContact['id']);
+           }
+           //если нал тогда update
+
+       }
+
+        foreach($kontakty as $newContact)
+        {
+
+                $this->gruzootpravitelContact->updateOrCreateContact($newContact);
+        }
+
+       // return dd($oldContacts);
+       // return dd($kontakty);
+
         //обновим контакты и банки
-        GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitelId)->delete();
+       // GruzootpravitelContact::where('gruzootpravitel_id', '=',$gruzootpravitelId)->delete();
         GruzootpravitelBank::where('gruzootpravitel_id', '=',$gruzootpravitelId)->delete();
         foreach ($kontakty as $kontakt) {
             $this->gruzootpravitelContact->saveContact($kontakt,$gruzootpravitelId);

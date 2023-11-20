@@ -4,7 +4,8 @@
             <div class="col-10">
                 <b-modal ref="my-modal" id="modal-xl" size="lg" hide-footer hide-header>
                     <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-                        <div class="col-8">Новый грузоотправитель/грузополучатель:</div>
+                        <div class="col-8" v-if="flagNewModal">Новый грузоотправитель/грузополучатель:</div>
+                        <div class="col-8" v-if="!flagNewModal">Редактирование грузоотправителя/грузополучателя:</div>
                         <div class="col-4 row d-flex justify-content-end">
                             <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
@@ -229,6 +230,7 @@ import vClickOutside from 'v-click-outside'
             'gruzootpravitel_id',
             'get_gruzootpravitel_list',
             'select_gruzootpravitel',
+            'select_Manager',
             'change_one_gruzzotpravitel',
             'addRowGruzoot',
             'allNew',
@@ -307,6 +309,10 @@ import vClickOutside from 'v-click-outside'
                     this.adresa[key].telefon=newPhoneNumber
                 }
 
+            },
+            setNewModalStatusFalse()
+            {
+                this.flagNewModal=false
             },
             //если новая погрузка
             newModal()
@@ -394,6 +400,7 @@ import vClickOutside from 'v-click-outside'
 
                              data.gruzootpravitel_contact.forEach(function(entry) {
                                      kontakty.push({
+                                         id:entry.id,
                                          dolznost:entry.dolznost,
                                          FIO : entry.FIO,
                                          telefon : entry.telefon,
@@ -683,6 +690,7 @@ import vClickOutside from 'v-click-outside'
 
             save_gruzootpravitel()
             {
+
                 //работа с алертом валидации
                 this.$refs.AlertListComponent.hide_alert_list()
                 this.$refs.AlertListComponent.clear_alert_list()
@@ -732,11 +740,17 @@ import vClickOutside from 'v-click-outside'
                         //если редактируем погрузку
                         else
                         {
+
                             //если редактируем из вида грузоотправителя
                             if(this.vid=="GruzzotpravitelComponent")
                             {
                                 this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
                             }
+
+                        }
+                        if(this.vid=="CreateOrdersComponent")
+                        {
+                            this.select_Manager(this.kontakty)
                         }
                         this.flagNewModal=false
                         this.hideModal()

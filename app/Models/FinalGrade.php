@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use NumberToWords\NumberToWords;
 
 class FinalGrade extends Model
 {
@@ -145,5 +146,20 @@ class FinalGrade extends Model
     {
         FinalGrade:: whereIn('grade_id',$grade_id)
             ->delete();
+    }
+    public function getKolMest($orderId,$tsId)
+    {
+        $numberToWords = new NumberToWords();
+        $numberTransformer = $numberToWords->getNumberTransformer('ru');
+        $kolMest=FinalGrade::where('grade_id',$orderId)->where('id_ts',$tsId)->pluck('kol_gruz_TS');
+        $kolMest=($kolMest[0]);
+        if($kolMest==null)
+        {
+            return '';
+        }
+        else
+        {
+           return ($kolMest.' ('.$numberTransformer->toWords($kolMest).')');
+        }
     }
 }

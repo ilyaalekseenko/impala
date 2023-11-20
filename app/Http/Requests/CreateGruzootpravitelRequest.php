@@ -23,12 +23,24 @@ class CreateGruzootpravitelRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'nazvanie' => 'required',
-            'INN' => 'unique:gruzootpravitels,INN|required',
+        $id='';
+        $id=request('current_gruzootpravitel_id');
+       // return dd(request('current_gruzootpravitel_id'));
+        if($id=='')
+        {
+            return [
+                'nazvanie' => 'required',
+                'INN' => 'unique:gruzootpravitels,INN|required',
+            ];
+        }
+        else
+        {
+            return [
+                'nazvanie' => 'required',
+                'INN' => 'required|unique:gruzootpravitels,INN,' . $id,
+            ];
+        }
 
-
-        ];
     }
 
 }

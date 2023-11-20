@@ -172,6 +172,7 @@ Vue.filter('formatDate', function(value) {
             show_mod_edit(id)
             {
                 //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.setNewModalStatusFalse()
                 this.$refs.modalComponentforAction.get_modal_edit_data(id)
             },
             check_all()

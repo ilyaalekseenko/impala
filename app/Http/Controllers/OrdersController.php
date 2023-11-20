@@ -9,6 +9,7 @@ use App\Models\DocList;
 use App\Models\DocsTemplate;
 use App\Models\FinalGrade;
 use App\Models\Gruzootpravitel;
+use App\Models\GruzootpravitelContact;
 use App\Models\Impala;
 use App\Models\OplataOrders;
 use App\Models\Orders;
@@ -17,6 +18,7 @@ use App\Models\PogruzkaTS;
 use App\Models\Role;
 use App\Models\TemplateVar;
 use App\Models\TS;
+use App\Models\PP;
 use App\Models\LogistName;
 use App\Models\UnreadHeader;
 use App\Models\User;
@@ -24,6 +26,8 @@ use App\Models\VidPerevozka;
 use App\Models\Voditel;
 use App\Models\GradePogruzka;
 use App\Models\GruzootpravitelAdresa;
+use App\Models\VidTS;
+use App\Models\TSModal;
 use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\ImportantService;
@@ -78,6 +82,10 @@ class OrdersController extends Controller
     private $gruzootpravitel;
     private $impalaModel;
     private $vidPerevozkaModel;
+    private $gruzootpravitelContact;
+    private $vidTSModel;
+    private $TSModal;
+    private $PP;
 
 
     public function __construct(
@@ -105,6 +113,10 @@ class OrdersController extends Controller
         Gruzootpravitel $gruzootpravitel,
         Impala $impala,
         VidPerevozka $vidPerevozka,
+        GruzootpravitelContact $gruzootpravitelContact,
+        VidTS $vidTS,
+        TSModal $TSModal,
+        PP $PP
     )
     {
         $this->orderService = $orderService;
@@ -131,6 +143,10 @@ class OrdersController extends Controller
         $this->gruzootpravitel = $gruzootpravitel;
         $this->impalaModel = $impala;
         $this->vidPerevozkaModel = $vidPerevozka;
+        $this->gruzootpravitelContact = $gruzootpravitelContact;
+        $this->vidTSModel = $vidTS;
+        $this->TSModal = $TSModal;
+        $this->PP = $PP;
 
     }
 
@@ -336,6 +352,28 @@ class OrdersController extends Controller
         $orders_list=$this->orderService->getOrderById(request('id'));
         //получим статус
         $orders_list=$this->orderService->setStatustoOrder($orders_list);
+        //получаю название компании заказчика
+        if(($orders_list[0]['kompaniya_zakazchik'])!==null)
+        {
+           $gruzName=$this->gruzootpravitel->getGruzootpravitelByIdInModel($orders_list[0]['kompaniya_zakazchik']);
+           $orders_list[0]['kompaniya_zakazchik_name']=$gruzName[0]['nazvanie'];
+        }
+        else
+        {
+            $orders_list[0]['kompaniya_zakazchik_name']='';
+        }
+        //получаю менеджера заказчика
+        if(($orders_list[0]['menedzer_zakazchik'])!==null)
+        {
+            $manager=$this->gruzootpravitelContact->getContact($orders_list[0]['menedzer_zakazchik']);
+            $orders_list[0]['menedzer_zakazchik_name']=$manager[0]['FIO'];
+            $orders_list[0]['menedzer_zakazchik']=$manager[0]['id'];
+        }
+        else
+        {
+            $orders_list[0]['menedzer_zakazchik']='';
+            $orders_list[0]['menedzer_zakazchik_name']='';
+        }
         //получить новый полный адрес погрузки и выгрузки
         if(($orders_list[0]['adres_pogruzke'])==null)
         {
@@ -514,23 +552,82 @@ class OrdersController extends Controller
 
         $id = $request->input('order_id');
         $orders_list = Orders::where('id', '=', $id) ->get();
+
         //получаю порядковый номер
         $porNomer=$this->docList->getPorNomer($doc_type);
+
         $finalGradeTS=$this->finalGrade->getIdByGrade(request('order_id'),request('id_ts'));
         if($doc_type=='1')
         {
             $TH = DocsTemplate::where('doc_type','TH')->get();
-            //получаю адреса погрузки и выгрузки
-            //вовзвращает массив в первом значении погрузка, во втором выгрузка
-            $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
-            //получаю место погрузки из orders
+
+            //получаю дату погрузки
+
+            $pattern = '/(\d{2}\.\d{2}\.\d{4})/';
+            $string = $orders_list[0]['data_pogruzki'];
+
+            if($orders_list[0]['data_pogruzki']==null)
+            {
+                $data_pogruzki='';
+            }
+           else
+           {
+               if (preg_match($pattern, $string, $matches)) {
+                   $data_pogruzki = $matches[1];
+               }
+           }
+
+            //получаю данные ГО
             if($orders_list[0]['adres_pogruzke']==null)
             {
-                $mesto='';
+                $GOdannye='';
             }
             else
             {
-                $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
+                $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_pogruzke']);
+            }
+            //получаю данные ГП
+            if($orders_list[0]['adres_vygruski']==null)
+            {
+                $GPdannye='';
+            }
+            else
+            {
+                $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
+            }
+
+//            //получаю место погрузки из orders
+//            if($orders_list[0]['adres_pogruzke']==null)
+//            {
+//                $mesto='';
+//            }
+//            else
+//            {
+//                $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
+//            }
+            //получаю заказчика
+//            $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_pogruzke']);
+            if($orders_list[0]['kompaniya_zakazchik']==null)
+            {
+                $zakazchik='';
+            }
+            else
+            {
+                $zakazchik=$this->gruzootpravitel->getFullNameGruzootpravitel($orders_list[0]['kompaniya_zakazchik']);
+            }
+            //получаю адреса погрузки и выгрузки
+            //возвращает массив в первом значении погрузка, во втором выгрузка
+            $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
+            //получаю количество грузомест у данного ТС (цифра + словом )
+            $kolMest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
+            //получаю перевозчика
+            $organizacia=$this->impalaModel->getAdres();
+            if ($organizacia->isNotEmpty()) {
+                $organizacia=$organizacia[0]['adres'];
+            }
+            else
+            {
+                $organizacia='';
             }
             //получаю водителя
             if($finalGradeTS[0]['voditel']==null)
@@ -539,8 +636,43 @@ class OrdersController extends Controller
             }
             else
             {
-                $voditel=$this->voditel->getVoditelNameBYId($finalGradeTS[0]['voditel']);
+                $voditel=$this->voditel->getFullVoditelBYId($finalGradeTS[0]['voditel']);
             }
+            //получаю тип ТС
+            if($finalGradeTS[0]['voditel']==null)
+            {
+                $vidTS='';
+            }
+            else
+            {
+                $vidTS=$this->vidTSModel->getVidTSById($finalGradeTS[0]['vid_TS']);
+            }
+            //получаю номер ТС и номер ПП ( если есть )
+            if($finalGradeTS[0]['nomer_TS']==null)
+            {
+                $nomerTS='';
+            }
+            else
+            {
+                $nomerTS=$this->TSModal->getTSModalNameBYId($finalGradeTS[0]['nomer_TS']);
+            }
+            if($finalGradeTS[0]['nomer_PP']==null)
+            {
+                $nomerPP='';
+            }
+            else
+            {
+                $nomerPP=$this->PP->getPPNameBYId($finalGradeTS[0]['nomer_PP']);
+            }
+            if($nomerPP=='')
+            {
+                $nomerTSPP=$nomerTS;
+            }
+            else
+            {
+                $nomerTSPP=$nomerTS.'/'.$nomerPP;
+            }
+
             //получаю имя шаблона
             $TH=$TH[0]['doc_name'];
             //формирую имя документа
@@ -552,30 +684,22 @@ class OrdersController extends Controller
             {
                 $orders_list[0]['data_pogruzki']='';
             }
-            $fileName='TH_'.$orders_list[0]['id'].'_'.$voditel.'_'.$orders_list[0]['data_pogruzki'].'.xlsx';
-            if($finalGradeTS[0]['kol_gruz_TS']==null)
-            {
-                $finalGradeTS[0]['kol_gruz_TS']='';
-            }
-            if($finalGradeTS[0]['data_dostavki']==null)
-            {
-                $finalGradeTS[0]['data_dostavki']='';
-            }
-            if($mesto!=='')
-            {
-                $mesto=$mesto[0]['full_name'];
-            }
+            $fileName='TH_'.$orders_list[0]['id'].'_'.$orders_list[0]['data_pogruzki'].'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
-                ->replace('data_pogruzki', $orders_list[0]['data_pogruzki'])
+
+                ->replace('data_pogruzki', $data_pogruzki)
                 ->replace('por_nomer',$porNomer)
+                ->replace('zak',$zakazchik)
+                ->replace('GP',$GPdannye)
+                ->replace('GO',$GOdannye)
                 ->replace('adres_pogruzki', $pogruzkaArr[0])
                 ->replace('adres_vygruzki', $pogruzkaArr[1])
-                ->replace('kol_gruzomest', $finalGradeTS[0]['kol_gruz_TS'])
-                ->replace('data_dostavki', $orders_list[0]['data_dostavki'])
-                ->replace('gruzootpravitel', 'Грузоотправитель')
-                ->replace('mesto_pogruzki', $mesto)
+                ->replace('kol_gruzomest', $kolMest)
+                ->replace('organizacia', $organizacia)
                 ->replace('voditel', $voditel)
+                ->replace('vidTS', $vidTS)
+                ->replace('nomerTSPP', $nomerTSPP)
                 ->save(public_path('templates/'.$fileName));
             //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
               $this->docList->upPorNomer($doc_type,$porNomer,$fileName);

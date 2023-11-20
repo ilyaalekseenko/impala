@@ -24,5 +24,32 @@ class GruzootpravitelContact extends Model
             'email' => $kontakt['email'],
         ]);
     }
+    public function getContact($managerId)
+    {
+      return GruzootpravitelContact::where('id', $managerId)->get();
+    }
+    public function getManagerNazvanieInModel($nazvanie,$zakazchik_id)
+    {
+        return GruzootpravitelContact::where('FIO', $nazvanie)->where('gruzootpravitel_id', $zakazchik_id)->get();
+    }
+    public function getContactsGruzootpravitel($gruzootpravitel_id)
+    {
+        return GruzootpravitelContact::where('gruzootpravitel_id', $gruzootpravitel_id)->get();
+    }
+    public function deleteContact($contactID)
+    {
+        GruzootpravitelContact::where('id', $contactID)->delete();
+    }
 
+    public function updateOrCreateContact($contact)
+    {
+        GruzootpravitelContact::updateOrCreate(
+            ['id' => $contact['id']],
+            [
+            'dolznost' => $contact['dolznost'],
+            'FIO' => $contact['FIO'],
+            'telefon' => $contact['telefon'],
+            'email' => $contact['email'],
+        ]);
+    }
 }

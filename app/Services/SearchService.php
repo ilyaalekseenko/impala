@@ -50,6 +50,16 @@ class SearchService
             ->limit(10)
             ->get();
     }
+    public function getSearchResultsmanager($searchWord,$model,$fieldTosearch,$searchOffset,$zakachikId)
+    {
+        $model = 'App\Models\\' . $model;
+        return $model::
+        where($fieldTosearch, 'like', '%'.$searchWord.'%')
+        ->where('gruzootpravitel_id',$zakachikId)
+            ->offset($searchOffset)
+            ->limit(10)
+            ->get();
+    }
     public function getSearchResultsAvtor($searchWord,$model,$fieldTosearch,$searchOffset)
     {
         $model = 'App\Models\\' . $model;
