@@ -595,18 +595,7 @@ class OrdersController extends Controller
             {
                 $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
             }
-
-//            //получаю место погрузки из orders
-//            if($orders_list[0]['adres_pogruzke']==null)
-//            {
-//                $mesto='';
-//            }
-//            else
-//            {
-//                $mesto=$this->gruzootpravitelAdresa->getOneName($orders_list[0]['adres_pogruzke']);
-//            }
-            //получаю заказчика
-//            $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_pogruzke']);
+            return dd('TIE3');
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
                 $zakazchik='';
