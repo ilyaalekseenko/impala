@@ -615,13 +615,13 @@ class OrdersController extends Controller
             {
                 $zakazchik=$this->gruzootpravitel->getFullNameGruzootpravitel($orders_list[0]['kompaniya_zakazchik']);
             }
-
+            return dd('TIE4');
             //получаю адреса погрузки и выгрузки
             //возвращает массив в первом значении погрузка, во втором выгрузка
             $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
             //получаю количество грузомест у данного ТС (цифра + словом )
             $kolMest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
-            return dd('TIE2');
+
             //получаю перевозчика
             $organizacia=$this->impalaModel->getAdres();
             if ($organizacia->isNotEmpty()) {
