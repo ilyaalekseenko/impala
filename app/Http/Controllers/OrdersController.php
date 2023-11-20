@@ -595,7 +595,7 @@ class OrdersController extends Controller
             {
                 $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
             }
-            return dd(($orders_list[0]);
+            return dd($orders_list[0]);
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
                 $zakazchik='';
