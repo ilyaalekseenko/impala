@@ -615,6 +615,7 @@ class OrdersController extends Controller
             {
                 $zakazchik=$this->gruzootpravitel->getFullNameGruzootpravitel($orders_list[0]['kompaniya_zakazchik']);
             }
+            return dd('asdasd');
             //получаю адреса погрузки и выгрузки
             //возвращает массив в первом значении погрузка, во втором выгрузка
             $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
