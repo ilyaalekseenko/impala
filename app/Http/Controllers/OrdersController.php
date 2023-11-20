@@ -595,7 +595,7 @@ class OrdersController extends Controller
             {
                 $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
             }
-            return dd('TIE1');
+
 //            //получаю место погрузки из orders
 //            if($orders_list[0]['adres_pogruzke']==null)
 //            {
@@ -621,6 +621,7 @@ class OrdersController extends Controller
             $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
             //получаю количество грузомест у данного ТС (цифра + словом )
             $kolMest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
+            return dd('TIE2');
             //получаю перевозчика
             $organizacia=$this->impalaModel->getAdres();
             if ($organizacia->isNotEmpty()) {
