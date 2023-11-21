@@ -1216,14 +1216,30 @@
                 if(buttonName=='ocenka')
                 {
                     this.ocenka_show_button=false
+                    if(this.spisokTSarr.length!=0)
+                    {
+                        this.utverzdenie_show_button=true
+                        this.v_rabote_show_button=true
+                    }
+
                 }
                 if(buttonName=='naznachenie_stavki')
                 {
                     this.utverzdenie_show_button=false
+                    this.ocenka_show_button=true
+                    if(this.spisokTSarr.length!=0)
+                    {
+                        this.v_rabote_show_button = true
+                    }
                 }
                 if(buttonName=='v_rabote')
                 {
                     this.v_rabote_show_button=false
+                    if(this.spisokTSarr.length!=0)
+                    {
+                        this.utverzdenie_show_button = true
+                    }
+                    this.ocenka_show_button=true
                 }
             },
             update_order_oplata(summ_opl,id,data)
@@ -1796,12 +1812,26 @@
             },
             showButtons()
             {
+                 if(this.status!=='Назначение ставки')
+                 {
+                     this.utverzdenie_show_button=true
+                 }
+                if(this.status!=='На утверждении')
+                {
+                    this.utverzdenie_show_button=true
+                }
 
-                this.utverzdenie_show_button=true
               if(this.role==1)
               {
-                  this.ocenka_show_button=true
-                  this.v_rabote_show_button=true
+                  if(this.status!=='На оценке')
+                  {
+                      this.ocenka_show_button=true
+                  }
+                  if(this.status!=='В работе')
+                  {
+                      this.v_rabote_show_button=true
+                  }
+
               }
 
             },

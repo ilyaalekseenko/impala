@@ -175,10 +175,10 @@
                                 Прямой
                             </div>
                             <div class="col-2 grade_header_col">
-                                {{ data_pogruzki }}
+                               <span v-if="elem.adres_pogruzki_TS && elem.adres_pogruzki_TS[0] && elem.adres_pogruzki_TS[0].date_ts">{{ elem.adres_pogruzki_TS[0].date_ts }}</span>
                             </div>
                             <div class="col-2 grade_header_col">
-                                {{ data_dostavki }}
+                               <span v-if="elem.adres_vygr_TS && elem.adres_vygr_TS[0] && elem.adres_vygr_TS[0].date_ts">{{ elem.adres_vygr_TS[0].date_ts }}</span>
                             </div>
                             <div class="col-2 grade_header_col">
                                 {{elem.stavka_summa}}р .

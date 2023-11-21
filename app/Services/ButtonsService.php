@@ -38,6 +38,19 @@ class ButtonsService
                 $buttons['utverzdenieShowButton']=true;
             }
         }
+        //уберём текущий статус кнопок,например если заявка в оценке то нужно убрать кнпоку в оценке
+        if($naznachenieStavki==1)
+        {
+            $buttons['utverzdenieShowButton']=false;
+        }
+        if($vRabote==1)
+        {
+            $buttons['vRaboteShowButton']=false;
+        }
+        if($ocenka==1)
+        {
+            $buttons['ocenkaShowButton']=false;
+        }
         return $buttons;
 
     }
