@@ -630,7 +630,8 @@ class OrdersController extends Controller
         {
             $TH = DocsTemplate::where('doc_type','TH')->get();
             //получаю порядковый номер вида номер заявки 23455-1
-            $porNomerTN= 'Номер заявки: '. $orders_list[0]['nomer_zayavki'].'-'.request('id_ts');
+            $nom=request('id_ts')+1;
+            $porNomerTN= 'Номер заявки: '. $orders_list[0]['nomer_zayavki'].'-'.$nom;
             //получаю заказчика
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
