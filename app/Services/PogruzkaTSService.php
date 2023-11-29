@@ -83,6 +83,54 @@ class PogruzkaTSService
         $res=[$resPogr,$resVygr];
         return $res;
     }
+    public function pogruzkaVygruzkaDopAdresa()
+    {
+        $pogrVygr=$this->gradePogruzkaModel->getPogruzka(request('order_id'),request('id_ts'));
+        $pogruzkaArr=[];
+        $vygruzkaArr=[];
+        foreach ($pogrVygr as $onePogrVygr)
+        {
+            if($onePogrVygr['pogruzka_or_vygruzka']==1)
+            {
+                $pogruzkaArr[]=$onePogrVygr['adres_pogruzki'];
+            }
+            if($onePogrVygr['pogruzka_or_vygruzka']==2)
+            {
+                $vygruzkaArr[]=$onePogrVygr['adres_pogruzki'];
+            }
+        }
 
+        $pogruzkaArr=$this->gruzootpravitelAdresa->getFullGruzAdres($pogruzkaArr);
+        $vygruzkaArr=$this->gruzootpravitelAdresa->getFullGruzAdres($vygruzkaArr);
+        $resPogr='';
+        $resVygr='';
+        $pogruzkaArr=$pogruzkaArr->toArray();
+        $vygruzkaArr=$vygruzkaArr->toArray();
+        foreach($pogruzkaArr as $key =>$onePogr)
+        {
+            if ($key === key(array_slice($pogruzkaArr, -1, 1, true)))
+            {
+                $resPogr.=$onePogr['nazvanie'].' '.$onePogr['adres'];
+            }
+            else
+            {
+                $resPogr .= $onePogr['nazvanie'].' '.$onePogr['adres'] . "\n";
+            }
+
+        }
+        foreach($vygruzkaArr as $key =>$onePogr)
+        {
+            if ($key === key(array_slice($vygruzkaArr, -1, 1, true)))
+            {
+                $resVygr.=$onePogr['nazvanie'].' '.$onePogr['adres'];
+            }
+            else
+            {
+                $resVygr.=$onePogr['nazvanie'].' '.$onePogr['adres']. "\n";
+            }
+        }
+        $res=[$resPogr,$resVygr];
+        return $res;
+    }
 
 }

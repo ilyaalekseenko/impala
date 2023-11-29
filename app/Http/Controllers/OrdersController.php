@@ -39,6 +39,7 @@ use App\Services\UnreadHeaderService;
 use App\Services\UserService;
 use App\Services\PogruzkaTSService;
 use App\Services\ButtonsService;
+use App\Services\HelperService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
@@ -86,6 +87,7 @@ class OrdersController extends Controller
     private $vidTSModel;
     private $TSModal;
     private $PP;
+    private $HelperService;
 
 
     public function __construct(
@@ -116,7 +118,8 @@ class OrdersController extends Controller
         GruzootpravitelContact $gruzootpravitelContact,
         VidTS $vidTS,
         TSModal $TSModal,
-        PP $PP
+        PP $PP,
+        HelperService $helperService,
     )
     {
         $this->orderService = $orderService;
@@ -147,6 +150,7 @@ class OrdersController extends Controller
         $this->vidTSModel = $vidTS;
         $this->TSModal = $TSModal;
         $this->PP = $PP;
+        $this->HelperService = $helperService;
 
     }
 
@@ -556,46 +560,78 @@ class OrdersController extends Controller
         //получаю порядковый номер
         $porNomer=$this->docList->getPorNomer($doc_type);
 
+
         $finalGradeTS=$this->finalGrade->getIdByGrade(request('order_id'),request('id_ts'));
-        if($doc_type=='1')
+
+        //получим все погрузки и оттуда получим дату первой погрузки
+        $pogruzka=$this->gradePogruzkaModel->pogruzkaOrVygruzka(request('order_id'),request('id_ts'),1);
+        if($pogruzka->isNotEmpty())
         {
-            $TH = DocsTemplate::where('doc_type','TH')->get();
-
-            //получаю дату погрузки
-
-            $pattern = '/(\d{2}\.\d{2}\.\d{4})/';
-            $string = $orders_list[0]['data_pogruzki'];
-
-            if($orders_list[0]['data_pogruzki']==null)
+            if($pogruzka[0]['date_ts']==null)
             {
                 $data_pogruzki='';
             }
-           else
-           {
-               if (preg_match($pattern, $string, $matches)) {
-                   $data_pogruzki = $matches[1];
-               }
-           }
-
-            //получаю данные ГО
-            if($orders_list[0]['adres_pogruzke']==null)
+            else
             {
-                $GOdannye='';
+                $pattern = '/(\d{2}\.\d{2}\.\d{4})/';
+                if (preg_match($pattern, $pogruzka[0]['date_ts'], $matches)) {
+                    $data_pogruzki = $matches[1];
+                }
+            }
+        }
+        else
+        {
+            $data_pogruzki='';
+        }
+
+        //получим все выгрузки и оттуда получим дату первой выгрузки
+        $vygruzka=$this->gradePogruzkaModel->pogruzkaOrVygruzka(request('order_id'),request('id_ts'),2);
+        if($vygruzka->isNotEmpty())
+        {
+            if($vygruzka[0]['date_ts']==null)
+            {
+                $data_vygruzki='';
             }
             else
             {
-                $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_pogruzke']);
+                $pattern = '/(\d{2}\.\d{2}\.\d{4})/';
+                if (preg_match($pattern, $vygruzka[0]['date_ts'], $matches)) {
+                    $data_vygruzki = $matches[1];
+                }
             }
-            //получаю данные ГП
-            if($orders_list[0]['adres_vygruski']==null)
-            {
-                $GPdannye='';
-            }
-            else
-            {
-                $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($orders_list[0]['adres_vygruski']);
-            }
+        }
+        else
+        {
+            $data_vygruzki='';
+        }
 
+        //получаю данные ГО ФОРМА НАЗВАНИЕ ИНН ЮР.Адрес Телефон
+        if($pogruzka[0]['adres_pogruzki']==null)
+        {
+            $GOdannye='';
+        }
+        else
+        {
+            $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($pogruzka[0]['adres_pogruzki']);
+        }
+
+        //получаю данные ГП ГО ФОРМА НАЗВАНИЕ ИНН ЮР.Адрес Телефон
+        if($vygruzka[0]['adres_pogruzki']==null)
+        {
+            $GPdannye='';
+        }
+        else
+        {
+            $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($vygruzka[0]['adres_pogruzki']);
+        }
+
+
+        if($doc_type=='1')
+        {
+            $TH = DocsTemplate::where('doc_type','TH')->get();
+            //получаю порядковый номер вида номер заявки 23455-1
+            $porNomerTN= 'Номер заявки: '. $orders_list[0]['nomer_zayavki'].'-'.request('id_ts');
+            //получаю заказчика
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
                 $zakazchik='';
@@ -606,8 +642,8 @@ class OrdersController extends Controller
             }
 
             //получаю адреса погрузки и выгрузки
-            //возвращает массив в первом значении погрузка, во втором выгрузка
-            $pogruzkaArr=$this->pogruzkaTSService->pogruzkaName();
+            //возвращает массив в первом значении погрузка, во втором выгрузка Название Адрес  ( из доп контактов ) те что выбраны
+            $pogruzkaArr=$this->pogruzkaTSService->pogruzkaVygruzkaDopAdresa();
             //получаю количество грузомест у данного ТС (цифра + словом )
             $kolMest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
 
@@ -620,6 +656,7 @@ class OrdersController extends Controller
             {
                 $organizacia='';
             }
+
             //получаю водителя
             if($finalGradeTS[0]['voditel']==null)
             {
@@ -629,15 +666,40 @@ class OrdersController extends Controller
             {
                 $voditel=$this->voditel->getFullVoditelBYId($finalGradeTS[0]['voditel']);
             }
-            //получаю тип ТС
-            if($finalGradeTS[0]['voditel']==null)
+
+            //получаю марку ТС и марку ПП
+            if($finalGradeTS[0]['nomer_TS']==null)
             {
-                $vidTS='';
+                $markaTS='';
             }
             else
             {
-                $vidTS=$this->vidTSModel->getVidTSById($finalGradeTS[0]['vid_TS']);
+                $markaTS=$this->TSModal->getTSModal($finalGradeTS[0]['nomer_TS']);
+                $markaTS=$markaTS[0]['marka'];
+                if($markaTS==null)
+                {
+                    $markaTS='';
+                }
             }
+            if($finalGradeTS[0]['nomer_PP']==null)
+            {
+                $markaPP='';
+            }
+            else
+            {
+                $markaPP=$this->PP->getPP($finalGradeTS[0]['nomer_PP']);
+                $markaPP=$markaPP[0]['marka'];
+                if($markaPP==null)
+                {
+                    $markaPP='';
+                }
+                else
+                {
+                    $markaPP=' / '.$markaPP;
+                }
+            }
+            $vidTS=$markaTS.$markaPP;
+
             //получаю номер ТС и номер ПП ( если есть )
             if($finalGradeTS[0]['nomer_TS']==null)
             {
@@ -664,6 +726,14 @@ class OrdersController extends Controller
                 $nomerTSPP=$nomerTS.'/'.$nomerPP;
             }
 
+            //получаю все даты погрузок и выгрузок фактические
+
+
+            //получаю все даты погрузок фактические
+            $pogruzkaDate=$this->HelperService->getStringFromArr($pogruzka,'date_ts');
+            //получаю все даты выгрузок фактические
+            $vygruzkaDate=$this->HelperService->getStringFromArr($vygruzka,'date_ts');
+
             //получаю имя шаблона
             $TH=$TH[0]['doc_name'];
             //формирую имя документа
@@ -675,12 +745,12 @@ class OrdersController extends Controller
             {
                 $orders_list[0]['data_pogruzki']='';
             }
-            $fileName='TH_'.$orders_list[0]['id'].'_'.$orders_list[0]['data_pogruzki'].'.xlsx';
+            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
 
                 ->replace('data_pogruzki', $data_pogruzki)
-                ->replace('por_nomer',$porNomer)
+                ->replace('por_nomer',$porNomerTN)
                 ->replace('zak',$zakazchik)
                 ->replace('GP',$GPdannye)
                 ->replace('GO',$GOdannye)
@@ -690,6 +760,7 @@ class OrdersController extends Controller
                 ->replace('organizacia', $organizacia)
                 ->replace('voditel', $voditel)
                 ->replace('vidTS', $vidTS)
+                ->replace('pogruzkaDate', $pogruzkaDate)
                 ->replace('nomerTSPP', $nomerTSPP)
                 ->save(public_path('templates/'.$fileName));
             //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
@@ -725,7 +796,7 @@ class OrdersController extends Controller
             }
             //высчитываем срок действия
 
-            if($orders_list[0]['data_pogruzki']==null)
+            if(($data_pogruzki==null)||($data_pogruzki==''))
             {
                 $carbonDate='';
                 $srok_deist='';
@@ -734,10 +805,10 @@ class OrdersController extends Controller
             }
             else
             {
-                $carbonDate = Carbon::createFromFormat('d.m.Y', $orders_list[0]['data_pogruzki']);
+                $carbonDate = Carbon::createFromFormat('d.m.Y', $data_pogruzki);
                 $srok_deist = $carbonDate->addMonth()->format('d.m.Y');
                 //получаю текстовый срок действия
-                $textDate=$this->orderService->convertDateMonth($orders_list[0]['data_pogruzki']);
+                $textDate=$this->orderService->convertDateMonth($data_pogruzki);
                 $textDateSrokDeistv=$this->orderService->convertDateMonth($srok_deist);
             }
 
@@ -755,6 +826,12 @@ class OrdersController extends Controller
                 //получаю полные данные водителя
                 $voditelFull=$this->voditel->getVoditel($finalGradeTS[0]['voditel']);
             }
+            if($voditelFull[0]['seriyaPassporta']!=null)
+            {
+                $pattern = '/^(.{4})/';
+                $replacement = '$1 ';
+                $voditelFull[0]['seriyaPassporta'] = preg_replace($pattern, $replacement, $voditelFull[0]['seriyaPassporta']);
+            }
             $organizacia=$this->impalaModel->getAdres();
             if ($organizacia->isNotEmpty()) {
                 $organizacia=$organizacia[0]['adres'];
@@ -764,13 +841,15 @@ class OrdersController extends Controller
                 $organizacia='';
             }
            // $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
-
+            $nazvanieDokumenta='Доверенность_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
+            //получаю номер доверенности ( из final_grade он уникальный для каждого добавленного ТС, если удалили то номер меняется )
+            $nomerDov=$finalGradeTS[0]['id'];
             $TH = DocsTemplate::where('doc_type','DOV')->get();
             $TH=$TH[0]['doc_name'];
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
-                ->replace('por_nomer', $porNomer)
-                ->replace('data_vydachi', $orders_list[0]['data_pogruzki'])
+                ->replace('por_nomer', $nomerDov)
+                ->replace('data_vydachi', $data_pogruzki)
                 ->replace('srok_deist', $srok_deist)
                 ->replace('voditel', $voditel)
                 ->replace('postav', $postavshik)
@@ -780,17 +859,17 @@ class OrdersController extends Controller
                 ->replace('vod_passport_kogda', $voditelFull[0]['kogdaVydan'])
                 ->replace('data_vydachi_text', $textDate.' г')
                 ->replace('deistv_do', $textDateSrokDeistv.' г')
-                ->save(public_path('templates/fin_DOV.xlsx'));
-            $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-            $phpWord = $reader->load(public_path('templates/fin_DOV.xlsx'));
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf($phpWord);
-            $writer->save(public_path('templates/DOV.pdf'));
-
+                ->replace('GO',$GOdannye)
+                ->save(public_path('templates/'.$nazvanieDokumenta));
             return response()->json([
                 'status' => 'success',
-                'file' =>'DOV.pdf',
+                'file' =>$nazvanieDokumenta,
             ], 200);
         }
+
+
+
+
         if($doc_type=='3')
         {
             $TH = DocsTemplate::where('doc_type','ZAI')->get();
@@ -828,6 +907,27 @@ class OrdersController extends Controller
       $userStatus=$this->user_mod->getUserStatusName();
       //получаем данные из списка заявок
       $resArr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
+      //получим название заказчика
+       foreach ($resArr as $res)
+       {
+           if($res['kompaniya_zakazchik']==null)
+           {
+               $res['kompaniya_zakazchik']='';
+           }
+           else
+           {
+               $qRes= $this->gruzootpravitel->getGruzootpravitelByIdInModel($res['kompaniya_zakazchik']);
+               if(!$qRes)
+               {
+                   $res['kompaniya_zakazchik']='';
+               }
+               else
+               {
+                   $res['kompaniya_zakazchik']=$qRes[0]['nazvanie'];
+               }
+           }
+
+       }
       //посчитаем сколько всего записей выводить
       $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
       //добавим статус для каждой заявки

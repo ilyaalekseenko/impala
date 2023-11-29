@@ -249,7 +249,7 @@ Vue.filter('formatDate', function(value) {
                 this.header_underscore_list_class=[false,false,false,false,false,false]
                 this.header_underscore_list_class[this.order_by]=true
             }
-            this.getOrderlist(this.orders_list)
+                this.getOrderlist(this.orders_list)
             this.get_perevozka_list(this.type_per_list);
         },
         methods: {

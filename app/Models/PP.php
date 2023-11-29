@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 
+
 class PP extends Model
 {
     use HasFactory;

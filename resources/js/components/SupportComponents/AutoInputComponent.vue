@@ -242,7 +242,7 @@
             up_gruzoot_from_select_grade()
             {
                 let pogr_or_vygr_temp =''
-                if(this.inp_type=='grade_pogruzka')
+                if(this.inp_type=='grade_pogruzke')
                 {
                     pogr_or_vygr_temp=1
                 }

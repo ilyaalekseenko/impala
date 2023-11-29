@@ -100,7 +100,14 @@ class GruzootpravitelAdresService
         $GO=$this->gruzootpravitel->getGruzootpravitelByIdInModel($GOid);
         return $GO[0]['forma_id'].' '.$GO[0]['nazvanie'].', '.'ИНН'.' '.$GO[0]['INN'].' '.$GO[0]['YR_adres'].' '.$GO[0]['telefon'];
     }
-
+    //получить данные ГО по адресу погрузки короткая версия, название и адрес
+    public function getGObyAdresNazAdres($adresId)
+    {
+        $data=$this->gruzootpravitelAdresa->getGruzId($adresId);
+        $GOid=$data[0]['gruzootpravitel_id'];
+        $GO=$this->gruzootpravitel->getGruzootpravitelByIdInModel($GOid);
+        return $GO[0]['forma_id'].' '.$GO[0]['nazvanie']. ' '.$GO[0]['YR_adres'];
+    }
 
 
 }

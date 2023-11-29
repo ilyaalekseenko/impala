@@ -380,6 +380,7 @@ import vClickOutside from 'v-click-outside'
 
                              data.gruzootpravitel_contact.forEach(function(entry) {
                                      kontakty.push({
+                                         id:entry.id,
                                          dolznost:entry.dolznost,
                                          FIO : entry.FIO,
                                          telefon : entry.telefon,

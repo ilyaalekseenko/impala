@@ -64,5 +64,12 @@ class GradePogruzka extends Model
             $column =>null,
         ]);
     }
+    public function pogruzkaOrVygruzka($grade_id,$id_ts,$pogr_vygr)
+    {
+        return GradePogruzka::where('grade_id',$grade_id)
+            ->where('id_ts',$id_ts)
+            ->where('pogruzka_or_vygruzka',$pogr_vygr)
+            ->get();
+    }
 
 }

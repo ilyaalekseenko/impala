@@ -64,9 +64,9 @@ class GruzootpravitelService
     public function updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$kontakty,$adresa,$bank_arr,$doc_files)
     {
         $this->gruzootpravitel->updateGruzootpravitel($gruzootpravitelId,$forma,$nazvanie,$data_registracii,$INN,$OGRN,$telefon,$email,$generalnii_direktor,$telefon_gen_dir,$yridicheskii_adres,$pochtovyi_adres);
+
         //полуим старые контакты и удалим те которы нету
         $oldContacts=$this->gruzootpravitelContact->getContactsGruzootpravitel($gruzootpravitelId);
-
         foreach($oldContacts as $oldContact)
        {
            $found = false;

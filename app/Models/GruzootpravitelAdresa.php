@@ -108,4 +108,9 @@ class GruzootpravitelAdresa extends Model
     {
         return GruzootpravitelAdresa::where('id',$id)->get('gruzootpravitel_id');
     }
+    public function getFullGruzAdres($pogrVygrIds)
+    {
+        return GruzootpravitelAdresa::whereIn('id',$pogrVygrIds)->get();
+    }
+
 }

@@ -20,12 +20,17 @@
             vid="grade"
             :gradeAddPPModal='gradeAddPPModal'
         ></modal-p-p-component>
+        <modal-author-component   ref="modalComponentforActionAuthor"
+                                  edit_flag=true
+                                  :chahgeFrontNames='chahgeFrontNames'
+                                  vid="GruzzotpravitelComponent"
+        ></modal-author-component>
         <div class="row main_grade_div">
             <div class="col-12 row grade_head_row " >
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
 
                 <div  class="col-6 orders_create_title">
-                    Запросы: В работе > №{{ nomer_zayavki }}
+                    Заявка: В работе > №{{ nomer_zayavki }}
                 </div>
                 <div  class="col-6 row justify-content-end trio_but">
                     <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
@@ -292,28 +297,35 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
-<!--                                        <select @blur="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')" class="cr_ord_inp_n_0" v-model="adres_pogr.adres_pogruzki">-->
-<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                        </select>-->
-<!--                                        {{ elem1['id_ts'] }}-->
-<!--                                        <div>{{ adres_pogr }}</div>-->
-<!--                                        <div class="cr_ord_inp_n_1" v-show="adresPogruzkiVygruzkiShowFunc(key1,1)" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogr.adres_pogruzki_show }}</div>-->
-                                        <auto-input-component class="cr_ord_inp_n_1"
-                                                              inp_type='grade_pogruzka'
-                                                              :adres_pogruzke_show="flag_pogruz"
-                                                              :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
-                                                              :order_id="order_id"
-                                                              :id_ts="elem1['id_ts']"
-                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                              :key_in_arr="key1"
-                                                              @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
-                                                              ref="AutoSelectComponent_grade_pogruzka"
-                                        ></auto-input-component>
-                                    <div class="col-12 row">
-                                        <div class="col-6 date_width">
-                                            <div class="little_title_grade">Дата</div>
+                              <auto-input-author-grade-component  class="cr_ord_inp_n_1"
+                                                            inp_type='adres_pogruzke'
+                                                            :adres_pogruzke_show="flag_pogruz"
+                                                            :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
+                                                            :order_id="order_id"
+                                                            :id_ts="elem1['id_ts']"
+                                                            :firstClick="localFirstClick"
+                                                            v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                            :key_in_arr="key1"
+                                                            :changePogrVygrAllShow="changePogrVygrAllShow"
+                                                            @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                            ref="AutoSelectComponent_grade_pogruzka"
+                              ></auto-input-author-grade-component>
+                                        <!--                                        <auto-input-component class="cr_ord_inp_n_1"
+                                                                                                      inp_type='grade_pogruzka'
+                                                                                                      :adres_pogruzke_show="flag_pogruz"
+                                                                                                      :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
+                                                                                                      :order_id="order_id"
+                                                                                                      :id_ts="elem1['id_ts']"
+                                                                                                      v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                                                                      :key_in_arr="key1"
+                                                                                                      @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                                                                      ref="AutoSelectComponent_grade_pogruzka"
+                                                                                ></auto-input-component>-->
+                                                                            <div class="col-12 row">
+                                                                                <div class="col-6 date_width">
+                                                                                    <div class="little_title_grade">Дата</div>
 
-<!--                        ДАТА ЗАГРУЗКИ-->
+                                        <!--                        ДАТА ЗАГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
                         <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="datetime"
                         format="DD.MM.YYYY H:mm" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
@@ -353,17 +365,31 @@
                                             <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
-                                         <auto-input-component class="cr_ord_inp_n_1"
-                                                               inp_type='grade_vygruzka'
-                                                               :adres_pogruzke_show="flag_pogruz"
-                                                               :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"
-                                                               :order_id="order_id"
-                                                               :id_ts="elem1['id_ts']"
-                                                               v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                               :key_in_arr="key2"
-                                                               @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
-                                                               ref="AutoSelectComponent_grade_vygruzka"
-                                         ></auto-input-component>
+                                    <auto-input-author-grade-component  class="cr_ord_inp_n_1"
+                                                                        inp_type='adres_vygruski'
+                                                                        :adres_pogruzke_show="flag_pogruz"
+                                                                        :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"
+                                                                        :order_id="order_id"
+                                                                        :id_ts="elem1['id_ts']"
+                                                                        :firstClick="localFirstClick"
+                                                                        v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                                        :key_in_arr="key2"
+                                                                        :changePogrVygrAllShow="changePogrVygrAllShow"
+                                                                        @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                                        ref="AutoSelectComponent_grade_vygruzka"
+                                    ></auto-input-author-grade-component>
+<!--                                         <auto-input-component class="cr_ord_inp_n_1"-->
+<!--                                                               inp_type='grade_vygruzka'-->
+<!--                                                               :adres_pogruzke_show="flag_pogruz"-->
+<!--                                                               :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"-->
+<!--                                                               :order_id="order_id"-->
+<!--                                                               :id_ts="elem1['id_ts']"-->
+<!--                                                               v-bind:gruzootpravitel_arr="gruzootpravitel_arr"-->
+<!--                                                               :key_in_arr="key2"-->
+<!--                                                               @add_pogruzka_new="update_one_gruzzootpravitel_from_select"-->
+<!--                                                               ref="AutoSelectComponent_grade_vygruzka"-->
+<!--                                         ></auto-input-component>-->
+
 
                                         <div class="col-12 row">
                                         <div class="col-6 date_width">
@@ -645,8 +671,8 @@
                 showTsList:true,
                 mainCount:100,
                 valTest:0,
-                right_currentTS_In_Arr:''
-
+                right_currentTS_In_Arr:'',
+                localFirstClick:false,
 
             }
         },
@@ -1008,9 +1034,6 @@
                 {
                     newKey= this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[data.key].id_pogruzka
                 }
-
-                console.log('data.key')
-                console.log(data.key)
                 //погрузка - 1 или выгрузка - 2
                 // console.log(data.pogr_or_vygr)
                 //id грузоотправителя
@@ -1064,15 +1087,15 @@
             },
             up_gruz_in_front_new(pog_vyg,key,pog_vyg_show,nazvanie)
             {
-                console.log('СПИСОК ОТСЮДА')
-                console.log('pog_vyg')
-                console.log(pog_vyg)
-                console.log('key')
-                console.log(key)
-                console.log('pog_vyg_show')
-                console.log(pog_vyg_show)
-                console.log('nazvanie')
-                console.log(nazvanie)
+                // console.log('СПИСОК ОТСЮДА')
+                // console.log('pog_vyg')
+                // console.log(pog_vyg)
+                // console.log('key')
+                // console.log(key)
+                // console.log('pog_vyg_show')
+                // console.log(pog_vyg_show)
+                // console.log('nazvanie')
+                // console.log(nazvanie)
                 this.spisokTShead[this.right_currentTS_In_Arr][pog_vyg][key][pog_vyg_show]=nazvanie
             },
             update_unread_status_v_rabote()
@@ -1222,22 +1245,16 @@
             },
             get_finall_doc_pdf(doc_type)
             {
-                console.log(this.right_current_TS);
                 this.current_doc=doc_type
-                // window.location.href = '/get_finall_doc_pdf/'+doc_type;
                 axios
                     .post('/get_finall_doc_pdf',{
                          doc_type:this.current_doc,
                          order_id:this.order_id,
                          id_ts:this.right_current_TS
-
                     })
                     .then(response => {
-                        // console.log(response.data.file)
                         window.location.assign('/get_finall_doc_pdf_file/templates/'+response.data.file) ;
-
                     })
-
             },
             store_doc()
             {
@@ -1297,11 +1314,16 @@
                     }
                 }
             },
+            chahgeFrontNames()
+            {
+
+            },
+            changePogrVygrAllShow(id)
+            {
+                this.$refs.modalComponentforActionAuthor.get_modal_edit_data(id)
+            },
             openDPpogr(id_pogruzka,date_or_time,pogr_or_vygr)
             {
-                console.log('id_pogruzka')
-                console.log(id_pogruzka)
-
                 if(pogr_or_vygr==1)
                 {
                     let newKey=this.getKeyInListByItem(this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS,'id_pogruzka',id_pogruzka)
