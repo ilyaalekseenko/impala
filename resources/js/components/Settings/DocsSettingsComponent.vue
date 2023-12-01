@@ -220,7 +220,7 @@ export default {
                     }
                 }
                 if ((this.doc_type == 'DOV') || (this.doc_type == 'TH')) {
-                    if (ext[0] == '.xls' || ext[0] == '.xlsx') {
+                    if (ext[0] == '.xls' || ext[0] == '.xlsx' || ext[0] == '.xlsm') {
                         flag = 1;
                     }
 

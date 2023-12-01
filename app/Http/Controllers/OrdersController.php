@@ -749,7 +749,6 @@ class OrdersController extends Controller
             $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
-
                 ->replace('data_pogruzki', $data_pogruzki)
                 ->replace('por_nomer',$porNomerTN)
                 ->replace('zak',$zakazchik)
