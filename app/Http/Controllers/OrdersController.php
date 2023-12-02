@@ -746,7 +746,7 @@ class OrdersController extends Controller
             {
                 $orders_list[0]['data_pogruzki']='';
             }
-            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
+            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsm';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $data_pogruzki)
