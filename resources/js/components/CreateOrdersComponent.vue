@@ -175,20 +175,22 @@
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
                                    <div class="col no_wrap">Адрес погрузки</div>
-                                   <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>
+<!--                                   <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>-->
                                 </div>
-                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&adres_pogruzke_show==''" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
-                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke_show }}</div>
-                            <auto-input-author-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"
-                                inp_type='adres_pogruzke'
-                                :adres_pogruzke_show="adres_pogruzke_show"
-                                :order_id="order_id"
-                                :firstClick="localFirstClick"
-                                v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                ref="AutoSelectComponent"
-                                @showHideText="showHideParent"
-                                :changePogrVygrAllShow="changePogrVygrAllShow"
-                            ></auto-input-author-component>
+                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&((adres_pogruzke=='')||(adres_pogruzke==null))" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
+                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke }}</div>
+                                <textarea class="cr_ord_inp_n_1" v-show="!adresPogruzkiShowSpan" @blur="updateOrderLoc('adres_pogruzke',adres_pogruzke)" v-model="adres_pogruzke" rows="3"  name="adres_pogruzke"></textarea>
+
+                                <!--                            <auto-input-author-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"-->
+<!--                                inp_type='adres_pogruzke'-->
+<!--                                :adres_pogruzke_show="adres_pogruzke_show"-->
+<!--                                :order_id="order_id"-->
+<!--                                :firstClick="localFirstClick"-->
+<!--                                v-bind:gruzootpravitel_arr="gruzootpravitel_arr"-->
+<!--                                ref="AutoSelectComponent"-->
+<!--                                @showHideText="showHideParent"-->
+<!--                                :changePogrVygrAllShow="changePogrVygrAllShow"-->
+<!--                            ></auto-input-author-component>-->
                             </div>
 
                         </div>
@@ -249,18 +251,10 @@
 <!--                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_vygruski">-->
 <!--                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
 <!--                                </select>-->
-                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan&&adres_vygruski_show==''" v-on:click="inputShow('adresVygruzkiShowSpan')">Выбрать адрес</div>
-                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan" v-on:click="inputShow('adresVygruzkiShowSpan')">{{ adres_vygruski_show }}</div>
-                                <auto-input-author-component v-show="!adresVygruzkiShowSpan" class="cr_ord_inp_n_1"
-                                                      inp_type='adres_vygruski'
-                                                      :adres_pogruzke_show="adres_vygruski_show"
-                                                      :order_id="order_id"
-                                                      :firstClick="localFirstClick"
-                                                      v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                      @showHideText="showHideParent"
-                                                      ref="AutoSelectComponent"
-                                                      :changePogrVygrAllShow="changePogrVygrAllShow"
-                                ></auto-input-author-component>
+                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan&&((adres_vygruski=='')||(adres_vygruski==null))" v-on:click="inputShow('adresVygruzkiShowSpan')">Выбрать адрес</div>
+                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan" v-on:click="inputShow('adresVygruzkiShowSpan')">{{ adres_vygruski }}</div>
+                                <textarea class="cr_ord_inp_n_1" v-show="!adresVygruzkiShowSpan" @blur="updateOrderLoc('adres_vygruski',adres_vygruski)" v-model="adres_vygruski" rows="3"  name="adres_vygruski"></textarea>
+
                             </div>
                             <div class="col-12 row no_padding_right">
                                 <div class="col-5  data_pog_dost  no_padding_right">
@@ -1026,16 +1020,11 @@
                 if(inpVar=='adresPogruzkiShowSpan')
                 {
                     this.adresPogruzkiShowSpan=!this.adresPogruzkiShowSpan
-                    let elem=document.getElementsByClassName("showByClick");
-                    elem[0].click();
-                   // document.getElementById("inp1").click();
                 }
                 //если кликнули на адрес выгрузки
                 if(inpVar=='adresVygruzkiShowSpan')
                 {
                     this.adresVygruzkiShowSpan=!this.adresVygruzkiShowSpan
-                    let elem=document.getElementsByClassName("showByClick");
-                    elem[1].click();
                 }
             },
             //метод показа или не показа инпута поиска в родителе
@@ -1090,15 +1079,6 @@
             changeFrontNames(gruzColect)
             {
 
-                //УДАЛИТЬ ЗНАЧЕНИЯ НА БЭКЕ
-               // console.log(gruzColect)
-                //console.log(this.adres_pogruzke)
-                //  console.log('this.adres_pogruzke')
-                  console.log(this.adres_pogruzke)
-                //   console.log('this.adres_vygruski')
-                   console.log(this.adres_vygruski)
-                 //   console.log('this.spisokTSarr')
-                    console.log(this.spisokTSarr)
                 //установим мордашку у адреса погрузки
                 let nazv=this.issetFrontNames(gruzColect,this.adres_pogruzke)
                 if(nazv)
@@ -1623,6 +1603,11 @@
             },
             updateOrderLoc(field,data)
             {
+                if((field=='adres_pogruzke')||(field=='adres_vygruski'))
+                {
+                    this.adresPogruzkiShowSpan=true
+                    this.adresVygruzkiShowSpan=true
+                }
                 axios
                     .post('/updateOrderLoc',{
                         id:this.order_id,
@@ -1686,9 +1671,7 @@
                             this.cena_kontrakta=data.data[0]['cena_kontrakta'],
                             this.data_kontrakta=data.data[0]['data_kontrakta'],
                             this.adres_pogruzke=data.data[0]['adres_pogruzke'],
-                            this.adres_pogruzke_show=data.adres_pogruzke_show,
-                            this.adres_vygruski=data.data[0]['adres_vygruski'],
-                            this.adres_vygruski_show=data.adres_vygruski_show,
+                                this.adres_vygruski=data.data[0]['adres_vygruski'],
                             this.data_pogruzki=data.data[0]['data_pogruzki'],
                             this.data_dostavki=data.data[0]['data_dostavki'],
                             this.komment_1=data.data[0]['komment_1'],

@@ -54,12 +54,12 @@
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-12 grade_left_column_text_first">Адрес погрузки 1:</div>
-                        <div class="col-12 grade_left_column_text_sec" v-for="(gruz,key1) in gruzootpravitel_arr"  v-if="gruz['id']==adres_pogruzke">{{ gruz.nazvanie }}</div>
+                        <div class="col-12 grade_left_column_text_sec">{{ adres_pogruzke }}</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-12 grade_left_column_text_first">Адрес выгрузки 1:</div>
-                        <div class="col-12 grade_left_column_text_sec" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==adres_vygruski">{{ gruz.nazvanie }}</div>
+                        <div class="col-12 grade_left_column_text_sec">{{ adres_vygruski }}</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">

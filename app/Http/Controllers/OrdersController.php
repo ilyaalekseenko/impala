@@ -378,25 +378,7 @@ class OrdersController extends Controller
             $orders_list[0]['menedzer_zakazchik']='';
             $orders_list[0]['menedzer_zakazchik_name']='';
         }
-        //получить новый полный адрес погрузки и выгрузки
-        if(($orders_list[0]['adres_pogruzke'])==null)
-        {
-            $adres_pogruzke_show='';
-        }
-        else
-        {
-            $adres_pogruzke_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($orders_list[0]['adres_pogruzke']);
-        }
-      //  $adres_pogruzke_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_pogruzke']);
-        if(($orders_list[0]['adres_vygruski'])==null)
-        {
-            $adres_vygruski_show='';
-        }
-        else
-        {
-            $adres_vygruski_show=$this->gruzootpravitelAdresService->getOneAdresForSearch($orders_list[0]['adres_vygruski']);
-        }
-        //$adres_vygruski_show=$this->orderService->setAdressPogrVygrShow($orders_list[0]['adres_vygruski']);
+
         $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
         $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
         //получаем юзера по id логиста
@@ -437,8 +419,7 @@ class OrdersController extends Controller
             'message' =>'Заявка успешно получена',
             'data' =>$orders_list,
             'TS_list' =>$TS_list,
-            'adres_pogruzke_show' =>$adres_pogruzke_show,
-            'adres_vygruski_show' =>$adres_vygruski_show,
+
         ], 200);
     }
     //если новая заявка
