@@ -913,7 +913,7 @@ class OrdersController extends Controller
            else
            {
                $qRes= $this->gruzootpravitel->getGruzootpravitelByIdInModel($res['kompaniya_zakazchik']);
-               if(!$qRes)
+               if($qRes->isEmpty())
                {
                    $res['kompaniya_zakazchik']='';
                }
@@ -924,7 +924,7 @@ class OrdersController extends Controller
            }
 
        }
-        return dd('TORA2');
+
       //посчитаем сколько всего записей выводить
       $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
       //добавим статус для каждой заявки
