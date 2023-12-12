@@ -263,10 +263,12 @@ export default {
                 this.temp_file_id='',
                 this.current_opened_inp=''
         },
-        delete_one_file_modal(key)
+      async delete_one_file_modal(key)
         {
-            this.doc_files.splice(key, 1);
-
+            const result = await this.confirmMethodMixin();
+            if (result) {
+                this.doc_files.splice(key, 1);
+            }
         },
         delete_files_modal()
         {

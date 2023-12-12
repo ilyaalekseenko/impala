@@ -73,18 +73,20 @@
                 //вызов метода дочернего компонента( модального окна )
                 this.$refs.modalComponentforActionVoditel.get_modal_edit_data(id)
             },
-            delete_perevozka_settings(id,key)
+          async delete_perevozka_settings(id,key)
             {
-                axios
-                    .post('/deleteFromSettings',{
-                        id:id,
-                        filesModel:'PPFiles',
-                        searchColumn:'PP_id',
-                        searchColumnGrade:'nomer_PP',
-                        mainModel:'PP',
-                    })
-                this.mainArr.splice(key,1)
-
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/deleteFromSettings', {
+                            id: id,
+                            filesModel: 'PPFiles',
+                            searchColumn: 'PP_id',
+                            searchColumnGrade: 'nomer_PP',
+                            mainModel: 'PP',
+                        })
+                    this.mainArr.splice(key, 1)
+                }
             },
             dataFromPagination(offset)
             {

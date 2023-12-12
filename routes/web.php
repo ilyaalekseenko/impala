@@ -167,6 +167,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/perevozchiki', [App\Http\Controllers\PerevozchikiController::class, 'perevozchiki'])->name('perevozchiki');
     Route::get('/stavki', [App\Http\Controllers\StavkiController::class, 'stavki'])->name('stavki');
     Route::post('/getStavkiList', [App\Http\Controllers\StavkiController::class, 'getStavkiList'])->name('getStavkiList');
+    Route::post('/addEmptyList', [App\Http\Controllers\SettingsController::class, 'addEmptyList'])->name('addEmptyList');
+    Route::post('/updateDocsInputList', [App\Http\Controllers\SettingsController::class, 'updateDocsInputList'])->name('updateDocsInputList');
+    Route::post('/deleteList', [App\Http\Controllers\SettingsController::class, 'deleteList'])->name('deleteList');
 
 });
 Auth::routes();

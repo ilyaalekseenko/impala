@@ -6,6 +6,8 @@ use App\Models\FormaModal;
 use App\Models\Gruzootpravitel;
 use App\Models\Perevozka;
 use App\Models\User;
+use App\Models\DocsList;
+use App\Models\DocsVars;
 use App\Models\VidPerevozka;
 use Illuminate\Http\Request;
 
@@ -13,11 +15,15 @@ class SettingsController extends Controller
 {
 
     private $vidPerevozkaModel;
+    private $docsListModel;
     public function __construct(
-        VidPerevozka $vidPerevozka
+        VidPerevozka $vidPerevozka,
+        DocsList $docsListModel,
+        DocsVars $docsVarsModel,
     )
     {
-        $this->vidPerevozkaModel = $vidPerevozka;
+        $this->docsListModel = $docsListModel;
+        $this->docsVarsModel = $docsVarsModel;
     }
 
     public function update_perevozka_settings(Request $request)
@@ -119,6 +125,36 @@ class SettingsController extends Controller
        $this->vidPerevozkaModel->updateVidPerevozka(request('perevozka'));
         return response()->json([
             'status' => 'success',
+        ], 200);
+    }
+    public function addEmptyList()
+    {
+        //request('id') - это id документа ТН -1 DOV - 2
+        $list=$this->docsListModel->createNewList(request('id'));
+        $cell=$this->docsVarsModel->createNewCell(request('id'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Лист успешно создан',
+            'data' =>$list,
+            'dataCell' =>$cell,
+        ], 200);
+    }
+    public function updateDocsInputList()
+    {
+        $this->docsListModel->updateList(request('id'),request('list_name'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Лист успешно обновлён',
+        ], 200);
+    }
+
+    public function deleteList()
+    {
+        $this->docsListModel->deleteList(request('id'));
+        $this->docsVarsModel->deleteCellByListId(request('id'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'лист удалён'
         ], 200);
     }
 

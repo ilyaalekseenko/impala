@@ -22,6 +22,7 @@ use App\Models\UserRole;
 use App\Models\VidTS;
 use App\Models\Voditel;
 use App\Models\PP;
+use App\Models\DocsVars;
 use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\TSService;
@@ -44,8 +45,9 @@ class GradeController extends Controller
     private $finalGradeModel;
     private $PPModel;
     private $TSModal;
+    private $DocsVarsModal;
     private $searchService;
-
+    private $gruzootpravitel;
 
     public function __construct(
         UserService $userService,
@@ -59,7 +61,9 @@ class GradeController extends Controller
         GradePogruzka $gradePogruzkaModel,
         GradeSumma $gradeSummaModel,
         FinalGrade $finalGradeModel,
-        SearchService $searchService
+        SearchService $searchService,
+        Gruzootpravitel $gruzootpravitel,
+        DocsVars $DocsVarsModal,
     )
     {
         $this->userService = $userService;
@@ -74,6 +78,8 @@ class GradeController extends Controller
         $this->gradeSummaModel = $gradeSummaModel;
         $this->finalGradeModel = $finalGradeModel;
         $this->searchService = $searchService;
+        $this->gruzootpravitel = $gruzootpravitel;
+        $this->DocsVarsModal = $DocsVarsModal;
     }
 
     public function get_template_vars()
@@ -562,7 +568,7 @@ class GradeController extends Controller
             }
             else
             {
-                $vid_TSNazvanie=$this->perevozkaModel->getPerevozkaNameBYId($grade['perevozchik']);
+                $vid_TSNazvanie=$this->perevozkaModel->getPerevozkaNameYrBYId($grade['perevozchik']);
                 $grade['perevozchik_TSNazvanie']=$vid_TSNazvanie;
             }
 
@@ -843,6 +849,20 @@ class GradeController extends Controller
 
             }
 
+            //получаю название компании заказчика
+
+
+            if(($one_order[0]['kompaniya_zakazchik']=='')||($one_order[0]['kompaniya_zakazchik']==null))
+            {
+                $one_order[0]['kompaniya_zakazchik']='';
+            }
+            else
+            {
+
+                $gruzName=$this->gruzootpravitel->getGruzootpravitelByIdInModel($one_order[0]['kompaniya_zakazchik']);
+                $one_order[0]['kompaniya_zakazchik']=$gruzName[0]['nazvanie'];
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' =>'Заявка успешно получена',
@@ -922,10 +942,6 @@ class GradeController extends Controller
             ], 200);
         }
     }
-    public function docsSetting()
-    {
-        return view('front.docs');
-    }
     //универсальный метод удаления, подходит для водителей,ТС,ПП
     public function deleteFromSettings()
     {
@@ -944,5 +960,21 @@ class GradeController extends Controller
             'status' => 'success',
             'message' =>'Перевозчик успешно обновлён',
         ], 200);
+    }
+    public function docsSetting()
+    {
+
+        $TNvars=$this->DocsVarsModal->getDocVarsByType(1);
+
+        $TNListArr = $TNvars->unique('list_id');
+        $transfer=[
+            'TNvars' => $TNvars,
+            'TNListArr' => $TNListArr,
+        ];
+
+        return view('front.docs',[
+                'transfer' => $transfer,
+            ]
+        );
     }
 }

@@ -73,18 +73,20 @@
                 //вызов метода дочернего компонента( модального окна )
                 this.$refs.modalComponentforActionVoditel.get_modal_edit_data(id)
             },
-            deleteFromSettings(id,key)
+           async deleteFromSettings(id,key)
             {
-                axios
-                    .post('/deleteFromSettings',{
-                        id:id,
-                        filesModel:'VoditelFiles',
-                        searchColumn:'voditel_id',
-                        searchColumnGrade:'voditel',
-                        mainModel:'Voditel',
-                    })
-                this.mainArr.splice(key,1)
-
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/deleteFromSettings', {
+                            id: id,
+                            filesModel: 'VoditelFiles',
+                            searchColumn: 'voditel_id',
+                            searchColumnGrade: 'voditel',
+                            mainModel: 'Voditel',
+                        })
+                    this.mainArr.splice(key, 1)
+                }
             },
             dataFromPagination(offset)
             {

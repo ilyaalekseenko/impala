@@ -77,7 +77,7 @@
         </aside>
        </div>
             <div class="col-10 ">
-        <docs-settings-component v-if="nav_menu_show_var==1"></docs-settings-component>
+        <docs-settings-component :transfer="transfer" v-if="nav_menu_show_var==1"></docs-settings-component>
         <perevozka-settings-component v-if="nav_menu_show_var==2"></perevozka-settings-component>
         <forma-gruzootpravitel-settings-component v-if="nav_menu_show_var==3"></forma-gruzootpravitel-settings-component>
         <add-users-settings-component v-if="nav_menu_show_var==4"></add-users-settings-component>
@@ -97,6 +97,7 @@
 import vClickOutside from 'v-click-outside'
 
 export default {
+    props: ['transfer'],
         mounted() {
             this.is_admin_settings()
         },

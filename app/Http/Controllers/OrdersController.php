@@ -56,6 +56,8 @@ use Silverslice\ExcelTemplate\Template;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class OrdersController extends Controller
 {
@@ -154,6 +156,10 @@ class OrdersController extends Controller
 
     }
 
+    public function test()
+    {
+        return view('front.test');
+    }
 
     public function mainOrders(UserService $userService)
     {
@@ -612,7 +618,7 @@ class OrdersController extends Controller
             $TH = DocsTemplate::where('doc_type','TH')->get();
             //получаю порядковый номер вида номер заявки 23455-1
             $nom=request('id_ts')+1;
-            $porNomerTN= 'Номер заявки: '. $orders_list[0]['nomer_zayavki'].'-'.$nom;
+            $porNomerTN= $orders_list[0]['nomer_zayavki'].'-'.$nom;
             //получаю заказчика
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
@@ -705,7 +711,7 @@ class OrdersController extends Controller
             }
             else
             {
-                $nomerTSPP=$nomerTS.'/'.$nomerPP;
+                $nomerTSPP=$nomerTS.' / '.$nomerPP;
             }
 
             //получаю все даты погрузок и выгрузок фактические
@@ -727,7 +733,8 @@ class OrdersController extends Controller
             {
                 $orders_list[0]['data_pogruzki']='';
             }
-            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsm';
+
+            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $data_pogruzki)
@@ -746,6 +753,13 @@ class OrdersController extends Controller
                 ->save(public_path('templates/'.$fileName));
             //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
               $this->docList->upPorNomer($doc_type,$porNomer,$fileName);
+
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('templates/'.$fileName));
+            $sheet = $spreadsheet->getSheetByName("list1");
+             //$spreadsheet->getActiveSheet();
+            $sheet->getRowDimension('15')->setRowHeight(100); // 30 - пример высоты в пикселях
+            $writer = new Xlsx($spreadsheet);
+            $writer->save(public_path('templates/'.$fileName));
 
             return response()->json([
                 'status' => 'success',
@@ -833,7 +847,6 @@ class OrdersController extends Controller
                 ->replace('data_vydachi', $data_pogruzki)
                 ->replace('srok_deist', $srok_deist)
                 ->replace('voditel', $voditel)
-                ->replace('postav', $postavshik)
                 ->replace('organizacia', $organizacia)
                 ->replace('vod_passport', $voditelFull[0]['seriyaPassporta'])
                 ->replace('vod_passport_kem', $voditelFull[0]['kemVydan'])

@@ -2,15 +2,15 @@
             <div class="row justify-content-center" >
                 <div  class="col-10 row justify-content-end trio_but">
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('TH')">Загрузить шаблон ТН</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('TH')">Показать переменные ТН</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('TH')">Настройка шаблона ТН</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('TH')">Скачать шаблон ТН</div>
                     <div class="doc_set_marg">{{ TH_name }}</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('DOV')">Загрузить шаблон Доверенность</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('DOV')">Показать переменные Доверенность</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('DOV')">Настройка шаблона Доверенность</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('DOV')">Скачать шаблон Доверенность</div>
                     <div class="doc_set_marg">{{ DOV_name }}</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('ZAI')">Загрузить шаблон Запроса</div>
-                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Показать переменные Запроса</div>
+                        <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Настройка шаблона Запроса</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Запроса</div>
                     <div class="doc_set_marg">{{ ZAI_name }}</div>
                     <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
@@ -22,6 +22,23 @@
                     В формате docx переменную указывать в виде { переменная } .
                 </div>
                 <div class="col-12" v-if="show_TH_vars">
+
+                    <h2>Выберите страницу:<button type="button" class="btn btn-success" v-on:click="addList(1)">+</button></h2>
+                    <div v-for="(item, index1) in TNListArr" :key="index1">
+                        <input type="radio" :value="item.list_id" v-model="selectedItem" />
+                        <input @blur="updateDocsInputList(item.list_id,item.list_name)"  v-model="item.list_name"  />
+                        <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteList(item.id,item.list_id)">-</button>
+                    </div>
+                    <p v-if="selectedItem">Выбрано: {{ selectedItem }}</p>
+
+                    <div>Список ячеек для выравнивания высоты</div>
+                    <div v-for="(item, index) in TNvars" v-if="item.list_id==selectedItem">
+                        <input @blur="updateDocsInput()"  v-model="item.cell_number"  />
+                    </div>
+
+
+
+
                     <table class="table">
                         <thead>
                         <tr>
@@ -85,10 +102,19 @@
 <script>
 
 export default {
-        mounted() {
+    props: ['transfer'],
+created() {
+
+},
+    mounted() {
             this.get_templ_names()
             this.get_template_vars(this.arr_TH_vars,this.arr_DOV_vars,this.arr_ZAI_vars)
-        },
+            this.TNvars=this.transfer.TNvars,
+            this.TNListArr=this.transfer.TNListArr,
+            this.setDefaultList()
+
+
+    },
         data() {
             return {
                 doc_type:'',
@@ -106,11 +132,73 @@ export default {
                 nav_menu_2:false,
                 nav_menu_3:false,
                 nav_menu_show_var:'',
-
+                TNvars:{},
+                TNListArr: {},
+                selectedItem: null
 
             }
         },
         methods: {
+        setDefaultList()
+        {
+            if((this.transfer.TNListArr[0]!=null)&&(this.transfer.TNListArr[0]!=='undefined'))
+            {
+                this.selectedItem = this.transfer.TNListArr[0].list_id
+            }
+        },
+           async deleteList(id,listId)
+            {
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    let keyInArr=this.getKeyById(id,this.TNListArr)
+                    this.TNListArr.splice(keyInArr,1)
+                    axios
+                       .post('/deleteList',{
+                            id:listId,
+                       })
+                }
+            },
+            getKeyById(id,objCust)
+            {
+                for(var i = 0; i < objCust.length; i++)
+                {
+                    if(objCust[i]['id']==id)
+                   {
+                       return i
+                    }
+                }
+            },
+            updateDocsInputList(id,list_name)
+            {
+                axios
+                    .post('/updateDocsInputList',{
+                        id:id,
+                        list_name:list_name,
+                    })
+            },
+            updateVarsDocs()
+            {
+              alert(this.TNvars)
+            },
+            addList(id)
+            {
+                axios
+                    .post('/addEmptyList',{
+                        docId:id
+                    })
+                    .then(response => {
+                        let objToPush= {};
+                        objToPush['id'] = response.data.data.id;
+                        objToPush['list_name'] = '';
+                        this.TNListArr.push(objToPush);
+
+                        let objToPush1= {};
+                        objToPush['id'] = response.data.dataCell.id;
+                        objToPush['list_name'] = '';
+                        this.TNvars.push(objToPush1);
+
+                    })
+            },
             download_current_doc(doc_type)
             {
                 this.current_doc=doc_type

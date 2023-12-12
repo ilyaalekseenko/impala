@@ -25,6 +25,7 @@
                                   :chahgeFrontNames='chahgeFrontNames'
                                   vid="GruzzotpravitelComponent"
         ></modal-author-component>
+
         <div class="row main_grade_div">
             <div class="col-12 row grade_head_row " >
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
@@ -44,7 +45,7 @@
                 <div class="col-2 grade_left_column">
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-6 grade_left_column_text_first">Номер запроса:</div>
-                        <div class="col-6 grade_left_column_text_sec">{{ nomer_zayavki }}</div>
+                        <div class="col-6 grade_left_column_text_sec linkStyle" v-on:click="gotoCreateOrder()">{{ nomer_zayavki }}</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
@@ -94,13 +95,11 @@
                         <div class="offset-1 col-11 row grade_left_underline"></div>
                         </span>
                     </div>
-
-<!--                    <div class="offset-1 col-11 row grade_left_column_text_main" v-for="(elem,key) in na_terminale_arr" >-->
-<!--                        <div class="col-6 grade_left_column_text_first no_padding_right">На терминале:</div>-->
-<!--                        <div class="col-4 grade_left_column_text_sec  grade_left_column_text_sec_1 no_padding_left">{{ elem.kol_gruz_TS}} мест</div>-->
-<!--                        <iconify-icon class="col-2 hide d-flex justify-content-center align-items-center" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>-->
-<!--                        <div class="col-12 grade_left_column_text_sec">{{ elem.terminal_name }}</div>-->
-<!--                    </div>-->
+                    <div class="offset-1 col-11 row grade_left_underline"></div>
+                    <div class="offset-1 col-11 row grade_left_column_text_main">
+                        <div class="col-12 grade_left_column_text_first">Заказчик:</div>
+                        <div class="col-12 grade_left_column_text_sec">{{ kompaniya_zakazchik }} </div>
+                    </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
                     <div class="offset-1 col-11 row grade_left_column_text_main">
                         <div class="col-12 grade_left_column_text_first">Общий бюджет:</div>
@@ -210,7 +209,19 @@
                                            ></auto-input-global-component>
 
                                     <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:
-                            <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik()">Добавить</span></div>
+                            <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik()">Добавить</span>
+                                        <span
+                                            v-if="elem1.perevozchik_TSNazvanie!==''"
+                                            v-on:click="show_mod_edit(elem1.perevozchik)"
+                                              v-b-modal.perevozkaMod variant="primary">
+                                            <span
+                                                class="iconify edit_icon"
+                                                data-icon="akar-icons:edit"
+                                                style="color: #a6a6a6;"
+                                                data-width="20" data-height="20"
+                                            ></span>
+                                        </span>
+                                    </div>
                             <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp" v-on:click="pogruzkaShowInpChange()">{{ elem1.perevozchik_TSNazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!pogruzkaShowInp&&elem1.perevozchik_TSNazvanie==''" v-on:click="pogruzkaShowInpChange()">Выбрать перевозчика</div>
 
@@ -346,7 +357,7 @@
 <!--                </form>-->
 <!--                                    <input hidden="true" type="file" id="files" ref="files"/>-->
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                    <div v-if="!adres_pogr.doc_name" class="col add_vod_button1 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
+                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
                                         <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
                                     </span>
 
@@ -895,13 +906,17 @@
             {
 
             },
-            //сохраняем пепевозчика из модального окна
+            //сохраняем перевозчика из модального окна
             gradeAddPerevozchik(id,nazvanie)
             {
                 for (let i = 0; i < this.spisokTShead.length; i++) {
                     if(this.spisokTShead[i]['id_ts']==this.right_current_TS)
                     {
-                        this.spisokTShead[i]['perevozchik']=id
+                        //если новый перевозчик
+                        if(id!== undefined)
+                        {
+                            this.spisokTShead[i]['perevozchik']=id
+                        }
                         this.spisokTShead[i]['perevozchik_TSNazvanie']=nazvanie
                         this.update_one_data(this.spisokTShead[i],'perevozchik')
                     }
@@ -972,9 +987,11 @@
                     this.spisokTShead[key].adres_vygr_TS = this.spisokTShead[key].adres_vygr_TS.filter(item => item.id_pogruzka !== id_pogruzka);
                 }
             },
-            deletePogVygInTS(id_pogruzka, id_doc_type, pogruzka_or_vygruzka,key)
+           async deletePogVygInTS(id_pogruzka, id_doc_type, pogruzka_or_vygruzka,key)
             {
+                const result = await this.confirmMethodMixin();
 
+                if (result) {
                 this.deleteFromArrTS(key,id_pogruzka,pogruzka_or_vygruzka)
 
                 // this.showTsList=false
@@ -983,7 +1000,7 @@
                 // console.log('key1')
                 // console.log(key1)
                 // console.log('pogruzka_or_vygruzka')
-                // console.log(pogruzka_or_vygruzka)
+                // console.log(pogruzka_or_vyg ruzka)
                 // console.log('список ДО')
                 // console.log(this.spisokTShead[key].adres_pogruzki_TS)
                 // this.spisokTShead[key].adres_pogruzki_TS.splice(key1,1)
@@ -1019,6 +1036,7 @@
                         //
                         // }
                     })
+                }
             },
             //обновление из инпута поиска грузоотправителя
             update_one_gruzzootpravitel_from_select(data)
@@ -1110,10 +1128,19 @@
                         })
                 }
             },
-            deleteTs()
+
+            async  deleteTs()
             {
-            console.log('spisokTShead')
-             console.log(this.spisokTShead)
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
+                    alert('Да');
+                    return true
+                } else {
+                    alert('Нет');
+                    return false
+                }
+
              //  console.log('spisokTSarr')
              //  console.log(this.spisokTSarr)
              //    console.log('spisokTSheadadres_pogruzki_TS')
@@ -1121,9 +1148,17 @@
 
 
             },
-            deleteTSFromRightColumn(elem,key)
+            gotoCreateOrder()
             {
-                this.deleteFlag=true;
+                window.location.href = ('/create_orders/'+this.order_id)
+
+            },
+         async   deleteTSFromRightColumn(elem,key)
+            {
+                const result = await this.confirmMethodMixin();
+                if (result) {
+
+                    this.deleteFlag=true;
                 this.spisokTShead.splice(key,1)
                 axios
                     .post('/deleteTSFromRightColumn',{
@@ -1133,6 +1168,7 @@
                     .then(response => {
                         console.log('удалено')
                     })
+                }
             },
             select_temp_var(key,pogr_vygr,key1,p1,p2,p3,p4,p5)
             {
@@ -1357,8 +1393,11 @@
             {
                 console.log(this.data_kontrakta)
             },
-            delete_file_grade(id_pogruzka, id_doc_type)
+          async  delete_file_grade(id_pogruzka, id_doc_type)
             {
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
                 this.current_id_pogruzka=id_pogruzka;
                 this.current_id_doc_type=id_doc_type;
 
@@ -1437,8 +1476,9 @@
                              this.right_col_down_show = true;
                          }
                      })
-
+                }
             },
+
             addFiles(id_pogruzka, id_doc_type){
                  //console.log(this.$refs.files);
                 // console.log(id_pogruzka);
@@ -1572,6 +1612,11 @@
                         return i;
                     }
                 }
+            },
+            show_mod_edit(id)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.get_modal_edit_data(id)
             },
             onlyNumber ($event) {
 
@@ -2005,8 +2050,11 @@
                      }
                   })
             },
-            deleteSumm(id,keyTS,keySumma)
+          async  deleteSumm(id,keyTS,keySumma)
             {
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
                 axios
                     .post('/deleteSumm',{
                         id:id
@@ -2014,6 +2062,7 @@
                    .then(response => {
                        this.spisokTShead[keyTS].summa_list.splice(keySumma,1)
                    })
+            }
             },
             save_start_summa()
             {
@@ -2177,8 +2226,9 @@
                 for (let i = 0; i < this.spisokTShead.length; i++) {
                     if(this.spisokTShead[i]['id_ts']==data.elem1['id_ts'])
                     {
-                        this.spisokTShead[i]['perevozchik']=data.vid_TS
-                        this.spisokTShead[i]['perevozchik_TSNazvanie']=data.ts_name
+                        // this.spisokTShead[i]['perevozchik']=data.vid_TS
+                        this.spisokTShead[i]['perevozchik']=data.id
+                        this.spisokTShead[i]['perevozchik_TSNazvanie']=data.forma_id+' '+data.ts_name
                     }
                 }
             this.pogruzkaShowInp=false

@@ -82,6 +82,18 @@ class Perevozka extends Model
             return $vid[0]['nazvanie'];
         }
     }
+    public function getPerevozkaNameYrBYId($id)
+    {
+        $vid=Perevozka::where('id', $id)->get();
+        if ($vid->isEmpty()) {
+            return '';
+        }
+        else
+        {
+            return $vid[0]['forma_id'].' '.$vid[0]['nazvanie'];
+        }
+    }
+
     public function getIDByNameSearch()
     {
         return Perevozka::where('nazvanie', 'like', '%'.request('perevozchik').'%')->get('id');

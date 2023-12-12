@@ -183,26 +183,25 @@ Vue.filter('formatDate', function(value) {
                 }
             },
 
-            delete_gruzootpravitel()
+           async delete_gruzootpravitel()
             {
-                let temp_arr=[];
-                for( let i = 0; i < this.gruzootpravitel_arr.length; i++ )
-                {
-                        if(this.gruzootpravitel_arr[i].checked_order==true)
-                        {
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    let temp_arr = [];
+                    for (let i = 0; i < this.gruzootpravitel_arr.length; i++) {
+                        if (this.gruzootpravitel_arr[i].checked_order == true) {
                             this.delete_arr.push(this.gruzootpravitel_arr[i].id)
-                        }
-                        else
-                        {
+                        } else {
                             temp_arr.push(this.gruzootpravitel_arr[i])
                         }
+                    }
+                    this.gruzootpravitel_arr = temp_arr
+                    axios
+                        .post('/delete_gruzootpravitel', {
+                            gruzootpravitels_id: this.delete_arr,
+                        })
+                    this.delete_arr = []
                 }
-                this.gruzootpravitel_arr=temp_arr
-               axios
-                   .post('/delete_gruzootpravitel',{
-                       gruzootpravitels_id:this.delete_arr,
-                   })
-                this.delete_arr=[]
             },
             show_by(int)
             {

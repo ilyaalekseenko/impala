@@ -50,13 +50,16 @@
                     })
                 }
             },
-            delete_perevozka_settings(key)
+           async delete_perevozka_settings(key)
             {
-                axios
-                    .post('/deleteVidPerevozka',{
-                        perevozka:this.perevozka_arr[key],
-                    })
-                this.perevozka_arr.splice(key,1)
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/deleteVidPerevozka', {
+                            perevozka: this.perevozka_arr[key],
+                        })
+                    this.perevozka_arr.splice(key, 1)
+                }
 
             },
             add_perevozka_settings(key)

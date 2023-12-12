@@ -398,8 +398,12 @@ Vue.filter('formatDate', function(value) {
                 this.delete_arr=[]
             },
 
-            delete_orders()
+
+           async delete_orders()
             {
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
                 let temp_arr=[];
                 for( let i = 0; i < this.orders_list.length; i++ )
                 {
@@ -423,6 +427,7 @@ Vue.filter('formatDate', function(value) {
                        )
                    );
 
+                    }
             },
             show_by(int)
             {

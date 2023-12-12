@@ -1,7 +1,12 @@
 <template>
     <div class="container orders_main">
         <div class="row orders_title_div">
-            <modal-perevozchiki-component ref="modalComponentforAction" edit_flag=true :addOnePerevozchik='addOnePerevozchik' :change_one_gruzzotpravitel='change_one_gruzzotpravitel'></modal-perevozchiki-component>
+            <modal-perevozchiki-component
+                ref="modalComponentforAction"
+                edit_flag=true
+                :addOnePerevozchik='addOnePerevozchik'
+                :change_one_gruzzotpravitel='change_one_gruzzotpravitel'>
+            </modal-perevozchiki-component>
             <div class="col-12 row">
                 <div class="col-6 orders_title">
                    Перевозчики
@@ -173,8 +178,11 @@ Vue.filter('formatDate', function(value) {
                 }
             },
 
-            delete_gruzootpravitel()
+           async delete_gruzootpravitel()
             {
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
                 let temp_arr=[];
                 for( let i = 0; i < this.gruzootpravitel_arr.length; i++ )
                 {
@@ -193,6 +201,7 @@ Vue.filter('formatDate', function(value) {
                        ids:this.delete_arr,
                    })
                 this.delete_arr=[]
+            }
             },
             show_by(int)
             {

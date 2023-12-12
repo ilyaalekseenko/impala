@@ -520,14 +520,12 @@ import vClickOutside from 'v-click-outside'
                 this.temp_file_id='',
                 this.current_opened_inp=''
             },
-            delete_one_file_modal(key)
+           async delete_one_file_modal(key)
             {
-                // axios
-                //     .post('/delete_one_file_modal',{
-                //         doc:this.doc_files[key]
-                //     })
-                this.doc_files.splice(key, 1);
-
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    this.doc_files.splice(key, 1);
+                }
             },
             delete_files_modal()
             {
@@ -541,17 +539,26 @@ import vClickOutside from 'v-click-outside'
             {
                 this.openDP=true
             },
-            delete_adres_pogr(key)
+           async delete_adres_pogr(key)
             {
-                this.kontakty.splice(key,1)
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    this.kontakty.splice(key, 1)
+                }
             },
-            delete_one_adres(key)
+           async delete_one_adres(key)
             {
-                this.adresa.splice(key,1)
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    this.adresa.splice(key, 1)
+                }
             },
-            delete_bank(key)
+           async delete_bank(key)
             {
+                const result = await this.confirmMethodMixin();
+                if (result) {
                 this.bank_arr.splice(key,1)
+                    }
             },
             dobavit_kontank()
             {

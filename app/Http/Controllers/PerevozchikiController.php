@@ -134,6 +134,7 @@ class PerevozchikiController extends Controller
                 'message' =>'Перевозка получена',
                 'isset_flag' =>'yes',
                 'idTSBack' =>$ts[0]['id'],
+                'forma_id' =>$ts[0]['forma_id'],
             ], 200);
         }
         return response()->json([

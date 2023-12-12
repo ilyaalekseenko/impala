@@ -1252,6 +1252,11 @@
 .middle_block_cr_order {
     padding-left: 0px!important;
 }
+@media (max-width: 1350px) {
+    .middle_block_cr_order {
+        margin-left: 20px !important;
+    }
+}
 .top_menu_1 {
     white-space: nowrap;
     /*min-width: 194px;*/
@@ -1947,4 +1952,9 @@
 }
 .phone_row {
     width:235px!important;
+}
+.linkStyle {
+    color: #007bff; /* Цвет текста, похожий на цвет ссылки */
+    text-decoration: underline; /* Подчеркивание, чтобы текст выглядел как ссылка */
+    cursor: pointer; /* Курсор в виде руки, чтобы подчеркнуть интерактивность */
 }

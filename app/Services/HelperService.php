@@ -20,6 +20,14 @@ class HelperService
             }
             else
             {
+                if($stringName=='date_ts')
+                {
+                    $pattern = '/(\d{2}\.\d{2}\.\d{4})/';
+                    if (preg_match($pattern, $onePogr[$stringName], $matches)) {
+                        $onePogr[$stringName] = $matches[1];
+                    }
+                }
+
                 $tempDate.=$onePogr[$stringName]. "\n";
             }
         }

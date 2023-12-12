@@ -103,6 +103,9 @@ Vue.use(VueTheMask);
 // import VueInputMask from 'vue-inputmask';
 // Vue.use(VueInputMask);
 
+import VueConfirmDialog from 'vue-confirm-dialog/src'
+Vue.use(VueConfirmDialog)
+Vue.component('vue-confirm-dialog', VueConfirmDialog.default)
 
 //mixins
 import MixinGoTo from './mixins/MixinGoTo'
@@ -115,6 +118,8 @@ import MixinCheckShowBlock from './mixins/MixinCheckShowBlock'
 Vue.mixin(MixinCheckShowBlock);
 import MixinCheckOrderStatus from './mixins/MixinCheckOrderStatus'
 Vue.mixin(MixinCheckOrderStatus);
+import MixinConfirm from './mixins/MixinConfirm'
+Vue.mixin(MixinConfirm);
 //импортирую свою директиву my-click-outside
 import './directives/my-click-outside';
 

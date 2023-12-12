@@ -110,7 +110,6 @@
                                 Менеджер заказчика
                                 <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-b-modal.modal-xl v-on:click="select_temp_var('manager',0)">Добавить</span>
                             </div>
-<!--                            <input @blur="update_order()" class="cr_ord_inp_n_1 border_input" v-model="menedzer_zakazchik"  />-->
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="managerZakazchikShowInp&&managerZakazchik_name==''" v-on:click="managerShowInpChange()">Выбрать менеджера</div>
                             <div class="cr_ord_inp_n_1" v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()">{{ managerZakazchik_name }}</div>
                             <auto-input-manager-component v-if="!managerZakazchikShowInp" class="select_width_grade"
@@ -147,19 +146,13 @@
                                 </span>
                             <span class="col-12 oplata_del" ><span v-on:click="delete_oplata_summa(oplata.id,key)" class="del_summa_text">удалить</span></span>
                         </div>
-<!--                        <div class="col">-->
-<!--                            <div class="add_button_plus" v-on:click="dobavit_oplatu()">-->
-<!--                                +Добавить оплату-->
-<!--                            </div>-->
-<!--                        </div>-->
                     </div>
-                    <div class="col fit_height row middle_block_cr_order ">
+                    <div class="col-7 fit_height row middle_block_cr_order ">
                         <div class="col cr_ord_mid_col">
                             <div class="little_title_create_orders">
                                 Номенклатура
                             </div>
                             <div class="create_orders_bottom">
-<!--                                <input class="cr_ord_inp_n_3 border_input" v-model="nomenklatura" placeholder="Добавьте файл.xlsx" />-->
                                 <div class="cr_ord_div_nomenklatura">{{ nomenklatura }}</div>
                                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
                                 <span class="excel_set" v-on:click="addFiles()">
@@ -175,22 +168,10 @@
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
                                    <div class="col no_wrap">Адрес погрузки</div>
-<!--                                   <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('pogruzka',0)">Добавить</div>-->
                                 </div>
                             <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&((adres_pogruzke=='')||(adres_pogruzke==null))" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
                             <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke }}</div>
                                 <textarea class="cr_ord_inp_n_1" v-show="!adresPogruzkiShowSpan" @blur="updateOrderLoc('adres_pogruzke',adres_pogruzke)" v-model="adres_pogruzke" rows="3"  name="adres_pogruzke"></textarea>
-
-                                <!--                            <auto-input-author-component  v-show="!adresPogruzkiShowSpan" class="cr_ord_inp_n_1"-->
-<!--                                inp_type='adres_pogruzke'-->
-<!--                                :adres_pogruzke_show="adres_pogruzke_show"-->
-<!--                                :order_id="order_id"-->
-<!--                                :firstClick="localFirstClick"-->
-<!--                                v-bind:gruzootpravitel_arr="gruzootpravitel_arr"-->
-<!--                                ref="AutoSelectComponent"-->
-<!--                                @showHideText="showHideParent"-->
-<!--                                :changePogrVygrAllShow="changePogrVygrAllShow"-->
-<!--                            ></auto-input-author-component>-->
                             </div>
 
                         </div>
@@ -246,11 +227,7 @@
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
                                     <div class="col no_wrap">Адрес выгрузки</div>
-                                    <div class="col add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('vygruzka',0)">Добавить</div>
                                 </div>
-<!--                                <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="adres_vygruski">-->
-<!--                                    <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                </select>-->
                                 <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan&&((adres_vygruski=='')||(adres_vygruski==null))" v-on:click="inputShow('adresVygruzkiShowSpan')">Выбрать адрес</div>
                                 <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan" v-on:click="inputShow('adresVygruzkiShowSpan')">{{ adres_vygruski }}</div>
                                 <textarea class="cr_ord_inp_n_1" v-show="!adresVygruzkiShowSpan" @blur="updateOrderLoc('adres_vygruski',adres_vygruski)" v-model="adres_vygruski" rows="3"  name="adres_vygruski"></textarea>
@@ -311,15 +288,6 @@
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.ТС</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_TS_TS }}</div>
                                     </div>
-<!--                                    <div class="col-2  no_padding_right">-->
-<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Общий вес2,кг</div>-->
-<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ves_TS }}</div>-->
-<!--                                    </div>-->
-
-<!--                                    <div class="offset-1 col-2  no_padding_right">-->
-<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text text_line mt_ts_text">Общий объём,м3</div>-->
-<!--                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.ob_ob_TS }}</div>-->
-<!--                                    </div>-->
                                     <div class="col-2  no_padding_right">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
@@ -379,9 +347,6 @@
                                                                @childReturnMethod="parentMethodFromAutoinput"
                                                                ref="AutoSelectComponent_vid_TS"
                                          ></auto-input-global-component>
-                                <!--                                <select  class="sel_cust select_width" v-model="vid_TS">-->
-<!--                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>-->
-<!--                                </select>-->
                             </div>
                             <div class="col-12 row">
                                 <div class="col-6">
@@ -449,34 +414,15 @@
                                             </div>
                                         </div>
                                     </div>
-
-<!--                                    <div class="col-12 row">-->
-<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
-<!--                                            <div class="little_title_create_orders2">-->
-<!--                                                Общий вес3,кг-->
-<!--                                            </div>-->
-<!--                                            <div class="create_orders_bottom row">-->
-<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
-<!--                                            <div class="little_title_create_orders2 ob_ob_width">-->
-<!--                                                Общий объём,м3-->
-<!--                                            </div>-->
-<!--                                            <div class="create_orders_bottom row">-->
-<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-
-                                    <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
+                                    <div class="col-12 ad_pogr_marg1">
+                                        <input type="checkbox" id="checkbox" v-model="checkboxPogrVygr">
+                                        <span class="head_font_grade">Адреса погрузки выгрузки</span>
+                                    </div>
+                                    <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес погрузки
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka',key)">Добавить</span>
                                         </div>
-<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">-->
-<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                        </select>-->
                                         <auto-input-author-component class="cr_ord_inp_n_1"
                                                               inp_type='add_pogruzka_edit'
                                                               :adres_pogruzke_show="flag_pogruz"
@@ -494,17 +440,13 @@
 
                                 </div>
 
-                            <div class="col no_padding_right">
+                            <div v-if="checkboxPogrVygr" class="col no_padding_right">
                                 <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
                                     <div class="little_title_create_orders2 ob_ob_width">
                                         Адрес выгрузки
                                         <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_vygruzka',key)">Добавить</span>
                                     </div>
                                     <div class="create_orders_bottom">
-<!--                                        <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />-->
-<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">-->
-<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                        </select>-->
                                         <auto-input-author-component class="cr_ord_inp_n_1"
                                                               inp_type='add_vygruzka_edit'
                                                               :adres_pogruzke_show="flag_pogruz"
@@ -532,23 +474,6 @@
                             </div>
                             <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
                         </div>
-<!--                        <div class="col-12 right_comments">-->
-<!--                            <div class="col-6 row checkbox2_row">-->
-<!--                                <input class="col-2 checkbox_create_orders2 border_input checkbox_create_orders2_height" type="checkbox" id="checkbox1" v-model="checked2">-->
-<!--                                <div class="col terminal_ts">На терминале</div>-->
-<!--                            </div>-->
-<!--                            <div v-if="checked2" class="col-6 terminal_cr_ord">-->
-<!--                                <div class="little_title_create_orders">-->
-<!--                                    Терминал-->
-<!--                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>-->
-<!--                                </div>-->
-<!--                                <div class="create_orders_bottom row">-->
-<!--                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">-->
-<!--                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>-->
-<!--                                    </select>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="col-11 save_buttons justify-content-end row ">
                             <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
@@ -639,35 +564,15 @@
                                             </div>
                                         </div>
                                     </div>
-
-<!--                                    <div class="col-12 row">-->
-<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
-<!--                                            <div class="little_title_create_orders2">-->
-<!--                                                Общий вес4,кг-->
-<!--                                            </div>-->
-<!--                                            <div class="create_orders_bottom row">-->
-<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ves_TS"  />-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-6 cr_ord_inp_n_11 ob_ves">-->
-<!--                                            <div class="little_title_create_orders2 ob_ob_width">-->
-<!--                                                Общий объём,м3-->
-<!--                                            </div>-->
-<!--                                            <div class="create_orders_bottom row">-->
-<!--                                                <input class="cr_ord_inp_n_13 border_input" v-model="ob_ob_TS"  />-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-
-                                    <div class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
+                                    <div class="col-12 ad_pogr_marg1">
+                                        <input type="checkbox" id="checkbox" v-model="checkboxPogrVygr">
+                                        <span class="head_font_grade">Адреса погрузки выгрузки</span>
+                                    </div>
+                                    <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес погрузки
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
                                         </div>
-<!--                                        <input class="cr_ord_inp_n_7 border_input" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']"  />-->
-<!--                                        <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_pogruzki_arr_temp[key]['adres_pogruzki']">-->
-<!--                                            <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                        </select>-->
                                         <auto-input-author-component class="cr_ord_inp_n_1"
                                                               inp_type='add_pogruzka_empty'
                                                               adres_pogruzke_show=''
@@ -686,17 +591,13 @@
 
                                 </div>
 
-                                <div class="col no_padding_right">
+                                <div v-if="checkboxPogrVygr" class="col no_padding_right">
                                     <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес выгрузки
                                             <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_vygruzka_new',key)">Добавить</span>
                                         </div>
                                         <div class="create_orders_bottom">
-<!--                                            <input class="border_input cr_ord_inp_n_7" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']"  />-->
-<!--                                            <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="ad_vygruz_arr_temp[key]['adres_pogruzki']">-->
-<!--                                                <option v-for="(gruzootpravitel) in gruzootpravitel_arr" v-bind:value=gruzootpravitel.id  class="sel_cust">{{ gruzootpravitel.nazvanie }}</option>-->
-<!--                                            </select>-->
                                             <auto-input-author-component class="cr_ord_inp_n_1"
                                                                   inp_type='add_vygruzka_empty'
                                                                   adres_pogruzke_show=''
@@ -709,13 +610,11 @@
                                             ></auto-input-author-component>
                                             <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
                                             <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_empty','adres_vygruzki_show')">-</button>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="col-12">
                             <div class="little_title_create_orders2">
@@ -723,23 +622,6 @@
                             </div>
                             <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
                         </div>
-<!--                        <div class="col-12 right_comments">-->
-<!--                            <div class="col-6 row checkbox2_row">-->
-<!--                                <input class="col-2 checkbox_create_orders2 checkbox_create_orders2_height_d border_input" type="checkbox" id="checkbox1" v-model="checked2">-->
-<!--                                <div class="col terminal_ts">На терминале</div>-->
-<!--                            </div>-->
-<!--                            <div v-if="checked2" class="col-6 terminal_cr_ord">-->
-<!--                                <div class="little_title_create_orders">-->
-<!--                                    Терминал-->
-<!--                                    <span class="add_button"  v-on:click="add_empty_terminal()">Добавить</span>-->
-<!--                                </div>-->
-<!--                                <div class="create_orders_bottom row">-->
-<!--                                    <select @blur="update_order()" class="cr_ord_inp_n_1" v-model="terminal_TS">-->
-<!--                                        <option v-for="(elem,key) in termList" v-bind:value=elem.id  class="sel_cust">{{ elem.name }}</option>-->
-<!--                                    </select>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="col-11 save_buttons justify-content-end row">
                             <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
@@ -866,7 +748,7 @@
                 headerTime2:'',
                 zakazchikShowInp:true,
                 managerZakazchikShowInp:true,
-
+                checkboxPogrVygr:false
 
             }
         },
@@ -910,7 +792,7 @@
         computed: {
 
             stavka_TS_za_km: function () {
-                if((this.stavka_TS==null)||(this.rasstojanie_TS==null))
+                if((this.stavka_TS=='')||(this.rasstojanie_TS=='')||(this.stavka_TS==null)||(this.rasstojanie_TS==null))
                 {
                     return 0
                 }
@@ -1232,16 +1114,18 @@
                     })
 
             },
-            delete_oplata_summa(id,key)
+          async delete_oplata_summa(id,key)
             {
-                axios
-                    .post('/delete_oplata_summa',{
-                        id:id
-                    })
-                    .then(response => {
-                        this.oplata_arr.splice(key,1)
-                    })
-
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/delete_oplata_summa', {
+                            id: id
+                        })
+                        .then(response => {
+                            this.oplata_arr.splice(key, 1)
+                        })
+                }
             },
             get_logist_list(inp)
             {
@@ -1825,6 +1709,7 @@
             },
             save_TS()
             {
+                this.checkboxPogrVygr=false
                 //показываем кнопки
                 this.showButtons()
                 if(this.edit_flag==false)
@@ -2006,10 +1891,11 @@
                 this.checked2=this.spisokTSarr[key]['checked2'];
                 this.terminal_TS=this.spisokTSarr[key]['terminal_TS'];
             },
-            deleteTs()
+           async deleteTs()
             {
-
-
+                const result = await this.confirmMethodMixin();
+                this.checkboxPogrVygr=false
+                if (result) {
                 if(this.edit_flag==false)
                 {
                 this.id_ts='';
@@ -2067,6 +1953,7 @@
                 {
 
                     this.hideButtonsUsers()
+                }
                 }
             },
             add_ts_func()
@@ -2128,12 +2015,15 @@
                 });
             },
             //метод логики удаления из массива
-            delete_adres(arr,key,ref,pogr_vygr)
+           async delete_adres(arr,key,ref,pogr_vygr)
             {
-                //удаляем из массива
-                this.delete_from_arr(arr,key)
-                //перерисовываем массив
-                this.render_new_arr(arr,ref,pogr_vygr)
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    //удаляем из массива
+                    this.delete_from_arr(arr, key)
+                    //перерисовываем массив
+                    this.render_new_arr(arr, ref, pogr_vygr)
+                }
             },
             //arr массив откуда
             //key ключ где
@@ -2181,7 +2071,6 @@
             },
             dobavit_oplatu()
             {
-
                 axios
                     .post('/add_oplata_orders',{
                         id:this.order_id,
@@ -2193,8 +2082,6 @@
                         objToPush['summa'] = '';
                         this.oplata_arr.push(objToPush);
                     })
-
-
             },
             openEndDatePicker: function() {
 

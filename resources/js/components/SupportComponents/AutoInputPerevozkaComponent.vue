@@ -30,7 +30,8 @@
                 searchOffset:0,
                 inputHeight: 30,
                 mainId:0,
-                firstClose:true
+                firstClose:true,
+                forma_id:''
             }
         },
         mounted() {
@@ -74,6 +75,7 @@
                 this.showList = false;
                 this.MainVarInInput = item.nazvanie;
                 this.mainId=item.id;
+                this.forma_id=item.forma_id;
                 this.returnDataToParent()
 
             },
@@ -92,6 +94,7 @@
                             if(value.isset_flag=="yes")
                             {
                                 this.mainId=value.idTSBack;
+                                this.forma_id=value.forma_id;
                                 this.returnDataToParent();
                             }
                             //если нет такого перевозчика то записываем пустое значение
@@ -99,6 +102,7 @@
                             {
                                 this.mainId=null;
                                 this.MainVarInInput=''
+                                this.forma_id=''
                                 this.returnDataToParent();
                             }
                         });
@@ -123,6 +127,7 @@
                             inp.push({
                                 id:entry.id,
                                 nazvanie:entry.nazvanie,
+                                forma_id:entry.forma_id,
                             });
                         })
 
@@ -210,11 +215,16 @@
             },
             returnDataToParent()
             {
+                if(this.forma_id==null)
+                {
+                    this.forma_id=''
+                }
                 this.$emit('childReturnMethod', {
                     //возвращаем обратно id
                     id:this.mainId,
                     ts_name:this.MainVarInInput,
-                    elem1:this.elem1
+                    elem1:this.elem1,
+                    forma_id:this.forma_id,
                 })
 
             },

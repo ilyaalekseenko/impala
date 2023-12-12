@@ -28,6 +28,7 @@
 
         <div class="container-fluid container_header_align no_padding_right_imp">
             <div class="row">
+                <vue-confirm-dialog></vue-confirm-dialog>
                 <header-menu-component></header-menu-component>
                 @yield('content')
             </div>

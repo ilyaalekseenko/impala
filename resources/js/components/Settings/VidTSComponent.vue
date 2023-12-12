@@ -68,14 +68,16 @@
                     })
                 }
             },
-            delete_perevozka_settings(vidTSId,key)
+          async delete_perevozka_settings(vidTSId,key)
             {
-                axios
-                    .post('/delete_vid_TS',{
-                        vidTSId:vidTSId,
-                    })
-                this.mainArr.splice(key,1)
-
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/delete_vid_TS', {
+                            vidTSId: vidTSId,
+                        })
+                    this.mainArr.splice(key, 1)
+                }
             },
             add_perevozka_settings()
             {

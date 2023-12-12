@@ -51,13 +51,16 @@
                     );
             },
 
-            delete_gruzootpravitel(key)
+          async delete_gruzootpravitel(key)
             {
-                axios
-                    .post('/delete_gruzootpravitel',{
-                        id:this.gruzootpravitel_arr[key]['id'],
-                    })
-                this.gruzootpravitel_arr.splice(key,1)
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/delete_gruzootpravitel', {
+                            id: this.gruzootpravitel_arr[key]['id'],
+                        })
+                    this.gruzootpravitel_arr.splice(key, 1)
+                }
             },
 
         }
