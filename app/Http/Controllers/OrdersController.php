@@ -899,9 +899,10 @@ class OrdersController extends Controller
     {
         //получаем название статуса пользователя
       $userStatus=$this->user_mod->getUserStatusName();
-      return dd('TORA');
+
       //получаем данные из списка заявок
       $resArr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
+        return dd('TORA1');
       //получим название заказчика
        foreach ($resArr as $res)
        {
