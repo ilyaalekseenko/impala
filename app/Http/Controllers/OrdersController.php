@@ -902,7 +902,7 @@ class OrdersController extends Controller
 
       //получаем данные из списка заявок
       $resArr= $this->orderService->getOrdersListService($userStatus,request('columnName'),request('offset'),request('limit'));
-        return dd('TORA1');
+
       //получим название заказчика
        foreach ($resArr as $res)
        {
@@ -924,6 +924,7 @@ class OrdersController extends Controller
            }
 
        }
+        return dd('TORA2');
       //посчитаем сколько всего записей выводить
       $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
       //добавим статус для каждой заявки
