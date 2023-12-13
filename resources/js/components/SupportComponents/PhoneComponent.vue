@@ -15,8 +15,8 @@ Vue.directive('mask', VueMaskDirective);
     export default {
         props: ['initialPhoneNumber','setPhoneNumber','typeNumber','rowKey'],
         mounted() {
-             console.log('initialPhoneNumber')
-             console.log(this.initialPhoneNumber)
+             // console.log('initialPhoneNumber')
+             // console.log(this.initialPhoneNumber)
             //тут приходит адреса и контакты
           //  console.log('адреса и контакты')
 

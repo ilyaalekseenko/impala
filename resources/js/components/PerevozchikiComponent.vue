@@ -226,14 +226,12 @@ Vue.filter('formatDate', function(value) {
                     })
                     .then(({ data }) => (
                             this.countAllTypes=data.tipesCount,
-                                console.log('this.countAllTypes!!!'),
-                                console.log(this.countAllTypes),
                                 data.perevozka.forEach(function(entry) {
                                 inp_temp.push({
                                     id:entry.id,
                                     nazvanie:entry.nazvanie,
                                     YR_adres:entry.YR_adres,
-                                    kontaktnoe_lico:entry.kontaktnoe_lico,
+                                    kontaktnoe_lico:entry.contacts,
                                     checked_order:false,
                                     important:entry.important
                                 });

@@ -11,6 +11,10 @@ class Perevozka extends Model
     use HasFactory;
     protected $guarded = false;
 
+    public function contacts()
+    {
+        return $this->hasMany(PerevozkaContacts::class, 'perevozka_id');
+    }
 
     public function savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania)
     {
@@ -53,6 +57,7 @@ class Perevozka extends Model
         return Perevozka::
               offset($offset)
             ->limit($limit)
+            ->with('contacts')
             ->get();
     }
     public function countPerevozka()

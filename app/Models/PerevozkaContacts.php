@@ -10,6 +10,11 @@ class PerevozkaContacts extends Model
     use HasFactory;
     protected $guarded = false;
 
+    public function perevozka()
+    {
+        return $this->belongsTo(Perevozka::class, 'perevozka_id');
+    }
+
     public function deleteContact($id)
     {
         PerevozkaContacts::where('perevozka_id',$id)->delete();
