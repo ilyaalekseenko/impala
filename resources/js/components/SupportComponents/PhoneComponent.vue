@@ -15,10 +15,11 @@ Vue.directive('mask', VueMaskDirective);
     export default {
         props: ['initialPhoneNumber','setPhoneNumber','typeNumber','rowKey'],
         mounted() {
-            // console.log('initialPhoneNumber')
-            // console.log(this.initialPhoneNumber)
+             console.log('initialPhoneNumber')
+             console.log(this.initialPhoneNumber)
             //тут приходит адреса и контакты
           //  console.log('адреса и контакты')
+
             this.setMaskMount(this.initialPhoneNumber)
         },
         components: {
@@ -60,6 +61,14 @@ Vue.directive('mask', VueMaskDirective);
                 // if(this.startFlag)
                 // {
                     this.startFlag=false
+                if((newPhoneNumber==null)||(newPhoneNumber==''))
+                {
+                    this.currentMask=this.maskArr[0]['mask']
+                    this.currentPlaceholder=this.maskArr[0]['placeholder']
+                    this.currentCountry=this.maskArr[0]['value']
+                }
+                else
+                {
                     const countryCodeRegex = /^(\+7|\+375|\+\d{1,3})/;
                     const match = newPhoneNumber.match(countryCodeRegex);
 
@@ -84,11 +93,20 @@ Vue.directive('mask', VueMaskDirective);
                             this.currentCountry=this.maskArr[2]['value']
                         }
                     }
+                }
                 //}
             },
             setMaskMount(newPhoneNumber)
             {
                 this.startFlag=false
+                if((newPhoneNumber==null)||(newPhoneNumber==''))
+                {
+                    this.currentMask=this.maskArr[0]['mask']
+                    this.currentPlaceholder=this.maskArr[0]['placeholder']
+                    this.currentCountry=this.maskArr[0]['value']
+                }
+                else
+                {
                 const countryCodeRegex = /^(\+7|\+375|\+\d{1,3})/;
                 const match = newPhoneNumber.match(countryCodeRegex);
 
@@ -112,8 +130,8 @@ Vue.directive('mask', VueMaskDirective);
                         this.currentPlaceholder=this.maskArr[2]['placeholder']
                         this.currentCountry=this.maskArr[2]['value']
                     }
-                    alert('HERE')
                     this.phoneNumber=newPhoneNumber
+                }
                 }
             },
             handleBlur(){
