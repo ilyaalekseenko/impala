@@ -366,7 +366,15 @@ class OrdersController extends Controller
         if(($orders_list[0]['kompaniya_zakazchik'])!==null)
         {
            $gruzName=$this->gruzootpravitel->getGruzootpravitelByIdInModel($orders_list[0]['kompaniya_zakazchik']);
-           $orders_list[0]['kompaniya_zakazchik_name']=$gruzName[0]['nazvanie'];
+            if ($gruzName->isEmpty())
+            {
+                $orders_list[0]['kompaniya_zakazchik_name']='';
+            }
+            else
+            {
+                $orders_list[0]['kompaniya_zakazchik_name']=$gruzName[0]['nazvanie'];
+            }
+
         }
         else
         {
@@ -376,8 +384,17 @@ class OrdersController extends Controller
         if(($orders_list[0]['menedzer_zakazchik'])!==null)
         {
             $manager=$this->gruzootpravitelContact->getContact($orders_list[0]['menedzer_zakazchik']);
-            $orders_list[0]['menedzer_zakazchik_name']=$manager[0]['FIO'];
-            $orders_list[0]['menedzer_zakazchik']=$manager[0]['id'];
+            if ($manager->isEmpty())
+            {
+                $orders_list[0]['menedzer_zakazchik']='';
+                $orders_list[0]['menedzer_zakazchik_name']='';
+            }
+            else
+            {
+                $orders_list[0]['menedzer_zakazchik_name']=$manager[0]['FIO'];
+                $orders_list[0]['menedzer_zakazchik']=$manager[0]['id'];
+            }
+
         }
         else
         {
@@ -386,11 +403,33 @@ class OrdersController extends Controller
         }
 
         $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
-        $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
+        if ($oplata_list->isEmpty())
+        {
+            $orders_list[0]['oplata']='';
+        }
+        else
+        {
+            $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
+        }
         //получаем юзера по id логиста
-        $log_name= $this->user_mod->getUserByIdInModel($orders_list[0]['logist']);
-        //присваиваем имя
-        $orders_list[0]['logist_name']=$this->userService->setNameToUser($log_name);
+        if(($orders_list[0]['logist'])!==null)
+        {
+            $log_name= $this->user_mod->getUserByIdInModel($orders_list[0]['logist']);
+            //присваиваем имя
+            if ($log_name->isEmpty())
+            {
+                $orders_list[0]['logist_name']='';
+
+            }
+            else
+            {
+                $orders_list[0]['logist_name']=$this->userService->setNameToUser($log_name);
+            }
+        }
+        else
+        {
+            $orders_list[0]['logist_name']='';
+        }
        //получаем список ТС по order_id
         $TS_list= $this->TSService->getTsListByOrderId($id);
         //получаем список адресов погрузки и выгрузки
@@ -418,7 +457,8 @@ class OrdersController extends Controller
                 else
                 {
                     $one_adres['adres_vygruzki_show']=$this->gruzootpravitelAdresService->getOneAdresForSearch($one_adres['adres_pogruzki']);
-                }            }
+                }
+            }
         }
         return response()->json([
             'status' => 'success',
