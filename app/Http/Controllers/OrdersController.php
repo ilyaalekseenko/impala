@@ -403,14 +403,8 @@ class OrdersController extends Controller
         }
 
         $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
-        if ($oplata_list->isEmpty())
-        {
-            $orders_list[0]['oplata']='';
-        }
-        else
-        {
             $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
-        }
+
         //получаем юзера по id логиста
         if(($orders_list[0]['logist'])!==null)
         {
