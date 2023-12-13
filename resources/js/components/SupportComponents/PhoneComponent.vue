@@ -43,7 +43,7 @@ Vue.directive('mask', VueMaskDirective);
         watch: {
 
             initialPhoneNumber(newPhoneNumber) {
-                if(newPhoneNumber!=null)
+                if(newPhoneNumber)
                 {
                     //тут приходит основной и генеральный
                  //   console.log('основной и генеральный')
@@ -112,6 +112,7 @@ Vue.directive('mask', VueMaskDirective);
                         this.currentPlaceholder=this.maskArr[2]['placeholder']
                         this.currentCountry=this.maskArr[2]['value']
                     }
+                    alert('HERE')
                     this.phoneNumber=newPhoneNumber
                 }
             },
