@@ -168,8 +168,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/stavki', [App\Http\Controllers\StavkiController::class, 'stavki'])->name('stavki');
     Route::post('/getStavkiList', [App\Http\Controllers\StavkiController::class, 'getStavkiList'])->name('getStavkiList');
     Route::post('/addEmptyList', [App\Http\Controllers\SettingsController::class, 'addEmptyList'])->name('addEmptyList');
+    Route::post('/addEmptyCell', [App\Http\Controllers\SettingsController::class, 'addEmptyCell'])->name('addEmptyCell');
     Route::post('/updateDocsInputList', [App\Http\Controllers\SettingsController::class, 'updateDocsInputList'])->name('updateDocsInputList');
+    Route::post('/updateDocsInputVarsByName', [App\Http\Controllers\SettingsController::class, 'updateDocsInputVarsByName'])->name('updateDocsInputVarsByName');
     Route::post('/deleteList', [App\Http\Controllers\SettingsController::class, 'deleteList'])->name('deleteList');
+    Route::post('/deleteCell', [App\Http\Controllers\SettingsController::class, 'deleteCell'])->name('deleteCell');
 
 });
 Auth::routes();

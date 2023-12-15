@@ -19,10 +19,27 @@ class DocsVars extends Model
     {
         DocsVars::where('list_id',$id)->delete();
     }
-    public function createNewCell($id)
+    public function createNewCell($id,$list_id)
     {
         return DocsVars::create([
-
+            'list_id' =>$list_id,
+            'doc_type' =>$id,
         ]);
+    }
+    public function updateList($id,$cell_number)
+    {
+        return DocsVars::where('id',$id)->update([
+            'cell_number' =>$cell_number,
+        ]);
+    }
+    public function updateCellByName($id,$cellVar,$cellName)
+    {
+        return DocsVars::where('id',$id)->update([
+            $cellName =>$cellVar,
+        ]);
+    }
+    public function deleteCell($id)
+    {
+        DocsVars::where('id',$id)->delete();
     }
 }

@@ -131,7 +131,8 @@ class SettingsController extends Controller
     {
         //request('id') - это id документа ТН -1 DOV - 2
         $list=$this->docsListModel->createNewList(request('id'));
-        $cell=$this->docsVarsModel->createNewCell(request('id'));
+
+        $cell=$this->docsVarsModel->createNewCell(request('docId'),$list['id']);
         return response()->json([
             'status' => 'success',
             'message' =>'Лист успешно создан',
@@ -144,7 +145,15 @@ class SettingsController extends Controller
         $this->docsListModel->updateList(request('id'),request('list_name'));
         return response()->json([
             'status' => 'success',
-            'message' =>'Лист успешно обновлён',
+            'message' =>'Ячейка успешно обновлён',
+        ], 200);
+    }
+    public function updateDocsInputVarsByName()
+    {
+        $this->docsVarsModel->updateCellByName(request('id'),request('cellVar'),request('cellName'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Ячейка успешно обновлена',
         ], 200);
     }
 
@@ -157,5 +166,21 @@ class SettingsController extends Controller
             'message' =>'лист удалён'
         ], 200);
     }
-
+    public function deleteCell()
+    {
+        $this->docsVarsModel->deleteCell(request('id'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'ячейка удалена'
+        ], 200);
+    }
+    public function addEmptyCell()
+    {
+        $cell=$this->docsVarsModel->createNewCell(request('docId'),request('listId'));
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Лист успешно создан',
+            'dataCell' =>$cell,
+        ], 200);
+    }
 }

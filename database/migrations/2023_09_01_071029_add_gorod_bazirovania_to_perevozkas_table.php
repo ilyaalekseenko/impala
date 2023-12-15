@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('perevozkas', function (Blueprint $table) {
             $table->text('gorod_bazirovania')->nullable();
-
         });
     }
 

@@ -28,6 +28,7 @@ use App\Models\GradePogruzka;
 use App\Models\GruzootpravitelAdresa;
 use App\Models\VidTS;
 use App\Models\TSModal;
+use App\Models\DocsVars;
 use App\Services\DocService;
 use App\Services\GruzootpravitelAdresService;
 use App\Services\ImportantService;
@@ -90,7 +91,7 @@ class OrdersController extends Controller
     private $TSModal;
     private $PP;
     private $HelperService;
-
+    private $DocsVarsModal;
 
     public function __construct(
         OrderService $orderService,
@@ -122,6 +123,7 @@ class OrdersController extends Controller
         TSModal $TSModal,
         PP $PP,
         HelperService $helperService,
+        DocsVars $DocsVarsModal,
     )
     {
         $this->orderService = $orderService;
@@ -153,7 +155,7 @@ class OrdersController extends Controller
         $this->TSModal = $TSModal;
         $this->PP = $PP;
         $this->HelperService = $helperService;
-
+        $this->DocsVarsModal = $DocsVarsModal;
     }
 
     public function test()
@@ -629,21 +631,21 @@ class OrdersController extends Controller
         //получаю данные ГО ФОРМА НАЗВАНИЕ ИНН ЮР.Адрес Телефон
         if($pogruzka[0]['adres_pogruzki']==null)
         {
-            $GOdannye='';
+            $GO='';
         }
         else
         {
-            $GOdannye=$this->gruzootpravitelAdresService->getGObyAdres($pogruzka[0]['adres_pogruzki']);
+            $GO=$this->gruzootpravitelAdresService->getGObyAdres($pogruzka[0]['adres_pogruzki']);
         }
 
         //получаю данные ГП ГО ФОРМА НАЗВАНИЕ ИНН ЮР.Адрес Телефон
         if($vygruzka[0]['adres_pogruzki']==null)
         {
-            $GPdannye='';
+            $GP='';
         }
         else
         {
-            $GPdannye=$this->gruzootpravitelAdresService->getGObyAdres($vygruzka[0]['adres_pogruzki']);
+            $GP=$this->gruzootpravitelAdresService->getGObyAdres($vygruzka[0]['adres_pogruzki']);
         }
 
 
@@ -652,22 +654,22 @@ class OrdersController extends Controller
             $TH = DocsTemplate::where('doc_type','TH')->get();
             //получаю порядковый номер вида номер заявки 23455-1
             $nom=request('id_ts')+1;
-            $porNomerTN= $orders_list[0]['nomer_zayavki'].'-'.$nom;
+            $por_nomer= $orders_list[0]['nomer_zayavki'].'-'.$nom;
             //получаю заказчика
             if($orders_list[0]['kompaniya_zakazchik']==null)
             {
-                $zakazchik='';
+                $zak='';
             }
             else
             {
-                $zakazchik=$this->gruzootpravitel->getFullNameGruzootpravitel($orders_list[0]['kompaniya_zakazchik']);
+                $zak=$this->gruzootpravitel->getFullNameGruzootpravitel($orders_list[0]['kompaniya_zakazchik']);
             }
 
             //получаю адреса погрузки и выгрузки
             //возвращает массив в первом значении погрузка, во втором выгрузка Название Адрес  ( из доп контактов ) те что выбраны
             $pogruzkaArr=$this->pogruzkaTSService->pogruzkaVygruzkaDopAdresa();
             //получаю количество грузомест у данного ТС (цифра + словом )
-            $kolMest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
+            $kol_gruzomest=$this->finalGrade->getKolMest(request('order_id'),request('id_ts'));
 
             //получаю перевозчика
             $organizacia=$this->impalaModel->getAdres();
@@ -767,18 +769,19 @@ class OrdersController extends Controller
             {
                 $orders_list[0]['data_pogruzki']='';
             }
-
+            $adres_pogruzki=$pogruzkaArr[0];
+            $adres_vygruzki=$pogruzkaArr[1];
             $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $data_pogruzki)
-                ->replace('por_nomer',$porNomerTN)
-                ->replace('zak',$zakazchik)
-                ->replace('GP',$GPdannye)
-                ->replace('GO',$GOdannye)
+                ->replace('por_nomer',$por_nomer)
+                ->replace('zak',$zak)
+                ->replace('GP',$GP)
+                ->replace('GO',$GO)
                 ->replace('adres_pogruzki', $pogruzkaArr[0])
                 ->replace('adres_vygruzki', $pogruzkaArr[1])
-                ->replace('kol_gruzomest', $kolMest)
+                ->replace('kol_gruzomest', $kol_gruzomest)
                 ->replace('organizacia', $organizacia)
                 ->replace('voditel', $voditel)
                 ->replace('vidTS', $vidTS)
@@ -789,12 +792,85 @@ class OrdersController extends Controller
               $this->docList->upPorNomer($doc_type,$porNomer,$fileName);
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('templates/'.$fileName));
-            $sheet = $spreadsheet->getSheetByName("list1");
-             //$spreadsheet->getActiveSheet();
-            $sheet->getRowDimension('15')->setRowHeight(100); // 30 - пример высоты в пикселях
-            $writer = new Xlsx($spreadsheet);
-            $writer->save(public_path('templates/'.$fileName));
+            //получить все листы ТН и все переменны ТН
+            $TNvars=$this->DocsVarsModal->getDocVarsByType(1);
+            $TNListArr = $TNvars->unique('list_id');
+            //сделать перебор каждого листа
+            foreach($TNListArr as $oneList) {
+                //получаю текущий лист
+                $sheet = $spreadsheet->getSheetByName($oneList['list_name']);
+                $oldnomerstroki=0;
+                $oldHeight=0;
+                //работа с переменными одного листа
+                foreach ($TNvars as $oneCell) {
+                    if($oneList['list_id']==$oneCell['list_id'])
+                    {
+                        //выделить номер строки
+                        $nomerStroki = preg_replace('/[^\d]+/', '', $oneCell['cell_number']);
 
+
+                        if(($oneCell['width_cell']!='')&&($oneCell['var_name']!='')&&($oneCell['font_size']!='')&&($oneCell['width_cell']!=''))
+                        {
+
+
+                            //получаю то что внутри переменной по названию
+                            $varName=($oneCell['var_name']);
+                            //магия PHP получения по названию
+                            $varInput = $$varName;
+                            $varInput=trim($varInput);
+                            $heght=($oneCell['width_cell'] * strlen($varInput) * $oneCell['font_size'])/2000;
+                            if($heght<20)
+                            {
+                                $heght=20;
+                            }
+                            if($oldnomerstroki==$nomerStroki)
+                            {
+                                if($heght>$oldHeight)
+                                {
+                                    $sheet->getRowDimension($nomerStroki)->setRowHeight($heght); // 30 - пример высоты в пикселях
+                                    $writer = new Xlsx($spreadsheet);
+                                    $writer->save(public_path('templates/' . $fileName));
+                                    $oldnomerstroki=$nomerStroki;
+                                    $oldHeight=$heght;
+                                }
+                            }
+                            else
+                            {
+                                $sheet->getRowDimension($nomerStroki)->setRowHeight($heght); // 30 - пример высоты в пикселях
+                                $writer = new Xlsx($spreadsheet);
+                                $writer->save(public_path('templates/' . $fileName));
+                                $oldnomerstroki=$nomerStroki;
+                                $oldHeight=$heght;
+                            }
+                        }
+
+                    }
+               }
+
+             //   $columnDimension = $sheet->getColumnDimension('BF'); // Здесь 'B' - это буква колонки, измените ее по необходимости
+            //    $columnWidth = $columnDimension->getWidth();
+             //   $cellValue = $sheet->getCell('B15')->getValue(); // Здесь 'A1' - это координаты ячейки, измените их по необходимостиreturn dd($columnWidth);
+                //получить ширину столбца
+            //    foreach ($columnNUmbArr as $oneNumber)
+            //    {
+                  //  $width = $sheet->getColumnWidth($oneNumber);
+                //    return dd($oneList['list_name']);
+            //    }
+                //получить размер шрифта ячейки
+                //высчитать высоту ( не забудь про минимальную высоту )
+              //  $width=64*0.86;
+              //  $GPdannye= trim($GOdannye);
+                //$k = 2872;
+               // return dd(strlen($GOdannye));
+             //   return dd($GOdannye);
+             //   $spreadsheet->getActiveSheet();
+                //форула расчта высоты
+              //  $tempVar=trim($GOdannye);
+              //  $heght=($width * strlen($tempVar) * 7)/2800;
+//                $sheet->getRowDimension('15')->setRowHeight($heght); // 30 - пример высоты в пикселях
+//                $writer = new Xlsx($spreadsheet);
+//                $writer->save(public_path('templates/' . $fileName));
+            }
             return response()->json([
                 'status' => 'success',
                 'file' =>$fileName,
@@ -887,7 +963,7 @@ class OrdersController extends Controller
                 ->replace('vod_passport_kogda', $voditelFull[0]['kogdaVydan'])
                 ->replace('data_vydachi_text', $textDate.' г')
                 ->replace('deistv_do', $textDateSrokDeistv.' г')
-                ->replace('GO',$GOdannye)
+                ->replace('GO',$GO)
                 ->save(public_path('templates/'.$nazvanieDokumenta));
             return response()->json([
                 'status' => 'success',

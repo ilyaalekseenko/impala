@@ -965,7 +965,6 @@ class GradeController extends Controller
     {
 
         $TNvars=$this->DocsVarsModal->getDocVarsByType(1);
-
         $TNListArr = $TNvars->unique('list_id');
         $transfer=[
             'TNvars' => $TNvars,

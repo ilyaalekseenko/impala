@@ -31,14 +31,39 @@
                     </div>
                     <p v-if="selectedItem">Выбрано: {{ selectedItem }}</p>
 
-                    <div>Список ячеек для выравнивания высоты</div>
-                    <div v-for="(item, index) in TNvars" v-if="item.list_id==selectedItem">
-                        <input @blur="updateDocsInput()"  v-model="item.cell_number"  />
+                    <div>Список ячеек
+                       <button type="button" class="btn btn-success" v-on:click="addCell(1)">+</button>
                     </div>
 
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Номер клетки</th>
+                            <th scope="col">Ширина клетки</th>
+                            <th scope="col">Название переменной</th>
+                            <th scope="col">Размер шрифта</th>
+                            <th scope="col">Удаление</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item, index) in TNvars" v-if="item.list_id==selectedItem">
+                            <th scope="row"><input @blur="updateDocsInputVarsByName(item.id,item.cell_number,'cell_number')"  v-model="item.cell_number"  /></th>
+                            <td><input @blur="updateDocsInputVarsByName(item.id,item.width_cell,'width_cell')"  v-model="item.width_cell"  /></td>
+                            <td><input @blur="updateDocsInputVarsByName(item.id,item.var_name,'var_name')"  v-model="item.var_name"  /></td>
+                            <td><input @blur="updateDocsInputVarsByName(item.id,item.font_size,'font_size')"  v-model="item.font_size"  /></td>
+                            <td><button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteCell(item.id)">-</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
 
 
-
+<!--                    <div v-for="(item, index) in TNvars" v-if="item.list_id==selectedItem">-->
+<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.cell_number,'cell_number')"  v-model="item.cell_number"  />-->
+<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.width_cell,'width_cell')"  v-model="item.width_cell"  />-->
+<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.var_name,'var_name')"  v-model="item.var_name"  />-->
+<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.font_size,'font_size')"  v-model="item.font_size"  />-->
+<!--                        <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteCell(item.id)">-</button>-->
+<!--                    </div>-->
                     <table class="table">
                         <thead>
                         <tr>
@@ -112,8 +137,6 @@ created() {
             this.TNvars=this.transfer.TNvars,
             this.TNListArr=this.transfer.TNListArr,
             this.setDefaultList()
-
-
     },
         data() {
             return {
@@ -146,10 +169,26 @@ created() {
                 this.selectedItem = this.transfer.TNListArr[0].list_id
             }
         },
+          async deleteCell(id)
+            {
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    let keyInArr=this.getKeyById(id,this.TNvars)
+                    this.TNvars.splice(keyInArr,1)
+                    axios
+                        .post('/deleteCell',{
+                            id:id,
+                        })
+                }
+            },
            async deleteList(id,listId)
             {
                 const result = await this.confirmMethodMixin();
                 if (result) {
+                    if(listId==this.selectedItem)
+                    {
+                        this.selectedItem=''
+                    }
                     let keyInArr=this.getKeyById(id,this.TNListArr)
                     this.TNListArr.splice(keyInArr,1)
                     axios
@@ -176,9 +215,34 @@ created() {
                         list_name:list_name,
                     })
             },
-            updateVarsDocs()
+            updateDocsInputVarsByName(id,cellVar,cellName)
             {
-              alert(this.TNvars)
+                axios
+                    .post('/updateDocsInputVarsByName',{
+                        id:id,
+                        cellVar:cellVar,
+                        cellName:cellName
+                    })
+            },
+            addCell(id)
+            {
+                axios
+                    .post('/addEmptyCell',{
+                        docId:id,
+                        listId:this.selectedItem,
+
+                    })
+                    .then(response => {
+                        let objToPush1= {};
+                        objToPush1['id'] = response.data.dataCell.id;
+                        objToPush1['list_id'] = this.selectedItem;
+                        objToPush1['cell_number'] = '';
+                        objToPush1['doc_type'] = '';
+                        objToPush1['width_cell'] = '';
+                        objToPush1['var_name'] = '';
+                        objToPush1['font_size'] = '';
+                        this.TNvars.push(objToPush1);
+                    })
             },
             addList(id)
             {
@@ -188,15 +252,23 @@ created() {
                     })
                     .then(response => {
                         let objToPush= {};
-                        objToPush['id'] = response.data.data.id;
+                        objToPush['id'] = '';
+                        objToPush['list_id'] = response.data.data.id;
                         objToPush['list_name'] = '';
+                        objToPush['doc_type'] = this.current_doc;
                         this.TNListArr.push(objToPush);
 
                         let objToPush1= {};
-                        objToPush['id'] = response.data.dataCell.id;
-                        objToPush['list_name'] = '';
+                        objToPush1['id'] = response.data.dataCell.id;
+                        objToPush1['list_id'] = response.data.data.id;
+                        objToPush1['cell_number'] = '';
+                        objToPush1['doc_type'] = '';
+                        objToPush['width_cell'] = '';
+                        objToPush['var_name'] = '';
+                        objToPush['font_size'] = '';
                         this.TNvars.push(objToPush1);
-
+                        console.log('TNvars')
+                        console.log(this.TNvars)
                     })
             },
             download_current_doc(doc_type)
