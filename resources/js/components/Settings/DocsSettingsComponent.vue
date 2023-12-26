@@ -8,7 +8,7 @@
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('DOV')">Загрузить шаблон Доверенность</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('DOV')">Настройка шаблона Доверенность</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('DOV')">Скачать шаблон Доверенность</div>
-                    <div class="doc_set_marg">{{ DOV_name }}</div>
+                    <div class="doc_set_marg">Excel:{{ DOV_name }}/Doc:{{ DOV_DOC_name }}</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc('ZAI')">Загрузить шаблон Запроса</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Настройка шаблона Запроса</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Запроса</div>
@@ -22,6 +22,7 @@
                     В формате docx переменную указывать в виде { переменная } .
                 </div>
                 <div class="col-12" v-if="show_TH_vars">
+                    <button type="button" class="btn btn-secondary" v-on:click="mergeListExcel()">TEST</button>
 
                     <h2>Выберите страницу:<button type="button" class="btn btn-success" v-on:click="addList(1)">+</button></h2>
                     <div v-for="(item, index1) in TNListArr" :key="index1">
@@ -64,7 +65,8 @@
 <!--                        <input @blur="updateDocsInputVarsByName(item.id,item.font_size,'font_size')"  v-model="item.font_size"  />-->
 <!--                        <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteCell(item.id)">-</button>-->
 <!--                    </div>-->
-                    <table class="table">
+                    <button type="button" class="btn btn-secondary" v-on:click="showBotVars()">Показать переменные</button>
+                    <table class="table" v-if="show_bot_vars">
                         <thead>
                         <tr>
                             <th scope="col">№</th>
@@ -144,6 +146,7 @@ created() {
                 TH_name:'',
                 DOV_name:'',
                 ZAI_name:'',
+                DOV_DOC_name:'',
                 arr_TH_vars:new Array(),
                 arr_DOV_vars:new Array(),
                 arr_ZAI_vars:new Array(),
@@ -157,11 +160,22 @@ created() {
                 nav_menu_show_var:'',
                 TNvars:{},
                 TNListArr: {},
-                selectedItem: null
+                selectedItem: null,
+                show_bot_vars:false
 
             }
         },
         methods: {
+            mergeListExcel()
+            {
+                axios
+                    .post('/mergeListExcel',{
+                    })
+            },
+            showBotVars()
+            {
+              this.show_bot_vars=!this.show_bot_vars
+            },
         setDefaultList()
         {
             if((this.transfer.TNListArr[0]!=null)&&(this.transfer.TNListArr[0]!=='undefined'))
@@ -271,10 +285,31 @@ created() {
                         console.log(this.TNvars)
                     })
             },
-            download_current_doc(doc_type)
+           async download_current_doc(doc_type)
             {
+                if(doc_type=='DOV')
+                {
+                    const result = await this.$swal.fire({
+                        title: 'Выберите тип документа',
+                        showCancelButton: true,
+                        confirmButtonText: 'Doc',
+                        cancelButtonText: 'Excel',
+                        cancelButtonColor: '#d33',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        preConfirm: (choice) => {
+                            return choice;
+                        },
+                    });
+                    if (result.isConfirmed) {
+                        doc_type='DOV_DOC';
+                    } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                        doc_type='DOV';
+                    } else {
+                        doc_type=''
+                    }
+                }
                 this.current_doc=doc_type
-
                 axios
                     .post('/download_current_doc',{
                         doc_type:this.current_doc
@@ -361,12 +396,39 @@ created() {
                     this.TH_name=response.data.TH
                     this.DOV_name=response.data.DOV
                     this.ZAI_name=response.data.ZAI
+                    this.DOV_DOC_name=response.data.DOV_DOC
                     })
             },
-            store_doc(type)
+          async store_doc(type)
             {
-                this.doc_type=type
-                this.$refs.files_doc.click();
+                if(type=='DOV')
+                {
+                    const result = await this.$swal.fire({
+                        title: 'Выберите тип документа',
+                        showCancelButton: true,
+                        confirmButtonText: 'Doc',
+                        cancelButtonText: 'Excel',
+                        cancelButtonColor: '#d33',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        preConfirm: (choice) => {
+                            return choice;
+                        },
+                    });
+                    if (result.isConfirmed) {
+                        type='DOV_DOC';
+                    } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                        type='DOV';
+                    } else {
+                        type=''
+                    }
+                }
+                if(type!='')
+                {
+                    this.doc_type=type
+                    this.$refs.files_doc.click();
+                }
+
             },
             handleFilesUploadDoc() {
                 let full_name = '';
@@ -385,32 +447,44 @@ created() {
                     }
 
                 }
+                if (this.doc_type == 'DOV_DOC') {
+                    if (ext[0] == '.doc' || ext[0] == '.docx' || ext[0] == '.txt') {
+                        flag = 1;
+                    }
+
+                }
                 if (flag == 1)
                 {
                     full_name = (uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)/))
 
                     if(this.doc_type == 'TH')
                     {
-                        if((full_name[0]==this.DOV_name)||(full_name[0]==this.ZAI_name))
+                        if((full_name[0]==this.DOV_name)||(full_name[0]==this.ZAI_name)||(full_name[0]==this.DOV_DOC_name))
                         {
                             flag=0;
                         }
                     }
                     if(this.doc_type == 'DOV')
                     {
-                        if((full_name[0]==this.TH_name)||(full_name[0]==this.ZAI_name))
+                        if((full_name[0]==this.TH_name)||(full_name[0]==this.ZAI_name)||(full_name[0]==this.DOV_DOC_name))
                         {
                             flag=0;
                         }
                     }
                     if(this.doc_type == 'ZAI')
                     {
-                        if((full_name[0]==this.DOV_name)||(full_name[0]==this.TH_name))
+                        if((full_name[0]==this.DOV_name)||(full_name[0]==this.TH_name)||(full_name[0]==this.DOV_DOC_name))
                         {
                             flag=0;
                         }
                     }
-
+                    if(this.doc_type == 'DOV_DOC')
+                    {
+                        if((full_name[0]==this.DOV_name)||(full_name[0]==this.TH_name)||(full_name[0]==this.ZAI_name))
+                        {
+                            flag=0;
+                        }
+                    }
                     if (flag == 1)
                     {
                     let formData = new FormData();
@@ -441,6 +515,10 @@ created() {
                             if(this.doc_type== 'ZAI')
                             {
                                 this.ZAI_name=full_name[0]
+                            }
+                            if(this.doc_type== 'DOV_DOC')
+                            {
+                                this.DOV_DOC_name=full_name[0]
                             }
                         }
                     })

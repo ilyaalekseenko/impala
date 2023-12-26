@@ -5,7 +5,7 @@
             vid="settings"
             :voditeliComponentAddVoditel='voditeliComponentAddVoditel'
         ></modal-p-p-component>
-        <div>Список номеров ТС
+        <div>Список номеров ПП
         <span class="col add_button_perevozchiki no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newVoditel()">Добавить</span>
         </div>
     <div class="row col-10 justify-content-start">

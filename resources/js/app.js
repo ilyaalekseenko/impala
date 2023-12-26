@@ -106,7 +106,9 @@ Vue.use(VueTheMask);
 import VueConfirmDialog from 'vue-confirm-dialog/src'
 Vue.use(VueConfirmDialog)
 Vue.component('vue-confirm-dialog', VueConfirmDialog.default)
-
+import 'sweetalert2/dist/sweetalert2.min.css';
+import VueSweetalert2 from 'vue-sweetalert2';
+Vue.use(VueSweetalert2);
 //mixins
 import MixinGoTo from './mixins/MixinGoTo'
 Vue.mixin(MixinGoTo);

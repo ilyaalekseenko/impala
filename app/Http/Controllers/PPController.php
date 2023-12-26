@@ -52,6 +52,7 @@ class PPController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' =>'Успешно сохранено',
+                'state' =>'new',
                 'perevozkaID' =>$perevozkaID,
             ], 200);
         }
@@ -62,6 +63,7 @@ class PPController extends Controller
             $this->PPFilesModel->updateOldFiles(request('doc_files'),$currentTSModal);
             return response()->json([
                 'status' => 'success',
+                'state' =>'old',
                 'message' =>'Успешно обновлено',
             ], 200);
         }

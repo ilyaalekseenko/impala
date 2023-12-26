@@ -4,7 +4,7 @@
             <div class="col-10">
                 <b-modal ref="my-modal"  id="PPMod" size="sm" hide-footer hide-header>
                     <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-                        <div class="col-8">Новый ПП:</div>
+                        <div class="col-8">{{ headerNazvanie }}:</div>
                         <div class="col-4 row d-flex justify-content-end">
                             <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
@@ -137,6 +137,7 @@ export default {
             kompaniyaNazvanie:'',
             doc_files:[],
             pogruzkaShowInp:true,
+            headerNazvanie:''
         }},
 
     methods: {
@@ -146,6 +147,7 @@ export default {
         //если кликнули на нового перевозчика
         newPerevozchik(vidGrade,idPErevozchik,nazvaniePerevozchik)
         {
+            this.headerNazvanie='Новый ПП',
             this.current_gruzootpravitel_id='',
                 this.marka='',
                 this.nomer='',
@@ -183,6 +185,7 @@ export default {
         //передаем из предыде вида
         get_modal_edit_data(id)
         {
+            this.headerNazvanie='Редактирование ПП',
             this.current_gruzootpravitel_id=id,
                 this.marka='',
                 this.nomer='',
@@ -378,8 +381,10 @@ export default {
                     //если вид grade
                     if(this.vid=='grade')
                     {
-                        //вызвать метод из вида grade сохраняий название
-                        this.gradeAddPPModal(response.data.perevozkaID,this.nomer)
+                        const targetPerevozkaID = (response.data.state === 'new') ? response.data.perevozkaID : this.current_gruzootpravitel_id;
+                        this.gradeAddPPModal(targetPerevozkaID, this.nomer);
+                        // //вызвать метод из вида grade сохраняий название
+                        // this.gradeAddPPModal(response.data.perevozkaID,this.nomer)
                     }
                     if(this.vid=='settings')
                     {

@@ -173,6 +173,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/updateDocsInputVarsByName', [App\Http\Controllers\SettingsController::class, 'updateDocsInputVarsByName'])->name('updateDocsInputVarsByName');
     Route::post('/deleteList', [App\Http\Controllers\SettingsController::class, 'deleteList'])->name('deleteList');
     Route::post('/deleteCell', [App\Http\Controllers\SettingsController::class, 'deleteCell'])->name('deleteCell');
+    Route::post('/mergeListExcel', [App\Http\Controllers\OrdersController::class, 'mergeListExcel'])->name('mergeListExcel');
 
 });
 Auth::routes();

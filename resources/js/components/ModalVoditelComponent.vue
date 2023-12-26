@@ -4,7 +4,7 @@
             <div class="col-10">
                 <b-modal ref="my-modal"  id="voditelMod" size="sm" hide-footer hide-header>
                     <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-                        <div class="col-8">Новый водитель:</div>
+                        <div class="col-8">{{ headerNazvanie }}:</div>
                         <div class="col-4 row d-flex justify-content-end">
                             <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
                             <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
@@ -169,7 +169,8 @@ Vue.use(VueMask)
                 kompaniya:'',
                 kompaniyaNazvanie:'',
                 doc_files:[],
-                pogruzkaShowInp:true
+                pogruzkaShowInp:true,
+                headerNazvanie:''
             }},
 
         methods: {
@@ -187,6 +188,7 @@ Vue.use(VueMask)
             //если кликнули на нового перевозчика
             newPerevozchik(vidGrade,idPErevozchik,nazvaniePerevozchik)
             {
+                this.headerNazvanie='Новый водитель'
                 this.current_gruzootpravitel_id='',
                 this.FIO='',
                 this.nomer_vod_ud='',
@@ -222,9 +224,10 @@ Vue.use(VueMask)
             },
             //методы редактирования
             //общий метод загрузки cтартовых данных
-            //передаем из предыде вида
+            //передаем из предыдущего вида
             get_modal_edit_data(id)
             {
+                    this.headerNazvanie='Редактирвоание водителя'
                     this.current_gruzootpravitel_id=id,
                     this.FIO='',
                     this.nomer_vod_ud='',
@@ -456,8 +459,10 @@ Vue.use(VueMask)
                         //если вид grade
                         if(this.vid=='grade')
                         {
-                            //вызвать метод из вида grade сохраняий название
-                            this.gradeAddVoditel(response.data.perevozkaID,this.FIO)
+                            //если сохраняем нового то в ответе будет state=new
+                            //если редактируем то в ответе будет state=old
+                            const targetPerevozkaID = (response.data.state === 'new') ? response.data.perevozkaID : this.current_gruzootpravitel_id;
+                            this.gradeAddVoditel(targetPerevozkaID, this.FIO);
                         }
                         if(this.vid=='settings')
                         {

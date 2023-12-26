@@ -37,6 +37,7 @@ class VoditelController extends Controller
             );
             return response()->json([
                 'status' => 'success',
+                'state' =>'new',
                 'message' =>'Успешно сохранено',
                 'perevozkaID' =>$perevozkaID,
             ], 200);
@@ -47,6 +48,7 @@ class VoditelController extends Controller
             $this->voditelFilesModel->updateOldFiles(request('doc_files'),$currentVoditel);
             return response()->json([
                 'status' => 'success',
+                'state' =>'old',
                 'message' =>'Успешно обновлено',
             ], 200);
         }

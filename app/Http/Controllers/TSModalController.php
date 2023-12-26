@@ -40,6 +40,7 @@ class TSModalController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' =>'Успешно сохранено',
+                'state' =>'new',
                 'perevozkaID' =>$perevozkaID,
             ], 200);
         }
@@ -51,6 +52,7 @@ class TSModalController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' =>'Успешно обновлено',
+                'state' =>'old',
             ], 200);
         }
     }

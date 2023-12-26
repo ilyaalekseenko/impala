@@ -20,6 +20,21 @@ export default {
                 });
             });
         },
+        confirmDocMethodMixin() {
+            return new Promise((resolve) => {
+                this.$confirm({
+                    message: 'Выберите тип документа',
+                    button: {
+                        no: 'Excel',
+                        yes: 'Doc',
+                        cancel: 'Отмена',
+                    },
+                    callback: (confirm) => {
+                        resolve(confirm);
+                    },
+                });
+            });
+        },
 
     },
 

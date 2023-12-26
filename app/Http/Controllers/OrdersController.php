@@ -53,6 +53,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 //use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Writer\Word2007;
 use Silverslice\ExcelTemplate\Template;
 use Dompdf\Dompdf;
 use Carbon\Carbon;
@@ -518,6 +519,7 @@ class OrdersController extends Controller
         $TH = DocsTemplate::where('doc_type','TH')->get();
         $DOV = DocsTemplate::where('doc_type','DOV')->get();
         $ZAI = DocsTemplate::where('doc_type','ZAI')->get();
+        $DOV_DOC = DocsTemplate::where('doc_type','DOV_DOC')->get();
         if ($TH->isEmpty()) {
             $TH='';
         }
@@ -539,13 +541,20 @@ class OrdersController extends Controller
         {
             $ZAI=$ZAI[0]['doc_name'];
         }
-
+        if ($DOV_DOC->isEmpty()) {
+            $DOV_DOC='';
+        }
+        else
+        {
+            $DOV_DOC=$DOV_DOC[0]['doc_name'];
+        }
 
         return response()->json([
             'status' => 'success',
             'TH' =>$TH,
             'DOV' =>$DOV,
             'ZAI' =>$ZAI,
+            'DOV_DOC' =>$DOV_DOC,
         ], 200);
     }
     public function get_xlsx_file($filename)
@@ -567,6 +576,60 @@ class OrdersController extends Controller
             'file' =>$file,
         ], 200);
 
+    }
+    public function mergeListExcel1()
+    {
+        $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('united/1.xlsx'));
+        $spreadsheet2 = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('united/2.xlsx'));
+
+        // Получаем первый лист из первого документа
+        $sheetFromFirstDocument1 = $spreadsheet1->getSheet(0);
+
+// Получаем первый лист из второго документа
+        $sheetFromSecondDocument2 = $spreadsheet2->getSheet(0);
+
+// Создаем новый документ
+        $combinedSpreadsheet = new Spreadsheet();
+
+// Добавляем листы в новый документ
+        $combinedSpreadsheet->addSheet($sheetFromFirstDocument1);
+        $combinedSpreadsheet->addSheet($sheetFromSecondDocument2);
+
+// Сохраняем новый документ
+
+        $combinedPath = public_path('united/3.xlsx');
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($combinedSpreadsheet);
+        $writer->save($combinedPath);
+    }
+    public function mergeListExcel()
+    {
+        // Создаем объект класса Spreadsheet
+        $spreadsheet = new Spreadsheet();
+
+// Открываем первый документ
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet1 = $reader->load(public_path('united/1.xlsx'));
+
+// Получаем лист из первого документа
+      //  $sheet1 = $spreadsheet1->getSheetByName('list1');
+        $sheet1 = $spreadsheet1->getSheet(0);
+
+// Открываем второй документ
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet2 = $reader->load(public_path('united/2.xlsx'));
+
+// Получаем лист из второго документа
+        $sheet2 = $spreadsheet2->getSheet(0);
+
+// Добавляем лист из первого документа в конец документа
+        $spreadsheet->addSheet($sheet1,0);
+
+// Добавляем лист из второго документа в конец документа
+        $spreadsheet->addSheet($sheet2,1);
+// Сохраняем документ
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save(public_path('united/3.xlsx'));
     }
     public function get_finall_doc_pdf(Request $request)
     {
@@ -771,7 +834,7 @@ class OrdersController extends Controller
             }
             $adres_pogruzki=$pogruzkaArr[0];
             $adres_vygruzki=$pogruzkaArr[1];
-            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
+            $fileName='TH_'.$orders_list[0]['nomer_zayavki'].'-'.$nom.'_'.$data_pogruzki.'.xlsx';
             $template = new Template();
             $template->open(public_path('templates/'.$TH))
                 ->replace('data_pogruzki', $data_pogruzki)
@@ -791,6 +854,7 @@ class OrdersController extends Controller
             //добавляю запись в таблицу doc_lists с порядковым номером и датой создания
               $this->docList->upPorNomer($doc_type,$porNomer,$fileName);
 
+              //работа с высотой объединённых ячеек
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('templates/'.$fileName));
             //получить все листы ТН и все переменны ТН
             $TNvars=$this->DocsVarsModal->getDocVarsByType(1);
@@ -847,37 +911,16 @@ class OrdersController extends Controller
                     }
                }
 
-             //   $columnDimension = $sheet->getColumnDimension('BF'); // Здесь 'B' - это буква колонки, измените ее по необходимости
-            //    $columnWidth = $columnDimension->getWidth();
-             //   $cellValue = $sheet->getCell('B15')->getValue(); // Здесь 'A1' - это координаты ячейки, измените их по необходимостиreturn dd($columnWidth);
-                //получить ширину столбца
-            //    foreach ($columnNUmbArr as $oneNumber)
-            //    {
-                  //  $width = $sheet->getColumnWidth($oneNumber);
-                //    return dd($oneList['list_name']);
-            //    }
-                //получить размер шрифта ячейки
-                //высчитать высоту ( не забудь про минимальную высоту )
-              //  $width=64*0.86;
-              //  $GPdannye= trim($GOdannye);
-                //$k = 2872;
-               // return dd(strlen($GOdannye));
-             //   return dd($GOdannye);
-             //   $spreadsheet->getActiveSheet();
-                //форула расчта высоты
-              //  $tempVar=trim($GOdannye);
-              //  $heght=($width * strlen($tempVar) * 7)/2800;
-//                $sheet->getRowDimension('15')->setRowHeight($heght); // 30 - пример высоты в пикселях
-//                $writer = new Xlsx($spreadsheet);
-//                $writer->save(public_path('templates/' . $fileName));
             }
             return response()->json([
                 'status' => 'success',
                 'file' =>$fileName,
             ], 200);
         }
+        //если доверенность
         if($doc_type=='2')
         {
+
             //получаю поставщика
             if($orders_list[0]['adres_pogruzke']==null)
             {
@@ -945,26 +988,51 @@ class OrdersController extends Controller
             {
                 $organizacia='';
             }
-           // $organizacia='ООО "ИМПАЛА" , ИНН/КПП 7839103970/780201001, 194358, Санкт-Петербург г, п Парголово, ул Заречная, д. 45, к. 1, стр. 1, кв. 1238';
-            $nazvanieDokumenta='Доверенность_'.$orders_list[0]['nomer_zayavki'].'-'.request('id_ts').'_'.$data_pogruzki.'.xlsx';
+            $nom=request('id_ts')+1;
+
             //получаю номер доверенности ( из final_grade он уникальный для каждого добавленного ТС, если удалили то номер меняется )
             $nomerDov=$finalGradeTS[0]['id'];
-            $TH = DocsTemplate::where('doc_type','DOV')->get();
-            $TH=$TH[0]['doc_name'];
-            $template = new Template();
-            $template->open(public_path('templates/'.$TH))
-                ->replace('por_nomer', $nomerDov)
-                ->replace('data_vydachi', $data_pogruzki)
-                ->replace('srok_deist', $srok_deist)
-                ->replace('voditel', $voditel)
-                ->replace('organizacia', $organizacia)
-                ->replace('vod_passport', $voditelFull[0]['seriyaPassporta'])
-                ->replace('vod_passport_kem', $voditelFull[0]['kemVydan'])
-                ->replace('vod_passport_kogda', $voditelFull[0]['kogdaVydan'])
-                ->replace('data_vydachi_text', $textDate.' г')
-                ->replace('deistv_do', $textDateSrokDeistv.' г')
-                ->replace('GO',$GO)
-                ->save(public_path('templates/'.$nazvanieDokumenta));
+
+            //если в формате doc
+            if(request('dovType')=='DOC')
+            {
+                $nazvanieDokumenta='Доверенность_'.$orders_list[0]['nomer_zayavki'].'-'.$nom.'_'.$data_pogruzki.'.xlsx';
+                // Чтение содержимого файла
+                $content = file_get_contents(public_path('templates/result.txt'));
+// Замена переменных
+                $modifiedContent = str_replace('полная', 'победа', $content);
+// Запись измененного содержимого обратно в файл
+                file_put_contents(public_path('templates/result.txt'), $modifiedContent);
+
+            }
+            //если xlsx
+            else
+            {
+                $nazvanieDokumenta='Доверенность_'.$orders_list[0]['nomer_zayavki'].'-'.$nom.'_'.$data_pogruzki.'.xlsx';
+                $TH = DocsTemplate::where('doc_type','DOV')->get();
+                $TH=$TH[0]['doc_name'];
+                $template = new Template();
+                $template->open(public_path('templates/'.$TH))
+                    ->replace('por_nomer', $nomerDov)
+                    ->replace('data_vydachi', $data_pogruzki)
+                    ->replace('srok_deist', $srok_deist)
+                    ->replace('voditel', $voditel)
+                    ->replace('organizacia', $organizacia)
+                    ->replace('vod_passport', $voditelFull[0]['seriyaPassporta'])
+                    ->replace('vod_passport_kem', $voditelFull[0]['kemVydan'])
+                    ->replace('vod_passport_kogda', $voditelFull[0]['kogdaVydan'])
+                    ->replace('data_vydachi_text', $textDate.' г')
+                    ->replace('deistv_do', $textDateSrokDeistv.' г')
+                    ->replace('GO',$GO)
+                    ->save(public_path('templates/'.$nazvanieDokumenta));
+            }
+
+
+
+
+
+
+
             return response()->json([
                 'status' => 'success',
                 'file' =>$nazvanieDokumenta,
@@ -980,8 +1048,7 @@ class OrdersController extends Controller
             $TH=$TH[0]['doc_name'];
 
             $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor(public_path('templates/'.$TH));
-            $templateProcessor->
-            setValue(array('{{company}}'), array('Developer'));
+            $templateProcessor->setValue(array('{{company}}'), array('Developer'));
             $templateProcessor->saveAs(public_path('templates/fin_ZAI.docx'));
 
             $domPdfPath = base_path('vendor/mpdf/mpdf');

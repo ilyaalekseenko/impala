@@ -235,7 +235,19 @@
                                     ></auto-input-perevozka-component>
 
                                     <div  class="create_orders_date_title_1 lit_marg_grade_auto">Водитель:
-                                    <span class="col add_button_grade no_wrap_text" v-b-modal.voditelMod variant="primary" v-on:click="newVoditel()">Добавить</span></div>
+                                    <span class="col add_button_grade no_wrap_text" v-b-modal.voditelMod variant="primary" v-on:click="newVoditel()">Добавить</span>
+                                      <span
+                                          v-if="elem1.voditel_TSNazvanie!==''"
+                                          v-on:click="editVoditel(elem1.voditel)"
+                                          v-b-modal.voditelMod variant="primary">
+                                            <span
+                                                class="iconify edit_icon"
+                                                data-icon="akar-icons:edit"
+                                                style="color: #a6a6a6;"
+                                                data-width="20" data-height="20"
+                                            ></span>
+                                        </span>
+                                    </div>
                             <div class="cr_ord_inp_n_1" v-if="!voditelShowInp" v-on:click="voditelShowInpChange()">{{ elem1.voditel_TSNazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!voditelShowInp&&elem1.voditel_TSNazvanie==''" v-on:click="voditelShowInpChange()">Выбрать водителя</div>
                                     <auto-input-voditel-component v-if="voditelShowInp" class="select_width_grade"
@@ -250,7 +262,19 @@
 
                                     <div class="col-6 min_ts">
                             <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
-                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span></div>
+                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span>
+                              <span
+                                  v-if="elem1.TS_TSNazvanie!==''"
+                                  v-on:click="editTS(elem1.nomer_TS)"
+                                  v-b-modal.TSMod variant="primary">
+                                            <span
+                                                class="iconify edit_icon"
+                                                data-icon="akar-icons:edit"
+                                                style="color: #a6a6a6;"
+                                                data-width="20" data-height="20"
+                                            ></span>
+                              </span>
+                            </div>
                             <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!TSShowInp&&elem1.TS_TSNazvanie==''" v-on:click="TSShowInpChange()">Выбрать номер ТС</div>
                                     <auto-input-t-s-component
@@ -263,9 +287,22 @@
                                                                   @childCloseAutoInput="closeParentAutoInput"
                                                                   ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-t-s-component>
+                                         </div>
                                     <div class="col-6 min_ts">
                                         <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ПП:
-                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newPPModal()">Добавить</span></div>
+                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newPPModal()">Добавить</span>
+                                            <span
+                                                v-if="elem1.PP_Nazvanie!==''"
+                                                v-on:click="editPP(elem1.nomer_PP)"
+                                                v-b-modal.PPMod variant="primary">
+                                            <span
+                                                class="iconify edit_icon"
+                                                data-icon="akar-icons:edit"
+                                                style="color: #a6a6a6;"
+                                                data-width="20" data-height="20"
+                                            ></span>
+                                        </span>
+                                        </div>
                             <div class="cr_ord_inp_n_1" v-if="!PPShowInp" v-on:click="PPShowInpChange()">{{ elem1.PP_Nazvanie }}</div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!PPShowInp&&elem1.PP_Nazvanie==''" v-on:click="PPShowInpChange()">Выбрать номер ПП</div>
                                     <auto-input-p-p-component v-if="PPShowInp" class="select_width_grade"
@@ -278,7 +315,7 @@
                                                               ref="AutoSelectComponent_vid_TS"
                                     ></auto-input-p-p-component>
                                     </div>
-                                    </div>
+
                                         <div class="col-12 grade_bold_dark grade_marg_bot">Информация о грузе</div>
                                         <div class="col-6 little_title_grade_margin">
                                             <div class="little_title_grade ">
@@ -338,8 +375,8 @@
 
                                         <!--                        ДАТА ЗАГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
-                        <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="datetime"
-                        format="DD.MM.YYYY H:mm" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
+                        <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="date"
+                        format="DD.MM.YYYY" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
 
@@ -411,8 +448,8 @@
 <!--                                                   class="border_input inp_date" v-model="adres_vygr.date_ts"  />-->
 
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
-                        <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="datetime"
-                                     format="DD.MM.YYYY H:mm" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
+                        <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
+                                     format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
                                     </div>
@@ -477,8 +514,8 @@
 
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
-                                         <date-picker   v-model="sum.data" valueType="format" type="datetime"
-                                                        format="DD.MM.YYYY  H:mm" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
+                                         <date-picker   v-model="sum.data" valueType="format" type="date"
+                                                        format="DD.MM.YYYY" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
                                          </date-picker>
                                      </div>
                                     </div>
@@ -1129,20 +1166,12 @@
                 }
             },
 
-            async  deleteTs()
+              deleteTs()
             {
-                const result = await this.confirmMethodMixin();
-
-                if (result) {
-                    alert('Да');
-                    return true
-                } else {
-                    alert('Нет');
-                    return false
-                }
-
-             //  console.log('spisokTSarr')
-             //  console.log(this.spisokTSarr)
+               // console.log('spisokTSarr')
+               // console.log(this.spisokTSarr)
+               console.log('this.spisokTShead')
+               console.log(this.spisokTShead)
              //    console.log('spisokTSheadadres_pogruzki_TS')
              //    console.log(this.spisokTShead[0].adres_pogruzki_TS)
 
@@ -1230,6 +1259,16 @@
                         })
 
             },
+            editTS(id)
+            {
+                //вызов метода дочернего компонента( модального окна ) редактирования номера ТС
+                this.$refs.modalComponentforActionTS.get_modal_edit_data(id)
+            },
+            editPP(id)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforActionPP.get_modal_edit_data(id)
+            },
             pogruzkaShowInpChange()
             {
                this.pogruzkaShowInp=!this.pogruzkaShowInp
@@ -1279,14 +1318,54 @@
 
                     );
             },
-            get_finall_doc_pdf(doc_type)
+
+            async get_finall_doc_pdf(doc_type)
             {
                 this.current_doc=doc_type
+                let dovType='';
+                //если доверенность то выбираем между док и эксель
+                if(doc_type==2)
+                {
+                    const result = await this.$swal.fire({
+                        title: 'Выберите тип документа',
+                        showCancelButton: true,
+                        confirmButtonText: 'Doc',
+                        cancelButtonText: 'Excel',
+                        cancelButtonColor: '#d33',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        preConfirm: (choice) => {
+                            return choice;
+                        },
+                    });
+                    if (result.isConfirmed) {
+                        dovType='DOC';
+                    } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                        dovType='Excel';
+                    } else {
+                        dovType=''
+                    }
+                    if(dovType!='')
+                    {
+                        this.callGetDocPDF(dovType)
+                    }
+                }
+                else
+                {
+                    this.callGetDocPDF(dovType)
+                }
+
+
+
+            },
+            callGetDocPDF(dovType)
+            {
                 axios
                     .post('/get_finall_doc_pdf',{
                          doc_type:this.current_doc,
                          order_id:this.order_id,
-                         id_ts:this.right_current_TS
+                         id_ts:this.right_current_TS,
+                         dovType:dovType,
                     })
                     .then(response => {
                         window.location.assign('/get_finall_doc_pdf_file/templates/'+response.data.file) ;
@@ -1737,6 +1816,11 @@
                                 })
                         )
                     )
+            },
+            editVoditel(idVoditel)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforActionVoditel.get_modal_edit_data(idVoditel)
             },
             add_pogruzka_grade()
             {
