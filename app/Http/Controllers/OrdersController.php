@@ -589,6 +589,7 @@ class OrdersController extends Controller
     }
     public function downloadNomenklaturaFull()
     {
+        $this->docService->delDoc(public_path('united/'.request('id').'.xlsx'));
         // Создаем объект класса Spreadsheet
         $spreadsheet = new Spreadsheet();
         // Открываем первый документ

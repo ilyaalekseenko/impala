@@ -22,10 +22,10 @@
                     })
                     .then(response => {
                         window.location.assign('/downloadFileByName/'+this.order_id+'.xlsx') ;
-                        axios
-                            .post('/delFile',{
-                                pathToDel:'/united/'+this.order_id+'.xlsx',
-                            })
+                        // axios
+                        //     .post('/delFile',{
+                        //         pathToDel:'/united/'+this.order_id+'.xlsx',
+                        //     })
                     })
             },
         }
