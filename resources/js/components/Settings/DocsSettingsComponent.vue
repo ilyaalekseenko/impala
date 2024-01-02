@@ -13,7 +13,12 @@
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="show_vars_func('ZAI')">Настройка шаблона Запроса</div>
                         <div class="col add_ts_button5 text-center doc_set_button" v-on:click="download_current_doc('ZAI')">Скачать шаблон Запроса</div>
                     <div class="doc_set_marg">{{ ZAI_name }}</div>
+
+                    <div class="col add_ts_button5 text-center doc_set_button" v-on:click="store_doc_NOM()">Загрузить шаблон Номенклатуры</div>
+                    <div class="doc_set_marg">{{ NOM_name }}</div>
+
                     <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
+                    <input hidden="true" type="file" id="files_doc" ref="files_docNom"  v-on:change="handleFilesUploadDocNom()"/>
                 </div>
                 <div>
                     В формате xlsx переменную указывать в виде {переменная} без пробелов в скобках. Формат xlsx обязателен, xls устаревший и приводит к не корректной работе. Перевеодить прямо в excel редакторе, без посторонних сайтов.
@@ -57,14 +62,6 @@
                         </tbody>
                     </table>
 
-
-<!--                    <div v-for="(item, index) in TNvars" v-if="item.list_id==selectedItem">-->
-<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.cell_number,'cell_number')"  v-model="item.cell_number"  />-->
-<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.width_cell,'width_cell')"  v-model="item.width_cell"  />-->
-<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.var_name,'var_name')"  v-model="item.var_name"  />-->
-<!--                        <input @blur="updateDocsInputVarsByName(item.id,item.font_size,'font_size')"  v-model="item.font_size"  />-->
-<!--                        <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteCell(item.id)">-</button>-->
-<!--                    </div>-->
                     <button type="button" class="btn btn-secondary" v-on:click="showBotVars()">Показать переменные</button>
                     <table class="table" v-if="show_bot_vars">
                         <thead>
@@ -147,6 +144,7 @@ created() {
                 DOV_name:'',
                 ZAI_name:'',
                 DOV_DOC_name:'',
+                NOM_name:'',
                 arr_TH_vars:new Array(),
                 arr_DOV_vars:new Array(),
                 arr_ZAI_vars:new Array(),
@@ -161,7 +159,8 @@ created() {
                 TNvars:{},
                 TNListArr: {},
                 selectedItem: null,
-                show_bot_vars:false
+                show_bot_vars:false,
+                showNomSettings:false
 
             }
         },
@@ -397,7 +396,12 @@ created() {
                     this.DOV_name=response.data.DOV
                     this.ZAI_name=response.data.ZAI
                     this.DOV_DOC_name=response.data.DOV_DOC
+                    this.NOM_name=response.data.NOM
                     })
+            },
+            store_doc_NOM()
+            {
+                this.$refs.files_docNom.click();
             },
           async store_doc(type)
             {
@@ -430,6 +434,50 @@ created() {
                 }
 
             },
+
+            handleFilesUploadDocNom()
+            {
+                this.doc_type='NOM';
+                let full_name = '';
+                let ext = '';
+                let uploadedFiles = this.$refs.files_docNom.files;
+                let flag = 0;
+                ext = (uploadedFiles[0].name.match(/\.[0-9a-z]+$/i))
+                full_name = (uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)/))
+                if (ext[0] == '.xlsx') {
+                    flag = 1;
+                }
+                if (flag == 1)
+                {
+                    let formData = new FormData();
+                    let file = uploadedFiles;
+                    formData.append('file_xlsx', file[0]);
+                    formData.append('doc_type', this.doc_type);
+                    formData.append('full_name', full_name[0]);
+                    axios.post('/store_doc_templ_nom',
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        }
+                    )
+                        .then(response => {
+                            if(response.data.status=='success')
+                            {
+                                if(this.doc_type== 'NOM')
+                                {
+                                    this.NOM_name=full_name[0]
+                                }
+                            }
+                        })
+                }
+                else
+                {
+                    alert('Формат файла должен быть xlsx')
+                }
+            },
+
             handleFilesUploadDoc() {
                 let full_name = '';
                 let ext = '';

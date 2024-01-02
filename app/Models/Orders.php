@@ -269,4 +269,9 @@ class Orders extends Authenticatable
             return false;
         }
     }
+    public function getNomenklaturaFileName($id)
+    {
+        $order = Orders::where('id', $id)->first();
+        return $order->nomenklatura;
+    }
 }

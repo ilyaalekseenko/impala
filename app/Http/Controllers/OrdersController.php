@@ -520,6 +520,7 @@ class OrdersController extends Controller
         $DOV = DocsTemplate::where('doc_type','DOV')->get();
         $ZAI = DocsTemplate::where('doc_type','ZAI')->get();
         $DOV_DOC = DocsTemplate::where('doc_type','DOV_DOC')->get();
+        $NOM = DocsTemplate::where('doc_type','NOM')->get();
         if ($TH->isEmpty()) {
             $TH='';
         }
@@ -548,13 +549,20 @@ class OrdersController extends Controller
         {
             $DOV_DOC=$DOV_DOC[0]['doc_name'];
         }
-
+        if ($NOM->isEmpty()) {
+            $NOM='';
+        }
+        else
+        {
+            $NOM=$NOM[0]['doc_name'];
+        }
         return response()->json([
             'status' => 'success',
             'TH' =>$TH,
             'DOV' =>$DOV,
             'ZAI' =>$ZAI,
             'DOV_DOC' =>$DOV_DOC,
+            'NOM' =>$NOM,
         ], 200);
     }
     public function get_xlsx_file($filename)
@@ -564,7 +572,10 @@ class OrdersController extends Controller
     public function get_finall_doc_pdf_file($filename)
     {
         return response()->download(public_path('templates/'.$filename));
-
+    }
+    public function downloadFileByName($filename)
+    {
+         return response()->download(public_path('united/'.$filename));
     }
     public function download_xlsx_orders(Request $request)
     {
@@ -575,62 +586,61 @@ class OrdersController extends Controller
             'status' => 'success',
             'file' =>$file,
         ], 200);
-
     }
-    public function mergeListExcel1()
-    {
-        $spreadsheet1 = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('united/1.xlsx'));
-        $spreadsheet2 = \PhpOffice\PhpSpreadsheet\IOFactory::load(public_path('united/2.xlsx'));
-
-        // Получаем первый лист из первого документа
-        $sheetFromFirstDocument1 = $spreadsheet1->getSheet(0);
-
-// Получаем первый лист из второго документа
-        $sheetFromSecondDocument2 = $spreadsheet2->getSheet(0);
-
-// Создаем новый документ
-        $combinedSpreadsheet = new Spreadsheet();
-
-// Добавляем листы в новый документ
-        $combinedSpreadsheet->addSheet($sheetFromFirstDocument1);
-        $combinedSpreadsheet->addSheet($sheetFromSecondDocument2);
-
-// Сохраняем новый документ
-
-        $combinedPath = public_path('united/3.xlsx');
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($combinedSpreadsheet);
-        $writer->save($combinedPath);
-    }
-    public function mergeListExcel()
+    public function downloadNomenklaturaFull()
     {
         // Создаем объект класса Spreadsheet
         $spreadsheet = new Spreadsheet();
-
-// Открываем первый документ
+        // Открываем первый документ
+        $firstFileName=$this->order_mod->getNomenklaturaFileName(request('id'));
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        $spreadsheet1 = $reader->load(public_path('united/1.xlsx'));
+//        $spreadsheet1 = $reader->load(public_path('templates/'.$firstFileName));
+        $spreadsheet1 = $reader->load(public_path('/images/orders_xlsx/'.request('id').'__'.$firstFileName));
 
-// Получаем лист из первого документа
-      //  $sheet1 = $spreadsheet1->getSheetByName('list1');
-        $sheet1 = $spreadsheet1->getSheet(0);
-
-// Открываем второй документ
+        // Открываем второй документ
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-        $spreadsheet2 = $reader->load(public_path('united/2.xlsx'));
+        $NOM = DocsTemplate::where('doc_type','NOM')->first();
+//        $spreadsheet2 = $reader->load(public_path('united/templateUnited.xlsx'));
+        $spreadsheet2 = $reader->load(public_path('united/'.$NOM->doc_name));
+        // Переменная для хранения порядкового номера листа
+        $orderNumber = 0;
+        // Получаем первый лист из первого документа
+        $sheet1 = $spreadsheet1->getSheet($orderNumber);
 
-// Получаем лист из второго документа
-        $sheet2 = $spreadsheet2->getSheet(0);
-
-// Добавляем лист из первого документа в конец документа
-        $spreadsheet->addSheet($sheet1,0);
-
-// Добавляем лист из второго документа в конец документа
-        $spreadsheet->addSheet($sheet2,1);
-// Сохраняем документ
-
+        // Добавляем лист из первого документа в конец итогового документа
+        $spreadsheet->addSheet($sheet1,$orderNumber);
+        $spreadsheet->getSheet($orderNumber)->setTitle('Sheet_temp_rand_vars '.$orderNumber+1);
+        $orderNumber=1;
+        // Копируем все листы из второго документа в конец итогового документа
+        foreach ($spreadsheet2->getSheetNames() as $sheetName) {
+            $sheet = $spreadsheet2->getSheetByName($sheetName);
+            $spreadsheet->addSheet($sheet,$orderNumber);
+            $spreadsheet->getSheet($orderNumber)->setTitle('Sheet_temp_rand_vars '.$orderNumber+1);
+            $orderNumber++;
+        }
+        //удаляем worksheet если он есть
+        $sheetNameToDelete = 'Worksheet';
+        // Проверяем наличие листа по имени
+        $sheetIndex = $spreadsheet->getIndex(
+            $spreadsheet->getSheetByName($sheetNameToDelete)
+        );
+        if ($sheetIndex !== null) {
+            // Если лист существует, удаляем его
+            $spreadsheet->removeSheetByIndex($sheetIndex);
+        }
+        //переименовываем все листы в нормальные названия
+        $finalListNumber=0;
+        foreach ($spreadsheet->getSheetNames() as $sheetName) {
+            $spreadsheet->getSheet($finalListNumber)->setTitle('Лист '.$finalListNumber+1);
+            $finalListNumber++;
+        }
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save(public_path('united/3.xlsx'));
+        $writer->save(public_path('united/'.request('id').'.xlsx'));
+        return response()->json([
+            'status' => 'success',
+        ], 200);
     }
+
     public function get_finall_doc_pdf(Request $request)
     {
         ini_set('max_execution_time', 180);
@@ -1026,13 +1036,6 @@ class OrdersController extends Controller
                     ->replace('GO',$GO)
                     ->save(public_path('templates/'.$nazvanieDokumenta));
             }
-
-
-
-
-
-
-
             return response()->json([
                 'status' => 'success',
                 'file' =>$nazvanieDokumenta,

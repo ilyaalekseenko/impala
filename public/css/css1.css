@@ -575,6 +575,9 @@
     padding: 6px 6px 6px 6px;
     background-color: #FFFFFF;
 }
+.excel_set:hover {
+    cursor:pointer;
+}
 .bold_title_create_orders {
     font-family: 'Roboto', sans-serif;
     font-style: normal;
@@ -1957,4 +1960,7 @@
     color: #007bff; /* Цвет текста, похожий на цвет ссылки */
     text-decoration: underline; /* Подчеркивание, чтобы текст выглядел как ссылка */
     cursor: pointer; /* Курсор в виде руки, чтобы подчеркнуть интерактивность */
+}
+.nomenklaturaFull:hover {
+    cursor: pointer;
 }

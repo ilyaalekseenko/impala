@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [App\Http\Controllers\OrdersController::class, 'mainOrders'])->name('mainOrders');
+    Route::get('/test', [App\Http\Controllers\OrdersController::class, 'test'])->name('test');
     Route::get('/create_orders/{id?}', [App\Http\Controllers\OrdersController::class, 'createOrders'])->name('createOrders');
     Route::post('/check_if_order_isset', [App\Http\Controllers\OrdersController::class, 'checkIfOrderIsset'])->name('checkIfOrderIsset');
     Route::get('/grade/{id?}', [App\Http\Controllers\GradeController::class, 'showGrade'])->name('showGrade');
@@ -30,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/store_xlsx', [App\Http\Controllers\OrdersController::class, 'storeXlsx'])->name('storeXlsx');
     Route::post('/store_doc', [App\Http\Controllers\OrdersController::class, 'store_doc'])->name('store_doc');
     Route::post('/store_doc_templ', [App\Http\Controllers\OrdersController::class, 'storeDocTempl'])->name('storeDocTempl');
+    Route::post('/store_doc_templ_nom', [App\Http\Controllers\FilesController::class, 'store_doc_templ_nom'])->name('store_doc_templ_nom');
     Route::post('/delete_orders', [App\Http\Controllers\OrdersController::class, 'deleteOrders'])->name('deleteOrders');
     Route::post('/mark_as_important', [App\Http\Controllers\OrdersController::class, 'markAsImportant'])->name('markAsImportant');
     Route::post('/important_mark', [App\Http\Controllers\OrdersController::class, 'importantMark'])->name('importantMark');
@@ -99,7 +101,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_finall_doc_pdf_file/templates/{filename}', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
     Route::post('/download_current_doc', [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');
     Route::post('/download_xlsx_orders', [App\Http\Controllers\OrdersController::class, 'download_xlsx_orders'])->name('download_xlsx_orders');
+    Route::post('/downloadNomenklaturaFull', [App\Http\Controllers\OrdersController::class, 'downloadNomenklaturaFull'])->name('downloadNomenklaturaFull');
     Route::get('/get_xlsx_file/images/orders_xlsx/{filename}', [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
+    Route::get('/downloadFileByName/{filename}', [App\Http\Controllers\OrdersController::class, 'downloadFileByName'])->name('downloadFileByName');
     Route::post('/get_gruzootpravitel_modal', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_modal'])->name('get_gruzootpravitel_modal');
     Route::post('/getPerevozkaModal', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaModal'])->name('getPerevozkaModal');
     Route::post('/getVoditeliModal', [App\Http\Controllers\VoditelController::class, 'getVoditeliModal'])->name('getVoditeliModal');
@@ -174,6 +178,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/deleteList', [App\Http\Controllers\SettingsController::class, 'deleteList'])->name('deleteList');
     Route::post('/deleteCell', [App\Http\Controllers\SettingsController::class, 'deleteCell'])->name('deleteCell');
     Route::post('/mergeListExcel', [App\Http\Controllers\OrdersController::class, 'mergeListExcel'])->name('mergeListExcel');
+    Route::post('/delFile', [App\Http\Controllers\FilesController::class, 'delFile'])->name('delFile');
 
 });
 Auth::routes();
