@@ -42,6 +42,7 @@ use App\Services\PogruzkaTSService;
 use App\Services\ButtonsService;
 use App\Services\HelperService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
 use GuzzleHttp\Exception\ClientException;
@@ -592,6 +593,7 @@ class OrdersController extends Controller
         $this->docService->delDoc(public_path('united/'.request('id').'.xlsx'));
         // Создаем объект класса Spreadsheet
         $spreadsheet = new Spreadsheet();
+
         // Открываем первый документ
         $firstFileName=$this->order_mod->getNomenklaturaFileName(request('id'));
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
@@ -601,24 +603,30 @@ class OrdersController extends Controller
         // Открываем второй документ
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $NOM = DocsTemplate::where('doc_type','NOM')->first();
-//        $spreadsheet2 = $reader->load(public_path('united/templateUnited.xlsx'));
         $spreadsheet2 = $reader->load(public_path('united/'.$NOM->doc_name));
+
         // Переменная для хранения порядкового номера листа
         $orderNumber = 0;
         // Получаем первый лист из первого документа
-        $sheet1 = $spreadsheet1->getSheet($orderNumber);
+        $sheet1 =clone $spreadsheet1->getSheet($orderNumber);
 
+        $clonedWorksheet = clone $spreadsheet1->getSheet($orderNumber);
+//        $clonedWorksheet->setTitle('Sheet_temp_rand_vars '.($orderNumber+1));
         // Добавляем лист из первого документа в конец итогового документа
-        $spreadsheet->addSheet($sheet1,$orderNumber);
-        $spreadsheet->getSheet($orderNumber)->setTitle('Sheet_temp_rand_vars '.$orderNumber+1);
+        $spreadsheet->addExternalSheet($clonedWorksheet);
         $orderNumber=1;
+
+
         // Копируем все листы из второго документа в конец итогового документа
         foreach ($spreadsheet2->getSheetNames() as $sheetName) {
-            $sheet = $spreadsheet2->getSheetByName($sheetName);
-            $spreadsheet->addSheet($sheet,$orderNumber);
-            $spreadsheet->getSheet($orderNumber)->setTitle('Sheet_temp_rand_vars '.$orderNumber+1);
+
+//            $sheet = $spreadsheet2->getSheetByName($sheetName);
+            $clonedWorksheet = clone $spreadsheet2->getSheetByName($sheetName);
+            $spreadsheet->addExternalSheet($clonedWorksheet);
+//            $spreadsheet->getSheet($orderNumber)->setTitle('Sheet_temp_rand_vars '.($orderNumber+1));
             $orderNumber++;
         }
+
         //удаляем worksheet если он есть
         $sheetNameToDelete = 'Worksheet';
         // Проверяем наличие листа по имени
@@ -629,14 +637,23 @@ class OrdersController extends Controller
             // Если лист существует, удаляем его
             $spreadsheet->removeSheetByIndex($sheetIndex);
         }
-        //переименовываем все листы в нормальные названия
-        $finalListNumber=0;
-        foreach ($spreadsheet->getSheetNames() as $sheetName) {
-            $spreadsheet->getSheet($finalListNumber)->setTitle('Лист '.$finalListNumber+1);
-            $finalListNumber++;
-        }
+//
+//        //переименовываем все листы в нормальные названия
+//        $finalListNumber=0;
+//        foreach ($spreadsheet->getSheetNames() as $sheetName) {
+//            $spreadsheet->getSheet($finalListNumber)->setTitle('Лист '.$finalListNumber+1);
+//            $finalListNumber++;
+//        }
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-        $writer->save(public_path('united/'.request('id').'.xlsx'));
+
+        try {
+            $writer->save(public_path('united/'.request('id').'.xlsx'));
+        }
+        catch (Exception $e)
+        {
+
+        }
+
         return response()->json([
             'status' => 'success',
         ], 200);

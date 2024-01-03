@@ -22,11 +22,16 @@
                     })
                     .then(response => {
                         window.location.assign('/downloadFileByName/'+this.order_id+'.xlsx') ;
-                        // axios
-                        //     .post('/delFile',{
-                        //         pathToDel:'/united/'+this.order_id+'.xlsx',
-                        //     })
                     })
+                    .catch(error => {
+                        let errorMessage=error.response.data.message
+                        let regex = /Workbook already contains a worksheet named/;
+                        let regex2 = /Rename the external sheet first/g;
+                        let modifiedMessage = errorMessage
+                            .replace(regex, 'Ошибка, дублирование названия страницы')
+                            .replace(regex2, 'Переименуйте лист в любом из документов');
+                        alert(modifiedMessage);
+                    });
             },
         }
     }
