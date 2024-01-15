@@ -64,6 +64,7 @@ Vue.component('modal-p-p-component', require('./components/ModalPPComponent').de
 Vue.component('t-s-modal-component', require('./components/Settings/TSModalComponent').default);
 Vue.component('impala-yr-adres-component', require('./components/Settings/ImpalaYrAdresComponent').default);
 Vue.component('nomenklatura-component', require('./components/files/NomenklaturaComponent').default);
+Vue.component('main-loading-component', require('./components/Loading/MainLoadingComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

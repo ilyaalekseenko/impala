@@ -179,6 +179,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/deleteCell', [App\Http\Controllers\SettingsController::class, 'deleteCell'])->name('deleteCell');
     Route::post('/mergeListExcel', [App\Http\Controllers\OrdersController::class, 'mergeListExcel'])->name('mergeListExcel');
     Route::post('/delFile', [App\Http\Controllers\FilesController::class, 'delFile'])->name('delFile');
+    Route::get('/main_loading', [App\Http\Controllers\LoadingController::class, 'main_loading'])->name('main_loading');
 
 });
 Auth::routes();

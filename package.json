@@ -37,6 +37,7 @@
         "maska": "^2.1.10",
         "moment": "^2.29.3",
         "pusher-js": "^8.0.1",
+        "three": "^0.160.0",
         "v-click-outside": "^3.2.0",
         "v-mask": "^2.3.0",
         "vue-awesome-sidebar": "^1.2.1",
