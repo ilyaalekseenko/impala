@@ -220,7 +220,7 @@ class Orders extends Authenticatable
                 $query->select('order_id', TS::raw('COALESCE(SUM(stavka_TS * kol_TS_TS), 0) as total'))
                     ->groupBy('order_id');
             }])
-            ->select('orders.*', 'o1.full_name as otkuda', 'o2.full_name as kuda', Orders::raw("CONCAT(u.first_name, ' ', u.last_name, ' ', u.patronymic) as logistFIO")) // Объединение полей пользователя
+            ->select('orders.*', 'o1.full_name as otkuda', 'o2.full_name as kuda',  Orders::raw("CONCAT_WS(' ', NULLIF(u.first_name, ''), NULLIF(u.last_name, ''), NULLIF(u.patronymic, '')) as logistFIO"))// Объединение полей пользователя
             ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->get();
 
