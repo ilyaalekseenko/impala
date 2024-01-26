@@ -100,22 +100,29 @@
                             <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
                             <div class="col-1 orders_title_table_main head_font" v-show="checkRolePermissionMixin([1])">Статус</div>
                             <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
-                            <div class="col-2 orders_title_table_main head_font">Откуда</div>
-                            <div class="col-2 orders_title_table_main head_font">Куда</div>
+                            <div class="col-1 orders_title_table_main head_font">Откуда</div>
+                            <div class="col-1 orders_title_table_main head_font">Куда</div>
                             <div class="col-2 orders_title_table_main head_font">Заказчик</div>
+                            <div class="col-1 orders_title_table_main head_font">Рассчитать до</div>
+                            <div class="col-1 orders_title_table_main head_font">Логист</div>
+                            <div class="col-1 orders_title_table_main head_font">Общий бюджет</div>
                         </div>
                         <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: order.important==1 }">
+
                         <div class="col-1 orders_title_table text-start row">
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="order.checked_order">
                             <div class="col-10">{{ order.nomer_zayavki }}</div>
                         </div>
-                        <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
+                            <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
                             <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
                             <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.perevozka_name }}</div>
                             <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
-                            <div class="col-2 orders_title_table" >{{ order.adres_pogruzke }}</div>
-                        <div class="col-2 orders_title_table" >{{ order.adres_vygruski }}</div>
+                            <div class="col-1 orders_title_table" >{{ order.adres_pogruzke }}</div>
+                        <div class="col-1 orders_title_table" >{{ order.adres_vygruski }}</div>
                         <div class="col-2 orders_title_table">{{ order.kompaniya_zakazchik }}</div>
+                        <div class="col-1 orders_title_table">{{ order.rasschitat_do }}</div>
+                        <div class="col-1 orders_title_table">{{ order.logistFIO }}</div>
+                        <div class="col-1 orders_title_table">{{ order.ob_budjet }}</div>
                         </div>
                     </div>
                 </div>
@@ -482,6 +489,8 @@ Vue.filter('formatDate', function(value) {
                     .then(({ data }) => (
                             this.countAllTypes=data.tipesCount,
                                 data.list_colored.forEach(function(entry) {
+                                    const tsTotal = entry.ts.length > 0 ? entry.ts[0].total : 0;
+                                    console.log(tsTotal)
                                     inp.push({
                                         id:entry.id,
                                         data_vneseniya:entry.data_vneseniya,
@@ -492,7 +501,10 @@ Vue.filter('formatDate', function(value) {
                                         kompaniya_zakazchik:entry.kompaniya_zakazchik,
                                         checked_order:false,
                                         important:entry.important,
-                                        nomer_zayavki:entry.nomer_zayavki
+                                        nomer_zayavki:entry.nomer_zayavki,
+                                        rasschitat_do:entry.rasschitat_do,
+                                        logistFIO:entry.logistFIO,
+                                        ob_budjet:tsTotal,
                                     });
                                 })
                                 // this.pagination_counter()

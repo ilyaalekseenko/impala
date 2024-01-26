@@ -1127,6 +1127,7 @@ class OrdersController extends Controller
       $count=$this->orderService->countOrdersListService($userStatus,request('columnName'));
       //добавим статус для каждой заявки
       $resArr=$this->orderService->setStatustoOrder($resArr);
+
         return response()->json([
             'status' => 'success',
             'list_colored' => $resArr,

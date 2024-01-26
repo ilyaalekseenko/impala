@@ -881,7 +881,7 @@
                         nomer_zayavki:this.new_nomer_zayavki
                     })
                     .then(response => {
-                        console.log(response.data.updated)
+                      //  console.log(response.data.updated)
                         //если такая заявка уже была
                         if(response.data.updated=='false')
                         {
@@ -1502,7 +1502,6 @@
             },
             update_order()
             {
-
                 axios
                     .post('/update_order',{
                         id:this.order_id,
@@ -1511,7 +1510,6 @@
                         nomenklatura:this.nomenklatura,
                         kompaniya_zakazchik_name:this.kompaniya_zakazchik_name,
                         kompaniya_zakazchik_id:this.kompaniya_zakazchik,
-                        managerZakazchik_name:this.menedzer_zakazchik_name,
                         managerZakazchik_id:this.menedzer_zakazchik,
                         ISD:this.ISD,
                         cena_kontrakta:this.cena_kontrakta,

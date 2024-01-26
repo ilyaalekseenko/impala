@@ -63,6 +63,12 @@ class Orders extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ts()
+    {
+        return $this->hasMany(TS::class, 'order_id', 'id');
+    }
+
     public function getOrderByIdInModel($id)
     {
        return Orders::where('id', '=', $id) ->get();
@@ -99,7 +105,6 @@ class Orders extends Authenticatable
             'data_vneseniya' =>request('data_vneseniya'),
             'rasschitat_do' =>request('rasschitat_do'),
             'nomenklatura' =>request('nomenklatura'),
-            'nomer_zayavki' =>request('nomer_zayavki'),
             'kompaniya_zakazchik' =>request('kompaniya_zakazchik'),
             'menedzer_zakazchik' =>request('menedzer_zakazchik'),
             'ISD' =>request('ISD'),
@@ -198,21 +203,27 @@ class Orders extends Authenticatable
     public function getColumnOrderListAdmin($columnName,$offset,$limit)
     {
         return Orders::
-            when($columnName=='zurnal_zaiavok', function($q)use ($offset,$limit){
-                return $q->where('orders.id','>',0)
+        when($columnName == 'zurnal_zaiavok', function ($q) use ($offset, $limit) {
+            return $q->where('orders.id', '>', 0)
                 ->offset($offset)
                 ->limit($limit);
-            })
-            ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
-                return $q->where($columnName,1)->where('orders.id','>',0)
+        })
+            ->when($columnName !== 'zurnal_zaiavok', function ($q) use ($columnName, $offset, $limit) {
+                return $q->where($columnName, 1)->where('orders.id', '>', 0)
                     ->offset($offset)
                     ->limit($limit);
             })
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
-            ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
-           ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
-           ->get();
+            ->leftJoin('users as u', 'orders.logist', '=', 'u.id') // Добавлено соединение с таблицей users
+            ->with(['ts' => function ($query) {
+                $query->select('order_id', TS::raw('COALESCE(SUM(stavka_TS * kol_TS_TS), 0) as total'))
+                    ->groupBy('order_id');
+            }])
+            ->select('orders.*', 'o1.full_name as otkuda', 'o2.full_name as kuda', Orders::raw("CONCAT(u.first_name, ' ', u.last_name, ' ', u.patronymic) as logistFIO")) // Объединение полей пользователя
+            ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
+            ->get();
+
     }
     public function getColumnOrderListLogist($columnName,$offset,$limit)
     {
@@ -229,7 +240,8 @@ class Orders extends Authenticatable
             })
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
-            ->select('orders.*', 'o1.full_name as otkuda','o2.full_name as kuda')
+            ->leftJoin('users as u', 'orders.logist', '=', 'u.id') // Добавлено соединение с таблицей users
+            ->select('orders.*', 'o1.full_name as otkuda', 'o2.full_name as kuda', Orders::raw("CONCAT(u.first_name, ' ', u.last_name, ' ', u.patronymic) as logistFIO")) // Объединение полей пользователя
             ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->get();
     }
