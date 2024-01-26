@@ -241,6 +241,10 @@ class Orders extends Authenticatable
             ->leftJoin('gruzootpravitel_adresas as o1', 'orders.adres_pogruzke', '=', 'o1.id')
             ->leftJoin('gruzootpravitel_adresas as o2', 'orders.adres_vygruski', '=', 'o2.id')
             ->leftJoin('users as u', 'orders.logist', '=', 'u.id') // Добавлено соединение с таблицей users
+            ->with(['ts' => function ($query) {
+                $query->select('order_id', TS::raw('COALESCE(SUM(stavka_TS * kol_TS_TS), 0) as total'))
+                    ->groupBy('order_id');
+            }])
             ->select('orders.*', 'o1.full_name as otkuda', 'o2.full_name as kuda', Orders::raw("CONCAT(u.first_name, ' ', u.last_name, ' ', u.patronymic) as logistFIO")) // Объединение полей пользователя
             ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->get();
