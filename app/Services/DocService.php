@@ -22,8 +22,6 @@ class DocService
     //откуда берём ( например из запроса), куда ложим и имя с которым сохраняем
     public function storeDoc($from_req, $to, $name)
     {
-//        Storage::move($sourcePath, $destinationPath);
-//        Image::make($from_req)->save(public_path($to).$name);
        $from_req->move(public_path($to), $name);
     }
     public function delDoc($path_to_del)
@@ -36,6 +34,19 @@ class DocService
 
         }
     }
+    public function deleteAllGradeDoc($grade_id)
+    {
+            $grade_path = $this->gradeDocumentsModel->getAllDoc($grade_id);
+            foreach($grade_path as $oneDoc)
+            {
+                try {
+                    $path_to_del = public_path() . "/grade_doc/" . $oneDoc['path_doc'];
+                    unlink($path_to_del);
+                    $this->gradeDocumentsModel->delDocById($oneDoc['id']);
+                } catch (\Throwable $e) {
+                }
+            }
+    }
     public function deleteGradeDoc($grade_id,$id_ts)
     {
         for($i=3;$i<=5;$i++) {
@@ -45,6 +56,21 @@ class DocService
                     $path_to_del = public_path() . "/grade_doc/" . $grade_path[0]['path_doc'];
                     unlink($path_to_del);
                     $this->gradeDocumentsModel->delDoc($grade_id, $id_ts, 0, $i);
+                } catch (\Throwable $e) {
+                }
+            }
+        }
+    }
+    public function deleteGradeDocPogrVygr($grade_id,$id_ts)
+    {
+        for($i=0;$i<=2;$i++) {
+            $grade_path = $this->gradeDocumentsModel->getAllDocPogrVygr($grade_id, $id_ts, $i);
+            foreach($grade_path as $oneDoc)
+            {
+                try {
+                    $path_to_del = public_path() . "/grade_doc/" . $oneDoc['path_doc'];
+                    unlink($path_to_del);
+                    $this->gradeDocumentsModel->delDocById($oneDoc['id']);
                 } catch (\Throwable $e) {
                 }
             }

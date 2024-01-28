@@ -495,8 +495,10 @@ class GradeController extends Controller
     {
         $elem=request('TS');
 
-        //удалим все файлы связанные с этим ТС
+        //удалим все файлы связанные с этим ТС (Подписанная , счёт, счёт фактура)
         $this->docService->deleteGradeDoc(request('grade_id'),$elem['id_ts']);
+        //удалим файлы адресов погрузки и выгрузки в grade
+        $this->docService->deleteGradeDocPogrVygr(request('grade_id'),$elem['id_ts']);
         //удалим погрузки связанные с этим ТС
         $this->gradePogruzkaModel->delPogruzka(request('grade_id'),$elem['id_ts']);
         //удалим сумму

@@ -478,10 +478,21 @@ class OrdersController extends Controller
     }
     public function storeXlsx(Request $request)
     {
-        //сохраним в БД
-        $this->order_mod->updateOneFieldInOrderInModel(request('order_id'),'nomenklatura',request('file_name'));
-        //сохраним в проекте
-        $this->docService->storeDoc(request('file_xlsx'),'/images/orders_xlsx/',$request['order_id'].'__'.$request['full_name']);
+        if(request('doc_type')=='nom')
+        {
+            //сохраним в БД
+            $this->order_mod->updateOneFieldInOrderInModel(request('order_id'),'nomenklatura',request('file_name'));
+            //сохраним в проекте
+            $this->docService->storeDoc(request('file_xlsx'),'/images/orders_xlsx/',$request['order_id'].'__'.$request['full_name']);
+        }
+        if(request('doc_type')=='ready')
+        {
+            //сохраним в БД
+            $this->order_mod->updateOneFieldInOrderInModel(request('order_id'),'gotovyi_raschet',request('file_name'));
+            //сохраним в проекте
+            $this->docService->storeDoc(request('file_xlsx'),'/images/orders_xlsx/',$request['order_id'].'_got'.'__'.$request['full_name']);
+        }
+
         return response()->json([
             'status' => 'success',
             'message' =>'Файл xlsx успешно сохранён',
@@ -580,9 +591,15 @@ class OrdersController extends Controller
     }
     public function download_xlsx_orders(Request $request)
     {
-        $id = $request->input('id');
-        $order = Orders::where('id', '=', $id) ->get();
-        $file=$id.'__'.$order[0]['nomenklatura'];
+        $order = Orders::where('id', request('id')) ->get();
+        if(request('docType')=='nom')
+        {
+            $file=request('id').'__'.$order[0]['nomenklatura'];
+        }
+        if(request('docType')=='ready')
+        {
+            $file=request('id').'_got'.'__'.$order[0]['gotovyi_raschet'];
+        }
         return response()->json([
             'status' => 'success',
             'file' =>$file,
@@ -1486,6 +1503,18 @@ class OrdersController extends Controller
     public function deleteOrders(Request $request)
     {
         $orders_id =  $request->input('orders_id');
+
+        //переберём все заявки на удаление
+        foreach($orders_id as $oneOrderId)
+        {
+        //удаляем объединённый файл
+        $this->docService->delDoc(public_path() . "/united/". $oneOrderId.".xlsx");
+        //удаляем готовый расчёт
+        $gotRasch=$this->order_mod->getOneColumnByOrderId($oneOrderId,'gotovyi_raschet');
+        $this->docService->delDoc(public_path() . "/images/orders_xlsx/".$oneOrderId.'_got__'.$gotRasch);
+        //удаляем все файлы из grade
+        $this->docService->deleteAllGradeDoc($oneOrderId);
+        }
         //удаляем все заявки по id
         $this->order_mod->whereInDeleteInModel(request('orders_id'));
         //удаляем final grades они же ставки

@@ -358,17 +358,6 @@
                                                             @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
                                                             ref="AutoSelectComponent_grade_pogruzka"
                               ></auto-input-author-grade-component>
-                                        <!--                                        <auto-input-component class="cr_ord_inp_n_1"
-                                                                                                      inp_type='grade_pogruzka'
-                                                                                                      :adres_pogruzke_show="flag_pogruz"
-                                                                                                      :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
-                                                                                                      :order_id="order_id"
-                                                                                                      :id_ts="elem1['id_ts']"
-                                                                                                      v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                                                                      :key_in_arr="key1"
-                                                                                                      @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
-                                                                                                      ref="AutoSelectComponent_grade_pogruzka"
-                                                                                ></auto-input-component>-->
                                                                             <div class="col-12 row">
                                                                                 <div class="col-6 date_width">
                                                                                     <div class="little_title_grade">Дата</div>
@@ -389,10 +378,6 @@
                                             </span>
                                         </div>
                                     </div>
-<!--                                                        <form @submit="formSubmit" enctype="multipart/form-data">-->
-<!--                    <input type="file" class="form-control" v-on:change="imgPreview" name="avatar">-->
-<!--                </form>-->
-<!--                                    <input hidden="true" type="file" id="files" ref="files"/>-->
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
                                     <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
                                         <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>

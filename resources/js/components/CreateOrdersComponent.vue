@@ -90,7 +90,7 @@
                             </div>
                             <input @blur="updateOrderNomerZaprosa()" class="cr_ord_inp_n_1 border_input" v-model="new_nomer_zayavki"  />
                         </div>
-                        <div class="col">
+                        <div class="col" v-show="checkRolePermission([1])">
                             <div class="little_title_create_orders">
                                 Компания заказчик
                                 <span class="add_button n1" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('zakazchik',0)">Добавить</span>
@@ -105,7 +105,7 @@
                                                             ref="AutoSelectComponent_vid_TS"
                             ></auto-input-zakazchik-component>
                         </div>
-                        <div class="col">
+                        <div class="col" v-show="checkRolePermission([1])">
                             <div class="little_title_create_orders">
                                 Менеджер заказчика
                                 <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-b-modal.modal-xl v-on:click="select_temp_var('manager',0)">Добавить</span>
@@ -154,11 +154,11 @@
                             </div>
                             <div class="create_orders_bottom">
                                 <div class="cr_ord_div_nomenklatura">{{ nomenklatura }}</div>
-                                <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
-                                <span class="excel_set" v-on:click="addFiles()">
+                                <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload('nom')"/>
+                                <span class="excel_set" v-on:click="addFiles('nom')">
                                 <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
                                 </span>
-                                <span class="excel_set" v-if="nomenklatura" v-on:click="DownloadFiles()">
+                                <span class="excel_set" v-if="nomenklatura" v-on:click="DownloadFiles('nom')">
                                 <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
                                 </span>
                                 <nomenklatura-component
@@ -166,6 +166,21 @@
                                     v-if="nomenklatura"
                                 ></nomenklatura-component>
                             </div>
+
+                            <div class="little_title_create_orders">
+                                Готовый расчёт
+                            </div>
+                            <div class="create_orders_bottom">
+                                <div class="cr_ord_div_nomenklatura">{{ gotovyi_raschet }}</div>
+                                <input hidden="true" type="file" id="files_ready" ref="files_ready"  v-on:change="handleFilesUpload('ready')"/>
+                                <span class="excel_set" v-on:click="addFiles('ready')">
+                                <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                </span>
+                                <span class="excel_set" v-if="gotovyi_raschet" v-on:click="DownloadFiles('ready')">
+                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
+                                </span>
+                            </div>
+
                             <div class="col ad_pogr_marg">
                                 <div class="little_title_create_orders row">
                                    <div class="col no_wrap">Адрес погрузки</div>
@@ -661,6 +676,7 @@
                 order_id:'',
                 vid_perevozki:'',
                 nomenklatura:'',
+                gotovyi_raschet:'',
                 files:[],
                 checked1:'',
                 alert_message:[],
@@ -1544,6 +1560,7 @@
                             this.headerTime2=data.data[0]['timeRasscheta'],
                             this.rasschitat_do=data.data[0]['rasschitat_do'],
                             this.nomenklatura=data.data[0]['nomenklatura'],
+                            this.gotovyi_raschet=data.data[0]['gotovyi_raschet'],
                             this.nomer_zayavki=data.data[0]['nomer_zayavki'],
                             this.new_nomer_zayavki=data.data[0]['nomer_zayavki'],
                             this.kompaniya_zakazchik_id=data.data[0]['kompaniya_zakazchik'],
@@ -1554,7 +1571,7 @@
                             this.cena_kontrakta=data.data[0]['cena_kontrakta'],
                             this.data_kontrakta=data.data[0]['data_kontrakta'],
                             this.adres_pogruzke=data.data[0]['adres_pogruzke'],
-                                this.adres_vygruski=data.data[0]['adres_vygruski'],
+                            this.adres_vygruski=data.data[0]['adres_vygruski'],
                             this.data_pogruzki=data.data[0]['data_pogruzki'],
                             this.data_dostavki=data.data[0]['data_dostavki'],
                             this.komment_1=data.data[0]['komment_1'],
@@ -2130,31 +2147,64 @@
                 // console.log(moment(date).format('D MM YYYY'));
                return moment(date).format('D MM YYYY');
             },
-            addFiles(){
-                this.$refs.files.click();
+            addFiles(type){
+                if(type=='nom')
+                {
+                    this.$refs.files.click();
+                }
+                if(type=='ready')
+                {
+                    this.$refs.files_ready.click();
+                }
             },
-            DownloadFiles()
+            DownloadFiles(type)
             {
                 axios
                     .post('/download_xlsx_orders',{
                         id:this.order_id,
+                        docType:type,
                     })
                     .then(response => {
                         window.location.assign('/get_xlsx_file/images/orders_xlsx/'+response.data.file) ;
                     })
             },
-            handleFilesUpload(){
-                let flag = 0;
-                let uploadedFiles = this.$refs.files.files;
+            handleFilesUpload(type){
+                let uploadedFiles='';
+                if(type=='nom')
+                {
+                     uploadedFiles = this.$refs.files.files;
+                }
+                if(type=='ready')
+                {
+                     uploadedFiles = this.$refs.files_ready.files;
+                }
                         if ( /\.(xlsx?)$/i.test( uploadedFiles[0].name ) ) {
                             let reg ='';
                            reg=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё\W]+)\.(xlsx?)/))
-                            this.nomenklatura=reg[1];
-                            this.nomenklatura=reg[0];
-                            let formData = new FormData();
+                            if(type=='nom')
+                            {
+                                this.nomenklatura=reg[1];
+                                this.nomenklatura=reg[0];
+                            }
+                            if(type=='ready')
+                            {
+                                this.gotovyi_raschet=reg[1];
+                                this.gotovyi_raschet=reg[0];
+                            }
+
+                                let formData = new FormData();
                                 let file = uploadedFiles;
                                 formData.append('file_xlsx', file[0]);
+                            if(type=='nom')
+                            {
                                 formData.append('file_name',this.nomenklatura);
+                                formData.append('doc_type','nom');
+                            }
+                            if(type=='ready')
+                            {
+                                formData.append('file_name',this.gotovyi_raschet);
+                                formData.append('doc_type','ready');
+                            }
                                 formData.append('order_id',this.order_id);
                                 formData.append('full_name',reg[0]);
                             axios.post( '/store_xlsx',
@@ -2170,6 +2220,7 @@
                         {
                             alert('Не верный формат файла')
                         }
+
             },
 
         }
