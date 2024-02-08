@@ -420,6 +420,12 @@ class GradeController extends Controller
         ], 200);
     }
 
+    public function delete_file_grade_by_id()
+    {
+        GradeDocuments::where('id', request('id'))->delete();
+    }
+
+
     public function delete_file_grade(Request $request)
     {
         $grade_id = $request->input('grade_id');
@@ -455,6 +461,53 @@ class GradeController extends Controller
             'id_doc_type' =>$id_doc_type,
         ], 200);
     }
+
+    public function download_pogruzka_vygr_files($grade_id,$id_ts,$id_pogruzka,$pogr_vygr)
+    {
+        $zipFileName = 'AllDocuments.zip';
+
+        try {
+            $path_to_del = public_path("/images/zip/".$zipFileName);
+            unlink($path_to_del);
+        }
+        catch (\Throwable $e)
+        {
+
+        }
+        if($pogr_vygr=='pogr')
+        {
+            $search_in=['8','9'];
+        }
+        if($pogr_vygr=='vygr')
+        {
+            $search_in=['10','11','12'];
+        }
+
+        $files = GradeDocuments::
+        where('grade_id', '=', $grade_id)
+            -> where('id_ts', '=', $id_ts)
+            -> where('id_pogruzka', '=', $id_pogruzka)
+            -> whereIn('id_doc_type', $search_in)
+            ->get();
+
+        $zip = new ZipArchive;
+
+        if ($zip->open(public_path("/images/zip/".$zipFileName), ZipArchive::CREATE) === TRUE) {
+            // Add Multiple file
+            foreach($files as $file) {
+             //   $zip->addFile( public_path() . "/grade_doc/" . $file['path_doc'], public_path() . "/grade_doc/" . $file['name_doc']);
+                $zip->addFile(public_path() . "/grade_doc/" . $file['path_doc'], $file['name_doc']);
+
+            }
+            $zip->close();
+        }
+        $filetopath=public_path("/images/zip/".$zipFileName);
+        // Create Download Response
+        if(file_exists($filetopath)){
+            return response()->download($filetopath);
+        }
+    }
+
     public function download_all_doc_grade($grade_id,$id_ts)
     {
         $zipFileName = 'AllDocuments.zip';
@@ -481,7 +534,9 @@ class GradeController extends Controller
         if ($zip->open(public_path("/images/zip/".$zipFileName), ZipArchive::CREATE) === TRUE) {
             // Add Multiple file
             foreach($files as $file) {
-                $zip->addFile( public_path() . "/grade_doc/" . $file['path_doc'], public_path() . "/grade_doc/" . $file['name_doc']);
+//                $zip->addFile( public_path() . "/grade_doc/" . $file['path_doc'], public_path() . "/grade_doc/" . $file['name_doc']);
+                $zip->addFile(public_path() . "/grade_doc/" . $file['path_doc'], $file['name_doc']);
+
             }
             $zip->close();
         }
@@ -623,6 +678,40 @@ class GradeController extends Controller
                 {
                     $pogruzka['doc_name']=$name_doc[0]['name_doc'];
                 }
+                //получаем адреса файлов Документы и фото загрузки
+                $name_doc_DOC = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    ->where('id_ts', '=', $grade['id_ts'])
+                    ->where('id_doc_type', '=',8)
+                    ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
+                    ->get();
+
+                if ($name_doc_DOC->isEmpty()) {
+                    $pogruzka['doc_name_DOC']='';
+                }
+                else
+                {
+                    $pogruzka['doc_name_DOC']=$name_doc_DOC;
+                }
+                //получаем адреса файлов Документы и фото загрузки
+                $doc_name_FOTO = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    ->where('id_ts', '=', $grade['id_ts'])
+                    ->where('id_doc_type', '=',9)
+                    ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
+                    ->get();
+
+                if ($doc_name_FOTO->isEmpty()) {
+                    $pogruzka['doc_name_FOTO']='';
+                }
+                else
+                {
+                    $pogruzka['doc_name_FOTO']=$doc_name_FOTO;
+                }
+
+
+
+
                 $pogruzka['show_DP_date']=false;
                 $pogruzka['show_DP_time']=false;
 
@@ -658,6 +747,56 @@ class GradeController extends Controller
                 {
                     $pogruzka['doc_name']=$name_doc[0]['name_doc'];
                 }
+
+
+                //получаем адреса файлов Документы и фото загрузки
+                $name_doc_DOC = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    ->where('id_ts', '=', $grade['id_ts'])
+                    ->where('id_doc_type', '=',10)
+                    ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
+                    ->get();
+
+                if ($name_doc_DOC->isEmpty()) {
+                    $pogruzka['doc_name_DOC']='';
+                }
+                else
+                {
+                    $pogruzka['doc_name_DOC']=$name_doc_DOC;
+                }
+                //получаем адреса файлов Документы и фото загрузки
+                $doc_name_FOTO = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    ->where('id_ts', '=', $grade['id_ts'])
+                    ->where('id_doc_type', '=',11)
+                    ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
+                    ->get();
+
+                if ($doc_name_FOTO->isEmpty()) {
+                    $pogruzka['doc_name_FOTO']='';
+                }
+                else
+                {
+                    $pogruzka['doc_name_FOTO']=$doc_name_FOTO;
+                }
+                //получаем адреса файлов Документы и фото загрузки
+                $doc_name_FOTO = GradeDocuments::
+                where('grade_id', '=', $grade_id)
+                    ->where('id_ts', '=', $grade['id_ts'])
+                    ->where('id_doc_type', '=',12)
+                    ->where('id_pogruzka', '=', $pogruzka['id_pogruzka'])
+                    ->get();
+
+                if ($doc_name_FOTO->isEmpty()) {
+                    $pogruzka['doc_name_ACT']='';
+                }
+                else
+                {
+                    $pogruzka['doc_name_ACT']=$doc_name_FOTO;
+                }
+
+
+
                 $pogruzka['show_DP_date']=false;
                 $pogruzka['show_DP_time']=false;
 

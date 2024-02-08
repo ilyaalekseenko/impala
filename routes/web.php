@@ -87,14 +87,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update_one_data_summa', [App\Http\Controllers\GradeController::class, 'update_one_data_summa'])->name('update_one_data_summa');
     Route::post('/deleteStavka', [App\Http\Controllers\GradeController::class, 'deleteStavka'])->name('deleteStavka');
     Route::post('/store_grade_file', [App\Http\Controllers\GradeController::class, 'store_grade_file'])->name('store_grade_file');
+    Route::post('/store_grade_file_mult', [App\Http\Controllers\FilesController::class, 'store_grade_file_mult'])->name('store_grade_file_mult');
     Route::post('/add_to_naznachenie_stavki', [App\Http\Controllers\GradeController::class, 'add_to_naznachenie_stavki'])->name('add_to_naznachenie_stavki');
     Route::post('/add_to_work', [App\Http\Controllers\GradeController::class, 'add_to_work'])->name('add_to_work');
     Route::post('/delete_file_grade', [App\Http\Controllers\GradeController::class, 'delete_file_grade'])->name('delete_file_grade');
+    Route::post('/delete_file_grade_by_id', [App\Http\Controllers\GradeController::class, 'delete_file_grade_by_id'])->name('delete_file_grade_by_id');
     Route::post('/deletePogVygInTS', [App\Http\Controllers\GradeController::class, 'deletePogVygInTS'])->name('deletePogVygInTS');
     Route::post('/get_ob_budzet_down', [App\Http\Controllers\GradeController::class, 'get_ob_budzet_down'])->name('get_ob_budzet_down');
     Route::post('/get_logist_list', [App\Http\Controllers\GradeController::class, 'get_logist_list'])->name('get_logist_list');
     Route::post('/get_templ_names', [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
     Route::get('/download_all_doc_grade/{grade_id}/{ts_id}', [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');
+    Route::get('/download_pogruzka_vygr_files/{grade_id}/{ts_id}/{id_pogruzka}/{pogr_vygr}', [App\Http\Controllers\GradeController::class, 'download_pogruzka_vygr_files'])->name('download_pogruzka_vygr_files');
     Route::post('/get_template_vars', [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');
     Route::post('/addPerevozchikToStavka', [App\Http\Controllers\GradeController::class, 'addPerevozchikToStavka'])->name('addPerevozchikToStavka');
     Route::post('/get_finall_doc_pdf', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
@@ -180,6 +183,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mergeListExcel', [App\Http\Controllers\OrdersController::class, 'mergeListExcel'])->name('mergeListExcel');
     Route::post('/delFile', [App\Http\Controllers\FilesController::class, 'delFile'])->name('delFile');
     Route::get('/main_loading', [App\Http\Controllers\LoadingController::class, 'main_loading'])->name('main_loading');
+    Route::post('/updateOrdersPerevozchik', [App\Http\Controllers\OrdersController::class, 'updateOrdersPerevozchik'])->name('updateOrdersPerevozchik');
+    Route::post('/addEmptyPerevozchik', [App\Http\Controllers\OrdersController::class, 'addEmptyPerevozchik'])->name('addEmptyPerevozchik');
+    Route::post('/updatePerevozchikField', [App\Http\Controllers\OrdersController::class, 'updatePerevozchikField'])->name('updatePerevozchikField');
+    Route::post('/getPerevozchikData', [App\Http\Controllers\OrdersController::class, 'getPerevozchikData'])->name('getPerevozchikData');
+    Route::post('/deletePerevozchikFromOrder', [App\Http\Controllers\OrdersController::class, 'deletePerevozchikFromOrder'])->name('deletePerevozchikFromOrder');
 
 });
 Auth::routes();

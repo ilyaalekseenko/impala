@@ -16,7 +16,12 @@ class Perevozka extends Model
         return $this->hasMany(PerevozkaContacts::class, 'perevozka_id');
     }
 
-    public function savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania)
+    public function getPerevozchikData($id)
+    {
+        return Perevozka::with('contacts')->where('id',$id)->get();
+    }
+
+    public function savePerevozkaModel($forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania,$kod_ATI,$kommentariy)
     {
         return Perevozka::create([
             'forma_id' => $forma,
@@ -32,9 +37,11 @@ class Perevozka extends Model
             'YR_adres' => $yridicheskii_adres,
             'pochtovyi_adres' => $pochtovyi_adres,
             'gorod_bazirovania' => $gorod_bazirovania,
+            'kod_ATI' => $kod_ATI,
+            'kommentariy' => $kommentariy,
         ]);
     }
-    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania)
+    public function updatePerevozchik($perevozchikId,$forma,$nazvanie,$data_registracii,$telefon,$INN,$OGRN,$email,$generalnii_direktor,$telefon_gen_dir,$email_gen_dir,$yridicheskii_adres,$pochtovyi_adres,$gorod_bazirovania,$kod_ATI,$kommentariy)
     {
         Perevozka::where('id', $perevozchikId)->update([
             'forma_id' => $forma,
@@ -49,7 +56,9 @@ class Perevozka extends Model
             'email_gen_dir' => $email_gen_dir,
             'YR_adres' => $yridicheskii_adres,
             'pochtovyi_adres' => $pochtovyi_adres,
-            'gorod_bazirovania' => $gorod_bazirovania
+            'gorod_bazirovania' => $gorod_bazirovania,
+            'kod_ATI' => $kod_ATI,
+            'kommentariy' => $kommentariy,
         ]);
     }
     public function getPerevozchiklInOnePage($offset,$limit)

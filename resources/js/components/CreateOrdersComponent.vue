@@ -15,7 +15,11 @@
                                       :chahgeFrontNames='chahgeFrontNames'
                                       vid="GruzzotpravitelComponent"
             ></modal-author-component>
-
+            <modal-perevozchiki-component
+                ref="modalComponentforAction"
+                vid="CreateOrdersComponent"
+                :gradeAddPerevozchik='gradeAddPerevozchik'
+            ></modal-perevozchiki-component>
             <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
@@ -59,6 +63,7 @@
                     </div>
                     <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="setColumn('v_rabote')">
                         <div class="col add_ts_button4 text-center">В работе</div>
+
                     </div>
                 </div>
             </div>
@@ -199,7 +204,7 @@
                                     </div>
                                     <div class="data_pog_dost_height no_padding_right">
                                         <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
-                                        <date-picker ref="datepicker2" type="datetime" valueType="format" v-model="data_pogruzki" format="DD.MM.YYYY H:mm" :open.sync="openDP2" @change="handleChange0"></date-picker>
+                                        <date-picker ref="datepicker2" type="date" valueType="format" v-model="data_pogruzki" format="DD.MM.YYYY" :open.sync="openDP2" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -249,18 +254,66 @@
                                 <textarea class="cr_ord_inp_n_1" v-show="!adresVygruzkiShowSpan" @blur="updateOrderLoc('adres_vygruski',adres_vygruski)" v-model="adres_vygruski" rows="3"  name="adres_vygruski"></textarea>
 
                             </div>
-                            <div class="col-12 row no_padding_right">
-                                <div class="col-5  data_pog_dost  no_padding_right">
-                                    <div class="little_title_create_orders">
-                                        Дата доставки
-                                    </div>
-                                    <div class="data_pog_dost_height no_padding_right">
-                                        <input @click="openDB3" class="cr_ord_inp_n_2 border_input" v-model="data_dostavki"  />
-                                        <date-picker ref="datepicker3" type="datetime" v-model="data_dostavki" valueType="format" format="DD.MM.YYYY H:mm" :open.sync="openDP3" @change="handleChange0"></date-picker>
-                                    </div>
+
+                        </div>
+<!--                        блок перевозчика-->
+                        <div v-for="(onePerevozchik,keyPerevozchik) in perevozchikiList">
+                            <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:
+                                <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">Добавить</span>
+                                <span
+                                    v-if="onePerevozchik['perevozchik_id']"
+                                    v-on:click="show_mod_edit_perevozchik(onePerevozchik['perevozchik_id'],keyPerevozchik)"
+                                    v-b-modal.perevozkaMod variant="primary">
+                                            <span
+                                                class="iconify edit_icon"
+                                                data-icon="akar-icons:edit"
+                                                style="color: #a6a6a6;"
+                                                data-width="20" data-height="20"
+                                            ></span>
+                                        </span>
+                            </div>
+                            <span :id="'myDiv-' + keyPerevozchik + onePerevozchik['perevozchik_id']">
+                            <div class="cr_ord_inp_n_1" v-if="!onePerevozchik['pogruzkaShowInp']" v-on:click="pogruzkaShowInpChange(onePerevozchik['id'])"
+
+                            >{{ onePerevozchik['nazvanie'] }}</div>
+                                </span>
+                            <div class="text-center">
+                                <b-popover :target="'myDiv-' + keyPerevozchik + onePerevozchik['perevozchik_id']" triggers="hover" placement="top" custom-class="wide-popover">
+                                  <div v-for="(onePopUpPerevozchik,key1Perevozchik) in onePerevozchik['contacts']" :key="key1Perevozchik">
+                                    {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
+                                  </div>
+                                </b-popover>
+                            </div>
+                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="(!onePerevozchik['pogruzkaShowInp'])&&((onePerevozchik['nazvanie']==null)||(onePerevozchik['nazvanie']==''))" v-on:click="pogruzkaShowInpChange(onePerevozchik['id'])">Выбрать перевозчика</div>
+                            <auto-input-perevozka-component v-if="onePerevozchik['pogruzkaShowInp']" class="select_width_grade"
+                                                            :order_id="order_id"
+                                                            :vidTsFromParent="onePerevozchik['nazvanie']"
+                                                            :elem1="keyPerevozchik"
+                                                            @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                                                            @childCloseAutoInput="closeParentAutoInputPogruzka"
+                                                            ref="AutoSelectComponent_vid_TS"
+
+                            ></auto-input-perevozka-component>
+                            <div class="col-12">
+                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Код АТИ</div>
+                                <div>{{ onePerevozchik['kod_ATI'] }}</div>
+                                <div class="create_orders_date_title_1 lit_marg_grade_auto">ИНН</div>
+                                <div>{{ onePerevozchik['INN'] }}</div>
+                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Ставка с НДС</div>
+                                <div>
+                                    <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik['stavka_NDS']" @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>
                                 </div>
+                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Ставка без НДС</div>
+                                <div>
+                                <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik['stavka_bez_NDS']" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
+                                </div>
+                                <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="deletePerevozchikFromOrder(onePerevozchik['id'],keyPerevozchik)">-</button>
                             </div>
                         </div>
+                        <div class="col-12 btn_add_per">
+                            <button type="button" class="btn btn-success " v-on:click="addEmptyPerevozchik()">+</button>
+                        </div>
+<!--                        конец блока перевозчика-->
                         <div class="big_comment">
                             <div class="little_title_create_orders">
                                 Комментарий
@@ -307,6 +360,10 @@
                                     <div class="col-2  no_padding_right">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
+                                    </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка без НДС</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS_bez_NDS }}<span v-if="elem.stavka_TS">р.</span></div>
                                     </div>
                                     <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
@@ -370,7 +427,15 @@
                                         Ставка
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS"  />
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS" @input="updateStavkaBezNDS" />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка без НДС
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -391,7 +456,7 @@
                                         <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6" v-show="checkRolePermission([1])">
                                     <div class="little_title_create_orders2">
                                         Маржа
                                     </div>
@@ -520,7 +585,15 @@
                                         Ставка
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS"  />
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS" @input="updateStavkaBezNDS" />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="little_title_create_orders2">
+                                        Ставка без НДС
+                                    </div>
+                                    <div class="create_orders_bottom">
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -541,7 +614,7 @@
                                         <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
                                     </div>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6" v-show="checkRolePermission([1])">
                                     <div class="little_title_create_orders2">
                                         Маржа
                                     </div>
@@ -653,6 +726,9 @@
 </template>
 
 <script>
+
+
+
     import datepicker from 'vuejs-datepicker';
     import moment from 'moment'
     import {logistData} from "../app.js";
@@ -712,6 +788,7 @@
                 add_new_ts:false,
                 vid_TS:'',
                 stavka_TS:'',
+                stavka_TS_bez_NDS:'',
                 // stavka_TS_za_km:'',
                 stavka_kp_TS:'',
                 // marja_TS:'',
@@ -765,8 +842,15 @@
                 headerTime2:'',
                 zakazchikShowInp:true,
                 managerZakazchikShowInp:true,
-                checkboxPogrVygr:false
-
+                checkboxPogrVygr:false,
+                pogruzkaShowInp:false,
+                perevozchikId:'',
+                perevozchikName:'',
+                perevozchikiList:[],
+                editNumberKeyPerevozchik:'',
+                tooltipTarget: "tooltip-target",
+                tooltipText: "Текст, который отображается при наведении курсора на элемент",
+                tooltipContent: "Содержимое всплывающего окна",
             }
         },
         created()
@@ -784,7 +868,6 @@
                 document.getElementsByClassName('mx-input-wrapper')[m].remove();
             }
             this.get_ts_list(this.ts_list_names);
-            console.log(this.ts_list_names)
             let adress=window.location.href;
             adress=(adress.split("/")[4])
             //если новый запрос
@@ -799,7 +882,7 @@
             {
                 this.order_id=adress;
                 this.checkButtonsShow();
-                this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr);
+                this.start_get_old_order(adress,this.oplata_arr,this.spisokTSarr,this.perevozchikiList);
                 this.update_unread_status()
                 this.update_unread_status_v_rabote()
             }
@@ -807,7 +890,6 @@
         },
 
         computed: {
-
             stavka_TS_za_km: function () {
                 if((this.stavka_TS=='')||(this.rasstojanie_TS=='')||(this.stavka_TS==null)||(this.rasstojanie_TS==null))
                 {
@@ -821,6 +903,7 @@
                     return fin
                 }
             },
+
             marja_TS: function () {
                 if(this.stavka_kp_TS==''||this.stavka_TS=='')
                 {
@@ -870,6 +953,78 @@
                 return flag
 
             },
+
+            pogruzkaShowInpChange(id)
+            {
+                console.log(id)
+                this.perevozchikiList.forEach(obj => {
+                    if (obj.id === id) {
+                        obj.pogruzkaShowInp = !obj.pogruzkaShowInp; // Инвертируем значение
+                    }
+                });
+                console.log(this.perevozchikiList)
+               // this.pogruzkaShowInp=!this.pogruzkaShowInp
+            },
+            updatePerevozchikField(orderPerevozchikId,fieldName,fieldValue)
+            {
+                axios
+                    .post('/updatePerevozchikField',{
+                        id:orderPerevozchikId,
+                        fieldName:fieldName,
+                        fieldValue:fieldValue,
+                    })
+
+            },
+            updateStavkaPerevozchik(type,key)
+            {
+                if(type=='stavka_NDS')
+                {
+
+                    if((this.perevozchikiList[key]['stavka_NDS']=='')||(this.perevozchikiList[key]['stavka_NDS']==0))
+                    {
+                        this.perevozchikiList[key]['stavka_bez_NDS'] =0
+                    }
+                    else
+                    {
+                        this.perevozchikiList[key]['stavka_bez_NDS'] = (Number(this.perevozchikiList[key]['stavka_NDS'])/ 1.2).toFixed(2);
+                    }
+                }
+                if(type=='stavka_bez_NDS')
+                {
+                    if((this.perevozchikiList[key]['stavka_bez_NDS']=='')||(this.perevozchikiList[key]['stavka_bez_NDS']==0))
+                    {
+                        this.perevozchikiList[key]['stavka_NDS'] =0
+                    }
+                    else
+                    {
+                        this.perevozchikiList[key]['stavka_NDS'] = (Number(this.perevozchikiList[key]['stavka_bez_NDS']) * 1.2).toFixed(2);
+                    }
+                }
+                this.updatePerevozchikField(this.perevozchikiList[key]['id'],'stavka_NDS',this.perevozchikiList[key]['stavka_NDS'])
+                this.updatePerevozchikField(this.perevozchikiList[key]['id'],'stavka_bez_NDS',this.perevozchikiList[key]['stavka_bez_NDS'])
+
+            },
+            updateStavka() {
+                if((this.stavka_TS_bez_NDS=='')||(this.stavka_TS_bez_NDS==0))
+                {
+                    this.stavka_TS =0
+                }
+                else
+                {
+                    this.stavka_TS = (Number(this.stavka_TS_bez_NDS) * 1.2).toFixed(2);
+                }
+            },
+            updateStavkaBezNDS() {
+                if((this.stavka_TS=='')||(this.stavka_TS==0))
+                {
+                    this.stavka_TS_bez_NDS =0
+                }
+                else
+                {
+                    this.stavka_TS_bez_NDS =(Number(this.stavka_TS) / 1.2).toFixed(2) ;
+                }
+
+            },
             zakazchikShowInpChange()
             {
                 this.zakazchikShowInp=!this.zakazchikShowInp
@@ -897,7 +1052,6 @@
                         nomer_zayavki:this.new_nomer_zayavki
                     })
                     .then(response => {
-                      //  console.log(response.data.updated)
                         //если такая заявка уже была
                         if(response.data.updated=='false')
                         {
@@ -910,6 +1064,41 @@
                             this.order_header_text='Запрос номер: '+this.nomer_zayavki+' Дата внесения: '
                         }
 
+                    })
+            },
+            parentMethodFromAutoinputPerevozka(data)
+            {
+                this.perevozchikiList[data.elem1].perevozchik_id=data.id
+                this.perevozchikiList[data.elem1].nazvanie=data.ts_name
+                this.updateOrdersPerevozchik(data.id,data.elem1)
+                this.getPerevozchikData(data.id,data.elem1)
+            },
+            closeParentAutoInputPogruzka(data)
+            {
+                this.perevozchikiList[data.elem1].pogruzkaShowInp=!this.perevozchikiList[data.elem1].pogruzkaShowInp
+            },
+            updateOrdersPerevozchik(perevozchik_id,key)
+            {
+                axios
+                    .post('/updateOrdersPerevozchik',{
+                        order_id:this.order_id,
+                        key:key,
+                        perevozchik_id:perevozchik_id,
+                    })
+                    .then(response => {
+                        if((response.data.perevozchik[0].INN!='')&&(response.data.perevozchik[0].INN!=null))
+                        {
+                            //тут добавить строчку с нвоым параметром
+                            this.perevozchikiList[key].INN=response.data.perevozchik[0].INN
+                        }
+                        if((response.data.perevozchik[0].kod_ATI!='')&&(response.data.perevozchik[0].kod_ATI!=null))
+                        {
+                            this.perevozchikiList[key].kod_ATI=response.data.perevozchik[0].kod_ATI
+                        }
+                        else
+                        {
+                            this.perevozchikiList[key].kod_ATI=''
+                        }
                     })
             },
             inputShow(inpVar)
@@ -931,7 +1120,6 @@
             {
                 if(inpData.type=='adres_pogruzke')
                 {
-                    // console.log('ТУТ СРАБОТАЛО')
                     this.adresPogruzkiShowSpan=!this.adresPogruzkiShowSpan
                     this.adres_pogruzke_show=inpData.inputText
                 }
@@ -941,6 +1129,53 @@
                     this.adres_vygruski_show=inpData.inputText
                 }
 
+            },
+            addEmptyPerevozchik()
+            {
+                axios
+                    .post('/addEmptyPerevozchik',{
+                        order_id:this.order_id,
+                    })
+                    .then(response => {
+                        let objToPush= {};
+                        objToPush['id'] = response.data.perevozchik.id;
+                        objToPush['perevozchik_id'] = '';
+                        objToPush['stavka_NDS'] = '';
+                        objToPush['stavka_bez_NDS'] = '';
+                        objToPush['nazvanie'] = '';
+                        objToPush['INN'] = '';
+                        objToPush['kod_ATI'] = '';
+                        objToPush['pogruzkaShowInp'] = false;
+                        this.perevozchikiList.push(objToPush);
+                        //тут добавить строчку с нвоым параметром
+                    })
+            },
+            //сохранение перевозчика из модального окна
+            gradeAddPerevozchik(id,nazvanie)
+            {
+                    this.perevozchikiList[this.editNumberKeyPerevozchik].perevozchik_id=id
+                    this.perevozchikiList[this.editNumberKeyPerevozchik].nazvanie=nazvanie
+                    this.updateOrdersPerevozchik(id,this.editNumberKeyPerevozchik)
+                    this.getPerevozchikData(id,this.editNumberKeyPerevozchik)
+
+            },
+            getPerevozchikData(id,key)
+            {
+                axios
+                    .post('/getPerevozchikData',{
+                        id:id,
+                    })
+                    .then(response => {
+                        for(let i = 0; i < this.perevozchikiList.length; i++)
+                        {
+                            if(this.perevozchikiList[i].perevozchik_id==id)
+                            {
+                                this.perevozchikiList[i].contacts=response.data.perevozchik[0].contacts
+                                this.perevozchikiList[i].nazvanie=response.data.perevozchik[0].nazvanie
+                            }
+                        }
+                      //  this.perevozchikiList[key].contacts=response.data.perevozchik[0].contacts
+                    })
             },
             //метод изменяющий название погрузок или выгрузок на всей странице или удаляющий их и в левой колонке и в списке ТС
             chahgeFrontNames()
@@ -1131,6 +1366,19 @@
                     })
 
             },
+            async deletePerevozchikFromOrder(id,key)
+            {
+                const result = await this.confirmMethodMixin();
+                if (result) {
+                    axios
+                        .post('/deletePerevozchikFromOrder', {
+                            id: id
+                        })
+                        .then(response => {
+                            this.perevozchikiList.splice(key, 1)
+                        })
+                }
+            },
           async delete_oplata_summa(id,key)
             {
                 const result = await this.confirmMethodMixin();
@@ -1228,6 +1476,13 @@
                 }
 
             },
+            newPerevozchik(key)
+            {
+                //в этой переменной храним ключ редактируемого перевозчика
+                this.editNumberKeyPerevozchik=key
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.newPerevozchik()
+            },
             select_gruzootpravitel()
             {
                 if(this.select_temp_pogr_or_vygr=='pogruzka')
@@ -1256,6 +1511,7 @@
 
                         );
                 }
+
                 //если редактируем погрузку
                 if(this.select_temp_pogr_or_vygr=='TS_pogruzka')
                 {
@@ -1395,6 +1651,11 @@
             logist_show()
             {
                 this.logist_list=!this.logist_list
+            },
+            show_mod_edit(id)
+            {
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.get_modal_edit_data(id)
             },
             get_ts_list(inp)
             {
@@ -1548,7 +1809,7 @@
                         timeRasscheta:this.headerTime2
                     })
             },
-            start_get_old_order(adress,inp,TSinp)
+            start_get_old_order(adress,inp,TSinp,perevozchikiList)
             {
                 axios
                     .post('/start_get_old_order',{
@@ -1583,6 +1844,8 @@
                             this.ob_ob=data.data[0]['ob_ob'],
                             this.vid_perevozki=data.data[0]['vid_perevozki'],
                             this.status=data.data[0]['status'],
+                            this.perevozchikId=data.data[0]['perevozchik'],
+                            this.perevozchikName=data.data[0]['nazvanie'],
                                 data.data[0].oplata.forEach(function(entry) {
                                     inp.push(entry);
                                 }),
@@ -1592,6 +1855,7 @@
                                         order_id:entry.order_id,
                                         vid_TS : entry.vid_TS,
                                         stavka_TS : entry.stavka_TS,
+                                        stavka_TS_bez_NDS : entry.stavka_TS_bez_NDS,
                                         stavka_TS_za_km : entry.stavka_TS_za_km,
                                         stavka_kp_TS : entry.stavka_kp_TS,
                                         marja_TS : entry.marja_TS,
@@ -1608,6 +1872,21 @@
 
                                     });
                                 }),
+                                data.data[0].perevozchiki.forEach(function(entry) {
+                                    perevozchikiList.push({
+                                        id:entry.id,
+                                        perevozchik_id:entry.perevozchik_id,
+                                        stavka_NDS : entry.stavka_NDS,
+                                        stavka_bez_NDS : entry.stavka_bez_NDS,
+                                        nazvanie: entry.perevozka ? entry.perevozka.nazvanie : '',
+                                        INN: entry.perevozka ? entry.perevozka.INN : '',
+                                        kod_ATI: entry.perevozka ? entry.perevozka.kod_ATI : '',
+                                        pogruzkaShowInp : false,
+                                        contacts:entry.contacts ? entry.contacts : '',
+                                    });
+                                }),
+
+
                                 this.order_header_text='Запрос номер: '+this.nomer_zayavki+' Дата внесения: '
                         )
                     )
@@ -1639,8 +1918,7 @@
             },
             closeParentAutoInput(data)
             {
-                console.log('closed')
-                    this.zakazchikShowInp=false
+              this.zakazchikShowInp=false
             },
             closeParentAutoInputManager(data)
             {
@@ -1718,6 +1996,13 @@
               }
 
             },
+            show_mod_edit_perevozchik(id,key)
+            {
+                //в этой переменной храним ключ редактируемого перевозчика
+                this.editNumberKeyPerevozchik=key
+                //вызов метода дочернего компонента( модального окна )
+                this.$refs.modalComponentforAction.get_modal_edit_data(id)
+            },
             hideButtonsUsers()
             {
                 this.v_rabote_show_button=false
@@ -1744,6 +2029,7 @@
                 objToPush['id_ts'] = this.id_ts;
                 objToPush['vid_TS'] = this.vid_TS;
                 objToPush['stavka_TS'] = this.stavka_TS;
+                objToPush['stavka_TS_bez_NDS'] = this.stavka_TS_bez_NDS;
                 objToPush['stavka_TS_za_km'] = this.stavka_TS_za_km;
                 objToPush['stavka_kp_TS'] = this.stavka_kp_TS;
                 objToPush['marja_TS'] = this.marja_TS;
@@ -1758,7 +2044,7 @@
                 objToPush['checked2'] = this.checked2;
                 objToPush['terminal_TS'] = this.terminal_TS;
                 this.spisokTSarr.push(objToPush);
-
+                console.log(this.spisokTSarr)
 
 //сохраняем новое тс
                     axios
@@ -1767,6 +2053,7 @@
                             order_id:this.order_id,
                             vid_TS : this.vid_TS,
                             stavka_TS : this.stavka_TS,
+                            stavka_TS_bez_NDS : this.stavka_TS_bez_NDS,
                             stavka_TS_za_km : this.stavka_TS_za_km,
                             stavka_kp_TS : this.stavka_kp_TS,
                             marja_TS : this.marja_TS,
@@ -1785,6 +2072,7 @@
                 this.vid_TS='';
                 this.id_ts='';
                 this.stavka_TS='';
+                this.stavka_TS_bez_NDS='';
                 this.stavka_kp_TS='';
                 this.kol_gruz_TS='';
                 this.kol_TS_TS='';
@@ -1804,8 +2092,9 @@
                 else
                 {
                     this.spisokTSarr[this.edit_number]['vid_TS']=this.vid_TS;
-                    console.log(this.spisokTSarr[this.edit_number]['vid_TS'])
+
                     this.spisokTSarr[this.edit_number]['stavka_TS']=this.stavka_TS;
+                    this.spisokTSarr[this.edit_number]['stavka_TS_bez_NDS']=this.stavka_TS_bez_NDS;
                     this.spisokTSarr[this.edit_number]['stavka_kp_TS']=this.stavka_kp_TS;
                     this.spisokTSarr[this.edit_number]['kol_gruz_TS']=this.kol_gruz_TS;
                     this.spisokTSarr[this.edit_number]['kol_TS_TS']=this.kol_TS_TS;
@@ -1823,6 +2112,7 @@
                             order_id:this.order_id,
                             vid_TS : this.vid_TS,
                             stavka_TS : this.stavka_TS,
+                            stavka_TS_bez_NDS : this.stavka_TS_bez_NDS,
                             stavka_TS_za_km : this.stavka_TS_za_km,
                             stavka_kp_TS : this.stavka_kp_TS,
                             marja_TS : this.marja_TS,
@@ -1840,6 +2130,7 @@
                     this.id_ts='';
                     this.vid_TS='';
                     this.stavka_TS='';
+                    this.stavka_TS_bez_NDS='';
                     this.stavka_kp_TS='';
                     this.kol_gruz_TS='';
                     this.kol_TS_TS='';
@@ -1878,6 +2169,7 @@
                 this.id_ts=this.spisokTSarr[key]['id_ts'];
                 this.vid_TS=this.spisokTSarr[key]['vid_TS'];
                 this.stavka_TS=this.spisokTSarr[key]['stavka_TS'];
+                this.stavka_TS_bez_NDS=this.spisokTSarr[key]['stavka_TS_bez_NDS'];
                 this.stavka_kp_TS=this.spisokTSarr[key]['stavka_kp_TS'];
                 this.kol_gruz_TS=this.spisokTSarr[key]['kol_gruz_TS'];
                 this.kol_TS_TS=this.spisokTSarr[key]['kol_TS_TS'];
@@ -1917,6 +2209,7 @@
                 this.id_ts='';
                 this.vid_TS='';
                 this.stavka_TS='';
+                this.stavka_TS_bez_NDS='';
                 this.stavka_kp_TS='';
                 this.kol_gruz_TS='';
                 this.kol_TS_TS='';
@@ -1948,6 +2241,7 @@
                     this.id_ts='';
                     this.vid_TS='';
                     this.stavka_TS='';
+                    this.stavka_TS_bez_NDS='';
                     this.stavka_kp_TS='';
                     this.kol_gruz_TS='';
                     this.kol_TS_TS='';
@@ -1964,7 +2258,7 @@
                     this.add_ts='';
                     this.add_new_ts=false;
                 }
-                console.log(this.spisokTSarr.length)
+
                 if(this.spisokTSarr.length==0)
                 {
 
@@ -1984,10 +2278,11 @@
                     this.id_ts='';
                     this.vid_TS='';
                     this.stavka_TS='';
+                    this.stavka_TS_bez_NDS='';
                     this.stavka_kp_TS='';
                     this.kol_gruz_TS='';
                     this.kol_TS_TS='';
-                    this.rasstojanie_TS='';
+                    this.rasstojanie_TS=this.rasstojanie;
                     this.adres_pogruzki_TS='';
                     this.ob_ves_TS='';
                     this.ob_ob_TS='';
@@ -2065,9 +2360,7 @@
             {
                 let objToPush= {};
                 objToPush['adres_pogruzki'] ='';
-                // console.log(this.spisokTSarr[key].adres_pogruzki_TS.length)
                 this.spisokTSarr[key].adres_pogruzki_TS.push(objToPush);
-              //  console.log(this.spisokTSarr)
             },
             add_empty_adres_pogr()
             {
@@ -2143,8 +2436,6 @@
                     this.data_vneseniya= new Date(this.data_vneseniya).toLocaleDateString('ru-RU');
                   //  this.update_order()
                 }
-                // console.log(this.data_vneseniya);
-                // console.log(moment(date).format('D MM YYYY'));
                return moment(date).format('D MM YYYY');
             },
             addFiles(type){

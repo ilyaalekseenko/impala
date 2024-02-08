@@ -43,6 +43,7 @@ class Orders extends Authenticatable
         'naznachenie_stavki',
         'kontrol',
         'zavershen',
+        'perevozchik',
     ];
 
     /**
@@ -68,10 +69,18 @@ class Orders extends Authenticatable
     {
         return $this->hasMany(TS::class, 'order_id', 'id');
     }
-
+    public function perevozchiki()
+    {
+        return $this->hasMany(OrdersPerevozchiki::class, 'orders_id', 'id');
+    }
     public function getOrderByIdInModel($id)
     {
-       return Orders::where('id', '=', $id) ->get();
+        return Orders::where('id', $id)
+            ->with([
+                'perevozchiki',
+                'perevozchiki.perevozka',
+                'perevozchiki.contacts'
+                ])->get();
     }
     public function getFirstOrderInModel($id)
     {
@@ -91,11 +100,13 @@ class Orders extends Authenticatable
         }
 // Увеличиваем значение на 1
         $newNomerZayavki = $maxNomerZayavki + 1;
-
 // Создаем новую заявку с увеличенным значением поля nomer_zayavki
         $newOrder = Orders::create([
             'data_vneseniya' => $dataVneseniya,
             'nomer_zayavki' => $newNomerZayavki,
+        ]);
+        OrdersPerevozchiki::create([
+            'orders_id' => $newOrder->id,
         ]);
         return $newOrder;
     }

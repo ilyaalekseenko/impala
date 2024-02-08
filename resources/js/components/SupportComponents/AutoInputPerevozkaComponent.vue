@@ -210,6 +210,7 @@
                 {
                     this.$emit('childCloseAutoInput', {
                         varName:'pogruzkaShowInp',
+                        elem1:this.elem1,
                     })
                 }
             },

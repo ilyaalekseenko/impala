@@ -13,6 +13,7 @@ use App\Models\GruzootpravitelContact;
 use App\Models\Impala;
 use App\Models\OplataOrders;
 use App\Models\Orders;
+use App\Models\OrdersPerevozchiki;
 use App\Models\Perevozka;
 use App\Models\PogruzkaTS;
 use App\Models\Role;
@@ -94,6 +95,8 @@ class OrdersController extends Controller
     private $PP;
     private $HelperService;
     private $DocsVarsModal;
+    private $perevozka;
+    private $ordersPerevozchiki;
 
     public function __construct(
         OrderService $orderService,
@@ -126,6 +129,8 @@ class OrdersController extends Controller
         PP $PP,
         HelperService $helperService,
         DocsVars $DocsVarsModal,
+        Perevozka $perevozka,
+        OrdersPerevozchiki $ordersPerevozchiki
     )
     {
         $this->orderService = $orderService;
@@ -158,6 +163,8 @@ class OrdersController extends Controller
         $this->PP = $PP;
         $this->HelperService = $helperService;
         $this->DocsVarsModal = $DocsVarsModal;
+        $this->perevozka = $perevozka;
+        $this->ordersPerevozchiki = $ordersPerevozchiki;
     }
 
     public function test()
@@ -165,6 +172,48 @@ class OrdersController extends Controller
         return view('front.test');
     }
 
+    public function deletePerevozchikFromOrder()
+    {
+        $this->ordersPerevozchiki->deletePerevozchikFromOrder(request('id'));
+        return response()->json([
+            'status' => 'success',
+        ], 200);
+    }
+
+    public function getPerevozchikData()
+    {
+        $perevozchik=$this->perevozka->getPerevozchikData(request('id'));
+        return response()->json([
+            'status' => 'success',
+            'perevozchik' =>$perevozchik,
+        ], 200);
+    }
+
+    public function updatePerevozchikField()
+    {
+        $newPerevozchik=$this->ordersPerevozchiki->updatePerevozchikField(request('id'),request('fieldName'),request('fieldValue'));
+    }
+    public function addEmptyPerevozchik()
+    {
+        //добавление пустой загрузки
+         $newPerevozchik=$this->ordersPerevozchiki->addEmptyPerevozchik(request('order_id'));
+        return response()->json([
+            'status' => 'success',
+            'perevozchik' =>$newPerevozchik,
+        ], 200);
+    }
+
+    public function updateOrdersPerevozchik()
+    {
+        //проапдейтим значение perevozchik_id в Orders_perevozchik
+        $this->orderService->updatePerevozchikByKey(request('order_id'),request('key'),request('perevozchik_id'));
+        //получим значения нового перевозчика
+        $newPerevozchik=$this->perevozka->getPerevozka(request('perevozchik_id'));
+        return response()->json([
+            'status' => 'success',
+            'perevozchik' =>$newPerevozchik,
+        ], 200);
+    }
     public function mainOrders(UserService $userService)
     {
         $user=$userService->getRole();
@@ -1514,6 +1563,8 @@ class OrdersController extends Controller
         $this->docService->delDoc(public_path() . "/images/orders_xlsx/".$oneOrderId.'_got__'.$gotRasch);
         //удаляем все файлы из grade
         $this->docService->deleteAllGradeDoc($oneOrderId);
+        //удаляем в orders_perevozchiki
+        $this->ordersPerevozchiki->deletePerevozchikFromOrderByOrder($oneOrderId);
         }
         //удаляем все заявки по id
         $this->order_mod->whereInDeleteInModel(request('orders_id'));

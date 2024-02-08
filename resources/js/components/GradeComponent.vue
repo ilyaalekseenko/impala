@@ -29,6 +29,7 @@
         <div class="row main_grade_div">
             <div class="col-12 row grade_head_row " >
                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
+                <input hidden="true" type="file" ref="filesmult" multiple v-on:change="handleMultFilesUpload()" />
 
                 <div  class="col-6 orders_create_title">
                     Заявка: В работе > №{{ nomer_zayavki }}
@@ -85,7 +86,7 @@
                             <div class="col-1 no_padding_right no_padding_left" >
                                 <iconify-icon  class="truck_grade no_padding_right no_padding_left" icon="carbon:delivery-truck" width="20" height="20"></iconify-icon>
                             </div>
-                        <div class="col-8 grade_left_column_text_sec">{{ elem.kol_gruz_TS }} мест,{{ elem.stavka_TS }} руб</div>
+                        <div class="col-8 grade_left_column_text_sec">{{ elem.vid_TSNazvanie }},{{elem.kol_TS_TS}}ТС,{{ elem.stavka_TS }} руб</div>
                             <span class="col-2 hide">
                                 <div class="hide">
                                 <iconify-icon  class="" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
@@ -96,7 +97,7 @@
                         </span>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
+                    <div class="offset-1 col-11 row grade_left_column_text_main" v-show="checkRolePermission([1])">
                         <div class="col-12 grade_left_column_text_first">Заказчик:</div>
                         <div class="col-12 grade_left_column_text_sec">{{ kompaniya_zakazchik }} </div>
                     </div>
@@ -106,7 +107,7 @@
                         <div class="col-12 grade_left_column_text_sec">{{ ob_budzet_left }} р.</div>
                     </div>
                     <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
+                    <div class="offset-1 col-11 row grade_left_column_text_main" v-show="checkRolePermission([1])">
                         <div class="col-12 grade_left_column_text_first">Цена контракта:</div>
                         <div class="col-12 grade_left_column_text_sec">{{ cena_kontrakta }} р.</div>
                     </div>
@@ -148,9 +149,7 @@
                            <div class="col-2 grade_header_col">
                                Перевозчик
                            </div>
-                           <div class="col-2 grade_header_col">
-                               Маршрут
-                           </div>
+
                            <div class="col-2 grade_header_col">
                                Дата и время погрузки
                            </div>
@@ -175,9 +174,7 @@
                             <div class="col-2 grade_header_col">
                                 {{ elem.perevozchik_TSNazvanie }}
                             </div>
-                            <div class="col-2 grade_header_col">
-                                Прямой
-                            </div>
+
                             <div class="col-2 grade_header_col">
                                <span v-if="elem.adres_pogruzki_TS && elem.adres_pogruzki_TS[0] && elem.adres_pogruzki_TS[0].date_ts">{{ elem.adres_pogruzki_TS[0].date_ts }}</span>
                             </div>
@@ -381,7 +378,41 @@
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
                                     <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
                                         <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
-                                    </span>
+
+<!--                                    кнопки загрузки документов-->
+
+                                <div class="col-12">
+                                   <div class="col-12 row">
+                                   <div class="col-6">
+                                        <div class="little_title_grade">Документы</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_DOC" class="add_button_grade no_wrap_text">
+                                                    {{ docInfo.name_doc }}
+
+                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+                                             </div>
+                                        <div v-if="adres_pogr.doc_name_DOC==''" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
+                                   </div>
+
+                                    <div class="col-6">
+                                        <div class="little_title_grade">Фото груза</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_FOTO" class="add_button_grade no_wrap_text">
+                                                    {{ docInfo.name_doc }}
+                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+                                             </div>
+                                        <div v-if="!adres_pogr.doc_name_FOTO" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
+                                   </div>
+
+                                    </div>
+                                    <div class="col-12 row">
+                                        <div class="col-6">
+                                            <div class="little_title_grade">Файлы</div>
+                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_pogruzka_vygr_files('pogr',adres_pogr.id_pogruzka)">Скачать всё</div>
+                                        </div>
+                                    </div>
+                                </div>
+ </span>
+
+<!--                                    конец кнопок загрузки документов-->
 
                                 </div>
 
@@ -428,10 +459,6 @@
                                         <div class="col-6 date_width">
                                             <div class="little_title_grade">Дата</div>
 
-
-<!--                                            <input @blur="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"-->
-<!--                                                   class="border_input inp_date" v-model="adres_vygr.date_ts"  />-->
-
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
                         <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
                                      format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
@@ -447,8 +474,51 @@
                                      <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
                                     <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>
                                         <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
-                                    </span>
 
+
+
+                                    <div class="col-12">
+                                   <div class="col-12 row">
+                                   <div class="col-6">
+                                        <div class="little_title_grade">Документы</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_DOC" class="add_button_grade no_wrap_text">
+                                                    {{ docInfo.name_doc }}
+
+                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+
+                                             </div>
+                                        <div v-if="!adres_vygr.doc_name_DOC" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
+                                   </div>
+
+                                    <div class="col-6">
+                                        <div class="little_title_grade">Фото груза</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_FOTO" class="add_button_grade no_wrap_text">
+                                                    {{ docInfo.name_doc }}
+                                                 <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
+                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+
+                                             </div>
+                                        <div v-if="!adres_vygr.doc_name_FOTO" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
+                                   </div>
+
+                                   <div class="col-6">
+                                        <div class="little_title_grade">Акт</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_ACT" class="add_button_grade no_wrap_text">
+                                                    {{ docInfo.name_doc }}
+                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+                                             </div>
+                                        <div v-if="!adres_vygr.doc_name_ACT" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
+                                   </div>
+
+                                    </div>
+                                    <div class="col-12 row">
+                                        <div class="col-6">
+                                            <div class="little_title_grade">Файлы</div>
+                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_pogruzka_vygr_files('vygr',adres_vygr.id_pogruzka)">Скачать всё</div>
+                                        </div>
+                                    </div>
+                                </div>
+ </span>
                                     <div class="col-12 row grade_underline"></div>
                                     <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
                                     <span class="head_font_grade">На терминале</span>
@@ -707,6 +777,7 @@
                 right_currentTS_In_Arr:'',
                 localFirstClick:false,
 
+
             }
         },
         mounted()
@@ -723,7 +794,9 @@
         created()
         {
             this.role=this.auth_user['role_perm']['role']
-            console.log(this.role)
+            this.permissions=this.auth_user['role_perm']['permissions']
+
+
         },
 
         computed: {
@@ -922,6 +995,22 @@
                 {
                     this.pogruzkaShowInp=false
                 }
+            },
+            checkRolePermission(users_permissions_list)
+            {
+                let permission=2;
+
+                //перебор юзеров
+                let role=0;
+                let flag=false;
+                for(var j = 0; j < users_permissions_list.length; j++) {
+                    role=users_permissions_list[j]
+                    if((role==this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
+                        flag = true;
+                    }
+                }
+                return flag
+
             },
             //метод для проверки показывать ли инпут или текст в погрузке выгрузке, если есть значение то текст, если нету то инпут
             adresPogruzkiVygruzkiShowFunc(key, pogr_vygr)
@@ -1457,6 +1546,60 @@
             {
                 console.log(this.data_kontrakta)
             },
+            async deleteFileInMultGrade(id_pogruzka, id_doc_type, key, id)
+            {
+                const result = await this.confirmMethodMixin();
+
+                if (result) {
+                    this.current_id_pogruzka=id_pogruzka;
+                    this.current_id_doc_type=id_doc_type;
+
+                    axios.post( '/delete_file_grade_by_id',
+                        {
+                            id:id,
+                        })
+                            .then(response => {
+                                    this.delelteNameFile(this.current_id_doc_type,key)
+                            })
+            }
+            },
+
+            delelteNameFile(type,key)
+            {
+
+                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS.length; i++) {
+                    if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].id_pogruzka)
+                    {
+                        if(type=='8')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name_DOC.splice(key,1)
+                        }
+                        if(type=='9')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name_FOTO.splice(key,1)
+                        }
+                        if(type=='10')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_DOC.splice(key,1)
+                        }
+                        if(type=='11')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_FOTO.splice(key,1)
+                        }
+                        if(type=='12')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_ACT.splice(key,1)
+                        }
+
+                        if(this.right_col_down_show==true)
+                        {
+                            this.right_col_down_show=false;
+                        }
+                        this.right_col_down_show=true;
+                    }
+                }
+            },
+
           async  delete_file_grade(id_pogruzka, id_doc_type)
             {
                 const result = await this.confirmMethodMixin();
@@ -1544,25 +1687,138 @@
             },
 
             addFiles(id_pogruzka, id_doc_type){
-                 //console.log(this.$refs.files);
-                // console.log(id_pogruzka);
                 this.current_id_pogruzka=id_pogruzka;
                 this.current_id_doc_type=id_doc_type;
-                this.$refs.files.click();
+                //8 9 файлы множественной загрузки
+                if((id_doc_type=='8')||(id_doc_type=='9')||(id_doc_type=='10')||(id_doc_type=='11')||(id_doc_type=='12'))
+                {
+                    this.$refs.filesmult.click();
+                }
+                else
+                {
+                    this.$refs.files.click();
+                }
+
+            },
+            handleMultFilesUpload()
+            {
+                console.log('Правый список мультизагрузка')
+
+                let flag = 0;
+                let uploadedFiles = this.$refs.filesmult.files;
+                let filesData=[]
+                let formData = new FormData();
+                for(let i = 0; i < uploadedFiles.length; i++)
+                  {
+                let reg ='';
+                let full_name=(uploadedFiles[i].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)/))
+                let file_name=(uploadedFiles[i].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)\./))
+                let extension=(uploadedFiles[i].name.slice((Math.max(0, (uploadedFiles[i].name.lastIndexOf(".")) || Infinity) + 1)));
+                      // Создание объекта с информацией о файле
+                      let fileInfo = {
+                          full_name: full_name ? full_name[0] : '',
+                          file_name: file_name ? file_name[1] : '',
+                          extension: extension
+                      };
+                      // Добавление объекта в массив filesData
+                      filesData.push(fileInfo);
+                  }
+console.log(filesData)
+               // let file = uploadedFiles;
+
+                for (let i = 0; i < uploadedFiles.length; i++) {
+                    formData.append('files[]', uploadedFiles[i]);
+                }
+
+               // formData.append('files', file);
+                formData.append('files_data',JSON.stringify(filesData));
+                formData.append('grade_id',this.order_id);
+                formData.append('id_ts',this.right_current_TS);
+                formData.append('id_pogruzka',this.current_id_pogruzka);
+                formData.append('id_doc_type',this.current_id_doc_type);
+
+
+                axios.post( '/store_grade_file_mult',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+                    .then(response => {
+                        if(response.data.id_doc_type==='8')
+                        {
+                            this.changeNameDocuments(response.data.id_doc_type,response.data.createdDocsInfo)
+                        }
+                        if(response.data.id_doc_type==='9')
+                        {
+                            this.changeNameDocuments(response.data.id_doc_type,response.data.createdDocsInfo)
+                        }
+                        if(response.data.id_doc_type==='10')
+                        {
+                            this.changeNameDocuments(response.data.id_doc_type,response.data.createdDocsInfo)
+                        }
+                        if(response.data.id_doc_type==='11')
+                        {
+                            this.changeNameDocuments(response.data.id_doc_type,response.data.createdDocsInfo)
+                        }
+                        if(response.data.id_doc_type==='12')
+                        {
+                            this.changeNameDocuments(response.data.id_doc_type,response.data.createdDocsInfo)
+                        }
+
+                    })
+
+
+            },
+            changeNameDocuments(typeId,docInfo)
+            {
+                for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS.length; i++) {
+                    if(this.current_id_pogruzka== this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].id_pogruzka)
+                    {
+                        let temp=''
+                        temp=this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki=''
+                        this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].adres_pogruzki=temp
+                        if(typeId==='8')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name_DOC=docInfo
+                        }
+                        if(typeId==='9')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_pogruzki_TS[i].doc_name_FOTO=docInfo
+                        }
+                        if(typeId==='10')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_DOC=docInfo
+                        }
+                        if(typeId==='11')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_FOTO=docInfo
+                        }
+                        if(typeId==='12')
+                        {
+                            this.spisokTShead[this.right_currentTS_In_Arr].adres_vygr_TS[i].doc_name_ACT=docInfo
+                        }
+
+                        if(this.right_col_down_show==true)
+                        {
+                            this.right_col_down_show=false;
+                        }
+                        this.right_col_down_show=true;
+                    }
+                }
             },
             handleFilesUpload(){
-
-                console.log('Правый список')
-                console.log(this.spisokTShead)
-
 
                 let flag = 0;
                 let uploadedFiles = this.$refs.files.files;
 
                     let reg ='';
-               let full_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)/))
-               let file_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)\./))
-               let extension=(uploadedFiles[0].name.slice((Math.max(0, (uploadedFiles[0].name.lastIndexOf(".")) || Infinity) + 1)));
+                    let full_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)/))
+                    let file_name=(uploadedFiles[0].name.match(/([A-Za-zа-яА-Я0-9Ёё@ : , ' '' ; - _ = < > % # ~ `& !\W]+)\./))
+                    let extension=(uploadedFiles[0].name.slice((Math.max(0, (uploadedFiles[0].name.lastIndexOf(".")) || Infinity) + 1)));
                     let formData = new FormData();
                     let file = uploadedFiles;
                     formData.append('file', file[0]);
@@ -1573,11 +1829,6 @@
                     formData.append('id_doc_type',this.current_id_doc_type);
                     formData.append('full_name',full_name[0]);
                     formData.append('extension',extension);
-
-                // console.log(reg)
-                //     console.log(file[0])
-                //     console.log(filename[1])
-                //     console.log(full_name[0])
 
                     axios.post( '/store_grade_file',
                         formData,
@@ -2140,6 +2391,10 @@
                         id_ts:this.right_current_TS,
                         grade_id:this.order_id
                     })
+            },
+            download_pogruzka_vygr_files(pogr_vygr,id_pogruzka)
+            {
+                window.location.href = '/download_pogruzka_vygr_files/'+this.order_id+'/'+this.right_current_TS+'/'+id_pogruzka+'/'+pogr_vygr;
             },
             download_all_doc_grade (){
                 window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;

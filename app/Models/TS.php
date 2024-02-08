@@ -35,7 +35,8 @@ class TS extends Authenticatable
         'adres_pogruzki_TS',
         'adres_vygr_TS',
         'kommentari_TS',
-        'terminal_TS'
+        'terminal_TS',
+        'stavka_TS_bez_NDS',
     ];
 
     /**

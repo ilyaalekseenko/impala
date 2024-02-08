@@ -99,6 +99,12 @@ import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
 Vue.use(Autocomplete)
 
+import Popover from 'vue-js-popover'
+
+Vue.use(Popover)
+
+
+
 import VueTheMask from 'vue-the-mask';
 Vue.use(VueTheMask);
 //маска для мобильн

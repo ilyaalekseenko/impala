@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocsTemplate;
+use App\Models\GradeDocuments;
 use App\Services\DocService;
 use Illuminate\Http\Request;
 
@@ -11,15 +12,18 @@ class FilesController extends Controller
 
     private $docsTemplMod;
     private $docService;
+    private $gradeDocuments;
 
     public function __construct
     (
         DocsTemplate $docsTemplMod,
         DocService $docService,
+        GradeDocuments $gradeDocuments
     )
     {
         $this->docsTemplMod = $docsTemplMod;
         $this->docService = $docService;
+        $this->gradeDocuments = $gradeDocuments;
     }
 
     public function delFile()
@@ -56,5 +60,49 @@ class FilesController extends Controller
             'status' => 'success',
             'message' =>'Файл успешно сохранён',
         ], 200);
+    }
+    public function store_grade_file_mult()
+    {
+
+      //  $filesData=request('files_data');
+        $filesData = json_decode(request('files_data'), true);
+
+       // $path=time().$i.'_'.$request['file_name'].'.'.$request['extension'];
+       //удаляем старые доки
+        $doc_in_db=  $this->gradeDocuments->getDoc(request('grade_id'),request('id_ts'),request('id_pogruzka'),request('id_doc_type'));
+        if (!$doc_in_db->isEmpty()) {
+            foreach ($doc_in_db as $oneDoc)
+            {
+                try {
+                $path_to_del = public_path() . "/grade_doc/" . $oneDoc['path_doc'];
+                unlink($path_to_del);
+            }
+                catch (\Throwable $e)
+                {
+
+                }
+            }
+            //удаляем их из БД
+             $this->gradeDocuments->delDoc(request('grade_id'),request('id_ts'),request('id_pogruzka'),request('id_doc_type'));
+        }
+
+        $createdDocsInfo=[];
+        foreach ($filesData as $key=> $fileData)
+        {
+            $path=time().'_'.$key.'_'.$fileData['file_name'].'.'.$fileData['extension'];
+           $oneDoc= $this->gradeDocuments->createDoc(request('grade_id'),request('id_ts'),request('id_pogruzka'),request('id_doc_type'),$fileData['full_name'],$path);
+            $createdDocsInfo[]=$oneDoc;
+           //переместим файл по ключу
+            request('files')[$key]->move(public_path('/grade_doc/'), $path);
+        }
+
+      //  $request['file']->move(public_path('/grade_doc/'), $path);
+        return response()->json([
+            'status' => 'success',
+            'message' =>'Файл grade успешно сохранён',
+            'createdDocsInfo' =>$createdDocsInfo,
+            'id_doc_type' =>request('id_doc_type'),
+        ], 200);
+
     }
 }

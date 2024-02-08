@@ -80,6 +80,7 @@ class TSController extends Controller
         $kommentari_TS=$request->input('kommentari_TS');
         $checked2=$request->input('checked2');
         $terminal_TS=$request->input('terminal_TS');
+        $stavka_TS_bez_NDS=$request->input('stavka_TS_bez_NDS');
 //        return dd($adres_pogruzki_TS);
 
 //если создаём новое ТС
@@ -102,6 +103,7 @@ class TSController extends Controller
                 'kommentari_TS' =>$kommentari_TS,
                 'checked2' =>$checked2,
                 'terminal_TS' =>$terminal_TS,
+                'stavka_TS_bez_NDS' =>$stavka_TS_bez_NDS,
             ]);
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
             foreach ($adres_pogruzki_TS as $adres)
@@ -146,6 +148,7 @@ class TSController extends Controller
                 'kommentari_TS' =>$kommentari_TS,
                 'checked2' =>$checked2,
                 'terminal_TS' =>$terminal_TS,
+                'stavka_TS_bez_NDS' =>$stavka_TS_bez_NDS,
             ]);
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
             foreach ($adres_pogruzki_TS as $adres)

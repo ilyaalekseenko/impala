@@ -1008,6 +1008,9 @@
 .cr_ord_inp_n_6 {
     width: 100%;
 }
+.cr_ord_inp_n_st{
+    width: 40%;
+}
 .cr_ord_inp_n_7 {
     width: 269px!important;
 }
@@ -1511,6 +1514,7 @@
     margin-bottom: 6px;
 }
 .btn_del_in_ord {
+    margin-top: 10px;
     width: 36px!important;
 }
 .btn_del_in_grade {
@@ -1963,4 +1967,23 @@
 }
 .nomenklaturaFull:hover {
     cursor: pointer;
+}
+.btn_add_per {
+    width: 40px!important;
+    height: 40px!important;
+    margin-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.komment_block {
+    margin-top: 20px;
+}
+
+.my-custom-popover {
+    max-width: none;
+    width: fit-content!important;
+}
+.wide-popover { max-width: 400px; }
+.popover {
+    max-width: 800px!important;
 }

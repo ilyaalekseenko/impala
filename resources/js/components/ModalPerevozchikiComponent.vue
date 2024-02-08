@@ -48,10 +48,15 @@
                             </div>
                             <div class="container-fluid ">
                                 <div class="col-12 row">
-                                    <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot grade_marg_top">
+                                    <div class="col-3 inn_width no_padding_left_form grade_marg_bot grade_marg_top">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade ">Для автозаполнения введите ИНН {{ founded }}</div>
-                                        <input @blur="get_INN_api()" class="col-12 border_input inn_width"
+                                        <input @blur="get_INN_api()" class="col-12 border_input inn_width "
                                                v-model="INN"/>
+                                    </div>
+                                    <div class="col-3 no_padding_left_form">
+                                        <div class="col-12 create_orders_date_title_1 lit_marg_grade no_wrap_text ">Код АТИ</div>
+                                        <input  class="col-12 border_input "
+                                                v-model="kod_ATI"/>
                                     </div>
                                     <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
                                         <div class="col-12 create_orders_date_title_1 lit_marg_grade no_wrap_text ">ОГРН(если есть)</div>
@@ -83,6 +88,7 @@
                                             v-model="email_gen_dir"/>
                                 </div>
                             </div>
+
                             <div class="col-12 grade_title_lit cont_header">Контакты:</div>
                             <div class="container-fluid ">
                                 <div class="col-12 row" v-for="(oplata,key) in kontakty">
@@ -182,6 +188,10 @@
                             </div>
                             </div>
                             <div class="col-12 add_cont_grade cont_header_2" v-on:click="dobavit_doc()">Добавить документ</div>
+                        <div class="komment_block">
+                            <div>Комментарий</div>
+                            <textarea class="comm_settings_1" v-model="kommentariy" rows="6"  name="text"></textarea>
+                        </div>
                         </div>
                     </div>
                 </b-modal>
@@ -226,6 +236,8 @@ Vue.use(VueMask)
                 yridicheskii_adres:'',
                 pochtovyi_adres:'',
                 menedzer_zakazchik:'',
+                kod_ATI:'',
+                kommentariy:'',
                 kontakty:[],
                 adresa:[],
                 openDP:false,
@@ -241,7 +253,6 @@ Vue.use(VueMask)
                 email_gen_dir:'',
                 //переменные редактирования
                 current_gruzootpravitel_id:'',
-
                 alert_list: [],
                 show_alert:false,
                 phoneMain:'',
@@ -281,6 +292,8 @@ Vue.use(VueMask)
                     this.gorod_bazirovania='',
                     this.data_registracii='',
                     this.INN='',
+                    this.kod_ATI='',
+                    this.kommentariy='',
                     this.OGRN='',
                     this.telefon='',
                     this.email='',
@@ -313,6 +326,8 @@ Vue.use(VueMask)
                         this.gorod_bazirovania='',
                         this.data_registracii='',
                         this.INN='',
+                        this.kod_ATI='',
+                        this.kommentariy='',
                         this.OGRN='',
                         this.telefon='',
                         this.email='',
@@ -349,6 +364,8 @@ Vue.use(VueMask)
                          this.gorod_bazirovania=data.perevozka.gorod_bazirovania,
                          this.data_registracii=data.perevozka.data_registracii,
                          this.INN=data.perevozka.INN,
+                         this.kod_ATI=data.perevozka.kod_ATI,
+                         this.kommentariy=data.perevozka.kommentariy,
                          this.OGRN=data.perevozka.OGRN,
                          this.telefon=data.perevozka.telefon,
                          this.email=data.perevozka.email,
@@ -393,6 +410,7 @@ Vue.use(VueMask)
                  );
             },
             //конец методы редактирования
+            //надо ли тут добавлять kod_ATI
             get_INN_api()
             {
                 this.founded=''
@@ -474,6 +492,8 @@ Vue.use(VueMask)
                 this.gorod_bazirovania='',
                 this.data_registracii='',
                 this.INN='',
+                this.kod_ATI='',
+                this.kommentariy='',
                 this.OGRN='',
                 this.telefon='',
                 this.email='',
@@ -663,6 +683,8 @@ Vue.use(VueMask)
                         data_registracii:this.data_registracii,
                         telefon:this.telefon,
                         INN:this.INN,
+                        kod_ATI:this.kod_ATI,
+                        kommentariy:this.kommentariy,
                         OGRN:this.OGRN,
                         email:this.email,
                         generalnii_direktor:this.generalnii_direktor,
@@ -686,16 +708,33 @@ Vue.use(VueMask)
                         //если другой вид, не grade
                         else
                         {
+                            //если вид create_orders
+                            if(this.vid=='CreateOrdersComponent')
+                            {
+                                if(this.current_gruzootpravitel_id)
+                                {
+                                    this.gradeAddPerevozchik(this.current_gruzootpravitel_id,this.nazvanie)
+                                }
+                                else
+                                {
+                                    //вызвать метод из вида grade сохраняий название
+                                    this.gradeAddPerevozchik(response.data.perevozkaID,this.nazvanie)
+                                }
+
+                            }
+                            else
+                            {
                             //если редактируем уже существующего перевозчка то в виде выше меняем его данные
-                        if(this.current_gruzootpravitel_id)
-                        {
-                            this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty)
-                        }
-                        //если добавляем нового перевозчика
-                        else
-                        {
-                            this.addOnePerevozchik(response.data.perevozkaID,this.nazvanie,this.yridicheskii_adres,this.kontakty);
-                        }
+                                if(this.current_gruzootpravitel_id)
+                                {
+                                    this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty)
+                                }
+                                //если добавляем нового перевозчика
+                                else
+                                {
+                                    this.addOnePerevozchik(response.data.perevozkaID,this.nazvanie,this.yridicheskii_adres,this.kontakty);
+                                }
+                            }
                         }
                         this.hideModal()
                     })

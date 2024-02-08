@@ -42,10 +42,10 @@ class PerevozchikiController extends Controller
        //если сохраняем нового перевозчика
         if($currentPerevozchik=='')
         {
-            //сохраняем нового перевозчика
+            //сохраняем нового перевозчика ДОДЕЛАТЬ СОХРАНЕНИЕ КОДА АТИ И КОММЕНТАРИЯ
           $perevozkaID=$this->perevozchikService->saveNewPerevozchik(request('forma'),request('nazvanie'),request('data_registracii'),request('telefon'),request('INN'),request('OGRN'),request('email')
                 ,request('generalnii_direktor'),request('telefon_gen_dir'),request('email_gen_dir'),request('yridicheskii_adres'),request('pochtovyi_adres'),request('kontakty'),request('bank_arr')
-                ,request('doc_files'),request('gorod_bazirovania')
+                ,request('doc_files'),request('gorod_bazirovania'),request('kod_ATI'),request('kommentariy')
             );
             return response()->json([
                 'status' => 'success',
@@ -58,7 +58,7 @@ class PerevozchikiController extends Controller
         {
             $this->perevozchikService->updatePerevozchik($currentPerevozchik,request('forma'),request('nazvanie'),request('data_registracii'),request('telefon'),request('INN'),request('OGRN'),request('email')
                 ,request('generalnii_direktor'),request('telefon_gen_dir'),request('email_gen_dir'),request('yridicheskii_adres'),request('pochtovyi_adres'),request('kontakty'),request('bank_arr')
-                ,request('doc_files'),request('gorod_bazirovania'));
+                ,request('doc_files'),request('gorod_bazirovania'),request('kod_ATI'),request('kommentariy'));
             //удаляем те контакты которых нет ( их удалили в списке )
             //получаем все контакты старые, которые уже были
           $oldContacts=$this->perevozchikContacsModel->getContacts($currentPerevozchik);

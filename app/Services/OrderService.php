@@ -5,15 +5,24 @@ namespace App\Services;
 use App\Models\Gruzootpravitel;
 use App\Models\GruzootpravitelContact;
 use App\Models\Orders;
+use App\Models\OrdersPerevozchiki;
 
 class OrderService
 {
     protected $order;
+    protected $orderPerevozchiki;
     protected $gruzootpravitel;
-    public function __construct(Orders $order, Gruzootpravitel $gruzootpravitel)
+    public function __construct(Orders $order, Gruzootpravitel $gruzootpravitel, OrdersPerevozchiki $orderPerevozchiki)
     {
         $this->order = $order;
         $this->gruzootpravitel = $gruzootpravitel;
+        $this->orderPerevozchiki = $orderPerevozchiki;
+    }
+
+    public function updatePerevozchikByKey($order_id,$key,$perevozchik_id)
+    {
+        $this->orderPerevozchiki->updatePerevozchikId($order_id,$key,$perevozchik_id);
+
     }
 
     public function getOrderById($id)
