@@ -377,7 +377,6 @@
                                     </div>
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
 <!--                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>-->
-<!--                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>-->
 
 <!--                                    кнопки загрузки документов-->
 
@@ -410,6 +409,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                                                                <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
  </span>
 
 <!--                                    конец кнопок загрузки документов-->
@@ -473,7 +473,6 @@
                                     </div>
                                      <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
 <!--                                    <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>-->
-<!--                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>-->
 
 
 
@@ -518,6 +517,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                                                                <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
  </span>
                                     <div class="col-12 row grade_underline"></div>
                                     <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
