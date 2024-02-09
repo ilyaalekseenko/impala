@@ -376,8 +376,8 @@
                                         </div>
                                     </div>
                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>
-                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
+<!--                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>-->
+<!--                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>-->
 
 <!--                                    кнопки загрузки документов-->
 
@@ -390,7 +390,7 @@
 
                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="adres_pogr.doc_name_DOC==''" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
+                                        <div v-if="adres_pogr.doc_name_DOC.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
                                    </div>
 
                                     <div class="col-6">
@@ -399,7 +399,7 @@
                                                     {{ docInfo.name_doc }}
                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="!adres_pogr.doc_name_FOTO" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
+                                        <div v-if="adres_pogr.doc_name_FOTO.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
                                    </div>
 
                                     </div>
@@ -472,8 +472,8 @@
                                             </span>                                        </div>
                                     </div>
                                      <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                    <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>
-                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
+<!--                                    <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>-->
+<!--                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>-->
 
 
 
@@ -487,7 +487,7 @@
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
 
                                              </div>
-                                        <div v-if="!adres_vygr.doc_name_DOC" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
+                                        <div v-if="adres_vygr.doc_name_DOC.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
                                    </div>
 
                                     <div class="col-6">
@@ -498,7 +498,7 @@
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
 
                                              </div>
-                                        <div v-if="!adres_vygr.doc_name_FOTO" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
+                                        <div v-if="adres_vygr.doc_name_FOTO.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
                                    </div>
 
                                    <div class="col-6">
@@ -507,7 +507,7 @@
                                                     {{ docInfo.name_doc }}
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="!adres_vygr.doc_name_ACT" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
+                                        <div v-if="adres_vygr.doc_name_ACT.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
                                    </div>
 
                                     </div>
@@ -2116,10 +2116,7 @@ console.log(filesData)
                     }
 
                 this.right_currentTS_In_Arr=this.spisokTShead.length;
-                console.log('this.right_currentTS_In_Arr')
-                console.log(this.right_currentTS_In_Arr)
-                console.log('right_current_TS')
-                console.log(this.right_current_TS)
+
                     let objToPush= {};
                     objToPush['id_ts'] = this.right_current_TS;
                     objToPush['kol_gruz_TS'] = this.spisokTSarr[key].kol_gruz_TS;
@@ -2194,6 +2191,9 @@ console.log(filesData)
                     objToPush2['doc_name'] ='';
                     objToPush2['show_DP_date'] =false;
                     objToPush2['show_DP_time'] =false;
+                    objToPush2['doc_name_DOC'] =[];
+                    objToPush2['doc_name_FOTO'] =[];
+
                     this.spisokTShead[leng].adres_pogruzki_TS.push(objToPush2);
                 }
                 else
@@ -2211,6 +2211,8 @@ console.log(filesData)
                     objToPush2['doc_name'] ='';
                     objToPush2['show_DP_date'] =false;
                     objToPush2['show_DP_time'] =false;
+                    objToPush2['doc_name_DOC'] =[];
+                    objToPush2['doc_name_FOTO'] =[];
                     this.spisokTShead[leng].adres_pogruzki_TS.push(objToPush2);
                 }
                 }
@@ -2228,6 +2230,9 @@ console.log(filesData)
                     objToPush2['doc_name'] ='';
                     objToPush2['show_DP_date'] =false;
                     objToPush2['show_DP_time'] =false;
+                    objToPush2['doc_name_DOC'] =[];
+                    objToPush2['doc_name_FOTO'] =[];
+                    objToPush2['doc_name_ACT'] =[];
                     this.spisokTShead[leng].adres_vygr_TS.push(objToPush2);
                 }
                 else{
@@ -2244,6 +2249,9 @@ console.log(filesData)
                     objToPush2['doc_name'] ='';
                     objToPush2['show_DP_date'] =false;
                     objToPush2['show_DP_time'] =false;
+                    objToPush2['doc_name_DOC'] =[];
+                    objToPush2['doc_name_FOTO'] =[];
+                    objToPush2['doc_name_ACT'] =[];
                     this.spisokTShead[leng].adres_vygr_TS.push(objToPush2);
                 }
                 }
