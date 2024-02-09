@@ -2316,6 +2316,14 @@ console.log(filesData)
                     objToPush2['id_pogruzka'] = ''
                     objToPush2['show_DP_date'] = false
                     objToPush2['show_DP_time'] = false
+                    objToPush2['doc_name_DOC'] =[];
+                    objToPush2['doc_name_FOTO'] =[];
+                if(pogruzka_or_vygruzka==2)
+                {
+                    objToPush2['doc_name_ACT'] =[];
+                }
+
+
                         if(pogruzka_or_vygruzka==1)
                         {
                             this.spisokTShead[key].adres_pogruzki_TS.push(objToPush2)
