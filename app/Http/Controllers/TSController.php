@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FormaModal;
+use App\Models\OrdersPerevozchiki;
 use App\Models\PogruzkaTS;
 use App\Models\Terminal;
 use App\Models\TS;
@@ -15,14 +16,17 @@ class TSController extends Controller
 
     protected $TSModel;
     protected $vidTSModel;
+    protected $ordersPerevozchiki;
 
     public function __construct(
         TS $TSModel,
-        VidTS $vidTSModel
+        VidTS $vidTSModel,
+        OrdersPerevozchiki $ordersPerevozchiki ,
     )
     {
         $this->TSModel = $TSModel;
         $this->vidTSModel = $vidTSModel;
+        $this->ordersPerevozchiki = $ordersPerevozchiki;
     }
 
     public function get_terminal_list()
@@ -87,7 +91,7 @@ class TSController extends Controller
         $TS_list= TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->get();
         if($TS_list->isEmpty())
         {
-            TS::create([
+          $TS= TS::create([
                 'id_ts' =>$id_ts,
                 'order_id' =>$order_id,
                 'vid_TS' =>$vid_TS,
@@ -105,6 +109,13 @@ class TSController extends Controller
                 'terminal_TS' =>$terminal_TS,
                 'stavka_TS_bez_NDS' =>$stavka_TS_bez_NDS,
             ]);
+            //добавим перевозчиков к ТС
+            foreach (request('perevozchikiList') as $onePerevozchik)
+            {
+                $this->ordersPerevozchiki->addPerevozchik($TS->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS']);
+            }
+
+
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
             foreach ($adres_pogruzki_TS as $adres)
             {
@@ -132,9 +143,10 @@ class TSController extends Controller
                 'message' =>'ТС сохранено',
             ], 200);
         }
+        //если редактируем существующее
         else
         {
-            TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->update([
+          TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->update([
                 'vid_TS' =>$vid_TS,
                 'stavka_TS' =>$stavka_TS,
                 'stavka_TS_za_km' =>$stavka_TS_za_km,
@@ -150,6 +162,14 @@ class TSController extends Controller
                 'terminal_TS' =>$terminal_TS,
                 'stavka_TS_bez_NDS' =>$stavka_TS_bez_NDS,
             ]);
+            //добавим перевозчиков к ТС
+            //сначала удалим старых
+            $this->ordersPerevozchiki->deletePerevozchikFromOrderByOrder($TS_list[0]->id);
+            foreach (request('perevozchikiList') as $onePerevozchik)
+            {
+                $this->ordersPerevozchiki->addPerevozchik($TS_list[0]->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS']);
+            }
+
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
             foreach ($adres_pogruzki_TS as $adres)
             {
@@ -179,6 +199,11 @@ class TSController extends Controller
     {
         $id_ts=$request->input('id_ts');
         $order_id=$request->input('order_id');
+        $TS=TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->get();
+        if (!$TS->isEmpty())
+        {
+            $this->ordersPerevozchiki->deletePerevozchikFromOrderByOrder($TS[0]->id);
+        }
         PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
         TS::where('order_id', '=', $order_id)->where('id_ts', '=', $id_ts)->delete();
     }

@@ -26,7 +26,11 @@ class OrdersPerevozchiki extends Model
     }
     public function deletePerevozchikFromOrderByOrder($id)
     {
-        OrdersPerevozchiki::where('orders_id', $id) ->delete();
+        OrdersPerevozchiki::where('TS_id', $id) ->delete();
+    }
+    public function deleteOrdersPerevozchikiByOrderId()
+    {
+
     }
     public function updatePerevozchikId($order_id,$key,$perevozchik_id)
     {
@@ -39,7 +43,16 @@ class OrdersPerevozchiki extends Model
     public function addEmptyPerevozchik($id)
     {
         return OrdersPerevozchiki::create([
-            'orders_id' =>$id,
+            'TS_id' =>$id,
+        ]);
+    }
+    public function addPerevozchik($TS_Id,$perevozchik_id,$stavka_NDS,$Stavka_bez_NDS)
+    {
+        return OrdersPerevozchiki::create([
+            'TS_id' =>$TS_Id,
+            'perevozchik_id' =>$perevozchik_id,
+            'stavka_NDS' =>$stavka_NDS,
+            'Stavka_bez_NDS' =>$Stavka_bez_NDS,
         ]);
     }
 

@@ -57,9 +57,21 @@ class TS extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function perevozchiki()
+    {
+        return $this->hasMany(OrdersPerevozchiki::class, 'TS_id', 'id');
+    }
+
     public function getTsListByOrderIdInModel($orderId)
     {
-       return TS::where('order_id', $orderId)->get();
+       return TS::where('order_id', $orderId)
+                       ->with([
+                'perevozchiki',
+                'perevozchiki.perevozka',
+                'perevozchiki.contacts'
+                ])
+           ->get();
     }
     public function setNullVidTS($vidTSId)
     {

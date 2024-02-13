@@ -466,14 +466,6 @@ class GradeController extends Controller
     {
         $zipFileName = 'AllDocuments.zip';
 
-        try {
-            $path_to_del = public_path("/images/zip/".$zipFileName);
-            unlink($path_to_del);
-        }
-        catch (\Throwable $e)
-        {
-
-        }
         if($pogr_vygr=='pogr')
         {
             $search_in=['8','9'];
@@ -490,22 +482,16 @@ class GradeController extends Controller
             -> whereIn('id_doc_type', $search_in)
             ->get();
 
-        $zip = new ZipArchive;
+       $downloadFiles=[];
+        foreach ($files as $filePath) {
+            $downloadFiles[] = [
+                'name' => $filePath['name_doc'], // Здесь используйте свои имена файлов
+                'path' => public_path() . "/grade_doc/" . $filePath['path_doc'],
+            ];
 
-        if ($zip->open(public_path("/images/zip/".$zipFileName), ZipArchive::CREATE) === TRUE) {
-            // Add Multiple file
-            foreach($files as $file) {
-             //   $zip->addFile( public_path() . "/grade_doc/" . $file['path_doc'], public_path() . "/grade_doc/" . $file['name_doc']);
-                $zip->addFile(public_path() . "/grade_doc/" . $file['path_doc'], $file['name_doc']);
+        }
+        return response()->json($downloadFiles);
 
-            }
-            $zip->close();
-        }
-        $filetopath=public_path("/images/zip/".$zipFileName);
-        // Create Download Response
-        if(file_exists($filetopath)){
-            return response()->download($filetopath);
-        }
     }
 
     public function download_all_doc_grade($grade_id,$id_ts)

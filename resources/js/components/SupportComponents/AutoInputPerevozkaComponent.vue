@@ -3,7 +3,7 @@
 
         <div class="input-container inp_show" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <input type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <input type="text" class="auto_input_height perClassScript" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">

@@ -389,7 +389,7 @@
 
                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="adres_pogr.doc_name_DOC.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
+                                        <div class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
                                    </div>
 
                                     <div class="col-6">
@@ -398,7 +398,7 @@
                                                     {{ docInfo.name_doc }}
                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="adres_pogr.doc_name_FOTO.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
+                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
                                    </div>
 
                                     </div>
@@ -486,7 +486,7 @@
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
 
                                              </div>
-                                        <div v-if="adres_vygr.doc_name_DOC.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
+                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
                                    </div>
 
                                     <div class="col-6">
@@ -497,7 +497,7 @@
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
 
                                              </div>
-                                        <div v-if="adres_vygr.doc_name_FOTO.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
+                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
                                    </div>
 
                                    <div class="col-6">
@@ -506,7 +506,7 @@
                                                     {{ docInfo.name_doc }}
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
-                                        <div v-if="adres_vygr.doc_name_ACT.length==0" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
+                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
                                    </div>
 
                                     </div>
@@ -2408,9 +2408,26 @@ console.log(filesData)
                         grade_id:this.order_id
                     })
             },
-            download_pogruzka_vygr_files(pogr_vygr,id_pogruzka)
+            download_pogruzka_vygr_files1(pogr_vygr,id_pogruzka)
             {
                 window.location.href = '/download_pogruzka_vygr_files/'+this.order_id+'/'+this.right_current_TS+'/'+id_pogruzka+'/'+pogr_vygr;
+            },
+            async download_pogruzka_vygr_files(pogr_vygr,id_pogruzka) {
+                try {
+                    const response = await axios.post(`/download_pogruzka_vygr_files/${this.order_id}/${this.right_current_TS}/${id_pogruzka}/${pogr_vygr}`, {
+                        responseType: 'blob',
+                    });
+
+                    response.data.forEach(file => {
+                        const blob = new Blob([file.content]);
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = file.name;
+                        link.click();
+                    });
+                } catch (error) {
+                    console.error('Ошибка при загрузке файлов:', error);
+                }
             },
             download_all_doc_grade (){
                 window.location.href = '/download_all_doc_grade/'+this.order_id+'/'+this.right_current_TS;

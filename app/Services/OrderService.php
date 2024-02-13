@@ -6,6 +6,7 @@ use App\Models\Gruzootpravitel;
 use App\Models\GruzootpravitelContact;
 use App\Models\Orders;
 use App\Models\OrdersPerevozchiki;
+use App\Models\TS;
 
 class OrderService
 {
@@ -24,7 +25,14 @@ class OrderService
         $this->orderPerevozchiki->updatePerevozchikId($order_id,$key,$perevozchik_id);
 
     }
-
+    public function deleteOrdersPerevozchikiByOrderId($orderId)
+    {
+      $TSList=TS::where('order_id',$orderId)->get();
+      foreach($TSList as $OneTS)
+      {
+          OrdersPerevozchiki::where('TS_id',$OneTS['id'])->delete();
+      }
+    }
     public function getOrderById($id)
     {
       return $this->order->getOrderByIdInModel($id);

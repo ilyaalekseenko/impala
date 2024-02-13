@@ -1564,7 +1564,7 @@ class OrdersController extends Controller
         //удаляем все файлы из grade
         $this->docService->deleteAllGradeDoc($oneOrderId);
         //удаляем в orders_perevozchiki
-        $this->ordersPerevozchiki->deletePerevozchikFromOrderByOrder($oneOrderId);
+        $this->orderService->deleteOrdersPerevozchikiByOrderId($oneOrderId);
         }
         //удаляем все заявки по id
         $this->order_mod->whereInDeleteInModel(request('orders_id'));

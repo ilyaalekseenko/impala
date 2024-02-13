@@ -97,7 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/get_logist_list', [App\Http\Controllers\GradeController::class, 'get_logist_list'])->name('get_logist_list');
     Route::post('/get_templ_names', [App\Http\Controllers\OrdersController::class, 'get_templ_names'])->name('get_templ_names');
     Route::get('/download_all_doc_grade/{grade_id}/{ts_id}', [App\Http\Controllers\GradeController::class, 'download_all_doc_grade'])->name('download_all_doc_grade');
-    Route::get('/download_pogruzka_vygr_files/{grade_id}/{ts_id}/{id_pogruzka}/{pogr_vygr}', [App\Http\Controllers\GradeController::class, 'download_pogruzka_vygr_files'])->name('download_pogruzka_vygr_files');
+    Route::post('/download_pogruzka_vygr_files/{grade_id}/{ts_id}/{id_pogruzka}/{pogr_vygr}', [App\Http\Controllers\GradeController::class, 'download_pogruzka_vygr_files'])->name('download_pogruzka_vygr_files');
     Route::post('/get_template_vars', [App\Http\Controllers\GradeController::class, 'get_template_vars'])->name('get_template_vars');
     Route::post('/addPerevozchikToStavka', [App\Http\Controllers\GradeController::class, 'addPerevozchikToStavka'])->name('addPerevozchikToStavka');
     Route::post('/get_finall_doc_pdf', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf'])->name('get_finall_doc_pdf');
