@@ -69,18 +69,20 @@ class Orders extends Authenticatable
     {
         return $this->hasMany(TS::class, 'order_id', 'id');
     }
-    public function perevozchiki()
-    {
-        return $this->hasMany(OrdersPerevozchiki::class, 'orders_id', 'id');
-    }
+//    public function perevozchiki()
+//    {
+//        return $this->hasMany(OrdersPerevozchiki::class, 'orders_id', 'id');
+//    }
+
     public function getOrderByIdInModel($id)
     {
         return Orders::where('id', $id)
-            ->with([
-                'perevozchiki',
-                'perevozchiki.perevozka',
-                'perevozchiki.contacts'
-                ])->get();
+//            ->with([
+//                'perevozchiki',
+//                'perevozchiki.perevozka',
+//                'perevozchiki.contacts'
+//                ])
+            ->get();
     }
     public function getFirstOrderInModel($id)
     {
@@ -104,9 +106,6 @@ class Orders extends Authenticatable
         $newOrder = Orders::create([
             'data_vneseniya' => $dataVneseniya,
             'nomer_zayavki' => $newNomerZayavki,
-        ]);
-        OrdersPerevozchiki::create([
-            'orders_id' => $newOrder->id,
         ]);
         return $newOrder;
     }
