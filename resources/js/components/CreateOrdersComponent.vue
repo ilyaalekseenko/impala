@@ -344,14 +344,14 @@
                                         <div class="col-12 row" v-for="(perevozchik,perevozchikKey) in elem.perevozchikiList">
                                             <div class="cr_ord_inp_n_7 col-4">
                                                 <div class="text-center">
-                                                   <b-popover :target="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id']" triggers="hover" placement="top" custom-class="wide-popover">
+                                                   <b-popover :target="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key" triggers="hover" placement="top" custom-class="wide-popover">
                                                 <div v-for="(onePopUpPerevozchik,key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
                                                    {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
                                                 </div>
                                                    </b-popover>
                                                 </div>
                                                 <span class="create_ord_right_lit_text" >Перевозчик:</span>
-                                                <span :id="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id']">{{ perevozchik.perevozka.nazvanie }}</span>
+                                                <span :id="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key">{{ perevozchik.perevozka.nazvanie }}</span>
                                             </div>
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Код АТИ:</span>
@@ -528,60 +528,6 @@
                         </div>
 
 <!--                        перевозчики в редактировании списка ТС-->
-<!--                           <div v-for="(onePerevozchik,keyPerevozchik) in perevozchikiList">-->
-<!--                            <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:-->
-<!--                                <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">Добавить</span>-->
-<!--                                <span-->
-<!--                                    v-if="onePerevozchik['perevozchik_id']"-->
-<!--                                    v-on:click="show_mod_edit_perevozchik(onePerevozchik['perevozchik_id'],keyPerevozchik)"-->
-<!--                                    v-b-modal.perevozkaMod variant="primary">-->
-<!--                                            <span-->
-<!--                                                class="iconify edit_icon"-->
-<!--                                                data-icon="akar-icons:edit"-->
-<!--                                                style="color: #a6a6a6;"-->
-<!--                                                data-width="20" data-height="20"-->
-<!--                                            ></span>-->
-<!--                                        </span>-->
-<!--                            </div>-->
-<!--                            <span :id="'myDiv-' + keyPerevozchik + onePerevozchik['perevozchik_id']">-->
-<!--                            <div class="cr_ord_inp_n_1" v-if="!onePerevozchik['pogruzkaShowInp']" v-on:click="pogruzkaShowInpChange(onePerevozchik['id'])"-->
-
-<!--                            >{{ onePerevozchik['nazvanie'] }}</div>-->
-<!--                                </span>-->
-<!--                            <div class="text-center">-->
-<!--                                <b-popover :target="'myDiv-' + keyPerevozchik + onePerevozchik['perevozchik_id']" triggers="hover" placement="top" custom-class="wide-popover">-->
-<!--                                  <div v-for="(onePopUpPerevozchik,key1Perevozchik) in onePerevozchik['contacts']" :key="key1Perevozchik">-->
-<!--                                    {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}-->
-<!--                                  </div>-->
-<!--                                </b-popover>-->
-<!--                            </div>-->
-<!--                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="(!onePerevozchik['pogruzkaShowInp'])&&((onePerevozchik['nazvanie']==null)||(onePerevozchik['nazvanie']==''))" v-on:click="pogruzkaShowInpChange(onePerevozchik['id'])">Выбрать перевозчика</div>-->
-<!--                            <auto-input-perevozka-component-->
-<!--                                                            class="select_width_grade"-->
-<!--                                                            :order_id="order_id"-->
-<!--                                                            :vidTsFromParent="onePerevozchik.perevozka.nazvanie"-->
-<!--                                                            :elem1="keyPerevozchik"-->
-<!--                                                            @childReturnMethod="parentMethodFromAutoinputPerevozka"-->
-<!--                                                            @childCloseAutoInput="closeParentAutoInputPogruzka"-->
-<!--                                                            ref="AutoSelectComponent_vid_TS"-->
-<!--                            ></auto-input-perevozka-component>-->
-<!--                            <div class="col-12">-->
-<!--                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Код АТИ</div>-->
-<!--                                <div>{{ onePerevozchik['kod_ATI'] }}</div>-->
-<!--                                <div class="create_orders_date_title_1 lit_marg_grade_auto">ИНН</div>-->
-<!--                                <div>{{ onePerevozchik['INN'] }}</div>-->
-<!--                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Ставка с НДС</div>-->
-<!--                                <div>-->
-<!--                                    <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik['stavka_NDS']" @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>-->
-<!--                                </div>-->
-<!--                                <div class="create_orders_date_title_1 lit_marg_grade_auto">Ставка без НДС</div>-->
-<!--                                <div>-->
-<!--                                <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik['stavka_bez_NDS']" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>-->
-<!--                                </div>-->
-<!--                                <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="deletePerevozchikFromOrder(onePerevozchik['id'],keyPerevozchik)">-</button>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
                          <div class="col-12 second_right_create_orders_text">
 
                                     <div class="col-12 row">
@@ -617,6 +563,9 @@
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Ставка без НДС:</span>
                                          <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_bez_NDS" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
+                                            </div>
+                                            <div class="col-4">
+                                                <span v-on:click="deletePerevozchikFromOrder(onePerevozchik.id,keyPerevozchik)">Удалить</span>
                                             </div>
                                         </div>
                                    </div>
@@ -1308,10 +1257,7 @@
             gradeAddPerevozchik(id,nazvanie)
             {
                     this.perevozchikiList[this.editNumberKeyPerevozchik].perevozchik_id=id
-                  //  this.perevozchikiList[this.editNumberKeyPerevozchik].perevozka.nazvanie=nazvanie
-                        //  this.updateOrdersPerevozchik(id,this.editNumberKeyPerevozchik)
                     this.getPerevozchikDataEditOrNew(id,this.editNumberKeyPerevozchik)
-
             },
             getPerevozchikDataEditOrNew(id,key)
             {
@@ -1556,15 +1502,46 @@
             {
                 const result = await this.confirmMethodMixin();
                 if (result) {
-                    axios
-                        .post('/deletePerevozchikFromOrder', {
-                            id: id
-                        })
-                        .then(response => {
-                            this.perevozchikiList.splice(key, 1)
-                        })
+                    if(id!==null)
+                    {
+                        axios
+                            .post('/deletePerevozchikFromOrder', {
+                                id: id
+                            })
+                            .then(response => {
+                                //забирать значения с классом и переприсваивать их после удаления
+                                var elements = document.querySelectorAll('.perClassScript');
+                                this.perevozchikiList.splice(key, 1)
+
+                                var elementsNew = document.querySelectorAll('.perClassScript');
+                                console.log(elements)
+                                console.log(elementsNew)
+                                for(let i = 0; i < elements.length; i++)
+                                    {
+                                        if(i !== key)
+                                        {
+                                            if(key >= i)
+                                            {
+                                                elementsNew[i].value=elements[i].value
+
+                                            }
+                                            else
+                                            {
+                                                elementsNew[i-1].value=elements[i].value
+
+                                            }
+                                        }
+                                    }
+                            })
+                    }
+                    else
+                    {
+                        this.perevozchikiList.splice(key, 1)
+                    }
+
                 }
             },
+
           async delete_oplata_summa(id,key)
             {
                 const result = await this.confirmMethodMixin();
@@ -2056,24 +2033,8 @@
                                         checked2 : entry.checked2,
                                         terminal_TS : entry.terminal_TS,
                                         perevozchikiList : entry.perevozchiki,
-
                                     });
                                 }),
-                                // data.data[0].perevozchiki.forEach(function(entry) {
-                                //     perevozchikiList.push({
-                                //         id:entry.id,
-                                //         perevozchik_id:entry.perevozchik_id,
-                                //         stavka_NDS : entry.stavka_NDS,
-                                //         stavka_bez_NDS : entry.stavka_bez_NDS,
-                                //         nazvanie: entry.perevozka ? entry.perevozka.nazvanie : '',
-                                //         INN: entry.perevozka ? entry.perevozka.INN : '',
-                                //         kod_ATI: entry.perevozka ? entry.perevozka.kod_ATI : '',
-                                //         pogruzkaShowInp : false,
-                                //         contacts:entry.contacts ? entry.contacts : '',
-                                //     });
-                                // }),
-
-
                                 this.order_header_text='Запрос номер: '+this.nomer_zayavki+' Дата внесения: '
                         )
                     )
@@ -2366,12 +2327,9 @@
                 this.kol_TS_TS=this.spisokTSarr[key]['kol_TS_TS'];
                 this.rasstojanie_TS=this.spisokTSarr[key]['rasstojanie_TS'];
                 this.perevozchikiList = JSON.parse(JSON.stringify(this.spisokTSarr[key]['perevozchikiList']));
-
-              //  this.perevozchikiList=this.spisokTSarr[key]['perevozchikiList'];
                 //получим название вида ТС при редактирвовании и отдадим его в окошко поиска
                 this.getTSNazvanie();
 
-             //   this.adres_pogruzki_TS=this.spisokTSarr[key]['adres_pogruzki_TS'];
                 this.ad_pogruzki_arr_temp=this.spisokTSarr[key]['adres_pogruzki_TS'];
                 if(this.spisokTSarr[key]['adres_pogruzki_TS'].length==0)
                 {

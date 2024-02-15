@@ -239,7 +239,7 @@ class Orders extends Authenticatable
     {
         return Orders::
         when($columnName=='zurnal_zaiavok', function($q)use ($columnName,$offset,$limit){
-            return $q->where('orders.id','>',0)
+            return $q->where('orders.id','>',0)->where('logist',Auth::id())
                 ->offset($offset)
                 ->limit($limit);
         })

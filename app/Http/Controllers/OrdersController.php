@@ -506,6 +506,17 @@ class OrdersController extends Controller
                     $one_adres['adres_vygruzki_show']=$this->gruzootpravitelAdresService->getOneAdresForSearch($one_adres['adres_pogruzki']);
                 }
             }
+            //проверяем на null в перевозчике ( если создали и сохранили пустую строчку )
+//            foreach ($ts['perevozchiki'] as $onePerevozchik)
+//            {
+//                if($onePerevozchik['perevozka']==null)
+//                {
+//                    $onePerevozchik['perevozka']='5222';
+//                }
+//            }
+
+
+
         }
         return response()->json([
             'status' => 'success',

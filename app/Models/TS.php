@@ -65,13 +65,43 @@ class TS extends Authenticatable
 
     public function getTsListByOrderIdInModel($orderId)
     {
-       return TS::where('order_id', $orderId)
-                       ->with([
-                'perevozchiki',
-                'perevozchiki.perevozka',
-                'perevozchiki.contacts'
-                ])
-           ->get();
+//       return TS::where('order_id', $orderId)
+//                       ->with([
+//                'perevozchiki',
+//                'perevozchiki.perevozka',
+//                'perevozchiki.contacts'
+//                ])
+//           ->get();
+
+        return TS::where('order_id', $orderId)
+            ->with([
+                'perevozchiki' => function ($query) {
+                    $query->with(['perevozka' => function ($query) {
+                        $query->withDefault([
+                            'id' => null,
+                            'perevozka_name' => null,
+                            'forma_id' => null,
+                            'nazvanie' => null,
+                            'data_registracii' => null,
+                            'telefon' => null,
+                            'INN' => null,
+                            'OGRN' => null,
+                            'email' => null,
+                            'generalnii_direktor' => null,
+                            'telefon_gen_dir' => null,
+                            'email_gen_dir' => null,
+                            'YR_adres' => null,
+                            'pochtovyi_adres' => null,
+                            'gorod_bazirovania' => null,
+                            'kod_ATI' => null,
+                            'kommentariy' => null,
+                        ]);
+                    }]);
+                    $query->with('contacts');
+                },
+            ])
+            ->get();
+
     }
     public function setNullVidTS($vidTSId)
     {
