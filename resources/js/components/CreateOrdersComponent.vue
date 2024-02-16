@@ -16,7 +16,7 @@
                                       vid="GruzzotpravitelComponent"
             ></modal-author-component>
             <modal-perevozchiki-component
-                ref="modalComponentforAction"
+                ref="modalComponentforActionPerevozchik"
                 vid="CreateOrdersComponent"
                 :gradeAddPerevozchik='gradeAddPerevozchik'
             ></modal-perevozchiki-component>
@@ -64,7 +64,6 @@
                     <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="setColumn('v_rabote')">
                         <div class="col add_ts_button4 text-center">В работе</div>
                     </div>
-
                 </div>
             </div>
 
@@ -351,7 +350,7 @@
                                                    </b-popover>
                                                 </div>
                                                 <span class="create_ord_right_lit_text" >Перевозчик:</span>
-                                                <span :id="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key">{{ perevozchik.perevozka.nazvanie }}</span>
+                                                <span :id="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</span>
                                             </div>
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Код АТИ:</span>
@@ -535,16 +534,29 @@
                                             <div class="col-8 row">
                                                 <span class="create_ord_right_lit_text col-2">Перевозчик:</span>
                                                     <auto-input-perevozka-component
-                                                        class="select_width_grade col-8 "
+                                                        class="select_width_grade col-7 per_bot"
                                                         :order_id="order_id"
                                                         :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
                                                         :elem1="keyPerevozchik"
                                                         @childReturnMethod="parentMethodFromAutoinputPerevozka"
                                                         @childCloseAutoInput="closeParentAutoInputPogruzka"
                                                         ref="AutoSelectComponent_vid_TS"
-
                                                     ></auto-input-perevozka-component>
-                                                <span class="col-2 add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">Добавить</span>
+                                                <span class="col-3 row add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">
+                                                    <span class="col-8">Добавить</span>
+                                                        <span
+                                                            class="col-4"
+                                                            v-if="onePerevozchik.perevozchik_id!==''"
+                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"
+                                                            v-b-modal.perevozkaMod variant="primary">
+                                                                <span
+                                                                    class="iconify edit_icon"
+                                                                    data-icon="akar-icons:edit"
+                                                                    style="color: #a6a6a6;"
+                                                                    data-width="20" data-height="20"
+                                                                ></span>
+                                                        </span>
+                                                    </span>
                                             </div>
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Код АТИ:</span>
@@ -744,7 +756,7 @@
                                             <div class="col-6 row">
                                                 <span class="create_ord_right_lit_text col-2">Перевозчик:</span>
                                                  <auto-input-perevozka-component
-                                                     class="select_width_grade col-8"
+                                                     class="select_width_grade col-7 per_bot"
                                                      :order_id="order_id"
                                                      :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
                                                      :elem1="keyPerevozchik"
@@ -752,7 +764,22 @@
                                                      @childCloseAutoInput="closeParentAutoInputPogruzka"
                                                      ref="AutoSelectComponent_vid_TS"
                                                  ></auto-input-perevozka-component>
-                                                <span class="col-2 add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">Добавить</span>
+                                                    <span class="col-3 row add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">
+                                                    <span class="col-8">Добавить</span>
+                                                        <span
+                                                            v-if="onePerevozchik.perevozchik_id!==''"
+                                                            class="col-4"
+                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"
+                                                            v-b-modal.perevozkaMod variant="primary">
+                                                                <span
+                                                                    class="iconify edit_icon"
+                                                                    data-icon="akar-icons:edit"
+                                                                    style="color: #a6a6a6;"
+                                                                    data-width="20" data-height="20"
+                                                                ></span>
+                                                        </span>
+                                                    </span>
+
                                             </div>
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Код АТИ:</span>
@@ -1270,10 +1297,8 @@
 
                         for(let i = 0; i < this.perevozchikiList.length; i++)
                         {
-
                             if(this.perevozchikiList[i].perevozchik_id==id)
                             {
-
                                 this.perevozchikiList[i].contacts=response.data.perevozchik[0].contacts
                                 this.perevozchikiList[i].perevozka.INN=response.data.perevozchik[0].INN
                                 this.perevozchikiList[i].perevozka.kod_ATI=response.data.perevozchik[0].kod_ATI
@@ -1281,10 +1306,20 @@
                                 elements[i].value=response.data.perevozchik[0].nazvanie
                             }
                         }
-
+                        for(let i = 0; i < this.spisokTSarr.length; i++)
+                        {
+                            for(let j = 0; j < this.spisokTSarr[i].perevozchikiList.length; j++)
+                            {
+                                if(this.spisokTSarr[i].perevozchikiList[j].perevozchik_id==id)
+                                {
+                                    this.spisokTSarr[i].perevozchikiList[j].contacts=response.data.perevozchik[0].contacts
+                                    this.spisokTSarr[i].perevozchikiList[j].perevozka.INN=response.data.perevozchik[0].INN
+                                    this.spisokTSarr[i].perevozchikiList[j].perevozka.kod_ATI=response.data.perevozchik[0].kod_ATI
+                                    this.spisokTSarr[i].perevozchikiList[j].perevozka.nazvanie=response.data.perevozchik[0].nazvanie
+                                }
+                            }
+                        }
                     })
-
-
             },
             getPerevozchikData(id,key)
             {
@@ -1644,7 +1679,7 @@
                 //в этой переменной храним ключ редактируемого перевозчика
                 this.editNumberKeyPerevozchik=key
                 //вызов метода дочернего компонента( модального окна )
-                this.$refs.modalComponentforAction.newPerevozchik()
+                this.$refs.modalComponentforActionPerevozchik.newPerevozchik()
             },
             select_gruzootpravitel()
             {
@@ -2149,7 +2184,7 @@
                 //в этой переменной храним ключ редактируемого перевозчика
                 this.editNumberKeyPerevozchik=key
                 //вызов метода дочернего компонента( модального окна )
-                this.$refs.modalComponentforAction.get_modal_edit_data(id)
+                this.$refs.modalComponentforActionPerevozchik.get_modal_edit_data(id)
             },
             hideButtonsUsers()
             {
