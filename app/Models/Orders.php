@@ -171,14 +171,17 @@ class Orders extends Authenticatable
     public function allHeadersCountModel($logistId,$logistOradmin)
     {
         $counterArr=['all'=>0,'ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
-        $counterArr['all']=Orders::all()->count();
         if($logistOradmin=='logist')
         {
             $Orders=Orders::where('logist',$logistId)->get();
+            $counterArr['all']=Orders::where('logist',$logistId)->count();
+
         }
         if($logistOradmin=='admin')
         {
             $Orders=Orders::all();
+            $counterArr['all']=Orders::all()->count();
+
         }
 
         foreach ($Orders as $oneHeader)
@@ -276,12 +279,13 @@ class Orders extends Authenticatable
     {
         return Orders::
         when($columnName=='zurnal_zaiavok', function($q)use ($columnName){
-            return $q->where('id','>',0);
+            return $q->where('logist',Auth::id());
         })
             ->when($columnName!=='zurnal_zaiavok', function($q)use ($columnName){
                 return $q->where($columnName,1)->where('logist',Auth::id())
                     ;
             })
+
             ->orderByRaw('CAST(nomer_zayavki AS DECIMAL) DESC')
             ->count();
     }
