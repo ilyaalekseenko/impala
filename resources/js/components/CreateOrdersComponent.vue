@@ -1795,8 +1795,9 @@
                         )
                     );
             },
+
             handleChange0(){
-                this.update_order()
+                this.updateOrderLoc('data_pogruzki',this.data_pogruzki);
             },
             handleChange1(){
                 this.update_order()
