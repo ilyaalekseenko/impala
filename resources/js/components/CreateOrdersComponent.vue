@@ -307,6 +307,10 @@
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка без НДС</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS_bez_NDS }}<span v-if="elem.stavka_TS">р.</span></div>
                                     </div>
+                                    <div class="col-2  no_padding_right">
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка за км</div>
+                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS_za_km }}<span v-if="elem.stavka_TS">р.</span></div>
+                                    </div>
                                     <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_kp_TS }}<span v-if="elem.stavka_kp_TS">р.</span></div>
@@ -2293,6 +2297,7 @@
                     this.spisokTSarr[this.edit_number]['terminal_TS']=this.terminal_TS;
                     this.spisokTSarr[this.edit_number]['perevozchikiList']=this.perevozchikiList;
                     this.spisokTSarr[this.edit_number]['marja_TS']=this.marja_TS;
+                    this.spisokTSarr[this.edit_number]['stavka_TS_za_km']=this.stavka_TS_za_km;
 
                     axios
                         .post('/save_ts',{
