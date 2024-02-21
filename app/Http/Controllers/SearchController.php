@@ -129,6 +129,7 @@ class SearchController extends Controller
             'res' =>$res,
         ], 200);
     }
+
     //метод поиска на бэке менеджера
     public function searchBackManager(Request $request)
     {

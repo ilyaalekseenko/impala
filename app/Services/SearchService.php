@@ -50,6 +50,7 @@ class SearchService
             ->limit(10)
             ->get();
     }
+
     public function getSearchResultsmanager($searchWord,$model,$fieldTosearch,$searchOffset,$zakachikId)
     {
         $model = 'App\Models\\' . $model;

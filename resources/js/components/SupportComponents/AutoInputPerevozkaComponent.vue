@@ -7,7 +7,7 @@
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
-                        {{ item.nazvanie }}
+                      {{ item.forma_id }} {{ item.nazvanie }}
                     </li>
                 </ul>
             </div>
@@ -109,6 +109,7 @@
                 }
                 }, 200);
             },
+
 
             //метод поиска на бэке
             searchBack(inp)
@@ -214,6 +215,7 @@
                     })
                 }
             },
+            //выбрать в список с формой
             returnDataToParent()
             {
                 if(this.forma_id==null)

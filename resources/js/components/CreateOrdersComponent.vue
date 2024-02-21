@@ -1185,7 +1185,7 @@
                 if(data.id!==null)
                 {
                     this.perevozchikiList[data.elem1].perevozchik_id=data.id
-                    this.perevozchikiList[data.elem1].perevozka.nazvanie=data.ts_name
+                    this.perevozchikiList[data.elem1].perevozka.nazvanie=data.forma_id+' '+data.ts_name
                     this.getPerevozchikData(data.id,data.elem1)
                 }
 
@@ -1340,7 +1340,7 @@
                                 this.perevozchikiList[i].perevozka.INN=response.data.perevozchik[0].INN
                                 this.perevozchikiList[i].perevozka.kod_ATI=response.data.perevozchik[0].kod_ATI
                                 this.perevozchikiList[i].perevozka.nazvanie=response.data.perevozchik[0].nazvanie
-
+                                this.perevozchikiList[i].perevozka.forma_id=response.data.perevozchik[0].forma_id
                             }
                         }
 

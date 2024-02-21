@@ -91,21 +91,21 @@ class Orders extends Authenticatable
     public function createNewOrderInModel($dataVneseniya)
     {
         // Получаем наибольшее значение поля nomer_zayavki
-        $maxNomerZayavki = Orders::max('nomer_zayavki');
-        if($maxNomerZayavki==null)
-        {
-            $maxNomerZayavki = Orders::max('id');
-        }
-        if($maxNomerZayavki==null)
-        {
-            $maxNomerZayavki = 0;
-        }
+     //   $maxNomerZayavki = Orders::max('nomer_zayavki');
+      //  if($maxNomerZayavki==null)
+     //   {
+      //      $maxNomerZayavki = Orders::max('id');
+      //  }
+      //  if($maxNomerZayavki==null)
+      //  {
+       //     $maxNomerZayavki = 0;
+     //   }
 // Увеличиваем значение на 1
-        $newNomerZayavki = $maxNomerZayavki + 1;
+     //   $newNomerZayavki = $maxNomerZayavki + 1;
 // Создаем новую заявку с увеличенным значением поля nomer_zayavki
         $newOrder = Orders::create([
             'data_vneseniya' => $dataVneseniya,
-            'nomer_zayavki' => $newNomerZayavki,
+            'nomer_zayavki' =>null,
         ]);
         return $newOrder;
     }
