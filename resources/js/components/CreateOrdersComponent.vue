@@ -2292,6 +2292,8 @@
                     this.spisokTSarr[this.edit_number]['checked2']=this.checked2;
                     this.spisokTSarr[this.edit_number]['terminal_TS']=this.terminal_TS;
                     this.spisokTSarr[this.edit_number]['perevozchikiList']=this.perevozchikiList;
+                    this.spisokTSarr[this.edit_number]['marja_TS']=this.marja_TS;
+
                     axios
                         .post('/save_ts',{
                             id_ts:this.id_ts,
