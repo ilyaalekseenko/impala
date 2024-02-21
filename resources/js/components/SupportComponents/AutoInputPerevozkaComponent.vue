@@ -73,7 +73,7 @@
             select(item) {
 
                 this.showList = false;
-                this.MainVarInInput = item.nazvanie;
+                this.MainVarInInput =item.forma_id+' '+item.nazvanie;
                 this.mainId=item.id;
                 this.forma_id=item.forma_id;
                 this.returnDataToParent()
