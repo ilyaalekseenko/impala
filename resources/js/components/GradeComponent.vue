@@ -395,7 +395,7 @@
 
                                     <div class="col-6">
                                         <div class="little_title_grade">Фото груза</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_FOTO" class="add_button_grade no_wrap_text">
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_FOTO" class="add_button_grade">
                                                     {{ docInfo.name_doc }}
                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
@@ -492,7 +492,7 @@
 
                                     <div class="col-6">
                                         <div class="little_title_grade">Фото груза</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_FOTO" class="add_button_grade no_wrap_text">
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_FOTO" class="add_button_grade">
                                                     {{ docInfo.name_doc }}
                                                  <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
@@ -503,7 +503,7 @@
 
                                    <div class="col-6">
                                         <div class="little_title_grade">Акт</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_ACT" class="add_button_grade no_wrap_text">
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_ACT" class="add_button_grade">
                                                     {{ docInfo.name_doc }}
                                                  <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
                                              </div>
@@ -518,7 +518,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                                                                <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
  </span>
                                     <div class="col-12 row grade_underline"></div>
                                     <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
@@ -581,7 +581,7 @@
                                     <div class="col-6">
                                     <div class="little_title_grade">Подписанная</div>
                                         <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                        <span v-if="elem1.podpisannaya_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,3)">{{ elem1.podpisannaya_doc_name }}
+                                        <span v-if="elem1.podpisannaya_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,3)">{{ elem1.podpisannaya_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
                                         <div v-if="!elem1.podpisannaya_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,3)">Загрузить</div>
@@ -591,7 +591,7 @@
                                         <div class="little_title_grade">Счёт</div>
                                         <div class="col-12 add_button_grade">
                                             <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem1.schet_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,4)">{{ elem1.schet_doc_name }}
+                                            <span v-if="elem1.schet_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,4)">{{ elem1.schet_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
                                             <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,4)">Загрузить</div>
@@ -602,7 +602,7 @@
                                         <div class="col-6">
                                             <div class="little_title_grade">Счёт фактура или УПД</div>
                                             <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem1.faktura_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,5)">{{ elem1.faktura_doc_name }}
+                                            <span v-if="elem1.faktura_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,5)">{{ elem1.faktura_doc_name }}
                                             <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
                                         </span>
                                             <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,5)">Загрузить</div>
