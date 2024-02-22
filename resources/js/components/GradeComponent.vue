@@ -383,11 +383,12 @@
                                 <div class="col-12">
                                    <div class="col-12 row">
                                    <div class="col-6">
-                                        <div class="little_title_grade">Документы</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_DOC" class="add_button_grade no_wrap_text">
+                                        <div class="little_title_grade col-12">Документы</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_DOC" class="add_button_grade  col-12">
                                                     {{ docInfo.name_doc }}
-
-                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
+                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)">
+                                                    <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
+                                                </span>
                                              </div>
                                         <div class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
                                    </div>
@@ -479,12 +480,12 @@
                                     <div class="col-12">
                                    <div class="col-12 row">
                                    <div class="col-6">
-                                        <div class="little_title_grade">Документы</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_DOC" class="add_button_grade no_wrap_text">
+                                        <div class="little_title_grade col-12">Документы</div>
+                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_DOC" class="add_button_grade col-12">
                                                     {{ docInfo.name_doc }}
-
-                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
-
+                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)">
+                                                     <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
+                                                 </span>
                                              </div>
                                         <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
                                    </div>
