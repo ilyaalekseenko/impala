@@ -270,8 +270,8 @@ Vue.filter('formatDate', function(value) {
                     .then(response => {
                         if(response.data.data=='isset')
                         {
-                            //если закладка в работе то редирект на вид grade
-                            if(this.order_by==3)
+                            //если закладка в работе или контроль то редирект на вид grade
+                            if((this.order_by==3)||(this.order_by==4))
                             {
                                 window.location.href =('/grade/'+id)
                             }
