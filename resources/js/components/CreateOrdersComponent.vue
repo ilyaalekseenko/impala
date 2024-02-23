@@ -131,7 +131,7 @@
                                 <div class="little_title_create_orders no_wrap_text" >
                                     Бюджет контракта
                                 </div>
-                                <input @blur="updateOrderLoc('cena_kontrakta',cena_kontrakta)" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
+                                <input @blur="updateOrderLocNumber('cena_kontrakta',cena_kontrakta)" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
                             </span>
 
                         </div>
@@ -213,8 +213,8 @@
                                         Кол-во грузомест
                                     </div>
                                     <div class="create_orders_bottom right_menu_nom row">
-                                        <input @blur="updateOrderLoc('gruzomesta_big',gruzomesta_big)" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
-                                        <input @blur="updateOrderLoc('gruzomesta_small',gruzomesta_small)" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
+                                        <input @blur="updateOrderLocNumber('gruzomesta_big',gruzomesta_big)" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
+                                        <input @blur="updateOrderLocNumber('gruzomesta_small',gruzomesta_small)" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
                                     </div>
                                 </div>
                                 <div class=" col-6 no_padding_right no_padding_left">
@@ -222,7 +222,7 @@
                                         Расстояние, км
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLoc('rasstojanie',rasstojanie)" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
+                                        <input @blur="updateOrderLocNumber('rasstojanie',rasstojanie)" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
                                     </div>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
                                         Общий вес, кг
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLoc('ob_ves',ob_ves)" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
+                                        <input @blur="updateOrderLocNumber('ob_ves',ob_ves)" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
                                     </div>
                                 </div>
                                 <div class="offset-1 col-6  no_padding_left no_padding_right">
@@ -240,7 +240,7 @@
                                         Общий объём, м3
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLoc('ob_ob',ob_ob)" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
+                                        <input @blur="updateOrderLocNumber('ob_ob',ob_ob)" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
                                     </div>
                                 </div>
                             </div>
@@ -849,13 +849,9 @@
 </template>
 
 <script>
-
-
-
     import datepicker from 'vuejs-datepicker';
     import moment from 'moment'
     import {logistData} from "../app.js";
-
     import DatePicker from 'vue2-datepicker';
     import 'vue2-datepicker/index.css';
 
@@ -1102,7 +1098,9 @@
                     })
 
             },
-            updateStavkaPerevozchikRasstojanie()
+
+
+    updateStavkaPerevozchikRasstojanie()
             {
                 for(var i = 0; i < this.perevozchikiList.length; i++)
                 {
@@ -2017,6 +2015,23 @@
             {
                 this.$refs.modalComponentforAction.newModal()
             },
+            //метод применяемый для числовых значений с кореектировокой ввода
+            updateOrderLocNumber(field,data)
+            {
+                data=this.setToNumberFormat(field)
+                if((field=='adres_pogruzke')||(field=='adres_vygruski'))
+                {
+                    this.adresPogruzkiShowSpan=true
+                    this.adresVygruzkiShowSpan=true
+                }
+                axios
+                    .post('/updateOrderLoc',{
+                        id:this.order_id,
+                        field:field,
+                        data:data
+                    })
+            },
+            //метод для всех остальных значений кроме числовых
             updateOrderLoc(field,data)
             {
                 if((field=='adres_pogruzke')||(field=='adres_vygruski'))

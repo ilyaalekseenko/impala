@@ -130,6 +130,8 @@ import MixinCheckOrderStatus from './mixins/MixinCheckOrderStatus'
 Vue.mixin(MixinCheckOrderStatus);
 import MixinConfirm from './mixins/MixinConfirm'
 Vue.mixin(MixinConfirm);
+import MixinNumbersToSet from './mixins/MixinNumbersToSet'
+Vue.mixin(MixinNumbersToSet);
 //импортирую свою директиву my-click-outside
 import './directives/my-click-outside';
 
