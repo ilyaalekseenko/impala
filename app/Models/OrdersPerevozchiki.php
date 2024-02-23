@@ -46,13 +46,14 @@ class OrdersPerevozchiki extends Model
             'TS_id' =>$id,
         ]);
     }
-    public function addPerevozchik($TS_Id,$perevozchik_id,$stavka_NDS,$Stavka_bez_NDS)
+    public function addPerevozchik($TS_Id,$perevozchik_id,$stavka_NDS,$Stavka_bez_NDS,$stavka_za_km)
     {
         return OrdersPerevozchiki::create([
             'TS_id' =>$TS_Id,
             'perevozchik_id' =>$perevozchik_id,
             'stavka_NDS' =>$stavka_NDS,
-            'Stavka_bez_NDS' =>$Stavka_bez_NDS,
+            'stavka_bez_NDS' =>$Stavka_bez_NDS,
+            'stavka_za_km' =>$stavka_za_km,
         ]);
     }
 

@@ -372,6 +372,11 @@
                                                 <span class="create_ord_right_lit_text">Ставка без НДС:</span>
                                                 {{ perevozchik.stavka_bez_NDS }}
                                             </div>
+                                            <div class="col-4">
+                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
+                                                {{ perevozchik.stavka_za_km }}
+                                            </div>
+
                                         </div>
                                    </div>
                                 </div>
@@ -473,7 +478,7 @@
                                                 Расстояние, км
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS"  />
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie()" />
                                             </div>
                                         </div>
                                     </div>
@@ -579,6 +584,10 @@
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Ставка без НДС:</span>
                                          <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_bez_NDS" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
+                                            </div>
+                                              <div class="col-4">
+                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
+                                                {{ onePerevozchik.stavka_za_km }}
                                             </div>
                                             <div class="col-4">
                                                 <span v-on:click="deletePerevozchikFromOrder(onePerevozchik.id,keyPerevozchik)">Удалить</span>
@@ -695,7 +704,7 @@
                                                 Расстояние, км
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS"  />
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie()" />
                                             </div>
                                         </div>
                                     </div>
@@ -801,6 +810,10 @@
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Ставка без НДС:</span>
                                          <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_bez_NDS" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
+                                            </div>
+                                            <div class="col-4">
+                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
+                                                {{ onePerevozchik.stavka_za_km }}
                                             </div>
                                         </div>
                                    </div>
@@ -1089,6 +1102,21 @@
                     })
 
             },
+            updateStavkaPerevozchikRasstojanie()
+            {
+                for(var i = 0; i < this.perevozchikiList.length; i++)
+                {
+                    if((this.perevozchikiList[i]['stavka_NDS']=='')||(this.rasstojanie_TS=='')||(this.perevozchikiList[i]['stavka_NDS']==null)||(this.rasstojanie_TS==null))
+                    {
+                        this.perevozchikiList[i]['stavka_za_km']=0
+                    }
+                    else
+                    {
+                        let tempSt=this.perevozchikiList[i]['stavka_NDS']/this.rasstojanie_TS
+                        this.perevozchikiList[i]['stavka_za_km'] =(parseInt(tempSt * 100)) / 100
+                    }
+                }
+            },
             updateStavkaPerevozchik(type,key)
             {
                 if(type=='stavka_NDS')
@@ -1096,22 +1124,44 @@
 
                     if((this.perevozchikiList[key]['stavka_NDS']=='')||(this.perevozchikiList[key]['stavka_NDS']==0))
                     {
-                        this.perevozchikiList[key]['stavka_bez_NDS'] =0
+                        this.perevozchikiList[key]['stavka_bez_NDS']=0
+                        this.perevozchikiList[key]['stavka_za_km']=0
                     }
                     else
                     {
                         this.perevozchikiList[key]['stavka_bez_NDS'] = (Number(this.perevozchikiList[key]['stavka_NDS'])/ 1.2).toFixed(2);
+                        if((this.perevozchikiList[key]['stavka_NDS']=='')||(this.rasstojanie_TS=='')||(this.perevozchikiList[key]['stavka_NDS']==null)||(this.rasstojanie_TS==null))
+                        {
+                            this.perevozchikiList[key]['stavka_za_km']=0
+                        }
+                        else
+                        {
+                            let tempSt=this.perevozchikiList[key]['stavka_NDS']/this.rasstojanie_TS
+                            this.perevozchikiList[key]['stavka_za_km'] =(parseInt(tempSt * 100)) / 100
+                        }
                     }
+
                 }
                 if(type=='stavka_bez_NDS')
                 {
                     if((this.perevozchikiList[key]['stavka_bez_NDS']=='')||(this.perevozchikiList[key]['stavka_bez_NDS']==0))
                     {
                         this.perevozchikiList[key]['stavka_NDS'] =0
+                        this.perevozchikiList[key]['stavka_za_km']=0
                     }
                     else
                     {
                         this.perevozchikiList[key]['stavka_NDS'] = (Number(this.perevozchikiList[key]['stavka_bez_NDS']) * 1.2).toFixed(2);
+
+                        if((this.perevozchikiList[key]['stavka_NDS']=='')||(this.rasstojanie_TS=='')||(this.perevozchikiList[key]['stavka_NDS']==null)||(this.rasstojanie_TS==null))
+                        {
+                            this.perevozchikiList[key]['stavka_za_km']=0
+                        }
+                        else
+                        {
+                            let tempSt=this.perevozchikiList[key]['stavka_NDS']/this.rasstojanie_TS
+                            this.perevozchikiList[key]['stavka_za_km'] =(parseInt(tempSt * 100)) / 100
+                        }
                     }
                 }
               //  this.updatePerevozchikField(this.perevozchikiList[key]['id'],'stavka_NDS',this.perevozchikiList[key]['stavka_NDS'])
@@ -1218,6 +1268,7 @@
                         }
                     })
             },
+
             inputShow(inpVar)
             {
 

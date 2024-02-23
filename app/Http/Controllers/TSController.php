@@ -112,10 +112,9 @@ class TSController extends Controller
             //добавим перевозчиков к ТС
             foreach (request('perevozchikiList') as $onePerevozchik)
             {
-                $this->ordersPerevozchiki->addPerevozchik($TS->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS']);
+                $onePerevozchik['stavka_za_km'] = $onePerevozchik['stavka_za_km'] ?? 0;
+                $this->ordersPerevozchiki->addPerevozchik($TS->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS'],$onePerevozchik['stavka_za_km']);
             }
-
-
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();
             foreach ($adres_pogruzki_TS as $adres)
             {
@@ -167,7 +166,8 @@ class TSController extends Controller
             $this->ordersPerevozchiki->deletePerevozchikFromOrderByOrder($TS_list[0]->id);
             foreach (request('perevozchikiList') as $onePerevozchik)
             {
-                $this->ordersPerevozchiki->addPerevozchik($TS_list[0]->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS']);
+                $onePerevozchik['stavka_za_km'] = $onePerevozchik['stavka_za_km'] ?? 0;
+                $this->ordersPerevozchiki->addPerevozchik($TS_list[0]->id,$onePerevozchik['perevozchik_id'],$onePerevozchik['stavka_NDS'],$onePerevozchik['stavka_bez_NDS'],$onePerevozchik['stavka_za_km']);
             }
 
             PogruzkaTS::where('id_ts' ,$id_ts,)->where('order_id',$order_id)->delete();

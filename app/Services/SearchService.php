@@ -83,6 +83,7 @@ class SearchService
               $value['nazvGruz']='';
           }
         }
+       //тут добавить код для поиска ГО ГП
         return $data;
     }
     public function searchBackStavkiInput($searchWord,$model,$fieldTosearch,$searchOffset,$fieldToSearchFinalGrade)
