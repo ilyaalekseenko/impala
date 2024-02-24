@@ -393,7 +393,7 @@
                     <!--             конец список старых ТС-->
 
 
-                    <!--  Добавление нового ТС или редактирование старого-->
+                    <!--  Редактирование ТС-->
                     <div v-if="add_ts===key" class="row add_ts_class">
                         <div class="col spisok_ts_second_title_left">
                             <div class="little_title_create_orders2">
@@ -440,7 +440,7 @@
                                         Ставка КП
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS" @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)" />
                                     </div>
                                 </div>
                                 <div class="col-6" v-show="checkRolePermission([1])">
@@ -462,7 +462,7 @@
                                                 Кол-во грузомест
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS"  />
+                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS" @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)" />
                                             </div>
                                         </div>
                                         <div class="col cr_ord_lit_center no_padding_right">
@@ -470,7 +470,7 @@
                                                 Кол-во ТС
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS"  />
+                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS" @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)" />
                                             </div>
                                         </div>
                                         <div class="col cr_ord_lit_right no_padding_left">
@@ -478,7 +478,7 @@
                                                 Расстояние, км
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie()" />
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS',rasstojanie_TS)" />
                                             </div>
                                         </div>
                                     </div>
@@ -617,8 +617,9 @@
                     </div>
                     <div v-if="add_ts===key" class="col-12 row create_ord_underline"></div>
 
-                        <!--                end_ts-->
+                        <!--Конец редактирования ТС-->
  </span>
+<!--                    Добавление нового ТС-->
                     <div v-if="add_new_ts" class="row add_ts_class">
                         <div class="col spisok_ts_second_title_left">
                             <div class="little_title_create_orders2">
@@ -666,7 +667,7 @@
                                         Ставка КП
                                     </div>
                                     <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS"  />
+                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS" @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)" />
                                     </div>
                                 </div>
                                 <div class="col-6" v-show="checkRolePermission([1])">
@@ -688,7 +689,7 @@
                                                 Кол-во грузомест
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS"  />
+                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS" @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)" />
                                             </div>
                                         </div>
                                         <div class="col cr_ord_lit_center no_padding_right">
@@ -696,7 +697,7 @@
                                                 Кол-во ТС
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS"  />
+                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS" @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)" />
                                             </div>
                                         </div>
                                         <div class="col cr_ord_lit_right no_padding_left">
@@ -704,7 +705,7 @@
                                                 Расстояние, км
                                             </div>
                                             <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie()" />
+                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS',rasstojanie_TS)" />
                                             </div>
                                         </div>
                                     </div>
@@ -839,7 +840,7 @@
                             <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
                         </div>
                     </div>
-
+<!--конец добавления нового ТС-->
                 </div>
                 </div>
 
@@ -1079,7 +1080,6 @@
             },
             pogruzkaShowInpChange(id)
             {
-                console.log(id)
                 this.perevozchikiList.forEach(obj => {
                     if (obj.id === id) {
                         obj.pogruzkaShowInp = !obj.pogruzkaShowInp; // Инвертируем значение
@@ -1100,8 +1100,9 @@
             },
 
 
-    updateStavkaPerevozchikRasstojanie()
+    updateStavkaPerevozchikRasstojanie(field,data)
             {
+                this.updateNumberToFormat(field,data)
                 for(var i = 0; i < this.perevozchikiList.length; i++)
                 {
                     if((this.perevozchikiList[i]['stavka_NDS']=='')||(this.rasstojanie_TS=='')||(this.perevozchikiList[i]['stavka_NDS']==null)||(this.rasstojanie_TS==null))
@@ -1119,6 +1120,7 @@
             {
                 if(type=='stavka_NDS')
                 {
+                    this.perevozchikiList[key]['stavka_NDS']=this.setToNumberFormatData(this.perevozchikiList[key]['stavka_NDS'])
 
                     if((this.perevozchikiList[key]['stavka_NDS']=='')||(this.perevozchikiList[key]['stavka_NDS']==0))
                     {
@@ -1142,6 +1144,7 @@
                 }
                 if(type=='stavka_bez_NDS')
                 {
+                    this.perevozchikiList[key]['stavka_bez_NDS']=this.setToNumberFormatData(this.perevozchikiList[key]['stavka_bez_NDS'])
                     if((this.perevozchikiList[key]['stavka_bez_NDS']=='')||(this.perevozchikiList[key]['stavka_bez_NDS']==0))
                     {
                         this.perevozchikiList[key]['stavka_NDS'] =0
@@ -1167,6 +1170,7 @@
 
             },
             updateStavka() {
+                this.stavka_TS=this.setToNumberFormat('stavka_TS_bez_NDS')
                 if((this.stavka_TS_bez_NDS=='')||(this.stavka_TS_bez_NDS==0))
                 {
                     this.stavka_TS =0
@@ -1177,6 +1181,7 @@
                 }
             },
             updateStavkaBezNDS() {
+                this.stavka_TS_bez_NDS=this.setToNumberFormat('stavka_TS')
                 if((this.stavka_TS=='')||(this.stavka_TS==0))
                 {
                     this.stavka_TS_bez_NDS =0

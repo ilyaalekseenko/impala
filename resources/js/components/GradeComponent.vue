@@ -318,13 +318,13 @@
                                             <div class="little_title_grade ">
                                                 Кол-во грузомест
                                             </div>
-                                            <input @blur="update_one_data(elem1,'kol_gruz_TS')" class="border_input" v-model="elem1.kol_gruz_TS"  />
+                                            <input @blur="update_one_data_number(elem1,'kol_gruz_TS',elem1.kol_gruz_TS)" class="border_input" v-model="elem1.kol_gruz_TS"  />
                                         </div>
                                         <div class="col-6">
                                             <div class="little_title_grade">
                                                 Расстояние, км
                                             </div>
-                                            <input @blur="update_one_data(elem1,'rasstojanie_TS')" class="border_input" v-model="elem1.rasstojanie_TS"  />
+                                            <input @blur="update_one_data_number(elem1,'rasstojanie_TS',elem1.rasstojanie_TS)" class="border_input" v-model="elem1.rasstojanie_TS"  />
                                         </div>
                                 </div>
 
@@ -543,14 +543,14 @@
                                      <div class="col-12 row">
                                     <div class="col-8">
                                         <div class="little_title_grade">Сумма</div>
-                                        <input @keypress="onlyNumber" @blur="update_one_data(elem1,'stavka_summa')" class="border_input inp_date" v-model="elem1.stavka_summa"/>
+                                        <input @keypress="onlyNumber" @blur="update_one_data_number(elem1,'stavka_summa',elem1.stavka_summa)" class="border_input inp_date" v-model="elem1.stavka_summa"/>
                                         <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
                                            НДС
                                         </span>
                                     </div>
                                     <div class="col-4">
                                         <div class="little_title_grade">Предоплата,%</div>
-                                        <input @blur="update_one_data(elem1,'predoplata')" class="border_input inp_time" v-model="elem1.predoplata"  />
+                                        <input @blur="update_one_data_number(elem1,'predoplata',elem1.predoplata)" class="border_input inp_time" v-model="elem1.predoplata"  />
                                     </div>
                                      </div>
                                     <div class="col-12 not_paid_marg">
@@ -566,8 +566,6 @@
                                      <div class="col-12">
                                         <input @keypress="onlyNumber" @input="checkSumma(elem1,sum.id_summa,sum.summa,key2)" @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
                                                class="border_input add_summ_grade_inp" v-model="sum.summa"/>
-<!--                                               class=" border_input add_summ_grade_inp"  v-model="sum.summa"  maxlength="3"/>-->
-
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
                                          <date-picker   v-model="sum.data" valueType="format" type="date"
@@ -1949,6 +1947,7 @@ console.log(filesData)
             },
             checkSumma(elem1,id_summa,summa,key)
             {
+                this.spisokTShead[this.right_currentTS_In_Arr].summa_list[key].summa=this.setToNumberFormatData(summa)
                 //сумма всех оплат
                 let tempSumma=0;
                 for (let i = 0; i < this.spisokTShead[this.right_currentTS_In_Arr].summa_list.length; i++) {
@@ -1996,7 +1995,6 @@ console.log(filesData)
             },
             update_one_data(elem,name)
             {
-                console.log(elem)
                 if(name=='stavka_summa')
                 {
                     if(elem.stavka_summa=='')
@@ -2634,7 +2632,25 @@ console.log(filesData)
                     }
                 }
                 this.PPShowInp=false
-            }
+            },
+            update_one_data_number(elem,name,data)
+            {
+                elem[name]=this.setToNumberFormatData(data)
+                if(name=='stavka_summa')
+                {
+                    if(elem.stavka_summa=='')
+                    {
+                        elem.stavka_summa=0
+                    }
+                }
+                axios
+                    .post('/update_one_data',{
+                        elem:elem,
+                        name:name,
+                        grade_id:this.order_id
+                    })
+            },
+
         }
     }
 </script>
