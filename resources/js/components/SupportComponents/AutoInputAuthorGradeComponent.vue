@@ -34,7 +34,8 @@
                    order_id_local:'',
                    searchOffset:0,
                     inputHeight: 30,
-                   firstClick_local:false
+                   firstClick_local:false,
+                   searchOffsetPogruzchiki:0
                }
            },
            mounted() {
@@ -165,7 +166,8 @@
                            searchWord:searchWord,
                            model:'GruzootpravitelAdresa',
                            fieldToSearch:'full_name',
-                           searchOffset:this.searchOffset
+                           searchOffset:this.searchOffset,
+                           searchOffsetPogruzchiki:this.searchOffsetPogruzchiki
                        })
                        .then(response => {
                            response.data.res.forEach(function(entry) {
@@ -176,7 +178,7 @@
                                    avtor:entry.forma_id+' '+entry.nazvGruz
                                });
                            })
-
+                           this.searchOffsetPogruzchiki=response.data.searchOffsetPogruzchiki
                        })
                   // return searchArrTemp
 

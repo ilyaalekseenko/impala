@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\FinalGrade;
 use App\Models\GradePogruzka;
+use App\Models\Gruzootpravitel;
 use App\Models\GruzootpravitelAdresa;
 use App\Models\GruzootpravitelContact;
 use App\Models\Perevozka;
@@ -83,9 +84,32 @@ class SearchService
               $value['nazvGruz']='';
           }
         }
-       //тут добавить код для поиска ГО ГП
         return $data;
     }
+
+    public function getGruzootpravitelsWithoutAdres($offset)
+    {
+        $data=Gruzootpravitel::whereDoesntHave('adresas')
+            ->offset($offset)
+            ->limit(10)
+            ->orderBy('id')
+            ->get();
+        foreach ($data as $value) {
+            if($value['forma_id']===null)
+            {
+                $value['forma_id']='';
+            }
+            if($value['nazvanie']===null)
+            {
+                $value['nazvanie']='';
+            }
+            $value->gruzootpravitel_id=$value->id;
+            $value->id='';
+            $value->nazvGruz=$value->nazvanie;
+        }
+        return $data;
+    }
+
     public function searchBackStavkiInput($searchWord,$model,$fieldTosearch,$searchOffset,$fieldToSearchFinalGrade)
     {
         //если фильтруем по вид ТС или по перевозчику

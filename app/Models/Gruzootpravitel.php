@@ -11,7 +11,10 @@ class Gruzootpravitel extends Model
 
     protected $guarded = false;
 
-
+    public function adresas()
+    {
+        return $this->hasMany(GruzootpravitelAdresa::class, 'gruzootpravitel_id');
+    }
 
 //    public function forma_select()
 //    {

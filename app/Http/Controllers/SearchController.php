@@ -155,10 +155,24 @@ class SearchController extends Controller
     {
         //получаем результаты поиска
         $res=$this->searchService->getSearchResultsAvtor(request('searchWord'),request('model'),request('fieldToSearch'),request('searchOffset'));
+
+        if(count($res)<10)
+        {
+            //метод получения пустых ГО ГП без адресов
+            $res1=$this->searchService->getGruzootpravitelsWithoutAdres(request('searchOffsetPogruzchiki'));
+            $res=$res->concat($res1);
+            $searchOffsetPogruzchiki=request('searchOffsetPogruzchiki')+10;
+        }
+        else
+        {
+            $searchOffsetPogruzchiki=0;
+        }
+
         return response()->json([
             'status' => 'success',
             'message' =>'результаты поиска получены',
             'res' =>$res,
+            'searchOffsetPogruzchiki' =>$searchOffsetPogruzchiki,
         ], 200);
     }
     //метод поиска на бэке
