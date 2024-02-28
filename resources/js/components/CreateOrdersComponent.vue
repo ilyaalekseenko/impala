@@ -502,8 +502,8 @@
                                                               ref="AutoSelectComponent_pogruzka_edit"
                                                                      :changePogrVygrAllShow="changePogrVygrAllShow"
                                         ></auto-input-author-component>
-                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')">-</button>
+                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_pogr()">+</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord buttons_settings" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')">-</button>
                                     </div>
 
                                 </div>
@@ -526,8 +526,8 @@
                                                               ref="AutoSelectComponent_vygruzka_edit"
                                                                      :changePogrVygrAllShow="changePogrVygrAllShow"
                                         ></auto-input-author-component>
-                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')">-</button>
+                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_vygruz()">+</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord buttons_settings" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')">-</button>
 
                                     </div>
                                 </div>
@@ -729,9 +729,8 @@
                                                                      :changePogrVygrAllShow="changePogrVygrAllShow"
                                         ></auto-input-author-component>
 
-                                        <button type="button" class="btn btn-success" v-on:click="add_empty_adres_pogr()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_empty','adres_pogruzke_show')">-</button>
-
+                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_pogr()">+</button>
+                                        <button type="button" class="btn btn-danger btn_del_in_ord_width buttons_settings" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_empty','adres_pogruzke_show')">-</button>
                                     </div>
 
                                 </div>
@@ -753,8 +752,8 @@
                                                                   ref="AutoSelectComponent_vygruzka_empty"
                                                                          :changePogrVygrAllShow="changePogrVygrAllShow"
                                             ></auto-input-author-component>
-                                            <button type="button" class="btn btn-success" v-on:click="add_empty_adres_vygruz()">+</button>
-                                            <button type="button" class="btn btn-danger btn_del_in_ord" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_empty','adres_vygruzki_show')">-</button>
+                                            <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_vygruz()">+</button>
+                                            <button type="button" class="btn btn-danger btn_del_in_ord_width buttons_settings" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_empty','adres_vygruzki_show')">-</button>
                                         </div>
                                     </div>
                                 </div>
@@ -2723,7 +2722,11 @@
                         docType:type,
                     })
                     .then(response => {
-                        window.location.assign('/get_xlsx_file/images/orders_xlsx/'+response.data.file) ;
+                        window.location.assign('/get_xlsx_file/tempStorage/'+response.data.file) ;
+                        axios
+                            .post('/delete_temp_file_un',{
+                                fileName:response.data.file,
+                            })
                     })
             },
             handleFilesUpload(type){

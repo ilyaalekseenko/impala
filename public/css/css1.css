@@ -1517,6 +1517,12 @@
     margin-top: 10px;
     width: 36px!important;
 }
+.btn_del_in_ord_width {
+    width: 36px!important;
+}
+.buttons_settings {
+    margin-top: 10px!important;
+}
 .btn_del_in_grade {
     width: 36px!important;
     margin-left: 20px;

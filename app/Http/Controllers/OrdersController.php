@@ -628,11 +628,16 @@ class OrdersController extends Controller
     }
     public function get_xlsx_file($filename)
     {
-        return response()->download(public_path('images/orders_xlsx/'.$filename));
+        return response()->download(public_path('tempStorage/'.$filename));
     }
     public function get_finall_doc_pdf_file($filename)
     {
         return response()->download(public_path('templates/'.$filename));
+    }
+    public function downloadFileByNameUn($filename)
+    {
+        return response()->download(public_path('tempStorageUnited/'.$filename));
+
     }
     public function downloadFileByName($filename)
     {
@@ -644,15 +649,34 @@ class OrdersController extends Controller
         if(request('docType')=='nom')
         {
             $file=request('id').'__'.$order[0]['nomenklatura'];
+
+            $source = public_path('/images/orders_xlsx/'.$file);
+            $file=$order[0]['nomer_zayavki'].'__'.$order[0]['nomenklatura'];
+            $destination = public_path('/tempStorage/'.$file);
+            copy($source, $destination);
+
+
         }
         if(request('docType')=='ready')
         {
             $file=request('id').'_got'.'__'.$order[0]['gotovyi_raschet'];
+            $source = public_path('/images/orders_xlsx/'.$file);
+            $file=$order[0]['nomer_zayavki'].'_got'.'__'.$order[0]['nomenklatura'];
+            $destination = public_path('/tempStorage/'.$file);
+            copy($source, $destination);
         }
         return response()->json([
             'status' => 'success',
             'file' =>$file,
         ], 200);
+    }
+    public function delete_temp_file()
+    {
+        $this->docService->delDoc( public_path('/tempStorage/'.request('fileName')));
+    }
+    public function delete_temp_file_un()
+    {
+        $this->docService->delDoc( public_path('/tempStorageUnited/'.request('fileName')));
     }
     public function downloadNomenklaturaFull()
     {
@@ -719,9 +743,16 @@ class OrdersController extends Controller
         {
 
         }
+        $order = Orders::where('id', request('id')) ->get();
+
+        $source = public_path('united/'.request('id').'.xlsx');
+        $file=$order[0]['nomer_zayavki'].'_un.xlsx';
+        $destination = public_path('/tempStorageUnited/'.$file);
+        copy($source, $destination);
 
         return response()->json([
             'status' => 'success',
+            'file' => $file,
         ], 200);
     }
 

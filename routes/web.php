@@ -104,9 +104,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get_finall_doc_pdf_file/templates/{filename}', [App\Http\Controllers\OrdersController::class, 'get_finall_doc_pdf_file'])->name('get_finall_doc_pdf_file');
     Route::post('/download_current_doc', [App\Http\Controllers\OrdersController::class, 'download_current_doc'])->name('download_current_doc');
     Route::post('/download_xlsx_orders', [App\Http\Controllers\OrdersController::class, 'download_xlsx_orders'])->name('download_xlsx_orders');
+    Route::post('/delete_temp_file', [App\Http\Controllers\OrdersController::class, 'delete_temp_file'])->name('delete_temp_file');
+    Route::post('/delete_temp_file_un', [App\Http\Controllers\OrdersController::class, 'delete_temp_file_un'])->name('delete_temp_file_un');
     Route::post('/downloadNomenklaturaFull', [App\Http\Controllers\OrdersController::class, 'downloadNomenklaturaFull'])->name('downloadNomenklaturaFull');
-    Route::get('/get_xlsx_file/images/orders_xlsx/{filename}', [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
+    Route::get('/get_xlsx_file/tempStorage/{filename}', [App\Http\Controllers\OrdersController::class, 'get_xlsx_file'])->name('get_xlsx_file');
     Route::get('/downloadFileByName/{filename}', [App\Http\Controllers\OrdersController::class, 'downloadFileByName'])->name('downloadFileByName');
+    Route::get('/downloadFileByNameUn/{filename}', [App\Http\Controllers\OrdersController::class, 'downloadFileByNameUn'])->name('downloadFileByNameUn');
     Route::post('/get_gruzootpravitel_modal', [App\Http\Controllers\GruzootpravitelController::class, 'get_gruzootpravitel_modal'])->name('get_gruzootpravitel_modal');
     Route::post('/getPerevozkaModal', [App\Http\Controllers\PerevozchikiController::class, 'getPerevozkaModal'])->name('getPerevozkaModal');
     Route::post('/getVoditeliModal', [App\Http\Controllers\VoditelController::class, 'getVoditeliModal'])->name('getVoditeliModal');
