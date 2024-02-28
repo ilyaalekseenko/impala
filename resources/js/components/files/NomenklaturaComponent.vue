@@ -22,10 +22,7 @@
                     })
                     .then(response => {
                         window.location.assign('/downloadFileByNameUn/'+response.data.file) ;
-                        axios
-                            .post('/delete_temp_file_un',{
-                                fileName:response.data.file,
-                            })
+
                     })
                     .catch(error => {
                         let errorMessage=error.response.data.message

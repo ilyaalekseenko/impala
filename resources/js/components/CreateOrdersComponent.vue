@@ -2723,10 +2723,6 @@
                     })
                     .then(response => {
                         window.location.assign('/get_xlsx_file/tempStorage/'+response.data.file) ;
-                        axios
-                            .post('/delete_temp_file_un',{
-                                fileName:response.data.file,
-                            })
                     })
             },
             handleFilesUpload(type){
