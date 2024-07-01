@@ -1,17 +1,115 @@
-/* Error: Can't find stylesheet to import.
- *   ,
- * 5 | @import "tailwindcss/base";
- *   |         ^^^^^^^^^^^^^^^^^^
- *   '
- *   app.scss 5:9  root stylesheet */
+/*
 
-body::before {
-  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
-      "Droid Sans Mono", monospace, monospace;
-  white-space: pre;
-  display: block;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-bottom: 2px solid black;
-  content: "Error: Can't find stylesheet to import.\a   \2577 \a 5 \2502  @import \"tailwindcss/base\";\d\a   \2502          ^^^^^^^^^^^^^^^^^^\a   \2575 \a   app.scss 5:9  root stylesheet";
+*/
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.flag_1 {
+  background-color: #0dcaf0;
 }
+
+/*demo styles above*/
+aside {
+  width: 250px;
+  margin-top: 20px;
+}
+
+.dropmenu {
+  z-index: 5;
+  width: 200px;
+}
+
+.drop_menu_selected {
+  background: #ccc;
+}
+
+.drop_menu_block {
+  display: block;
+}
+
+.nav--vertical {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.nav--vertical a {
+  color: #333;
+}
+.nav--vertical a:hover {
+  color: #000;
+}
+.nav--vertical li {
+  position: relative;
+  display: block;
+}
+.nav--vertical li.dropmenu ul {
+  display: none;
+}
+.nav--vertical li.dropmenu:after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 4px solid #53c0ad;
+}
+.nav--vertical > li a {
+  text-decoration: none;
+  padding: 7px 10px;
+  display: block;
+  margin-bottom: 1px;
+}
+.nav--vertical > li ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 100%;
+}
+.nav--vertical > li ul.level1, .nav--vertical > li ul.level2 {
+  min-width: 150px;
+  top: 0;
+  border-left: 1px solid #fff;
+}
+
+.nav--vertical li a {
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+.nav--vertical > li > a {
+  background: #e5e5e5;
+}
+.nav--vertical > li .level1 > li a {
+  background: #e5e5e5;
+}
+.nav--vertical > li .level2 > li a {
+  background: #e5e5e5;
+}
+
+.nav--vertical li:hover a {
+  background: #ccc;
+}
+.nav--vertical li:hover li:hover > a {
+  background: #ccc !important;
+}
+
+/*
+Reset
+*/
+.btn-none {
+  background: transparent;
+  margin: 0 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+body input, body textarea {
+  @apply shadow-sm border-gray-300 border-[1px] rounded-[4px] focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400;
+}
+
+/*# sourceMappingURL=app.css.map */
