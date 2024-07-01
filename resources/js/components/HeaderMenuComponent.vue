@@ -31,7 +31,7 @@
                 </div>
                 <div v-if="show_search" class="col align-self-center  top_menu_user_name no_wrap  ">Константин Константинопольский</div>
             </div>
-            <div class="col align-self-center">
+            <div class="col align-self-center d-flex">
             <span class="gear_settings" v-on:click="go_to_path('/docs_setting')" v-show="checkRolePermissionMixin([1])">
                 <span class="iconify" data-icon="ci:settings-filled" style="color: #020e49;" data-width="32" data-height="32" ></span>
             </span>

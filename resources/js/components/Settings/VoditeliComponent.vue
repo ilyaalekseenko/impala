@@ -6,11 +6,11 @@
             :voditeliComponentAddVoditel='voditeliComponentAddVoditel'
         ></modal-voditel-component>
         <div>Список водителей
-        <span class="col add_button_perevozchiki no_wrap_text" v-b-modal.voditelMod variant="primary" v-on:click="newVoditel()">Добавить</span>
+        <span class="col add_button_perevozchiki no_wrap_text" v-on:click="newVoditel()">Добавить</span>
         </div>
     <div class="row col-10 justify-content-start">
             <div class="col-8 row ad_pogr_marg1" v-for="(mainOne,key) in mainArr">
-                <div class="col-10 voditeli_list_FIO" v-b-modal.voditelMod variant="primary" v-on:click="show_mod_edit(mainOne.id)">{{ mainArr[key]['FIO'] }}</div>
+                <div class="col-10 voditeli_list_FIO" v-on:click="show_mod_edit(mainOne.id)">{{ mainArr[key]['FIO'] }}</div>
                 <button type="button" class="btn btn-danger btn_del_in_ord col-2" v-on:click="deleteFromSettings(mainOne.id,key)">-</button>
             </div>
             <div class="col-2 add_settings_doc_button">

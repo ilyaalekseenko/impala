@@ -17,7 +17,7 @@ export default {
             let flag=false;
             for(var j = 0; j < users_permissions_list.length; j++) {
                 role=users_permissions_list[j]
-                if((role==this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
+                if((role===this.role)&&((this.permissions.includes(permission))||(this.permissions.includes(1)))) {
                     flag = true;
                 }
             }

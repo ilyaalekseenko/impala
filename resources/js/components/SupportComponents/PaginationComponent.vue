@@ -1,17 +1,19 @@
 <template>
     <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
         <ul class="pagination">
-            <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"
-                v-bind:class="{ active: pag.id==current_page }"
-                v-on:click="new_page(pag.id)">
-                <span class="page-link page_link_int" >{{ pag.id }}</span>
-            </li>
-            <li v-else class="page-item">
+            <template v-for="pag in pagination_numb">
+              <li v-if="Number.isInteger(pag.id)" class="page-item pagination_button"
+                  v-bind:class="{ active: pag.id==current_page }"
+                  v-on:click="new_page(pag.id)">
+                  <span class="page-link page_link_int" >{{ pag.id }}</span>
+              </li>
+              <li v-else class="page-item">
                 <span class="page-link" >{{ pag.id }}</span>
-            </li>
+              </li>
+            </template>
             <!--стрелки-->
             <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">
-                <div v-if="current_page!=1">
+                <div v-if="current_page!==1">
                                         <span class="iconify" data-icon="eva:arrow-ios-downward-fill" style="color: #0066fa;" data-width="48" data-height="48" data-rotate="90deg">
                                         </span>
                 </div>
@@ -197,6 +199,8 @@
                 //посчитаем сколько отступа передавать в родитель
                 let offsetToparent=(this.current_page-1)*this.limit
                 this.dataFromPagination(offsetToparent)
+
+              console.log(page_id)
             },
             //установим пагинацию в начальное состояние
             //вызов из родителя

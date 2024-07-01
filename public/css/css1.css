@@ -1732,9 +1732,6 @@
 .input_width_max_settings {
     max-width: 130px!important;
 }
-.vue-tel-input {
-    min-width:200px!important;
-}
 .oplata_del{
     margin-top: 10px!important;
     margin-bottom: 10px!important;

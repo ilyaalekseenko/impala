@@ -32,7 +32,7 @@
             </select>
             <div class="col-6">Дата рождения</div>
             <input class="col-6" v-model="data_rozdenia" @click="openDB0"/>
-            <date-picker ref="datepicker0"  v-model="data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
+            <date-picker ref="datepicker0" v-model:value="data_rozdenia" valueType="format" format="DD.MM.YYYY" v-model:open="openDP" ></date-picker>
 
             <div class="col-3">
             <button type="button" class=" btn btn-primary add_new_user_button" v-on:click="add_new_user()">Добавить нового пользователя</button>
@@ -42,29 +42,17 @@
 </template>
 
 <script>
-
-import datepicker from 'vuejs-datepicker';
 import moment from 'moment'
-import VueMask from 'v-mask';
-import DatePicker from 'vue2-datepicker';
-import 'vue2-datepicker/index.css';
-
-Vue.filter('formatDate', function(value) {
-    if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
-    }
-});
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/ru';
 
     export default {
         components: {
-            datepicker,
             DatePicker
         },
         mounted() {
             this.get_roles(this.roles_list);
-        },
-        directives: {
-            mask: VueMask.directive,
         },
         data() {
             return {
@@ -86,7 +74,7 @@ Vue.filter('formatDate', function(value) {
 
             }
         },
-        methods: {
+      methods: {
             setPhoneNumber(newPhoneNumber)
             {
                 this.telefon=newPhoneNumber

@@ -20,7 +20,7 @@
                         <span class="under_colored_title head_font" v-on:click="delete_gruzootpravitel()">Удалить</span>
                         <span class="under_colored_title head_font">Переместить</span>
                         <span class="under_colored_title head_font" v-on:click="mix_mark_as_important(gruzootpravitel_arr,'Gruzootpravitel')" >Важное</span>
-                        <span class="col add_button_perevozchiki" v-b-modal.modal-xl variant="primary" v-on:click="newModal()">Добавить</span>
+                        <span class="col add_button_perevozchiki" v-on:click="newModal()">Добавить</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
                         <div class="col-12 row no_padding_right border_in_orders">
@@ -34,10 +34,10 @@
                         <div v-on:click="show_mod_edit(gruzootpravitel.id)"  v-for="(gruzootpravitel,key) in gruzootpravitel_arr" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: gruzootpravitel.important==1 }">
                             <div class="col-2 orders_title_table text-start row">
                                 <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
-                                <div class="col-10" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.forma_id }} {{ gruzootpravitel.nazvanie }}</div>
+                                <div class="col-10">{{ gruzootpravitel.forma_id }} {{ gruzootpravitel.nazvanie }}</div>
                             </div>
-                            <div class="col-2 orders_title_table" v-b-modal.modal-xl variant="primary">{{ gruzootpravitel.YR_adres }}</div>
-                            <div class="col-8 orders_title_table t1" v-b-modal.modal-xl variant="primary">
+                            <div class="col-2 orders_title_table">{{ gruzootpravitel.YR_adres }}</div>
+                            <div class="col-8 orders_title_table t1">
                                 <div v-for="(kont_lico,key) in gruzootpravitel.kontaktnoe_lico">
                                 <span>{{ kont_lico.FIO }} </span>
                                 <span>{{ kont_lico.dolznost }} </span>
@@ -59,7 +59,8 @@
                             <!--            пагинация          -->
                             <nav class="col d-flex justify-content-end"  aria-label=" Page navigation example">
                                 <ul class="pagination">
-                                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"
+                                  <template v-for="pag in pagination_numb">
+                                    <li v-if="Number.isInteger(pag.id)" class="page-item pagination_button"
                                         v-bind:class="{ active: pag.id==current_page }"
                                         v-on:click="new_page(pag.id)">
                                         <span class="page-link page_link_int" >{{ pag.id }}</span>
@@ -67,6 +68,7 @@
                                     <li v-else class="page-item">
                                         <span class="page-link" >{{ pag.id }}</span>
                                     </li>
+                                  </template>
 <!--                                    стрелки-->
                                     <li class="page-item pagination_button prev_pag_button page_link_int" v-on:click="prev_page()">
                                         <div v-if="current_page!=1">
@@ -96,11 +98,11 @@
 
 <script>
 import moment from 'moment'
-Vue.filter('formatDate', function(value) {
-    if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
-    }
-});
+// Vue.filter('formatDate', function(value) {
+//     if (value) {
+//         return moment(String(value)).format('DD.MM.YYYY')
+//     }
+// });
     export default {
         props: ['auth_user'],
         mounted() {

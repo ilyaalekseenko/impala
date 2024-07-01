@@ -1,25 +1,26 @@
 <template>
+  <modal-pogruzka-component
+      :get_gruzootpravitel_list='get_gruzootpravitel_list'
+      :select_gruzootpravitel='select_gruzootpravitel'
+      :select_Manager='select_Manager'
+      allNew=true
+      edit_flag=true
+      vid="CreateOrdersComponent"
+      ref="modalComponentforAction"
+  ></modal-pogruzka-component>
+  <modal-author-component ref="modalComponentforActionAuthor"
+                          edit_flag=true
+                          :chahgeFrontNames='chahgeFrontNames'
+                          vid="GruzzotpravitelComponent"
+  ></modal-author-component>
+  <modal-perevozchiki-component
+      ref="modalComponentforActionPerevozchik"
+      vid="CreateOrdersComponent"
+      :gradeAddPerevozchik='gradeAddPerevozchik'
+  ></modal-perevozchiki-component>
+
     <div class="container" id="scroll_block">
         <div class="row">
-            <modal-pogruzka-component
-                :get_gruzootpravitel_list='get_gruzootpravitel_list'
-                :select_gruzootpravitel='select_gruzootpravitel'
-                :select_Manager='select_Manager'
-                allNew=true
-                edit_flag=true
-                vid="CreateOrdersComponent"
-                ref="modalComponentforAction"
-            ></modal-pogruzka-component>
-            <modal-author-component   ref="modalComponentforActionAuthor"
-                                      edit_flag=true
-                                      :chahgeFrontNames='chahgeFrontNames'
-                                      vid="GruzzotpravitelComponent"
-            ></modal-author-component>
-            <modal-perevozchiki-component
-                ref="modalComponentforActionPerevozchik"
-                vid="CreateOrdersComponent"
-                :gradeAddPerevozchik='gradeAddPerevozchik'
-            ></modal-perevozchiki-component>
             <div class="col-12 main_head_marg row">
                 <div  class="col-6 orders_create_title">
                      {{ order_header_text }} {{ data_vneseniya }}
@@ -34,12 +35,12 @@
                         <span @click="openDB0">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <date-picker ref="datepicker0" v-model="data_vneseniya" type="datetime" valueType="format"  format="DD.MM.YYYY H:mm" :open.sync="openDP" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"></date-picker>
+                        <date-picker ref="datepicker0" v-model:value="data_vneseniya" type="datetime" valueType="format" format="DD.MM.YYYY H:mm" v-model:open="openDP" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"></date-picker>
                     </div>
                     <div class="col-4" v-show="checkRolePermission([1])">
                         <span  class="create_orders_date_title">Логист:</span>
                         <select @change="handleChange" v-if="logist_list"  class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
-                            <option  v-bind:value=0  class="sel_cust">Логист не выбран</option>
+                            <option v-bind:value=0  class="sel_cust">Логист не выбран</option>
                             <option v-for="(logist) in logist_list_full" v-bind:value=logist.id  class="sel_cust">{{ logist.full_logist_name }}</option>
                         </select>
                         <span v-if="!logist_list" class="create_orders_date_title_int">{{ logist_name }}</span>
@@ -53,7 +54,7 @@
                         <span @click="openDB1">
                         <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
-                        <date-picker ref="datepicker1"  v-model="rasschitat_do" type="datetime" valueType="format" format="DD.MM.YYYY H:mm"  :open.sync="openDP1" @change="updateOrderLoc('rasschitat_do',rasschitat_do)"></date-picker>
+                        <date-picker ref="datepicker1" v-model:value="rasschitat_do" type="datetime" valueType="format" format="DD.MM.YYYY H:mm" v-model:open="openDP1" @change="updateOrderLoc('rasschitat_do',rasschitat_do)"></date-picker>
                     </div>
                     <div class="col-2 justify-content-end" v-if="ocenka_show_button" v-on:click="setColumn('ocenka')">
                         <div class="col add_ts_button4 text-center">Оценка</div>
@@ -76,7 +77,7 @@
                             <div class="little_title_create_orders">
                                 Вид перевозки
                             </div>
-                            <div class="create_orders_bottom">
+                            <div class="create_orders_bottom d-flex">
                                 <select @blur="updateOrderLoc('vid_perevozki',vid_perevozki)" class="cr_ord_inp_n_1" v-model="vid_perevozki">
                                     <option v-for="(perevozka) in perevozka_arr" v-bind:value=perevozka.id  class="sel_cust">{{ perevozka.perevozka_name }}</option>
                                 </select>
@@ -97,7 +98,7 @@
                         <div class="col" v-show="checkRolePermission([1])">
                             <div class="little_title_create_orders">
                                 Компания заказчик
-                                <span class="add_button n1" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('zakazchik',0)">Добавить</span>
+                                <span class="add_button n1" v-on:click="select_temp_var('zakazchik',0)">Добавить</span>
                             </div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="zakazchikShowInp&&kompaniya_zakazchik_name==''" v-on:click="zakazchikShowInpChange()">Выбрать заказчика</div>
                             <div class="cr_ord_inp_n_1" v-if="zakazchikShowInp" v-on:click="zakazchikShowInpChange()">{{ kompaniya_zakazchik_name }}</div>
@@ -112,7 +113,7 @@
                         <div class="col" v-show="checkRolePermission([1])">
                             <div class="little_title_create_orders">
                                 Менеджер заказчика
-                                <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-b-modal.modal-xl v-on:click="select_temp_var('manager',0)">Добавить</span>
+                                <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-on:click="select_temp_var('manager',0)">Добавить</span>
                             </div>
                             <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="managerZakazchikShowInp&&managerZakazchik_name==''" v-on:click="managerShowInpChange()">Выбрать менеджера</div>
                             <div class="cr_ord_inp_n_1" v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()">{{ managerZakazchik_name }}</div>
@@ -156,7 +157,7 @@
                             <div class="little_title_create_orders">
                                 Номенклатура
                             </div>
-                            <div class="create_orders_bottom">
+                            <div class="create_orders_bottom d-flex">
                                 <div class="cr_ord_div_nomenklatura">{{ nomenklatura }}</div>
                                 <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload('nom')"/>
                                 <span class="excel_set" v-on:click="addFiles('nom')">
@@ -174,7 +175,7 @@
                             <div class="little_title_create_orders">
                                 Готовый расчёт
                             </div>
-                            <div class="create_orders_bottom">
+                            <div class="create_orders_bottom d-flex">
                                 <div class="cr_ord_div_nomenklatura">{{ gotovyi_raschet }}</div>
                                 <input hidden="true" type="file" id="files_ready" ref="files_ready"  v-on:change="handleFilesUpload('ready')"/>
                                 <span class="excel_set" v-on:click="addFiles('ready')">
@@ -203,7 +204,7 @@
                                     </div>
                                     <div class="data_pog_dost_height no_padding_right">
                                         <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
-                                        <date-picker ref="datepicker2" type="date" valueType="format" v-model="data_pogruzki" format="DD.MM.YYYY" :open.sync="openDP2" @change="handleChange0"></date-picker>
+                                        <date-picker ref="datepicker2" type="date" valueType="format" v-model:value="data_pogruzki" format="DD.MM.YYYY" v-model:open="openDP2" @change="handleChange0"></date-picker>
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +285,7 @@
                                     <div class="col-2 no_padding_right ">
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text ">Тип ТС</div>
                                         <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right">
-                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="one_ts['id']==elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
+                                                <div v-for="(one_ts,key1) in ts_list_names" v-if="!!one_ts && one_ts['id']==elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
                                         </div>
                                     </div>
                                     <div class="col-2 no_padding_right">
@@ -329,13 +330,13 @@
                                         <div class="col-6">
                                         <div class="col-12" v-for="(elem1,key1) in elem.adres_pogruzki_TS">
                                             <div class="create_ord_right_lit_text mt_ts_text">Адрес Погрузки {{ key1 +1 }}</div>
-                                            <div class="cr_ord_inp_n_7" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_pogruzke_show }}</div>
+                                            <div class="cr_ord_inp_n_7" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="!!gruz && gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_pogruzke_show }}</div>
                                         </div>
                                              </div>
                                         <div class="col-6">
                                         <div class="col-12" v-for="(elem1,key1) in elem.adres_vygr_TS">
                                             <div class="create_ord_right_lit_text mt_ts_text">Адрес Выгрузки {{ key1 +1 }}</div>
-                                            <div class="cr_ord_inp_n_7" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_vygruzki_show }}</div>
+                                            <div class="cr_ord_inp_n_7" v-for="(gruz,key1) in gruzootpravitel_arr" v-if="!!gruz && gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_vygruzki_show }}</div>
                                         </div>
                                         </div>
                                    </div>
@@ -346,15 +347,16 @@
                                     <div class="col-12 row">
                                         <div class="col-12 row" v-for="(perevozchik,perevozchikKey) in elem.perevozchikiList">
                                             <div class="cr_ord_inp_n_7 col-4">
-                                                <div class="text-center">
-                                                   <b-popover :target="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key" triggers="hover" placement="top" custom-class="wide-popover">
-                                                <div v-for="(onePopUpPerevozchik,key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
-                                                   {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
-                                                </div>
-                                                   </b-popover>
-                                                </div>
                                                 <span class="create_ord_right_lit_text" >Перевозчик:</span>
-                                                <span :id="'myDiv-' + perevozchikKey + perevozchik['perevozchik_id'] + key">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</span>
+                                                <VMenu>
+                                                  <button class="btn btn-none" :class="perevozchik['contacts'].length > 0 ? 'btn-link' : ''">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</button>
+
+                                                  <template #popper v-if="!!perevozchik['contacts']">
+                                                        <div class="p-2" v-for="(onePopUpPerevozchik,key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
+                                                           {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
+                                                        </div>
+                                                  </template>
+                                                </VMenu>
                                             </div>
                                             <div class="col-4">
                                                 <span class="create_ord_right_lit_text">Код АТИ:</span>
@@ -489,7 +491,7 @@
                                     <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес погрузки
-                                            <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka',key)">Добавить</span>
+                                            <span class="add_button" v-on:click="select_temp_var('TS_pogruzka',key)">Добавить</span>
                                         </div>
                                         <auto-input-author-component class="cr_ord_inp_n_1"
                                                               inp_type='add_pogruzka_edit'
@@ -512,7 +514,7 @@
                                 <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
                                     <div class="little_title_create_orders2 ob_ob_width">
                                         Адрес выгрузки
-                                        <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_vygruzka',key)">Добавить</span>
+                                        <span class="add_button" v-on:click="select_temp_var('TS_vygruzka',key)">Добавить</span>
                                     </div>
                                     <div class="create_orders_bottom">
                                         <auto-input-author-component class="cr_ord_inp_n_1"
@@ -551,13 +553,12 @@
                                                         @childCloseAutoInput="closeParentAutoInputPogruzka"
                                                         ref="AutoSelectComponent_vid_TS"
                                                     ></auto-input-perevozka-component>
-                                                <span class="col-3 row add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">
+                                                <span class="col-3 row add_button_grade no_wrap_text" v-on:click="newPerevozchik(keyPerevozchik)">
                                                     <span class="col-8">Добавить</span>
                                                         <span
                                                             class="col-4"
                                                             v-if="onePerevozchik.perevozchik_id!==''"
-                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"
-                                                            v-b-modal.perevozkaMod variant="primary">
+                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)">
                                                                 <span
                                                                     class="iconify edit_icon"
                                                                     data-icon="akar-icons:edit"
@@ -716,7 +717,7 @@
                                     <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес погрузки
-                                            <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
+                                            <span class="add_button" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
                                         </div>
                                         <auto-input-author-component class="cr_ord_inp_n_1"
                                                               inp_type='add_pogruzka_empty'
@@ -739,9 +740,9 @@
                                     <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
                                         <div class="little_title_create_orders2 ob_ob_width">
                                             Адрес выгрузки
-                                            <span class="add_button" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var('TS_vygruzka_new',key)">Добавить</span>
+                                            <span class="add_button" v-on:click="select_temp_var('TS_vygruzka_new',key)">Добавить</span>
                                         </div>
-                                        <div class="create_orders_bottom">
+                                        <div class="create_orders_bottom d-flex">
                                             <auto-input-author-component class="cr_ord_inp_n_1"
                                                                   inp_type='add_vygruzka_empty'
                                                                   adres_pogruzke_show=''
@@ -777,13 +778,12 @@
                                                      @childCloseAutoInput="closeParentAutoInputPogruzka"
                                                      ref="AutoSelectComponent_vid_TS"
                                                  ></auto-input-perevozka-component>
-                                                    <span class="col-3 row add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik(keyPerevozchik)">
+                                                    <span class="col-3 row add_button_grade no_wrap_text" v-on:click="newPerevozchik(keyPerevozchik)">
                                                     <span class="col-8">Добавить</span>
                                                         <span
                                                             v-if="onePerevozchik.perevozchik_id!==''"
                                                             class="col-4"
-                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"
-                                                            v-b-modal.perevozkaMod variant="primary">
+                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)">
                                                                 <span
                                                                     class="iconify edit_icon"
                                                                     data-icon="akar-icons:edit"
@@ -849,25 +849,22 @@
 </template>
 
 <script>
-    import datepicker from 'vuejs-datepicker';
     import moment from 'moment'
     import {logistData} from "../app.js";
-    import DatePicker from 'vue2-datepicker';
-    import 'vue2-datepicker/index.css';
+    import DatePicker from 'vue-datepicker-next';
+    import 'vue-datepicker-next/index.css';
+    import 'vue-datepicker-next/locale/ru';
 
-    Vue.filter('formatDate', function(value) {
-        if (value) {
-            return moment(String(value)).format('DD.MM.YYYY')
-        }
-    });
-    export default {
+    import 'floating-vue/dist/style.css';
+
+  export default {
         props: ['auth_user'],
         components: {
-            datepicker,
             DatePicker
         },
         data() {
             return {
+              show: false,
                 order_id:'',
                 vid_perevozki:'',
                 nomenklatura:'',
@@ -973,6 +970,7 @@
                 isVisiblePogrList: true
             }
         },
+
         created()
         {
             this.role=this.auth_user['role_perm']['role']
@@ -1495,7 +1493,7 @@
                 const foundObject = gruzColect.find(obj => obj.id == targetId);
 
                 if (foundObject) {
-                    return foundObject.nazvanie;;
+                    return foundObject.nazvanie;
                 } else {
                     return false;
                 }
@@ -1907,11 +1905,6 @@
             logist_show()
             {
                 this.logist_list=!this.logist_list
-            },
-            show_mod_edit(id)
-            {
-                //вызов метода дочернего компонента( модального окна )
-                this.$refs.modalComponentforAction.get_modal_edit_data(id)
             },
             get_ts_list(inp)
             {
@@ -2464,73 +2457,70 @@
                 this.checked2=this.spisokTSarr[key]['checked2'];
                 this.terminal_TS=this.spisokTSarr[key]['terminal_TS'];
             },
-           async deleteTs()
-            {
-                const result = await this.confirmMethodMixin();
-                this.checkboxPogrVygr=false
-                if (result) {
-                if(this.edit_flag==false)
-                {
-                this.id_ts='';
-                this.vid_TS='';
-                this.stavka_TS='';
-                this.stavka_TS_bez_NDS='';
-                this.stavka_kp_TS='';
-                this.kol_gruz_TS='';
-                this.kol_TS_TS='';
-                this.rasstojanie_TS='';
-                this.adres_pogruzki_TS='';
-                this.ob_ves_TS='';
-                this.ob_ob_TS='';
-                this.adres_vygr_TS='';
-                this.kommentari_TS='';
-                this.checked2='';
-                this.terminal_TS='';
-                this.edit_number='';
-                this.edit_flag=false;
-                this.add_ts='';
-                this.add_new_ts=false;
-                    this.ad_vygruz_arr_temp=[];
-                    this.ad_pogruzki_arr_temp=[];
-                }
-                else
-                {
-                    axios
-                        .post('/delete_TS',{
-                            id_ts:this.id_ts,
-                            order_id:this.order_id,
-                        })
-                    this.spisokTSarr.splice(this.edit_number, 1);
-                    this.ad_vygruz_arr_temp=[];
-                    this.ad_pogruzki_arr_temp=[];
-                    this.id_ts='';
-                    this.vid_TS='';
-                    this.stavka_TS='';
-                    this.stavka_TS_bez_NDS='';
-                    this.stavka_kp_TS='';
-                    this.kol_gruz_TS='';
-                    this.kol_TS_TS='';
-                    this.rasstojanie_TS='';
-                    this.adres_pogruzki_TS='';
-                    this.ob_ves_TS='';
-                    this.ob_ob_TS='';
-                    this.adres_vygr_TS='';
-                    this.kommentari_TS='';
-                    this.checked2='';
-                    this.terminal_TS='';
-                    this.edit_number='';
-                    this.edit_flag=false;
-                    this.add_ts='';
-                    this.add_new_ts=false;
-                }
+          async deleteTs() {
+            console.log('deleteTs');
+            const result = await this.confirmMethodMixin();
+            this.checkboxPogrVygr = false
+            console.log(result)
+            if (result) {
+              if (this.edit_flag === false) {
+                this.id_ts = '';
+                this.vid_TS = '';
+                this.stavka_TS = '';
+                this.stavka_TS_bez_NDS = '';
+                this.stavka_kp_TS = '';
+                this.kol_gruz_TS = '';
+                this.kol_TS_TS = '';
+                this.rasstojanie_TS = '';
+                this.adres_pogruzki_TS = '';
+                this.ob_ves_TS = '';
+                this.ob_ob_TS = '';
+                this.adres_vygr_TS = '';
+                this.kommentari_TS = '';
+                this.checked2 = '';
+                this.terminal_TS = '';
+                this.edit_number = '';
+                this.edit_flag = false;
+                this.add_ts = '';
+                this.add_new_ts = false;
+                this.ad_vygruz_arr_temp = [];
+                this.ad_pogruzki_arr_temp = [];
+              } else {
+                axios
+                    .post('/delete_TS', {
+                      id_ts: this.id_ts,
+                      order_id: this.order_id,
+                    })
+                this.spisokTSarr.splice(this.edit_number, 1);
+                this.ad_vygruz_arr_temp = [];
+                this.ad_pogruzki_arr_temp = [];
+                this.id_ts = '';
+                this.vid_TS = '';
+                this.stavka_TS = '';
+                this.stavka_TS_bez_NDS = '';
+                this.stavka_kp_TS = '';
+                this.kol_gruz_TS = '';
+                this.kol_TS_TS = '';
+                this.rasstojanie_TS = '';
+                this.adres_pogruzki_TS = '';
+                this.ob_ves_TS = '';
+                this.ob_ob_TS = '';
+                this.adres_vygr_TS = '';
+                this.kommentari_TS = '';
+                this.checked2 = '';
+                this.terminal_TS = '';
+                this.edit_number = '';
+                this.edit_flag = false;
+                this.add_ts = '';
+                this.add_new_ts = false;
+              }
 
-                if(this.spisokTSarr.length==0)
-                {
+              if (this.spisokTSarr.length === 0) {
 
-                    this.hideButtonsUsers()
-                }
-                }
-            },
+                this.hideButtonsUsers()
+              }
+            }
+          },
             add_ts_func()
             {
                 this.add_ts='';
@@ -2783,4 +2773,11 @@
         }
     }
 </script>
+
+<style>
+.create_ord_right_lit_text + .v-popper {
+  display: inline-block;
+  margin-left: 5px;
+}
+</style>
 

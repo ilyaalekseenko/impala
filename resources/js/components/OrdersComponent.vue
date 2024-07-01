@@ -92,45 +92,58 @@
                         <span class="under_colored_title head_font" v-on:click="mark_as_important()" >Важное</span>
                     </div>
                     <div class="col-12 row  table_orders_column_settings">
-                        <div class="col-12 row no_padding_right border_in_orders">
-                            <div class="col-1 orders_title_table_main text-start row">
-                                <div class="col-2"></div>
-                                <div class="col-10 head_font">Номер запроса</div>
-                            </div>
-                            <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
-                            <div class="col-1 orders_title_table_main head_font" v-show="checkRolePermissionMixin([1])">Статус</div>
-                            <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
-                            <div class="col-1 orders_title_table_main head_font">Откуда</div>
-                            <div class="col-1 orders_title_table_main head_font">Куда</div>
-                            <div class="col-2 orders_title_table_main head_font">Заказчик</div>
-                            <div class="col-1 orders_title_table_main head_font">Рассчитать до</div>
-                            <div class="col-1 orders_title_table_main head_font">Логист</div>
-                            <div class="col-1 orders_title_table_main head_font">Общий бюджет</div>
+                      <div class="col-12 row no_padding_right border_in_orders">
+                        <div class="col-1 orders_title_table_main text-start row">
+                          <div class="col-2"></div>
+                          <div class="col-10 head_font">Номер запроса</div>
                         </div>
-                        <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list" class="col-12 row no_padding_right border_in_orders" v-bind:class="{ important_back: order.important==1 }">
+                        <div class="col-1 orders_title_table_main head_font">Дата внесения</div>
+                        <div class="col-1 orders_title_table_main head_font" v-show="checkRolePermissionMixin([1])">
+                          Статус
+                        </div>
+                        <div class="col-2 orders_title_table_main head_font">Тип перевозки</div>
+                        <div class="col-1 orders_title_table_main head_font">Откуда</div>
+                        <div class="col-1 orders_title_table_main head_font">Куда</div>
+                        <div class="col-2 orders_title_table_main head_font">Заказчик</div>
+                        <div class="col-1 orders_title_table_main head_font">Рассчитать до</div>
+                        <div class="col-1 orders_title_table_main head_font">Логист</div>
+                        <div class="col-1 orders_title_table_main head_font">Общий бюджет</div>
+                      </div>
+                      <div v-on:dblclick="go_to_order(order.id)" v-for="(order,key) in orders_list"
+                           class="col-12 row no_padding_right border_in_orders"
+                           v-bind:class="{ important_back: order.important===1 }">
 
                         <div class="col-1 orders_title_table text-start row">
-                            <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="order.checked_order">
-                            <div class="col-10">{{ order.nomer_zayavki }}</div>
+                          <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1"
+                                 v-model="order.checked_order">
+                          <div class="col-10">{{ order.nomer_zayavki }}</div>
                         </div>
-                            <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
-                            <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{ order.status }}</div>
-                            <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list" v-if="one_ts['id']==order.vid_perevozki">{{ one_ts.perevozka_name }}</div>
-                            <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{ order.vid_perevozki }}</div>
-                            <div class="col-1 orders_title_table" >{{ order.adres_pogruzke }}</div>
-                        <div class="col-1 orders_title_table" >{{ order.adres_vygruski }}</div>
+                        <div class="col-1 orders_title_table">{{ order.data_vneseniya }}</div>
+                        <div class="col-1 orders_title_table t2" v-show="checkRolePermissionMixin([1])">{{
+                            order.status
+                          }}
+                        </div>
+                        <div class="col-2 orders_title_table t1" v-for="(one_ts,key1) in type_per_list"
+                             v-if="!!one_ts && one_ts['id']===order.vid_perevozki">{{ one_ts.perevozka_name }}
+                        </div>
+                        <div class="col-2 orders_title_table t2" v-if="order.vid_perevozki==null">{{
+                            order.vid_perevozki
+                          }}
+                        </div>
+                        <div class="col-1 orders_title_table">{{ order.adres_pogruzke }}</div>
+                        <div class="col-1 orders_title_table">{{ order.adres_vygruski }}</div>
                         <div class="col-2 orders_title_table">{{ order.kompaniya_zakazchik }}</div>
                         <div class="col-1 orders_title_table">{{ order.rasschitat_do }}</div>
                         <div class="col-1 orders_title_table">{{ order.logistFIO }}</div>
                         <div class="col-1 orders_title_table">{{ order.ob_budjet }}</div>
-                        </div>
+                      </div>
                     </div>
                 </div>
                 <div class="col-12 row">
                     <div class="col-6 pagination_orders_left">Показывать:
-                         <span :class="{ blue_ref: offset!=20 }" v-on:click="show_by(20)">по 20</span>
-                        / <span :class="{ blue_ref: offset!=50 }" v-on:click="show_by(50)">по 50</span>
-                        / <span :class="{ blue_ref: offset!=100 }" v-on:click="show_by(100)">по 100</span>
+                         <span :class="{ blue_ref: offset!==20 }" v-on:click="show_by(20)">по 20</span>
+                        / <span :class="{ blue_ref: offset!==50 }" v-on:click="show_by(50)">по 50</span>
+                        / <span :class="{ blue_ref: offset!==100 }" v-on:click="show_by(100)">по 100</span>
                     </div>
                     <div class="col-5 pagination_orders_right row">
                             <!--            пагинация          -->
@@ -156,368 +169,321 @@
 
 <script>
 import moment from 'moment'
-Vue.filter('formatDate', function(value) {
-    if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
+// Vue.filter('formatDate', function(value) {
+//     if (value) {
+//         return moment(String(value)).format('DD.MM.YYYY')
+//     }
+// });
+export default {
+  props: ['auth_user'],
+  mounted() {
+    this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
+    this.header_counter_orders()
+    this.role = this.auth_user['role_perm']['role']
+    window.Echo.private('logist')
+        .listen('UpdateMainLogistEvent', (e) => {
+          console.log(e)
+          //если номер id пришедшего обновления совпадает с номером пользователя
+          if (e.logistId === this.auth_user.id) {
+            //общая белая шапка
+            this.zurnal_zaiavok = e.mainHeaderArr.all
+            this.ocenka = e.mainHeaderArr.ocenka
+            this.naznachenie_stavki = e.mainHeaderArr.naznachenieStavki
+            this.v_rabote = e.mainHeaderArr.vRabote
+            this.kontrol = e.mainHeaderArr.kontrol
+            this.zavershen = e.mainHeaderArr.vRabote
+            //зелёная оповещения
+            this.ocenka_counter = e.unreadHeaderArr.ocenka
+            this.naznachenie_stavki_unread_count = e.unreadHeaderArr.naznachenieStavki
+            this.v_rabote_unread_count = e.unreadHeaderArr.vRabote
+            this.kontrol_unread_count = e.unreadHeaderArr.kontrol
+            this.zavershen_unread_count = e.unreadHeaderArr.zavershen
+          }
+        }),
+        window.Echo.private('delete-order-channel')
+            .listen('DeleteOrderEvent', (e) => {
+              let temp_arr = [];
+              for (let i = 0; i < this.orders_list.length; i++) {
+                let flag = false;
+                for (let j = 0; j < e.order_id.length; j++) {
+                  if (this.orders_list[i].id === e.order_id[j]) {
+                    flag = true
+                  }
+                }
+                if (flag === false) {
+                  temp_arr.push(this.orders_list[i])
+                }
+              }
+              this.orders_list = temp_arr
+              this.header_counter_orders()
+            })
+    this.permissions = this.auth_user['role_perm']['permissions']
+  },
+  data() {
+    return {
+      checked_all: '',
+      orders_list: [],
+      //пагинация
+      pagination_all: 0,
+      current_page: 1,
+      pagination_numb: [],
+      offset: 0,
+      limit: 20,
+      last_pagination_number: true,
+      //конец пагинации
+      ocenka: 0,
+      delete_arr: [],
+      type_per_list: [],
+      gruzootpravitel_arr: [],
+      zurnal_zaiavok: 0,
+      ocenka_counter: 0,
+      header_underscore_list_class: [true, false, false, false, false, false],
+      order_by: '0',
+      naznachenie_stavki: 0,
+      role: 0,
+      naznachenie_stavki_unread_count: 0,
+      v_rabote: 0,
+      v_rabote_unread_count: 0,
+      kontrol: 0,
+      kontrol_unread_count: 0,
+      zavershen: 0,
+      zavershen_unread_count: 0,
+      permissions: [],
+      columnName: 'zurnal_zaiavok',
+      offset_from_start: 0,
+      countAllTypes: 0
     }
-});
-    export default {
-        props: ['auth_user'],
-        mounted() {
-            this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
-            this.header_counter_orders()
-            this.role=this.auth_user['role_perm']['role']
-            window.Echo.private('logist')
-                .listen('UpdateMainLogistEvent',(e) => {
-                    console.log(e)
-                    //если номер id пришедшего обновления совпадает с номером пользователя
-                    if(e.logistId==this.auth_user.id)
-                    {
-                        //общая белая шапка
-                        this.zurnal_zaiavok=e.mainHeaderArr.all
-                        this.ocenka=e.mainHeaderArr.ocenka
-                        this.naznachenie_stavki=e.mainHeaderArr.naznachenieStavki
-                        this.v_rabote=e.mainHeaderArr.vRabote
-                        this.kontrol=e.mainHeaderArr.kontrol
-                        this.zavershen=e.mainHeaderArr.vRabote
-                        //зелёная оповещения
-                        this.ocenka_counter=e.unreadHeaderArr.ocenka
-                        this.naznachenie_stavki_unread_count=e.unreadHeaderArr.naznachenieStavki
-                        this.v_rabote_unread_count=e.unreadHeaderArr.vRabote
-                        this.kontrol_unread_count=e.unreadHeaderArr.kontrol
-                        this.zavershen_unread_count=e.unreadHeaderArr.zavershen
-                    }
-                }),
-                window.Echo.private('delete-order-channel')
-                    .listen('DeleteOrderEvent',(e) => {
-                        let temp_arr=[];
-                        for( let i = 0; i < this.orders_list.length; i++ )
-                        {
-                            let flag =false;
-                            for( let j = 0; j < e.order_id.length; j++ )
-                            {
-                                if(this.orders_list[i].id==e.order_id[j])
-                                {
-                                   flag=true
-                                }
-                            }
-                            if(flag==false)
-                            {
-                                temp_arr.push(this.orders_list[i])
-                            }
-                        }
-                        this.orders_list=temp_arr
-                        this.header_counter_orders()
-                    }),
-            this.permissions=this.auth_user['role_perm']['permissions']
-        },
-        data() {
-            return {
-                checked_all: '',
-                orders_list:[],
-                //пагинация
-                pagination_all:0,
-                current_page:1,
-                pagination_numb:[],
-                offset:0,
-                limit:20,
-                last_pagination_number:true,
-                //конец пагинации
-                ocenka:0,
-                delete_arr:[],
-                type_per_list:[],
-                gruzootpravitel_arr: [],
-                zurnal_zaiavok:0,
-                ocenka_counter:0,
-                header_underscore_list_class:[true,false,false,false,false,false],
-                order_by:'0',
-                naznachenie_stavki:0,
-                role:0,
-                naznachenie_stavki_unread_count:0,
-                v_rabote:0,
-                v_rabote_unread_count:0,
-                kontrol:0,
-                kontrol_unread_count:0,
-                zavershen:0,
-                zavershen_unread_count:0,
-                permissions:[],
-                columnName:'zurnal_zaiavok',
-                offset_from_start:0,
-                countAllTypes:0
-            }
-        },
-        created()
-        {
-            //проверяем логист ли это с закладки оценка, нажавший кнопку утверждение
-            if(localStorage.getItem('logist_ut_flag')==1)
-            {
-                this.order_by=1
-                localStorage.setItem('logist_ut_flag',0)
-                this.header_underscore_list_class=[false,false,false,false,false,false]
-                this.header_underscore_list_class[this.order_by]=true
-            }
-                this.getOrderlist(this.orders_list)
-            this.get_perevozka_list(this.type_per_list);
-        },
-        methods: {
+  },
 
-            go_to_order(id)
-            {
-                axios
-                    .post('/check_if_order_isset',{
-                        id:id,
-                    })
-                    .then(response => {
-                        if(response.data.data=='isset')
-                        {
-                            //если закладка в работе или контроль то редирект на вид grade
-                            if((this.order_by==3)||(this.order_by==4))
-                            {
-                                window.location.href =('/grade/'+id)
-                            }
-                            else
-                            {
-                                window.location.href =('/create_orders/'+id)
-                            }
+  created() {
+    //проверяем логист ли это с закладки оценка, нажавший кнопку утверждение
+    if (localStorage.getItem('logist_ut_flag') == 1) {
+      this.order_by = 1
+      localStorage.setItem('logist_ut_flag', 0)
+      this.header_underscore_list_class = [false, false, false, false, false, false]
+      this.header_underscore_list_class[this.order_by] = true
+    }
+    this.getOrderlist(this.orders_list)
+    this.get_perevozka_list(this.type_per_list);
+  },
+  methods: {
 
-                        }
-                        else
-                        {
-                            alert('Запрос удалена')
-                        }
+    go_to_order(id) {
+      axios
+          .post('/check_if_order_isset', {
+            id: id,
+          })
+          .then(response => {
+            if (response.data.data == 'isset') {
+              //если закладка в работе или контроль то редирект на вид grade
+              if ((this.order_by == 3) || (this.order_by == 4)) {
+                window.location.href = ('/grade/' + id)
+              } else {
+                window.location.href = ('/create_orders/' + id)
+              }
 
-                    })
-              //  window.location.href =('/create_orders/'+id)
-            },
-            update_header_underscore(numb,columnName)
-            {
-                this.columnName=columnName
-                this.order_by=numb
-                this.header_underscore_list_class=[false,false,false,false,false,false]
-                this.header_underscore_list_class[numb]=true
-                this.orders_list=[];
-                this.checked_all=false
-                //установим пагинацию в нулевое состояние
-                this.$refs.PaginationComponent.setToDefaultState()
-            },
-            get_gruzootpravitel_list()
-            {
-                let inp_temp =[];
-                axios
-                    .post('/get_gruzootpravitel_list',{
-                    })
-                    .then(({ data }) => (
-                            data.gruzootpravitel.forEach(function(entry) {
-                                inp_temp.push({
-                                    id:entry.id,
-                                    nazvanie:entry.nazvanie
-                                });
-                            })
-                        ),
-                        this.gruzootpravitel_arr=inp_temp
-
-                    );
-            },
-            get_type_per_list(inp)
-            {
-                axios
-                    .post('/get_type_per_list',{
-                    })
-                    .then(({ data }) => (
-                            data.ts.forEach(function(entry) {
-                                inp.push({
-                                    id:entry.id,
-                                    ts_name:entry.ts_name
-                                });
-                            })
-                        )
-                    );
-            },
-            get_perevozka_list(inp)
-            {
-                axios
-                    .post('/getVidPerevozki',{
-                    })
-                    .then(({ data }) => (
-                            data.perevozka_list.forEach(function(entry) {
-                                inp.push({
-                                    id:entry.id,
-                                    perevozka_name:entry.perevozka_name
-                                });
-                            })
-                        )
-                    );
-            },
-            check_all()
-            {
-                for( let i = 0; i < this.orders_list.length; i++ )
-                {
-                   this.orders_list[i].checked_order=!this.orders_list[i].checked_order
-                }
-            },
-            mark_as_important()
-            {
-                this.checked_all=false
-                for( let i = 0; i < this.orders_list.length; i++ )
-                {
-                    if(this.orders_list[i].checked_order==true)
-                    {
-                        this.orders_list[i].checked_order=false
-                        if(this.orders_list[i].important==1)
-                        {
-                            this.orders_list[i].important=null
-                        }
-                        else
-                        {
-                            this.orders_list[i].important=1
-                        }
-                        this.delete_arr.push(this.orders_list[i].id)
-                    }
-                }
-                //перерисуем массив
-                let imp_arr=[];
-                let not_imp_arr=[];
-                for( let i = 0; i < this.orders_list.length; i++ )
-                {
-                   if(this.orders_list[i].important==1)
-                   {
-                       imp_arr.push(this.orders_list[i])
-                   }
-                   else
-                   {
-                       not_imp_arr.push(this.orders_list[i])
-                   }
-                }
-                this.orders_list=[];
-                for( let i = 0; i < imp_arr.length; i++ )
-                {
-                    this.orders_list.push(imp_arr[i])
-                }
-                for( let i = 0; i < not_imp_arr.length; i++ )
-                {
-                    this.orders_list.push(not_imp_arr[i])
-                }
-
-                axios
-                    .post('/mark_as_important',{
-                        orders_id:this.delete_arr,
-                    })
-                this.delete_arr=[]
-            },
-
-
-           async delete_orders()
-            {
-                const result = await this.confirmMethodMixin();
-
-                if (result) {
-                let temp_arr=[];
-                for( let i = 0; i < this.orders_list.length; i++ )
-                {
-                        if(this.orders_list[i].checked_order==true)
-                        {
-                            this.delete_arr.push(this.orders_list[i].id)
-                        }
-                        else
-                        {
-                            temp_arr.push(this.orders_list[i])
-                        }
-                }
-                this.orders_list=temp_arr
-               axios
-                   .post('/delete_orders',{
-                       orders_id:this.delete_arr,
-                   })
-                   .then(({ data }) => (
-                       this.delete_arr=[],
-                       this.header_counter_orders()
-                       )
-                   );
-
-                    }
-            },
-            show_by(int)
-            {
-                this.limit=int
-            },
-            create_order()
-            {
-                axios
-                    .post('/start_new_order',{
-                        data_vneseniya:new Date().toLocaleDateString('ru-RU')
-                    })
-                    .then(({ data }) => (
-                        window.location.href =('/create_orders/'+data.data['id'])
-                        )
-                    )
-            },
-            create_order_old() {
-             //  this.countAllTypes=Number(this.countAllTypes)+Number(20);
-             window.location.href =('/create_orders')
-            },
-            header_counter_orders()
-            {
-                axios
-                    .post('/header_counter_orders',{
-                    })
-                    .then(({ data }) => (
-                        //общая белая шапка
-                this.zurnal_zaiavok=data.mainHeaderArr.all,
-                this.ocenka=data.mainHeaderArr.ocenka,
-                this.naznachenie_stavki=data.mainHeaderArr.naznachenieStavki,
-                this.v_rabote=data.mainHeaderArr.vRabote,
-                this.kontrol=data.mainHeaderArr.kontrol,
-                this.zavershen=data.mainHeaderArr.zavershen,
-                //зелёная оповещения
-                this.ocenka_counter=data.unreadHeaderArr.ocenka,
-                this.naznachenie_stavki_unread_count=data.unreadHeaderArr.naznachenieStavki,
-                this.v_rabote_unread_count=data.unreadHeaderArr.vRabote,
-                this.kontrol_unread_count=data.unreadHeaderArr.kontrol,
-                this.zavershen_unread_count=data.unreadHeaderArr.zavershen
-                        )
-                    );
-            },
-            getOrderlist(inp)
-            {
-                axios
-                    .post('/getOrderlist',{
-                         columnName:this.columnName,
-                         offset:this.offset_from_start,
-                         limit:this.limit,
-                        // order_by:this.order_by
-                    })
-                    .then(({ data }) => (
-                            this.countAllTypes=data.tipesCount,
-                                data.list_colored.forEach(function(entry) {
-                                    const tsTotal = entry.ts.length > 0 ? entry.ts[0].total : 0;
-                                    console.log(tsTotal)
-                                    inp.push({
-                                        id:entry.id,
-                                        data_vneseniya:entry.data_vneseniya,
-                                        status:entry.status,
-                                        vid_perevozki:entry.vid_perevozki,
-                                        adres_pogruzke:entry.adres_pogruzke,
-                                        adres_vygruski:entry.adres_vygruski,
-                                        kompaniya_zakazchik:entry.kompaniya_zakazchik,
-                                        checked_order:false,
-                                        important:entry.important,
-                                        nomer_zayavki:entry.nomer_zayavki,
-                                        rasschitat_do:entry.rasschitat_do,
-                                        logistFIO:entry.logistFIO,
-                                        ob_budjet:tsTotal,
-                                    });
-                                })
-                                // this.pagination_counter()
-                        )
-                    );
-            },
-            dataFromPagination(offset)
-            {
-                this.offset_from_start=offset
-                this.orders_list=[];
-                this.getOrderlist(this.orders_list)
+            } else {
+              alert('Запрос удалена')
             }
 
+          })
+      //  window.location.href =('/create_orders/'+id)
+    },
+    update_header_underscore(numb, columnName) {
+      this.columnName = columnName
+      this.order_by = numb
+      this.header_underscore_list_class = [false, false, false, false, false, false]
+      this.header_underscore_list_class[numb] = true
+      this.orders_list = [];
+      this.checked_all = false
+      //установим пагинацию в нулевое состояние
+      this.$refs.PaginationComponent.setToDefaultState()
+    },
+    get_gruzootpravitel_list() {
+      let inp_temp = [];
+      axios
+          .post('/get_gruzootpravitel_list', {})
+          .then(({data}) => (
+                  data.gruzootpravitel.forEach(function (entry) {
+                    inp_temp.push({
+                      id: entry.id,
+                      nazvanie: entry.nazvanie
+                    });
+                  })
+              ),
+              this.gruzootpravitel_arr = inp_temp
+          );
+    },
+    get_type_per_list(inp) {
+      axios
+          .post('/get_type_per_list', {})
+          .then(({data}) => (
+                  data.ts.forEach(function (entry) {
+                    inp.push({
+                      id: entry.id,
+                      ts_name: entry.ts_name
+                    });
+                  })
+              )
+          );
+    },
+    get_perevozka_list(inp) {
+      axios
+          .post('/getVidPerevozki', {})
+          .then(({data}) => (
+                  data.perevozka_list.forEach(function (entry) {
+                    inp.push({
+                      id: entry.id,
+                      perevozka_name: entry.perevozka_name
+                    });
+                  })
+              )
+          );
+    },
+    check_all() {
+      for (let i = 0; i < this.orders_list.length; i++) {
+        this.orders_list[i].checked_order = !this.orders_list[i].checked_order
+      }
+    },
+    mark_as_important() {
+      this.checked_all = false
+      for (let i = 0; i < this.orders_list.length; i++) {
+        if (this.orders_list[i].checked_order == true) {
+          this.orders_list[i].checked_order = false
+          if (this.orders_list[i].important == 1) {
+            this.orders_list[i].important = null
+          } else {
+            this.orders_list[i].important = 1
+          }
+          this.delete_arr.push(this.orders_list[i].id)
         }
+      }
+      //перерисуем массив
+      let imp_arr = [];
+      let not_imp_arr = [];
+      for (let i = 0; i < this.orders_list.length; i++) {
+        if (this.orders_list[i].important == 1) {
+          imp_arr.push(this.orders_list[i])
+        } else {
+          not_imp_arr.push(this.orders_list[i])
+        }
+      }
+      this.orders_list = [];
+      for (let i = 0; i < imp_arr.length; i++) {
+        this.orders_list.push(imp_arr[i])
+      }
+      for (let i = 0; i < not_imp_arr.length; i++) {
+        this.orders_list.push(not_imp_arr[i])
+      }
+
+      axios
+          .post('/mark_as_important', {
+            orders_id: this.delete_arr,
+          })
+      this.delete_arr = []
+    },
+
+    async delete_orders() {
+      const result = await this.confirmMethodMixin();
+
+      if (result) {
+        let temp_arr = [];
+        for (let i = 0; i < this.orders_list.length; i++) {
+          if (this.orders_list[i].checked_order == true) {
+            this.delete_arr.push(this.orders_list[i].id)
+          } else {
+            temp_arr.push(this.orders_list[i])
+          }
+        }
+        this.orders_list = temp_arr
+        axios
+            .post('/delete_orders', {
+              orders_id: this.delete_arr,
+            })
+            .then(({data}) => (
+                    this.delete_arr = [],
+                        this.header_counter_orders()
+                )
+            );
+
+      }
+    },
+    show_by(int) {
+      this.limit = int
+    },
+    create_order() {
+      axios
+          .post('/start_new_order', {
+            data_vneseniya: new Date().toLocaleDateString('ru-RU')
+          })
+          .then(({data}) => (
+                  window.location.href = ('/create_orders/' + data.data['id'])
+              )
+          )
+    },
+    create_order_old() {
+      //  this.countAllTypes=Number(this.countAllTypes)+Number(20);
+      window.location.href = ('/create_orders')
+    },
+    header_counter_orders() {
+      axios
+          .post('/header_counter_orders', {})
+          .then(({data}) => (
+                  //общая белая шапка
+                  this.zurnal_zaiavok = data.mainHeaderArr.all,
+                      this.ocenka = data.mainHeaderArr.ocenka,
+                      this.naznachenie_stavki = data.mainHeaderArr.naznachenieStavki,
+                      this.v_rabote = data.mainHeaderArr.vRabote,
+                      this.kontrol = data.mainHeaderArr.kontrol,
+                      this.zavershen = data.mainHeaderArr.zavershen,
+                      //зелёная оповещения
+                      this.ocenka_counter = data.unreadHeaderArr.ocenka,
+                      this.naznachenie_stavki_unread_count = data.unreadHeaderArr.naznachenieStavki,
+                      this.v_rabote_unread_count = data.unreadHeaderArr.vRabote,
+                      this.kontrol_unread_count = data.unreadHeaderArr.kontrol,
+                      this.zavershen_unread_count = data.unreadHeaderArr.zavershen
+              )
+          );
+    },
+    getOrderlist(inp) {
+      axios
+          .post('/getOrderlist', {
+            columnName: this.columnName,
+            offset: this.offset_from_start,
+            limit: this.limit,
+            // order_by:this.order_by
+          })
+          .then(({data}) => (
+                  this.countAllTypes = data.tipesCount,
+                      data.list_colored.forEach(function (entry) {
+                        const tsTotal = entry.ts.length > 0 ? entry.ts[0].total : 0;
+                        console.log(tsTotal)
+                        inp.push({
+                          id: entry.id,
+                          data_vneseniya: entry.data_vneseniya,
+                          status: entry.status,
+                          vid_perevozki: entry.vid_perevozki,
+                          adres_pogruzke: entry.adres_pogruzke,
+                          adres_vygruski: entry.adres_vygruski,
+                          kompaniya_zakazchik: entry.kompaniya_zakazchik,
+                          checked_order: false,
+                          important: entry.important,
+                          nomer_zayavki: entry.nomer_zayavki,
+                          rasschitat_do: entry.rasschitat_do,
+                          logistFIO: entry.logistFIO,
+                          ob_budjet: tsTotal,
+                        });
+                      })
+                  // this.pagination_counter()
+              )
+          );
+    },
+    dataFromPagination(offset) {
+      this.offset_from_start = offset
+      this.orders_list = [];
+      this.getOrderlist(this.orders_list)
     }
+
+  }
+}
 </script>

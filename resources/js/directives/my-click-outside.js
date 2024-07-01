@@ -1,6 +1,4 @@
-import Vue from 'vue';
-
-Vue.directive('my-click-outside', {
+export const myClickOutside = {
     bind(el, binding, vnode) {
         el.clickOutsideEvent = function(event) {
             // Проверяем, был ли клик снаружи элемента
@@ -17,4 +15,4 @@ Vue.directive('my-click-outside', {
         // Удаляем обработчик события клика при отвязке директивы
         document.body.removeEventListener('click', el.clickOutsideEvent);
     },
-});
+};

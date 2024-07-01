@@ -106,7 +106,7 @@
                             <input class="col-2 checkbox_orders" type="checkbox" id="checkbox1" v-model="gruzootpravitel.checked_order">
                             <div class="col-10" >{{ gruzootpravitel.vid_TSNazvanie }}</div>
                         </div>
-                        <div class="col-2 orders_title_table" v-on:click="show_mod_edit(gruzootpravitel.perevozchik,key)" v-b-modal.perevozkaMod variant="primary">{{ gruzootpravitel.perevozchik_TSNazvanie }}</div>
+                        <div class="col-2 orders_title_table" v-on:click="show_mod_edit(gruzootpravitel.perevozchik,key)">{{ gruzootpravitel.perevozchik_TSNazvanie }}</div>
                             <!--ставки-->
                             <div class="col-1 orders_title_table" >{{ gruzootpravitel.stavka_summa }}р. {{ gruzootpravitel.NDS_check }}</div>
                             <!--дата перевозки-->
@@ -166,11 +166,11 @@
 
 <script>
 import moment from 'moment'
-Vue.filter('formatDate', function(value) {
-    if (value) {
-        return moment(String(value)).format('DD.MM.YYYY')
-    }
-});
+// Vue.filter('formatDate', function(value) {
+//     if (value) {
+//         return moment(String(value)).format('DD.MM.YYYY')
+//     }
+// });
     export default {
         props: ['auth_user'],
         mounted() {

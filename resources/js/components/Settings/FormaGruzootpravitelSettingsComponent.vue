@@ -6,7 +6,7 @@
             <div >Список грузоотправителей</div>
             <div class="col-12 ad_pogr_marg1 row" v-for="(gruzootpravitel,key) in gruzootpravitel_arr">
                 <div class="col-6">{{ gruzootpravitel.nazvanie }}</div>
-                <button type="button" class="btn btn-info col-2 offset-1" v-b-modal.modal-xl variant="primary" v-on:click="show_mod_edit(gruzootpravitel.id)">Редактировать</button>
+                <button type="button" class="btn btn-info col-2 offset-1" v-on:click="show_mod_edit(gruzootpravitel.id)">Редактировать</button>
                 <button type="button" class="btn btn-danger btn_del_in_ord col-2 offset-1" v-on:click="delete_gruzootpravitel(key)">-</button>
             </div>
             </div>

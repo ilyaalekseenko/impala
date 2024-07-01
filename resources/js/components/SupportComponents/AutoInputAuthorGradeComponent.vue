@@ -8,7 +8,7 @@
                     <li v-for="(item, index) in filteredList" :key="index">
                         <div v-if="index==0 || item.avtor !== filteredList[index - 1].avtor" class="avtor_gruz row">
                             <div class="col-9">{{ item.avtor }}</div>
-                               <div class="col-2" v-on:click="show_mod_edit(item.gruzootpravitel_id)" v-b-modal.modal-author variant="primary"> <iconify-icon icon="typcn:plus" style="color: blue" width="30" height="30"></iconify-icon></div>
+                               <div class="col-2" v-on:click="show_mod_edit(item.gruzootpravitel_id)"> <iconify-icon icon="typcn:plus" style="color: blue" width="30" height="30"></iconify-icon></div>
                            </div>
                            <div class="nazvanie_gruz"  @click="select(item)"> {{ item.nazvanie }}</div>
                        </li>

@@ -206,11 +206,10 @@
                                            ></auto-input-global-component>
 
                                     <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:
-                            <span class="col add_button_grade no_wrap_text" v-b-modal.perevozkaMod variant="primary" v-on:click="newPerevozchik()">Добавить</span>
+                            <span class="col add_button_grade no_wrap_text" v-on:click="newPerevozchik()">Добавить</span>
                                         <span
                                             v-if="elem1.perevozchik_TSNazvanie!==''"
-                                            v-on:click="show_mod_edit(elem1.perevozchik)"
-                                              v-b-modal.perevozkaMod variant="primary">
+                                            v-on:click="show_mod_edit(elem1.perevozchik)">
                                             <span
                                                 class="iconify edit_icon"
                                                 data-icon="akar-icons:edit"
@@ -232,11 +231,10 @@
                                     ></auto-input-perevozka-component>
 
                                     <div  class="create_orders_date_title_1 lit_marg_grade_auto">Водитель:
-                                    <span class="col add_button_grade no_wrap_text" v-b-modal.voditelMod variant="primary" v-on:click="newVoditel()">Добавить</span>
+                                    <span class="col add_button_grade no_wrap_text" v-on:click="newVoditel()">Добавить</span>
                                       <span
                                           v-if="elem1.voditel_TSNazvanie!==''"
-                                          v-on:click="editVoditel(elem1.voditel)"
-                                          v-b-modal.voditelMod variant="primary">
+                                          v-on:click="editVoditel(elem1.voditel)">
                                             <span
                                                 class="iconify edit_icon"
                                                 data-icon="akar-icons:edit"
@@ -259,11 +257,10 @@
 
                                     <div class="col-6 min_ts">
                             <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
-                            <span class="col add_button_grade no_wrap_text" v-b-modal.TSMod variant="primary" v-on:click="newTSModal()">Добавить</span>
+                            <span class="col add_button_grade no_wrap_text" v-on:click="newTSModal()">Добавить</span>
                               <span
                                   v-if="elem1.TS_TSNazvanie!==''"
-                                  v-on:click="editTS(elem1.nomer_TS)"
-                                  v-b-modal.TSMod variant="primary">
+                                  v-on:click="editTS(elem1.nomer_TS)">
                                             <span
                                                 class="iconify edit_icon"
                                                 data-icon="akar-icons:edit"
@@ -287,11 +284,10 @@
                                          </div>
                                     <div class="col-6 min_ts">
                                         <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ПП:
-                                         <span class="col add_button_grade no_wrap_text" v-b-modal.PPMod variant="primary" v-on:click="newPPModal()">Добавить</span>
+                                         <span class="col add_button_grade no_wrap_text" v-on:click="newPPModal()">Добавить</span>
                                             <span
                                                 v-if="elem1.PP_Nazvanie!==''"
-                                                v-on:click="editPP(elem1.nomer_PP)"
-                                                v-b-modal.PPMod variant="primary">
+                                                v-on:click="editPP(elem1.nomer_PP)">
                                             <span
                                                 class="iconify edit_icon"
                                                 data-icon="akar-icons:edit"
@@ -339,7 +335,7 @@
                                             Адрес погрузки {{ key1 + 1 }}
                                         </div>
                                         <div class="col-4 row">
-                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
+                                            <span class="col add_button_grade no_wrap_text" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
                               <auto-input-author-grade-component  class="cr_ord_inp_n_1"
@@ -361,8 +357,8 @@
 
                                         <!--                        ДАТА ЗАГРУЗКИ-->
                         <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
-                        <date-picker   v-model="adres_pogr.date_ts" valueType="format" type="date"
-                        format="DD.MM.YYYY" :open.sync=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
+                        <date-picker v-model:value="adres_pogr.date_ts" valueType="format" type="date"
+                        format="DD.MM.YYYY" v-model:open=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
 
@@ -427,7 +423,7 @@
                                             Адрес выгрузки {{ key2 + 1 }}
                                         </div>
                                         <div class="col-4 row">
-                                            <span class="col add_button_grade no_wrap_text" v-b-modal.modal-xl variant="primary" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
+                                            <span class="col add_button_grade no_wrap_text" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
                                         </div>
                                     </div>
                                     <auto-input-author-grade-component  class="cr_ord_inp_n_1"
@@ -461,8 +457,8 @@
                                             <div class="little_title_grade">Дата</div>
 
                                             <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
-                        <date-picker   v-model="adres_vygr.date_ts" valueType="format" type="date"
-                                     format="DD.MM.YYYY" :open.sync=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
+                        <date-picker v-model:value="adres_vygr.date_ts" valueType="format" type="date"
+                                     format="DD.MM.YYYY" v-model:open=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
 
                                         </div>
                                     </div>
@@ -568,8 +564,8 @@
                                                class="border_input add_summ_grade_inp" v-model="sum.summa"/>
                                             <input @click="openDPsumma(key2)"
                                                    class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
-                                         <date-picker   v-model="sum.data" valueType="format" type="date"
-                                                        format="DD.MM.YYYY" :open.sync=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
+                                         <date-picker v-model:value="sum.data" valueType="format" type="date"
+                                                        format="DD.MM.YYYY" v-model:open=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
                                          </date-picker>
                                      </div>
                                     </div>
@@ -660,21 +656,13 @@
 </template>
 
 <script>
-    import datepicker from 'vuejs-datepicker';
-    import moment from 'moment'
+    import DatePicker from 'vue-datepicker-next';
+    import 'vue-datepicker-next/index.css';
+    import 'vue-datepicker-next/locale/ru';
 
-    import DatePicker from 'vue2-datepicker';
-    import 'vue2-datepicker/index.css';
-
-    Vue.filter('formatDate', function(value) {
-        if (value) {
-            return moment(String(value)).format('DD.MM.YYYY')
-        }
-    });
     export default {
         props: ['auth_user'],
         components: {
-            datepicker,
             DatePicker
         },
         data() {
@@ -790,6 +778,7 @@
             this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
             this.update_unread_status_v_rabote()
         },
+
         created()
         {
             this.role=this.auth_user['role_perm']['role']

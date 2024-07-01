@@ -94,8 +94,6 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 export default {
     props: ['transfer'],
         mounted() {

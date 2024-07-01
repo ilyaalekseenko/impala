@@ -49,7 +49,7 @@
                         <input @click="openDB0" class="input_width_max_settings" v-model="user.data_rozdenia" v-if="show_user_setting==user.id"  />
                         <span v-else>{{ user.data_rozdenia }}</span>
                         <span @click="show_flag=true">
-                        <date-picker  v-if="show_user_setting==user.id" ref="datepicker0" @change="update_user(user.id,'data_rozdenia',user.data_rozdenia)" v-model="user.data_rozdenia" valueType="format" format="DD.MM.YYYY" :open.sync="openDP" ></date-picker>
+                        <date-picker v-if="show_user_setting===user.id" ref="datepicker0" @change="update_user(user.id,'data_rozdenia',user.data_rozdenia)" v-model:value="user.data_rozdenia" valueType="format" format="DD.MM.YYYY" v-model:open="openDP" ></date-picker>
                         </span>
                     </td>
 
@@ -80,14 +80,17 @@
                 <ul class="pagination">
                     <li class="page-item pagination_button" v-on:click="prev_page()"><span class="page-link" >Previous</span>
                     </li>
-                    <li v-if="pag.id!='...'" v-for="pag in pagination_numb" class="page-item pagination_button"
-                        v-bind:class="{ active: pag.id==current_page }"
-                        v-on:click="new_page(pag.id)">
-                        <span class="page-link" >{{ pag.id }}</span>
-                    </li>
-                    <li v-else class="page-item">
-                        <span class="page-link" >{{ pag.id }}</span>
-                    </li>
+
+                    <template v-for="pag in pagination_numb">
+                      <li v-if="Number.isInteger(pag.id)" class="page-item pagination_button"
+                          v-bind:class="{ active: pag.id==current_page }"
+                          v-on:click="new_page(pag.id)">
+                          <span class="page-link" >{{ pag.id }}</span>
+                      </li>
+                      <li v-else class="page-item">
+                          <span class="page-link" >{{ pag.id }}</span>
+                      </li>
+                    </template>
                     <li class="page-item pagination_button" v-on:click="next_page()"><span class="page-link" href="javascript:;">Next</span>
                     </li>
                 </ul>
@@ -98,9 +101,14 @@
 </template>
 
 <script>
-import { VueTelInput } from 'vue-tel-input'
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/ru';
 
 export default {
+    components: {
+      DatePicker
+    },
     data() {
         return {
             users_list:[],
@@ -138,6 +146,7 @@ export default {
 
         };
     },
+
     mounted() {
         this.get_users_list(this.users_list);
         this.get_roles(this.roles_list);
