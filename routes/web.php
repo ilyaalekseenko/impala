@@ -214,3 +214,10 @@ Route::group(['prefix' => 'clear'], function () {
         return "Storage";
     });
 });
+
+Route::group(['prefix' => 'test'], function () {
+    /*dump(\App\Models\FinalGrade::query()
+        ->offset(0)
+        ->limit(20)
+        ->get()->toArray());*/
+});

@@ -40,11 +40,11 @@ class FinalGrade extends Model
 //            ->limit(request('limit'))
             ->get();
     }
-    public function getStavkiList()
+    public function getStavkiList($offset = 0, $limit = 20)
     {
-            return FinalGrade::
-            offset(request('offset'))
-            ->limit(request('limit'))
+        return FinalGrade::query()
+            ->offset((int)$offset)
+            ->limit((int)$limit)
             ->get();
     }
     public function countGrades()

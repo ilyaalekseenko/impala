@@ -174,7 +174,7 @@ import moment from 'moment'
     export default {
         props: ['auth_user'],
         mounted() {
-            this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
+            //this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
 
         },
         data() {
@@ -207,7 +207,7 @@ import moment from 'moment'
         },
         created()
         {
-
+          this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
         },
         methods: {
             //метод очистки инпутов
@@ -226,7 +226,7 @@ import moment from 'moment'
                 //если всё пустое тогда вызываем общий метод поиска
                 else
                 {
-                    this.get_gruzootpravitel_list();
+                    this.get_gruzootpravitel_list(this.gruzootpravitel_arr);
                 }
             },
             clearInput1(data)
@@ -244,7 +244,7 @@ import moment from 'moment'
                 //если всё пустое тогда вызываем общий метод поиска
                 else
                 {
-                    this.get_gruzootpravitel_list();
+                    this.get_gruzootpravitel_list(this.gruzootpravitel_arr);
                 }
             },
             //метод вызываемый из дочернего компонента новый перевозчик
@@ -329,17 +329,17 @@ import moment from 'moment'
                 else
                 {
 
-                    this.get_gruzootpravitel_list();
+                    this.get_gruzootpravitel_list(this.gruzootpravitel_arr);
                 }
             },
             create_order() {
                 window.location.href =('/create_orders')
             },
             //метод получения ставок
-            get_gruzootpravitel_list()
+            get_gruzootpravitel_list(inp_temp)
             {
                 this.paginationGif=true
-                let inp_temp =[];
+                // let inp_temp =[];
                 axios
                     .post('/getStavkiList',{
                         offset:this.offset_from_start,
@@ -378,7 +378,7 @@ import moment from 'moment'
                 }
                 else
                 {
-                    this.get_gruzootpravitel_list()
+                    this.get_gruzootpravitel_list(this.gruzootpravitel_arr)
                 }
 
             },
@@ -399,7 +399,7 @@ import moment from 'moment'
                 //если всё пустое тогда вызываем общий метод поиска
                 else
                 {
-                    this.get_gruzootpravitel_list();
+                    this.get_gruzootpravitel_list(this.gruzootpravitel_arr);
                 }
 
             },

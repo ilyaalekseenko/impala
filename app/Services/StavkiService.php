@@ -63,8 +63,7 @@ class StavkiService
     {
         if($main_second=='main')
         {
-            $grade_list=$this->finalGradeModel->getStavkiList();
-
+            $grade_list=$this->finalGradeModel->getStavkiList(request('offset'), request('limit'));
         }
         if($main_second=='second')
         {
@@ -75,8 +74,10 @@ class StavkiService
         foreach ($grade_list as $grade)
         {
             //получаем список погрузок и выгрузок у данного ТС
-            $TS_list_pogruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
-            $TS_list_vygruzka = GradePogruzka::where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();
+            $TS_list_pogruzka = GradePogruzka::query()->where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '1')->where('id_ts', $grade['id_ts'])->get();
+
+            $TS_list_vygruzka = GradePogruzka::query()->where('grade_id', $grade['grade_id'])->where('pogruzka_or_vygruzka', '2')->where('id_ts', $grade['id_ts'])->get();
+
             //получаем имена погрузок и выгрузок
             foreach ($TS_list_pogruzka as $pogruzka)
             {
@@ -154,8 +155,9 @@ class StavkiService
 
             if($main_second=='main')
             {
-            $dataPogruzki = Orders::where('id', $grade['grade_id'])->get();
-            $grade['data_pogruzki']=$dataPogruzki[0]['data_pogruzki'];
+                $dataPogruzki = Orders::where('id', $grade['grade_id'])->first()->toArray();
+
+                $grade['data_pogruzki']=$dataPogruzki['data_pogruzki'];
             }
             //получить ставку за КМ stavka_TS/rasstojanie_TS таблица TS
             if($main_second=='main')
