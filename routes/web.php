@@ -196,3 +196,21 @@ Route::middleware(['auth'])->group(function () {
 Auth::routes();
 //
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+Route::group(['prefix' => 'clear'], function () {
+    Route::get('/', function () {
+        Artisan::call('cache:clear');
+        Artisan::call('config:cache');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
+
+        return "Cache is clear.";
+    });
+
+    Route::get('/storage', function () {
+        Artisan::call('storage:link');
+
+        return "Storage";
+    });
+});
