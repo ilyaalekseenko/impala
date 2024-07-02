@@ -15,10 +15,12 @@ const app = createApp({})
 app.use(pinia)
 
 import axios from 'axios'
-import VueAxios from 'vue-axios'
 
-app.use(VueAxios, axios)
-app.provide('axios', app.config.globalProperties.axios)  // provide 'axios'
+axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN";
+
+/*import VueAxios from 'vue-axios'
+app.use(VueAxios, axios)*/
 
 /**
  * The following block of code may be used to automatically register your
