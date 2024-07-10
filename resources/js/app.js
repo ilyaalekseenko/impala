@@ -168,7 +168,7 @@ app.component('nomenklatura-component', NomenklaturaComponent);
 import MainLoadingComponent from './components/Loading/MainLoadingComponent.vue';
 app.component('main-loading-component', MainLoadingComponent);
 
-import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 import vClickOutside from "click-outside-vue3"
