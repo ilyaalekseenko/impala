@@ -193,7 +193,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/deletePerevozchikFromOrder', [App\Http\Controllers\OrdersController::class, 'deletePerevozchikFromOrder'])->name('deletePerevozchikFromOrder');
 
 });
-Auth::routes();
+
+// Auth
+
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false,
+]);
+
 //
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
