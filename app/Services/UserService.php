@@ -38,7 +38,8 @@ class UserService
     {
         if (!$log_name->isEmpty())
         {
-            return $log_name[0]['last_name'].' '.$log_name[0]['first_name'].' '.$log_name[0]['patronymic'];
+            //return $log_name[0]['last_name'].' '.$log_name[0]['first_name'].' '.$log_name[0]['patronymic'];
+            return ['last_name' => $log_name[0]['last_name'], 'first_name' => $log_name[0]['first_name'], 'patronymic' => $log_name[0]['patronymic']];
         }
         else
         {

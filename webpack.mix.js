@@ -13,10 +13,11 @@ const mix = require('laravel-mix');
 
 require('laravel-mix-tailwind');
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js('resources/js/app.js', 'public/assets/js')
     .vue()
     /*.postCss("resources/css/tailwind.css", "public/css", [
         require("tailwindcss")
     ])*/
     /*.sass('resources/sass/bootstrap.scss', 'public/css').sourceMaps()*/
-    .sass('resources/sass/app.scss', 'public/css').tailwind();
+    .styles([ 'resources/css/iconsax.css'], 'public/assets/css/iconsax.css')
+    .sass('resources/sass/app.scss', 'public/assets/css').tailwind();

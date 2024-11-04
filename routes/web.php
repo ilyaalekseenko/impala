@@ -192,6 +192,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/getPerevozchikData', [App\Http\Controllers\OrdersController::class, 'getPerevozchikData'])->name('getPerevozchikData');
     Route::post('/deletePerevozchikFromOrder', [App\Http\Controllers\OrdersController::class, 'deletePerevozchikFromOrder'])->name('deletePerevozchikFromOrder');
 
+    // Maintenance
+    Route::group(['prefix' => 'clear'], function () {
+        Route::get('/', function () {
+            Artisan::call('cache:clear');
+            Artisan::call('config:cache');
+            Artisan::call('view:clear');
+            Artisan::call('route:clear');
+
+            return "Cache is clear.";
+        });
+
+        Route::get('/storage', function () {
+            Artisan::call('storage:link');
+
+            return "Storage";
+        });
+    });
+
 });
 
 // Auth
@@ -206,22 +224,7 @@ Auth::routes([
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-Route::group(['prefix' => 'clear'], function () {
-    Route::get('/', function () {
-        Artisan::call('cache:clear');
-        Artisan::call('config:cache');
-        Artisan::call('view:clear');
-        Artisan::call('route:clear');
 
-        return "Cache is clear.";
-    });
-
-    Route::get('/storage', function () {
-        Artisan::call('storage:link');
-
-        return "Storage";
-    });
-});
 
 Route::group(['prefix' => 'test'], function () {
     /*dump(\App\Models\FinalGrade::query()

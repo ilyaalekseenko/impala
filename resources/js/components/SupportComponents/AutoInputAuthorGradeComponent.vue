@@ -21,10 +21,10 @@
 
    <script>
        export default {
-           props: ['gruzootpravitel_arr','order_id','adres_pogruzke_show','inp_type','key_in_arr',
-               'adres_pogruzke_show_edit','id_ts','showHideText','firstClick',
+         props: ['gruzootpravitel_arr', 'order_id', 'adres_pogruzke_show', 'inp_type', 'key_in_arr',
+           'adres_pogruzke_show_edit', 'id_ts', 'showHideText', 'firstClick',
            'changePogrVygrAllShow'
-           ],
+         ],
            data(){
                return {
                    selectedValue: "",

@@ -1,0 +1,2 @@
+// Да, это не соответствует признакам Composable
+export const useFio = (last_name, first_name, patronymic) => last_name + ' ' + first_name.substring(0,1) + '.' +  ((typeof patronymic === "string" && patronymic.length > 0) ? patronymic.substring(0,1) + '.' : '')

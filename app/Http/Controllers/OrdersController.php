@@ -458,6 +458,10 @@ class OrdersController extends Controller
         $oplata_list =$this->oplataOrders->getOplataByOrderIdInModel(request('id'));
             $orders_list[0]['oplata']=$this->oplataService->setOplata($oplata_list);
 
+        if($orders_list[0]['vid_perevozki']!==null || $orders_list[0]['vid_perevozki_name']!==null) {
+            $orders_list[0]['vid_perevozki_name'] = VidPerevozka::where('id', $orders_list[0]['vid_perevozki'])->first()->perevozka_name;
+        }
+
         //получаем юзера по id логиста
         if(($orders_list[0]['logist'])!==null)
         {
@@ -466,7 +470,6 @@ class OrdersController extends Controller
             if ($log_name->isEmpty())
             {
                 $orders_list[0]['logist_name']='';
-
             }
             else
             {

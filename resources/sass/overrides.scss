@@ -1,0 +1,37 @@
+// Override
+
+.mx-calendar-content .cell.active {
+  @apply rounded-md;
+  color: #fff !important;
+  background-color: var(--impala-color-primary) !important;
+}
+
+.mx-datepicker {
+  width: 170px !important;
+}
+
+.mx-time-column .mx-time-item.active {
+  color: var(--impala-color-primary) !important;
+}
+
+// Vue 3 Select Component
+.vue-select.open {
+  .single-value {
+    position: relative !important;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    width: fit-content !important;
+
+    .menu-option {
+      flex: 0 1 100% !important;
+      white-space: nowrap;
+    }
+  }
+}

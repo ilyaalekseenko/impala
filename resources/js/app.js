@@ -168,7 +168,8 @@ app.component('nomenklatura-component', NomenklaturaComponent);
 import MainLoadingComponent from './components/Loading/MainLoadingComponent.vue';
 app.component('main-loading-component', MainLoadingComponent);
 
-import 'bootstrap/dist/css/bootstrap.min.css'
+
+//import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 import vClickOutside from "click-outside-vue3"
@@ -186,6 +187,8 @@ import 'vue-final-modal/style.css'
 import VTailwindModal from './components/VTailwindModal.vue';
 app.component('v-tailwind-modal', VTailwindModal);
 
+import VueSelect from "vue3-select-component";
+app.component('VueSelect', VueSelect)
 
 import Autocomplete from '@trevoreyre/autocomplete-vue'
 import '@trevoreyre/autocomplete-vue/dist/style.css'
@@ -241,6 +244,9 @@ import MixinConfirm from './mixins/MixinConfirm'
 app.mixin(MixinConfirm);
 import MixinNumbersToSet from './mixins/MixinNumbersToSet'
 app.mixin(MixinNumbersToSet);
+
+import MixinToast from './mixins/MixinToast'
+app.mixin(MixinToast);
 
 //импортирую свою директиву my-click-outside
 import {myClickOutside} from "./directives/my-click-outside";

@@ -19,849 +19,393 @@
       :gradeAddPerevozchik='gradeAddPerevozchik'
   ></modal-perevozchiki-component>
 
-    <div class="container" id="scroll_block">
-        <div class="row">
-            <div class="col-12 main_head_marg row">
-                <div  class="col-6 orders_create_title">
-                     {{ order_header_text }} {{ data_vneseniya }}
-                </div>
-                <div class="col-4 orders_create_title create_orders_status">{{ status }}</div>
-            </div>
-            <div class="col-12 second_header_cr_order">
-                <div class="col-10 create_orders_second_title row">
-                    <div class="col-3">
-                        <span  class="create_orders_date_title">Дата внесения:</span>
-                        <span class="create_orders_date_title_int">{{ data_vneseniya }}</span>
-                        <span @click="openDB0">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                       </span>
-                        <date-picker ref="datepicker0" v-model:value="data_vneseniya" type="datetime" valueType="format" format="DD.MM.YYYY H:mm" v-model:open="openDP" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"></date-picker>
-                    </div>
-                    <div class="col-4" v-show="checkRolePermission([1])">
-                        <span  class="create_orders_date_title">Логист:</span>
-                        <select @change="handleChange" v-if="logist_list"  class="create_orders_date_title_int cr_ord_inp_n_1" v-model="logist">
-                            <option v-bind:value=0  class="sel_cust">Логист не выбран</option>
-                            <option v-for="(logist) in logist_list_full" v-bind:value=logist.id  class="sel_cust">{{ logist.full_logist_name }}</option>
-                        </select>
-                        <span v-if="!logist_list" class="create_orders_date_title_int">{{ logist_name }}</span>
-                        <span @click="logist_show">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                       </span>
-                    </div>
-                    <div class="col-3">
-                        <span  class="create_orders_date_title">Рассчитать до:</span>
-                        <span class="create_orders_date_title_int">{{ rasschitat_do }}</span>
-                        <span @click="openDB1">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                       </span>
-                        <date-picker ref="datepicker1" v-model:value="rasschitat_do" type="datetime" valueType="format" format="DD.MM.YYYY H:mm" v-model:open="openDP1" @change="updateOrderLoc('rasschitat_do',rasschitat_do)"></date-picker>
-                    </div>
-                    <div class="col-2 justify-content-end" v-if="ocenka_show_button" v-on:click="setColumn('ocenka')">
-                        <div class="col add_ts_button4 text-center">Оценка</div>
-                    </div>
-                    <div class="col-2 justify-content-end" v-if="utverzdenie_show_button" v-on:click="setColumn('naznachenie_stavki')">
-                        <div class="col add_ts_button4 text-center">Утверждение</div>
-                    </div>
-                    <div class="col-2 justify-content-end" v-if="v_rabote_show_button" v-on:click="setColumn('v_rabote')">
-                        <div class="col add_ts_button4 text-center">В работе</div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="container row">
-                <div class="container row">
-                <div class="col-6 row ">
-                    <div class="col cr_ord_left_col">
-                        <div class="col">
-                            <div class="little_title_create_orders">
-                                Вид перевозки
-                            </div>
-                            <div class="create_orders_bottom d-flex">
-                                <select @blur="updateOrderLoc('vid_perevozki',vid_perevozki)" class="cr_ord_inp_n_1" v-model="vid_perevozki">
-                                    <option v-for="(perevozka) in perevozka_arr" v-bind:value=perevozka.id  class="sel_cust">{{ perevozka.perevozka_name }}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div class="bold_title_create_orders title_cr_ord_bold_first">
-                                Информация о клиенте:
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="little_title_create_orders1">
-                                Номер запроса
-                            </div>
-                            <input @blur="updateOrderNomerZaprosa()" class="cr_ord_inp_n_1 border_input" v-model="new_nomer_zayavki"  />
-                        </div>
-                        <div class="col" v-show="checkRolePermission([1])">
-                            <div class="little_title_create_orders">
-                                Компания заказчик
-                                <span class="add_button n1" v-on:click="select_temp_var('zakazchik',0)">Добавить</span>
-                            </div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="zakazchikShowInp&&kompaniya_zakazchik_name==''" v-on:click="zakazchikShowInpChange()">Выбрать заказчика</div>
-                            <div class="cr_ord_inp_n_1" v-if="zakazchikShowInp" v-on:click="zakazchikShowInpChange()">{{ kompaniya_zakazchik_name }}</div>
-                            <auto-input-zakazchik-component v-if="!zakazchikShowInp" class="select_width_grade"
-                                                            :order_id="order_id"
-                                                            :vidTsFromParent="kompaniya_zakazchik_name"
-                                                            @childReturnMethod="parentMethodFromAutoinputZakazchik"
-                                                            @childCloseAutoInput="closeParentAutoInput"
-                                                            ref="AutoSelectComponent_vid_TS"
-                            ></auto-input-zakazchik-component>
-                        </div>
-                        <div class="col" v-show="checkRolePermission([1])">
-                            <div class="little_title_create_orders">
-                                Менеджер заказчика
-                                <span class="add_button n2" v-if="kompaniya_zakazchik_id" v-on:click="select_temp_var('manager',0)">Добавить</span>
-                            </div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="managerZakazchikShowInp&&managerZakazchik_name==''" v-on:click="managerShowInpChange()">Выбрать менеджера</div>
-                            <div class="cr_ord_inp_n_1" v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()">{{ managerZakazchik_name }}</div>
-                            <auto-input-manager-component v-if="!managerZakazchikShowInp" class="select_width_grade"
-                                                            :order_id="order_id"
-                                                            :vidTsFromParent="managerZakazchik_name"
-                                                            :zakazchikId="kompaniya_zakazchik_id"
-                                                            @childReturnMethod="parentMethodFromAutoinputManager"
-                                                            @childCloseAutoInput="closeParentAutoInputManager"
-                                                            ref="AutoSelectComponent_vid_TS"
-                            ></auto-input-manager-component>
-                        </div>
-
-                        <div class="col-12 row" v-show="checkRolePermission([1])">
-                            <span class=" cr_ord_inp_n_2 cena_kont_marg">
-                                <div class="little_title_create_orders no_wrap_text" >
-                                    Бюджет контракта
-                                </div>
-                                <input @blur="updateOrderLocNumber('cena_kontrakta',cena_kontrakta)" class="cr_ord_inp_n_2 border_input" v-model="cena_kontrakta"  />
-                            </span>
-
-                        </div>
-                        <div v-for="(oplata,key) in oplata_arr" class="col-12 row">
-                            <span class=" cr_ord_inp_n_2 cena_kont_marg">
-                                <div class="little_title_create_orders">
-                                    Оплата
-                                </div>
-                                <input @blur="update_order_oplata('oplata',oplata.id,oplata_arr[key].oplata)" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].oplata"  />
-                           </span>
-                            <span class=" cr_ord_inp_n_2 cena_kont_marg">
-                                <div class="little_title_create_orders">
-                                    Сумма
-                                </div>
-                                <input @blur="update_order_oplata('summa',oplata.id,oplata_arr[key].summa)" class="cr_ord_inp_n_2 border_input" v-model="oplata_arr[key].summa"  />
-                                </span>
-                            <span class="col-12 oplata_del" ><span v-on:click="delete_oplata_summa(oplata.id,key)" class="del_summa_text">удалить</span></span>
-                        </div>
-                    </div>
-                    <div class="col-7 fit_height row middle_block_cr_order ">
-                        <div class="col cr_ord_mid_col">
-                            <div class="little_title_create_orders">
-                                Номенклатура
-                            </div>
-                            <div class="create_orders_bottom d-flex">
-                                <div class="cr_ord_div_nomenklatura">{{ nomenklatura }}</div>
-                                <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload('nom')"/>
-                                <span class="excel_set" v-on:click="addFiles('nom')">
-                                <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                                <span class="excel_set" v-if="nomenklatura" v-on:click="DownloadFiles('nom')">
-                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                                <nomenklatura-component
-                                    :order_id="order_id"
-                                    v-if="nomenklatura"
-                                ></nomenklatura-component>
-                            </div>
-
-                            <div class="little_title_create_orders">
-                                Готовый расчёт
-                            </div>
-                            <div class="create_orders_bottom d-flex">
-                                <div class="cr_ord_div_nomenklatura">{{ gotovyi_raschet }}</div>
-                                <input hidden="true" type="file" id="files_ready" ref="files_ready"  v-on:change="handleFilesUpload('ready')"/>
-                                <span class="excel_set" v-on:click="addFiles('ready')">
-                                <span class="iconify" data-icon="file-icons:microsoft-excel" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                                <span class="excel_set" v-if="gotovyi_raschet" v-on:click="DownloadFiles('ready')">
-                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                            </div>
-
-                            <div class="col ad_pogr_marg">
-                                <div class="little_title_create_orders row">
-                                   <div class="col no_wrap">Адрес погрузки</div>
-                                </div>
-                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan&&((adres_pogruzke=='')||(adres_pogruzke==null))" v-on:click="inputShow('adresPogruzkiShowSpan')">Выбрать адрес</div>
-                            <div class="cr_ord_inp_n_1" v-show="adresPogruzkiShowSpan" v-on:click="inputShow('adresPogruzkiShowSpan')">{{ adres_pogruzke }}</div>
-                                <textarea class="cr_ord_inp_n_1" v-show="!adresPogruzkiShowSpan" @blur="updateOrderLoc('adres_pogruzke',adres_pogruzke)" v-model="adres_pogruzke" rows="3"  name="adres_pogruzke"></textarea>
-                            </div>
-
-                        </div>
-                        <div class="col cr_ord_right_col">
-                            <div class="col-12 row no_padding_right">
-                                <div class="col-5 data_pog_dost no_padding_right">
-                                    <div class="little_title_create_orders ">
-                                        Дата погрузки
-                                    </div>
-                                    <div class="data_pog_dost_height no_padding_right">
-                                        <input @click="openDB2" class="cr_ord_inp_n_2 border_input" v-model="data_pogruzki"  />
-                                        <date-picker ref="datepicker2" type="date" valueType="format" v-model:value="data_pogruzki" format="DD.MM.YYYY" v-model:open="openDP2" @change="handleChange0"></date-picker>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 row no_padding_right">
-                                <div class="col-6 no_padding_left no_padding_right">
-                                    <div class="little_title_create_orders">
-                                        Кол-во грузомест
-                                    </div>
-                                    <div class="create_orders_bottom right_menu_nom row">
-                                        <input @blur="updateOrderLocNumber('gruzomesta_big',gruzomesta_big)" class="cr_ord_inp_n_4 border_input" v-model="gruzomesta_big"  />
-                                        <input @blur="updateOrderLocNumber('gruzomesta_small',gruzomesta_small)" class="cr_ord_inp_n_5 nom_margin border_input" v-model="gruzomesta_small"  readonly />
-                                    </div>
-                                </div>
-                                <div class=" col-6 no_padding_right no_padding_left">
-                                    <div class="little_title_create_orders no_padding_right">
-                                        Расстояние, км
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLocNumber('rasstojanie',rasstojanie)" class="cr_ord_inp_n_2 border_input" v-model="rasstojanie"  />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 row no_padding_right">
-                                <div class="col-5 no_padding_right no_padding_left">
-                                    <div class="little_title_create_orders">
-                                        Общий вес, кг
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLocNumber('ob_ves',ob_ves)" class="cr_ord_inp_n_2 border_input" v-model="ob_ves"  />
-                                    </div>
-                                </div>
-                                <div class="offset-1 col-6  no_padding_left no_padding_right">
-                                    <div class="little_title_create_orders">
-                                        Общий объём, м3
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input @blur="updateOrderLocNumber('ob_ob',ob_ob)" class="cr_ord_inp_n_2 border_input" v-model="ob_ob"  />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col ad_pogr_marg">
-                                <div class="little_title_create_orders row">
-                                    <div class="col no_wrap">Адрес выгрузки</div>
-                                </div>
-                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan&&((adres_vygruski=='')||(adres_vygruski==null))" v-on:click="inputShow('adresVygruzkiShowSpan')">Выбрать адрес</div>
-                                <div class="cr_ord_inp_n_1" v-show="adresVygruzkiShowSpan" v-on:click="inputShow('adresVygruzkiShowSpan')">{{ adres_vygruski }}</div>
-                                <textarea class="cr_ord_inp_n_1" v-show="!adresVygruzkiShowSpan" @blur="updateOrderLoc('adres_vygruski',adres_vygruski)" v-model="adres_vygruski" rows="3"  name="adres_vygruski"></textarea>
-
-                            </div>
-
-                        </div>
-
-                        <div class="big_comment">
-                            <div class="little_title_create_orders">
-                                Комментарий
-                            </div>
-                            <textarea class="comm_settings_1" @blur="updateOrderLoc('komment_1',komment_1)" v-model="komment_1" rows="6"  name="text"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 fit_height right_white_block">
-                    <div class="col-12 row ">
-                        <div class="col-3 create_order_right_title ">
-                            Список ТС
-                        </div>
-                        <div class="col-9 text-right row justify-content-end ">
-                            <div class="col create_order_right_main_text text_in_header text-end">Общий бюджет:{{ ob_budjet }} р</div>
-                            <div class="col add_ts_button" v-on:click="add_ts_func()" id="box">Добавить ТС</div>
-                        </div>
-                    </div>
-                    <div class="col-12 row create_ord_underline"></div>
-
-                    <!--                        список старых ТС-->
-                    <span v-for="(elem,key) in spisokTSarr">
-                        <span v-if="add_ts!==key">
-                        <div class="col row" >
-                                    <div class="col-1 no_padding_right create_order_right_main_text ts_counter">{{key + 1}}</div>
-                                    <div class="col-2 no_padding_right ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text ">Тип ТС</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right">
-                                          <template v-for="(one_ts,key1) in ts_list_names">
-                                                <div v-if="!!one_ts && one_ts['id']===elem.vid_TS" class="col-12 create_order_right_main_text text_out_block no_padding_left">{{ one_ts.ts_name }}</div>
-                                          </template>
-                                        </div>
-                                    </div>
-                                    <div class="col-2 no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Расстояние,км</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.rasstojanie_TS }}</div>
-                                    </div>
-                                    <div class="col-2 no_padding_right  ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.грузомест</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_gruz_TS }}</div>
-                                    </div>
-                                    <div class="col-2 no_padding_right  ">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Кол.ТС</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.kol_TS_TS }}</div>
-                                    </div>
-                                    <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS }}<span v-if="elem.stavka_TS">р.</span></div>
-                                    </div>
-                                    <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка без НДС</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS_bez_NDS }}<span v-if="elem.stavka_TS">р.</span></div>
-                                    </div>
-                                    <div class="col-2  no_padding_right">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка за км</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_TS_za_km }}<span v-if="elem.stavka_TS">р.</span></div>
-                                    </div>
-                                    <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Ставка КП</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.stavka_kp_TS }}<span v-if="elem.stavka_kp_TS">р.</span></div>
-                                    </div>
-                                    <div class="col-2  no_padding_right" v-show="checkRolePermission([1])">
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_ord_right_lit_text mt_ts_text">Маржа</div>
-                                        <div class="col-12 no_padding_left d-flex justify-content-left no_padding_right create_order_right_main_text text_out_block">{{ elem.marja_TS }} <span v-if="elem.marja_TS">р.</span> </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 second_right_create_orders_text">
-                                    <div class="col right_top_text_1_0" v-on:click="editTs(key)">
-                                        <span class="iconify edit_icon_right_menu" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-6">
-                                        <div class="col-12" v-for="(elem1,key1) in elem.adres_pogruzki_TS">
-                                            <div class="create_ord_right_lit_text mt_ts_text">Адрес Погрузки {{ key1 +1 }}</div>
-                                            <template v-for="(gruz,key1) in gruzootpravitel_arr">
-                                              <div class="cr_ord_inp_n_7" v-if="!!gruz && gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_pogruzke_show }}</div>
-                                            </template>
-                                        </div>
-                                             </div>
-                                        <div class="col-6">
-                                        <div class="col-12" v-for="(elem1,key1) in elem.adres_vygr_TS">
-                                            <div class="create_ord_right_lit_text mt_ts_text">Адрес Выгрузки {{ key1 +1 }}</div>
-                                            <template v-for="(gruz,key1) in gruzootpravitel_arr">
-                                              <div class="cr_ord_inp_n_7" v-if="!!gruz && gruz['id']==elem1['adres_pogruzki']">{{ elem1.adres_vygruzki_show }}</div>
-                                            </template>
-                                        </div>
-                                        </div>
-                                   </div>
-                                </div>
-<!--                            перевозчики-->
-                               <div class="col-12 second_right_create_orders_text">
-
-                                    <div class="col-12 row">
-                                        <div class="col-12 row" v-for="(perevozchik,perevozchikKey) in elem.perevozchikiList">
-                                            <div class="cr_ord_inp_n_7 col-4">
-                                                <span class="create_ord_right_lit_text" >Перевозчик:</span>
-                                                <VMenu>
-                                                  <button class="btn btn-none" :class="perevozchik['contacts'].length > 0 ? 'btn-link' : ''">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</button>
-
-                                                  <template #popper v-if="!!perevozchik['contacts']">
-                                                        <div class="p-2" v-for="(onePopUpPerevozchik,key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
-                                                           {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
-                                                        </div>
-                                                  </template>
-                                                </VMenu>
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Код АТИ:</span>
-                                                {{ perevozchik.perevozka.kod_ATI }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">ИНН:</span>
-                                                {{ perevozchik.perevozka.INN }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка с НДС:</span>
-                                                {{ perevozchik.stavka_NDS }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка без НДС:</span>
-                                                {{ perevozchik.stavka_bez_NDS }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
-                                                {{ perevozchik.stavka_za_km }}
-                                            </div>
-
-                                        </div>
-                                   </div>
-                                </div>
-<!--                            конец перевозчики-->
-                                <div class="col-12 row right_top_text_1_2">
-                                    <div class="col">
-                                        <div class="create_ord_right_lit_text mt_ts_text">Комментарий</div>
-                                        <div v-if="elem.kommentari_TS==''" class="create_order_right_main_text">Нет комментария</div>
-                                        <div v-else class="create_order_right_main_text">{{ elem.kommentari_TS }}</div>
-                                    </div>
-                                </div>
-                                                    <div class="col-12 row create_ord_underline"></div>
-                        </span>
-                    <!--             конец список старых ТС-->
-
-
-                    <!--  Редактирование ТС-->
-                    <div v-if="add_ts===key" class="row add_ts_class">
-                        <div class="col spisok_ts_second_title_left">
-                            <div class="little_title_create_orders2">
-                                Тип ТС
-                            </div>
-                            <div class="create_orders_bottom">
-                                         <auto-input-global-component class="select_width"
-                                                               :vidTsFromParent="vidTsNazavanie"
-                                                               :order_id="order_id"
-                                                               :key_in_arr="key"
-                                                               @childReturnMethod="parentMethodFromAutoinput"
-                                                               ref="AutoSelectComponent_vid_TS"
-                                         ></auto-input-global-component>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS" @input="updateStavkaBezNDS" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка без НДС
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка за км
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <div class="cr_ord_inp_n_6">{{ stavka_TS_za_km }} р.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 row" v-show="checkRolePermission([1])">
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка КП
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS" @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)" />
-                                    </div>
-                                </div>
-                                <div class="col-6" v-show="checkRolePermission([1])">
-                                    <div class="little_title_create_orders2">
-                                        Маржа
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <div>{{ marja_TS }} р.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col row">
-                            <div class="col ">
-                                <div class="col row no_padding_right no_padding_left">
-                                    <div class="col-12 row no_padding_right no_padding_left">
-                                        <div class="col cr_ord_lit_left no_padding_right no_padding_left">
-                                            <div class="little_title_create_orders2 no_wrap">
-                                                Кол-во грузомест
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS" @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)" />
-                                            </div>
-                                        </div>
-                                        <div class="col cr_ord_lit_center no_padding_right">
-                                            <div class="little_title_create_orders2">
-                                                Кол-во ТС
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS" @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)" />
-                                            </div>
-                                        </div>
-                                        <div class="col cr_ord_lit_right no_padding_left">
-                                            <div class="little_title_create_orders2">
-                                                Расстояние, км
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS',rasstojanie_TS)" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 ad_pogr_marg1">
-                                        <input type="checkbox" id="checkbox" v-model="checkboxPogrVygr">
-                                        <span class="head_font_grade">Адреса погрузки выгрузки</span>
-                                    </div>
-                                    <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
-                                        <div class="little_title_create_orders2 ob_ob_width">
-                                            Адрес погрузки
-                                            <span class="add_button" v-on:click="select_temp_var('TS_pogruzka',key)">Добавить</span>
-                                        </div>
-                                        <auto-input-author-component class="cr_ord_inp_n_1"
-                                                              inp_type='add_pogruzka_edit'
-                                                              :adres_pogruzke_show="flag_pogruz"
-                                                              :adres_pogruzke_show_edit="ad_pogruzki_arr_temp[key]['adres_pogruzke_show']"
-                                                              :order_id="order_id"
-                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                              :key_in_arr="key"
-                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                              ref="AutoSelectComponent_pogruzka_edit"
-                                                                     :changePogrVygrAllShow="changePogrVygrAllShow"
-                                        ></auto-input-author-component>
-                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_pogr()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord buttons_settings" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')">-</button>
-                                    </div>
-
-                                </div>
-
-                            <div v-if="checkboxPogrVygr" class="col no_padding_right">
-                                <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
-                                    <div class="little_title_create_orders2 ob_ob_width">
-                                        Адрес выгрузки
-                                        <span class="add_button" v-on:click="select_temp_var('TS_vygruzka',key)">Добавить</span>
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <auto-input-author-component class="cr_ord_inp_n_1"
-                                                              inp_type='add_vygruzka_edit'
-                                                              :adres_pogruzke_show="flag_pogruz"
-                                                              :adres_pogruzke_show_edit="ad_vygruz_arr_temp[key]['adres_vygruzki_show']"
-                                                              :order_id="order_id"
-                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                              :key_in_arr="key"
-                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                              ref="AutoSelectComponent_vygruzka_edit"
-                                                                     :changePogrVygrAllShow="changePogrVygrAllShow"
-                                        ></auto-input-author-component>
-                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_vygruz()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord buttons_settings" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')">-</button>
-
-                                    </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-
-<!--                        перевозчики в редактировании списка ТС-->
-                         <div class="col-12 second_right_create_orders_text">
-
-                                    <div class="col-12 row">
-                                        <div class="col-12 row per_status"  v-for="(onePerevozchik,keyPerevozchik) in perevozchikiList" :key="keyPerevozchik">
-                                            <div class="col-8 row">
-                                                <span class="create_ord_right_lit_text col-2">Перевозчик:</span>
-                                                    <auto-input-perevozka-component
-                                                        class="select_width_grade col-7 per_bot"
-                                                        :order_id="order_id"
-                                                        :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
-                                                        :elem1="keyPerevozchik"
-                                                        @childReturnMethod="parentMethodFromAutoinputPerevozka"
-                                                        @childCloseAutoInput="closeParentAutoInputPogruzka"
-                                                        ref="AutoSelectComponent_vid_TS"
-                                                    ></auto-input-perevozka-component>
-                                                <span class="col-3 row add_button_grade no_wrap_text" v-on:click="newPerevozchik(keyPerevozchik)">
-                                                    <span class="col-8">Добавить</span>
-                                                        <span
-                                                            class="col-4"
-                                                            v-if="onePerevozchik.perevozchik_id!==''"
-                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)">
-                                                                <span
-                                                                    class="iconify edit_icon"
-                                                                    data-icon="akar-icons:edit"
-                                                                    style="color: #a6a6a6;"
-                                                                    data-width="20" data-height="20"
-                                                                ></span>
-                                                        </span>
-                                                    </span>
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Код АТИ:</span>
-                                                {{ onePerevozchik.perevozka.kod_ATI }}
-
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">ИНН:</span>
-                                                {{ onePerevozchik.perevozka.INN }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка с НДС:</span>
-                                         <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_NDS" @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>
-
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка без НДС:</span>
-                                         <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_bez_NDS" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
-                                            </div>
-                                              <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
-                                                {{ onePerevozchik.stavka_za_km }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span v-on:click="deletePerevozchikFromOrder(onePerevozchik.id,keyPerevozchik)">Удалить</span>
-                                            </div>
-                                        </div>
-                                   </div>
-                         </div>
-
-
-                        <div class="col-12 btn_add_per">
-                            <button type="button" class="btn btn-success " v-on:click="addEmptyPerevozchik()">+Перевозчик</button>
-                        </div>
-<!--                        конец первозчиков в редактировании списка ТС-->
-
-
-
-                        <div class="col-12">
-                            <div class="little_title_create_orders2">
-                                Комментарий
-                            </div>
-                            <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
-                        </div>
-                        <div class="col-11 save_buttons justify-content-end row ">
-                            <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
-                            <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
-                        </div>
-                    </div>
-                    <div v-if="add_ts===key" class="col-12 row create_ord_underline"></div>
-
-                        <!--Конец редактирования ТС-->
- </span>
-<!--                    Добавление нового ТС-->
-                    <div v-if="add_new_ts" class="row add_ts_class">
-                        <div class="col spisok_ts_second_title_left">
-                            <div class="little_title_create_orders2">
-                                Тип ТС
-                            </div>
-                            <div class="create_orders_bottom">
-                                <auto-input-global-component class="select_width"
-
-                                                             @childReturnMethod="parentMethodFromAutoinputNewVidts"
-                                                             ref="AutoSelectComponent_vid_TS"
-                                ></auto-input-global-component>
-<!--                                <select  class="sel_cust select_width" v-model="vid_TS">-->
-<!--                                    <option v-for="(ts_list_one) in ts_list_names" v-bind:value=ts_list_one.id  class="sel_cust">{{ ts_list_one.ts_name }}</option>-->
-<!--                                </select>-->
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS" @input="updateStavkaBezNDS" />
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка без НДС
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка за км
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <div class="cr_ord_inp_n_6">{{ stavka_TS_za_km }} р.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 row" v-show="checkRolePermission([1])">
-                                <div class="col-6">
-                                    <div class="little_title_create_orders2">
-                                        Ставка КП
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="stavka_kp_TS" @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)" />
-                                    </div>
-                                </div>
-                                <div class="col-6" v-show="checkRolePermission([1])">
-                                    <div class="little_title_create_orders2">
-                                        Маржа
-                                    </div>
-                                    <div class="create_orders_bottom">
-                                        <input class="cr_ord_inp_n_6 border_input" v-model="marja_TS"  readonly />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col row">
-                            <div class="col ">
-                                <div class="col row no_padding_right no_padding_left">
-                                    <div class="col-12 row no_padding_right no_padding_left">
-                                        <div class="col cr_ord_lit_left no_padding_right no_padding_left">
-                                            <div class="little_title_create_orders2 no_wrap">
-                                                Кол-во грузомест
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_8 border_input" v-model="kol_gruz_TS" @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)" />
-                                            </div>
-                                        </div>
-                                        <div class="col cr_ord_lit_center no_padding_right">
-                                            <div class="little_title_create_orders2">
-                                                Кол-во ТС
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_9 border_input" v-model="kol_TS_TS" @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)" />
-                                            </div>
-                                        </div>
-                                        <div class="col cr_ord_lit_right no_padding_left">
-                                            <div class="little_title_create_orders2">
-                                                Расстояние, км
-                                            </div>
-                                            <div class="create_orders_bottom">
-                                                <input class="cr_ord_inp_n_10 border_input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS',rasstojanie_TS)" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 ad_pogr_marg1">
-                                        <input type="checkbox" id="checkbox" v-model="checkboxPogrVygr">
-                                        <span class="head_font_grade">Адреса погрузки выгрузки</span>
-                                    </div>
-                                    <div v-if="checkboxPogrVygr" class="col-12 ad_pogr_marg1" v-for="(elem,key) in ad_pogruzki_arr_temp">
-                                        <div class="little_title_create_orders2 ob_ob_width">
-                                            Адрес погрузки
-                                            <span class="add_button" v-on:click="select_temp_var('TS_pogruzka_new',key)">Добавить</span>
-                                        </div>
-                                        <auto-input-author-component class="cr_ord_inp_n_1"
-                                                              inp_type='add_pogruzka_empty'
-                                                              adres_pogruzke_show=''
-                                                              :order_id="order_id"
-                                                              v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                              :key_in_arr="key"
-                                                              @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                              ref="AutoSelectComponent_pogruzka_empty"
-                                                                     :changePogrVygrAllShow="changePogrVygrAllShow"
-                                        ></auto-input-author-component>
-
-                                        <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_pogr()">+</button>
-                                        <button type="button" class="btn btn-danger btn_del_in_ord_width buttons_settings" v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_empty','adres_pogruzke_show')">-</button>
-                                    </div>
-
-                                </div>
-
-                                <div v-if="checkboxPogrVygr" class="col no_padding_right">
-                                    <div class="col-12 ad_vygr_right_ord" v-for="(elem,key) in ad_vygruz_arr_temp">
-                                        <div class="little_title_create_orders2 ob_ob_width">
-                                            Адрес выгрузки
-                                            <span class="add_button" v-on:click="select_temp_var('TS_vygruzka_new',key)">Добавить</span>
-                                        </div>
-                                        <div class="create_orders_bottom d-flex">
-                                            <auto-input-author-component class="cr_ord_inp_n_1"
-                                                                  inp_type='add_vygruzka_empty'
-                                                                  adres_pogruzke_show=''
-                                                                  :order_id="order_id"
-                                                                  v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                                  :key_in_arr="key"
-                                                                  @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                                  ref="AutoSelectComponent_vygruzka_empty"
-                                                                         :changePogrVygrAllShow="changePogrVygrAllShow"
-                                            ></auto-input-author-component>
-                                            <button type="button" class="btn btn-success buttons_settings" v-on:click="add_empty_adres_vygruz()">+</button>
-                                            <button type="button" class="btn btn-danger btn_del_in_ord_width buttons_settings" v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_empty','adres_vygruzki_show')">-</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!--                        перевозчики в создании списка ТС-->
-                        <span class="col-12">
-                              <div class="col-12 second_right_create_orders_text">
-                                    <div class="col-12 row">
-                                        <div class="col-12 row per_status" v-for="(onePerevozchik,keyPerevozchik) in perevozchikiList">
-                                            <div class="col-6 row">
-                                                <span class="create_ord_right_lit_text col-2">Перевозчик:</span>
-                                                 <auto-input-perevozka-component
-                                                     class="select_width_grade col-7 per_bot"
-                                                     :order_id="order_id"
-                                                     :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
-                                                     :elem1="keyPerevozchik"
-                                                     @childReturnMethod="parentMethodFromAutoinputPerevozka"
-                                                     @childCloseAutoInput="closeParentAutoInputPogruzka"
-                                                     ref="AutoSelectComponent_vid_TS"
-                                                 ></auto-input-perevozka-component>
-                                                    <span class="col-3 row add_button_grade no_wrap_text" v-on:click="newPerevozchik(keyPerevozchik)">
-                                                    <span class="col-8">Добавить</span>
-                                                        <span
-                                                            v-if="onePerevozchik.perevozchik_id!==''"
-                                                            class="col-4"
-                                                            v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)">
-                                                                <span
-                                                                    class="iconify edit_icon"
-                                                                    data-icon="akar-icons:edit"
-                                                                    style="color: #a6a6a6;"
-                                                                    data-width="20" data-height="20"
-                                                                ></span>
-                                                        </span>
-                                                    </span>
-
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Код АТИ:</span>
-                                                {{ onePerevozchik.perevozka.kod_ATI }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">ИНН:</span>
-                                                {{ onePerevozchik.perevozka.INN }}
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка с НДС:</span>
-                                         <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_NDS" @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>
-
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка без НДС:</span>
-                                         <input class="cr_ord_inp_n_st border_input" v-model="onePerevozchik.stavka_bez_NDS" @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
-                                            </div>
-                                            <div class="col-4">
-                                                <span class="create_ord_right_lit_text">Ставка за км:</span>
-                                                {{ onePerevozchik.stavka_za_km }}
-                                            </div>
-                                        </div>
-                                   </div>
-                         </div>
-
-
-                        <div class="col-12 btn_add_per">
-                            <button type="button" class="btn btn-success " v-on:click="addEmptyPerevozchik()">+Перевозчик</button>
-                        </div>
-                            </span>
-                        <!--                        конец первозчиков в редактировании списка ТС-->
-
-
-
-                        <div class="col-12">
-                            <div class="little_title_create_orders2">
-                                Комментарий
-                            </div>
-                            <textarea class="col-12" v-model="kommentari_TS" rows="4" name="text"></textarea>
-                        </div>
-                        <div class="col-11 save_buttons justify-content-end row">
-                            <div class="col offset-1 add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
-                            <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Удалить</div>
-                        </div>
-                    </div>
-<!--конец добавления нового ТС-->
-                </div>
-                </div>
-
-            </div>
-        </div>
+  <div class="impala-subheader">
+    <div class="impala-page-title inline-flex gap-2"><span>Запрос номер:</span>
+      <div>
+        <div class="impala-add-link" v-if="nomerZaprosaShowInp" v-on:click="nomerZaprosaShowInpChange()" v-html="new_nomer_zayavki"></div>
+        <input class="impala-input" v-else @change="updateOrderNomerZaprosa()" v-click-outside="nomerZaprosaShowInpChange" v-model="new_nomer_zayavki" />
+      </div>
     </div>
+
+    <div class="impala-col-input">
+      <div>
+        <div class="impala-add-link" v-if="statusShowInp" v-on:click="statusShowInpChange()" v-html="status"></div>
+        <VueSelect
+            v-else
+            :placeholder="'Статус запроса'"
+            @option-selected="(option) => setColumn(option.value)"
+            :options="[{ label: 'Оценка', value: 'ocenka', disabled: !ocenka_show_button },{ label: 'Утверждение', value: 'naznachenie_stavki', disabled: !utverzdenie_show_button },{ label: 'В работе', value: 'v_rabote', disabled: !v_rabote_show_button }]"
+            :isClearable="false"
+            :isSearchable="false"
+            v-click-outside="statusShowInpChange"
+        />
+      </div>
+    </div>
+
+    <div class="justify-start items-center gap-8 inline-flex">
+      <div class="impala-col-input">
+        <div class="impala-label">Вид перевозки:</div>
+        <div>
+          <div class="impala-add-link" v-if="vidPerevozkiShowInp" v-on:click="vidPerevozkiShowInpChange()" v-html="vid_perevozki_name"></div>
+          <VueSelect
+              v-else
+              :placeholder="'Вид перевозки'"
+              @option-selected="(option) => updateOrderLoc('vid_perevozki', vid_perevozki, option.label)"
+              v-model="vid_perevozki"
+              :options="perevozka_arr"
+              :isClearable="false"
+              :isSearchable="false"
+              v-click-outside="vidPerevozkiShowInpChange"
+          />
+        </div>
+      </div>
+      <div class="impala-col-input">
+        <div class="impala-label">Дата внесения:</div>
+        <div>
+          <div class="impala-add-link" v-if="dataVneseniyaShowInp" v-on:click="dataVneseniyaShowInpChange()" v-html="(data_vneseniya === '' ||  data_vneseniya === null) ? 'Выбрать дату и время' : data_vneseniya"></div>
+          <date-picker v-else ref="datepicker0" v-model:value="data_vneseniya" type="datetime" valueType="format"
+                       format="DD.MM.YYYY H:mm" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"
+                       @close="dataVneseniyaShowInpChange()" :editable="false"></date-picker>
+        </div>
+      </div>
+      <div class="impala-col-input" v-show="checkRolePermission([1])">
+        <div class="impala-label">Логист:</div>
+        <div>
+          <div class="impala-add-link" v-if="logist_list" v-on:click="logist_show" v-html="logist_name"></div>
+          <VueSelect
+              v-else
+              @option-selected="(option) => handleChange(option.label)"
+              v-model="logist"
+              :options="logist_list_full"
+              :isClearable="false"
+              :isSearchable="false"
+              v-click-outside="logist_show"
+          />
+        </div>
+      </div>
+      <div class="impala-col-input">
+        <div class="impala-label">Рассчитать до:</div>
+        <div>
+          <div class="impala-add-link" v-if="rasschitatDoShowInp" v-on:click="rasschitatDoShowInpChange()" v-html="(rasschitat_do === '' ||  rasschitat_do === null) ? 'Выбрать дату и время' : rasschitat_do"></div>
+          <date-picker v-else ref="datepicker1" v-model:value="rasschitat_do" type="datetime" valueType="format"
+                       format="DD.MM.YYYY H:mm" @change="updateOrderLoc('rasschitat_do', rasschitat_do);"
+                       @close="rasschitatDoShowInpChange()" :editable="false"></date-picker>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="impala-request__wrap p-5 justify-between items-start gap-6 flex">
+    <aside class="w-[475px] m-0 flex-col justify-start items-start gap-6 flex grow-0 shrink-0">
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Основная информация</div>
+        <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
+          <div class="impala-row-input">
+            <div class="impala-label">
+              Адрес погрузки
+              <span class="impala-btn-none" v-on:click="adresPogruzkiShowSpanChange"><i
+                  class="iconsax-edit"></i></span>
+            </div>
+            <template v-if="adresPogruzkiShowSpan">
+              <div class="impala-add-link" v-if="(adres_pogruzke==='')||(adres_pogruzke==null)" v-on:click="inputShow('adresPogruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
+              <div v-else v-html="adres_pogruzke" class="impala-add-link:none"></div>
+            </template>
+            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_pogruzke', adres_pogruzke)" v-model="adres_pogruzke" rows="3"  name="adres_pogruzke" v-click-outside="adresPogruzkiShowSpanChange"></textarea>
+          </div>
+          <div class="impala-row-input">
+            <div class="impala-label">
+              Дата погрузки
+            </div>
+            <div>
+              <div class="impala-add-link" v-if="dataPogruzkiShowInp" v-on:click="dataPogruzkiShowInpChange()"
+                   v-html="(data_pogruzki === '' || data_pogruzki === null) ? 'Выбрать дату' : data_pogruzki"></div>
+              <date-picker v-else ref="datepicker2" type="date" valueType="format" v-model:value="data_pogruzki"
+                           format="DD.MM.YYYY" @change="updateOrderLoc('data_pogruzki', data_pogruzki)"
+                           @close="dataPogruzkiShowInpChange()" :editable="false"></date-picker>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Грузомест (Всего/Осталось)
+              </div>
+              <div class="grid grid-cols-2 gap-2.5">
+                <input @change="updateOrderLocNumber('gruzomesta_big',gruzomesta_big)" class="impala-input"
+                       v-model="gruzomesta_big"/>
+                <input @change="updateOrderLocNumber('gruzomesta_small',gruzomesta_small)"
+                       class="impala-input impala-input-red" v-model="gruzomesta_small" readonly/>
+              </div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Расстояние, км
+              </div>
+              <div class="create_orders_bottom">
+                <input @change="updateOrderLocNumber('rasstojanie',rasstojanie)" class="impala-input"
+                       v-model="rasstojanie"/>
+              </div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Общий вес, кг
+              </div>
+              <div>
+                <input @change="updateOrderLocNumber('ob_ves',ob_ves)" class="impala-input"
+                       v-model="ob_ves"/>
+              </div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Общий объём, м3
+              </div>
+              <div class="create_orders_bottom">
+                <input @change="updateOrderLocNumber('ob_ob',ob_ob)" class="impala-input"
+                       v-model="ob_ob"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="impala-row-input">
+            <div class="impala-label">
+              Адрес выгрузки
+              <span class="impala-btn-none" v-on:click="adresVygruzkiShowSpanChange"><i
+                  class="iconsax-edit"></i></span>
+            </div>
+            <template v-if="adresVygruzkiShowSpan">
+              <div class="impala-add-link" v-if="(adres_vygruski==='')||(adres_vygruski==null)" v-on:click="inputShow('adresVygruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
+              <div v-else v-html="adres_vygruski" class="impala-add-link:none"></div>
+            </template>
+            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_vygruski', adres_vygruski)" v-model="adres_vygruski" rows="3" name="adres_vygruski" v-click-outside="adresVygruzkiShowSpanChange"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Информация о клиенте</div>
+        <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
+          <div class="impala-row-input" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Компания заказчик
+              <span class="impala-btn-none" v-on:click="select_temp_var('zakazchik',0)"><i
+                  class="iconsax-add-square"></i></span>
+            </div>
+            <div class="impala-add-link" v-if="zakazchikShowInp"
+                 v-on:click="zakazchikShowInpChange()"
+                 v-html="kompaniya_zakazchik_name==='' ? 'Выбрать заказчика' : kompaniya_zakazchik_name ">
+            </div>
+            <auto-input-zakazchik-component v-else class="select_width_grade"
+                                            :order_id="order_id"
+                                            :vidTsFromParent="kompaniya_zakazchik_name"
+                                            @childReturnMethod="parentMethodFromAutoinputZakazchik"
+                                            @childCloseAutoInput="closeParentAutoInput"
+                                            ref="AutoSelectComponent_vid_TS"
+            ></auto-input-zakazchik-component>
+          </div>
+          <div class="impala-row-input" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Менеджер заказчика
+              <span class="impala-btn-none" v-if="kompaniya_zakazchik_id" v-on:click="select_temp_var('manager',0)"><i
+                  class="iconsax-add-square"></i></span>
+            </div>
+            <div class="impala-add-link"
+                 v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()"
+                 v-html="managerZakazchik_name==='' ? 'Выбрать менеджера' : managerZakazchik_name">
+            </div>
+            <auto-input-manager-component v-else class="select_width_grade"
+                                          :order_id="order_id"
+                                          :vidTsFromParent="managerZakazchik_name"
+                                          :zakazchikId="kompaniya_zakazchik_id"
+                                          @childReturnMethod="parentMethodFromAutoinputManager"
+                                          @childCloseAutoInput="closeParentAutoInputManager"
+                                          ref="AutoSelectComponent_vid_TS"
+            ></auto-input-manager-component>
+          </div>
+          <div class="impala-row-input" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Бюджет контракта
+            </div>
+            <input @change="updateOrderLocNumber('cena_kontrakta',cena_kontrakta)"
+                   class="impala-input" v-model="cena_kontrakta"/>
+          </div>
+        </div>
+      </div>
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Комментарий</div>
+        <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
+          <textarea class="impala-input" @change="updateOrderLoc('komment_1',komment_1)" v-model="komment_1" rows="3" name="text"></textarea>
+        </div>
+      </div>
+    </aside>
+
+    <div class="flex-col justify-center items-start gap-4 flex grow">
+      <div class="self-stretch justify-between items-center flex">
+        <div class="impala-block-title">Список ТС</div>
+        <div class="justify-start items-start gap-6 flex">
+          <div class="impala-col-input">
+            <div class="impala-label">Общий бюджет</div>
+            <div class="impala-block-title">{{ ob_budjet }} р</div>
+          </div>
+        </div>
+        <div class="justify-end items-start gap-6 flex">
+          <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="add_ts_func()"><i
+              class="iconsax-add-circle"></i> Добавить ТС
+          </div>
+        </div>
+      </div>
+
+      <div v-for="(elem, key) in spisokTSarr" class="impala-box self-stretch flex-col justify-center items-start gap-0 flex">
+        <div class="self-stretch p-4 border-b border-[#e3eaea] justify-start items-center gap-4 inline-flex">
+          <div class="w-8 h-8 p-2.5 bg-white rounded-[50px] border border-[#d3dddc] flex-col justify-center items-center gap-2.5 inline-flex">
+            <div class=" text-[#708e8c] text-sm font-semibold">{{key + 1}}</div>
+          </div>
+          <div class="flex-col justify-start items-start gap-[5px] inline-flex">
+            <div class="justify-center items-center gap-2.5 inline-flex">
+              <template v-for="(one_ts,key1) in ts_list_names">
+                <div v-if="!!one_ts && one_ts['id']===elem.vid_TS" class="impala-add-link:none">{{ one_ts.ts_name }}</div>
+              </template>
+            </div>
+          </div>
+          <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
+            <div class="impala-btn impala-btn-small impala-btn-gray">
+              <i
+                  class="iconsax-edit"></i>
+              Редактировать
+            </div>
+          </div>
+        </div>
+        <div class="self-stretch p-4 justify-between items-start gap-4 inline-flex">
+          <div class="grow shrink basis-0 flex-col justify-start items-start gap-6 inline-flex">
+            <div class="self-stretch justify-between items-center inline-flex">
+              <div class="impala-row-input">
+                <div class="impala-label">Расстояние, км</div>
+                <div>
+                  <div class="impala-add-link:none">{{ elem.rasstojanie_TS }}</div>
+                </div>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">Грузомест</div>
+                <div>
+                  <div class="impala-add-link:none">{{ elem.kol_gruz_TS }}</div>
+                </div>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">Кол-во ТС</div>
+                <div>
+                  <div class="impala-add-link:none">{{ elem.kol_TS_TS }}</div>
+                </div>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">Ставка</div>
+                <div>
+                  <div class="impala-add-link:none" v-html="(elem.stavka_TS) ? elem.stavka_TS + ' ₽' : '---'"></div>
+                </div>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">Ставка без НДС</div>
+                <div>
+                  <div class="impala-add-link:none" v-html="(elem.stavka_TS_bez_NDS) ? elem.stavka_TS_bez_NDS + ' ₽' : '---'"></div>
+                </div>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">Ставка за км</div>
+                <div>
+                  <div class="impala-add-link:none" v-html="(elem.stavka_TS_za_km) ? elem.stavka_TS_za_km + ' ₽' : '---'"></div>
+                </div>
+              </div>
+              <div class="impala-row-input" v-show="checkRolePermission([1])">
+                <div class="impala-label">Ставка КП</div>
+                <div>
+                  <div class="impala-add-link:none" v-html="(elem.stavka_kp_TS) ? elem.stavka_kp_TS + ' ₽' : '---'">
+                  </div>
+                </div>
+              </div>
+              <div class="impala-row-input" v-show="checkRolePermission([1])">
+                <div class="impala-label">Маржа</div>
+                <div>
+                  <div class="impala-add-link:none" v-html="(elem.marja_TS) ? elem.marja_TS + ' ₽' : '---'"></div>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex">
+                <div v-for="(elem1, key1) in elem.adres_pogruzki_TS" class="impala-row-input pl-4 border-l-4 border-[#fff4de]">
+                  <div class="impala-label">#{{ key1 + 1 }} Адрес погрузки</div>
+                  <div class="impala-add-link:none">
+                    {{ elem1.adres_pogruzke_show }}
+                  </div>
+                </div>
+              </div>
+              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex">
+                <div v-for="(elem1, key1) in elem.adres_vygr_TS" class="impala-row-input pl-4 border-l-4 border-[#c9f7f5]">
+                  <div class="impala-label">#{{ key1 + 1 }} Адрес выгрузки</div>
+                  <div class="impala-add-link:none">{{ elem1.adres_vygruzki_show }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="self-stretch flex-col justify-start items-start gap-2.5 flex">
+              <div v-for="(perevozchik,perevozchikKey) in elem.perevozchikiList" class="impala-box:dashed self-stretch p-2 justify-start items-start gap-4 inline-flex">
+                <div class="impala-row-input flex-1">
+                  <div class="impala-label">Перевозчик:</div>
+                  <div class="self-stretch justify-start items-center gap-2.5 inline-flex">
+                    <div v-if="perevozchik['contacts'].length === 0" class="impala-add-link:none">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</div>
+                    <VMenu v-else>
+                      <button class="impala-add-link">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</button>
+
+                      <template #popper v-if="!!perevozchik['contacts']">
+                        <div class="p-2" v-for="(onePopUpPerevozchik, key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
+                          {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
+                        </div>
+                      </template>
+                    </VMenu>
+                  </div>
+                </div>
+                <div class="impala-row-input flex-[0_1_fit-content]">
+                  <div class="impala-label">ИНН</div>
+                  <div>
+                    <div class="impala-add-link:none" v-html="perevozchik.perevozka.INN ? perevozchik.perevozka.INN : '---'"></div>
+                  </div>
+                </div>
+                <div class="impala-row-input flex-[0_1_fit-content]">
+                  <div class="impala-label">Код АТИ</div>
+                  <div>
+                    <div class="impala-add-link:none" v-html="perevozchik.perevozka.kod_ATI ? perevozchik.perevozka.kod_ATI : '---'"></div>
+                  </div>
+                </div>
+                <div class="impala-row-input flex-[0_1_fit-content]">
+                  <div class="impala-label">Ставка с НДС</div>
+                  <div>
+                    <div class="impala-add-link:none" v-html="perevozchik.stavka_NDS ? perevozchik.stavka_NDS : '---'"></div>
+                  </div>
+                </div>
+                <div class="impala-row-input flex-[0_1_fit-content]">
+                  <div class="impala-label">Ставка без НДС</div>
+                  <div>
+                    <div class="impala-add-link:none" v-html="perevozchik.stavka_bez_NDS ? perevozchik.stavka_bez_NDS : '---'"></div>
+                  </div>
+                </div>
+                <div class="impala-row-input flex-[0_1_fit-content]">
+                  <div class="impala-label">Ставка за км</div>
+                  <div>
+                    <div class="impala-add-link:none" v-html="perevozchik.stavka_za_km ? perevozchik.stavka_za_km : '---'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import moment from 'moment'
-import {logistData} from "../app.js";
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import 'vue-datepicker-next/locale/ru';
 
 import 'floating-vue/dist/style.css';
+import {useFio} from "../composables/fio";
 
 export default {
   props: ['auth_user'],
@@ -873,6 +417,7 @@ export default {
       show: false,
       order_id: '',
       vid_perevozki: '',
+      vid_perevozki_name: '',
       nomenklatura: '',
       gotovyi_raschet: '',
       files: [],
@@ -930,7 +475,7 @@ export default {
       edit_number: '',
       id_ts: '',
       ts_list_names: [],
-      logist_list: false,
+      logist_list: true,
       logist_name: 'Логист не выбран',
       openDP: false,
       openDP1: false,
@@ -948,7 +493,7 @@ export default {
       order_header_text: '',
       role: '',
       permissions: [],
-      logist_list_full: [],
+      logist_list_full: [{ value: 0, label: "Логист не выбран"}],
       utverzdenie_show_button: false,
       v_rabote_show_button: false,
       ocenka_show_button: false,
@@ -962,6 +507,13 @@ export default {
       headerTimeShow2: false,
       headerTime1: '',
       headerTime2: '',
+      nomerZaprosaShowInp: true,
+      statusShowInp: true,
+      vidPerevozkiShowInp: true,
+      dataVneseniyaShowInp: true,
+      rasschitatDoShowInp: true,
+      dataPogruzkiShowInp: true,
+
       zakazchikShowInp: true,
       managerZakazchikShowInp: true,
       checkboxPogrVygr: false,
@@ -1016,18 +568,17 @@ export default {
 
   computed: {
     stavka_TS_za_km: function () {
-      if ((this.stavka_TS == '') || (this.rasstojanie_TS == '') || (this.stavka_TS == null) || (this.rasstojanie_TS == null)) {
+      if ((this.stavka_TS === '') || (this.rasstojanie_TS === '') || (this.stavka_TS == null) || (this.rasstojanie_TS == null)) {
         return 0
       } else {
         // return this.stavka_TS/this.rasstojanie_TS
         let st = this.stavka_TS / this.rasstojanie_TS
-        let fin = (parseInt(st * 100)) / 100
-        return fin
+        return (parseInt(st * 100)) / 100
       }
     },
 
     marja_TS: function () {
-      if (this.stavka_kp_TS == '' || this.stavka_TS == '') {
+      if (this.stavka_kp_TS === '' || this.stavka_TS === '') {
         return 0
       } else {
         return this.stavka_kp_TS - this.stavka_TS
@@ -1049,6 +600,7 @@ export default {
     },
   },
   methods: {
+    useFio,
     //проверка показывать ли этот блок текущему пользователю
     //role - id роли 1- admin 2- logist 3- manager и т.д
     //permission id прав, 1 - все права 2 - show и т.д.
@@ -1062,7 +614,7 @@ export default {
       let flag = false;
       for (var j = 0; j < users_permissions_list.length; j++) {
         role = users_permissions_list[j]
-        if ((role == this.role) && ((this.permissions.includes(permission)) || (this.permissions.includes(1)))) {
+        if ((role === this.role) && ((this.permissions.includes(permission)) || (this.permissions.includes(1)))) {
           flag = true;
         }
       }
@@ -1104,7 +656,7 @@ export default {
       }
     },
     updateStavkaPerevozchik(type, key) {
-      if (type == 'stavka_NDS') {
+      if (type === 'stavka_NDS') {
         this.perevozchikiList[key]['stavka_NDS'] = this.setToNumberFormatData(this.perevozchikiList[key]['stavka_NDS'])
 
         if ((this.perevozchikiList[key]['stavka_NDS'] == '') || (this.perevozchikiList[key]['stavka_NDS'] == 0)) {
@@ -1121,7 +673,7 @@ export default {
         }
 
       }
-      if (type == 'stavka_bez_NDS') {
+      if (type === 'stavka_bez_NDS') {
         this.perevozchikiList[key]['stavka_bez_NDS'] = this.setToNumberFormatData(this.perevozchikiList[key]['stavka_bez_NDS'])
         if ((this.perevozchikiList[key]['stavka_bez_NDS'] == '') || (this.perevozchikiList[key]['stavka_bez_NDS'] == 0)) {
           this.perevozchikiList[key]['stavka_NDS'] = 0
@@ -1143,7 +695,7 @@ export default {
     },
     updateStavka() {
       this.stavka_TS = this.setToNumberFormat('stavka_TS_bez_NDS')
-      if ((this.stavka_TS_bez_NDS == '') || (this.stavka_TS_bez_NDS == 0)) {
+      if ((this.stavka_TS_bez_NDS === '') || (this.stavka_TS_bez_NDS === 0)) {
         this.stavka_TS = 0
       } else {
         this.stavka_TS = (Number(this.stavka_TS_bez_NDS) * 1.2).toFixed(2);
@@ -1151,13 +703,38 @@ export default {
     },
     updateStavkaBezNDS() {
       this.stavka_TS_bez_NDS = this.setToNumberFormat('stavka_TS')
-      if ((this.stavka_TS == '') || (this.stavka_TS == 0)) {
+      if ((this.stavka_TS === '') || (this.stavka_TS === 0)) {
         this.stavka_TS_bez_NDS = 0
       } else {
         this.stavka_TS_bez_NDS = (Number(this.stavka_TS) / 1.2).toFixed(2);
       }
 
     },
+    nomerZaprosaShowInpChange() {
+      this.nomerZaprosaShowInp = !this.nomerZaprosaShowInp
+    },
+    statusShowInpChange() {
+      this.statusShowInp = !this.statusShowInp
+    },
+    vidPerevozkiShowInpChange() {
+      this.vidPerevozkiShowInp = !this.vidPerevozkiShowInp
+    },
+    dataVneseniyaShowInpChange() {
+      this.dataVneseniyaShowInp = !this.dataVneseniyaShowInp
+    },
+    rasschitatDoShowInpChange() {
+      this.rasschitatDoShowInp = !this.rasschitatDoShowInp
+    },
+    dataPogruzkiShowInpChange() {
+      this.dataPogruzkiShowInp = !this.dataPogruzkiShowInp
+    },
+    adresPogruzkiShowSpanChange() {
+      this.adresPogruzkiShowSpan = !this.adresPogruzkiShowSpan
+    },
+    adresVygruzkiShowSpanChange() {
+      this.adresVygruzkiShowSpan = !this.adresVygruzkiShowSpan
+    },
+
     zakazchikShowInpChange() {
       this.zakazchikShowInp = !this.zakazchikShowInp
     },
@@ -1165,10 +742,10 @@ export default {
       this.managerZakazchikShowInp = !this.managerZakazchikShowInp
     },
     showHeaderTime(numb) {
-      if (numb == 1) {
+      if (numb === 1) {
         this.headerTimeShow1 = true
       }
-      if (numb == 2) {
+      if (numb === 2) {
         this.headerTimeShow2 = true
       }
     },
@@ -1180,7 +757,7 @@ export default {
           })
           .then(response => {
             //если такая заявка уже была
-            if (response.data.updated == 'false') {
+            if (response.data.updated === 'false') {
               alert('Номер запроса уже существует')
               this.new_nomer_zayavki = this.nomer_zayavki
             } else {
@@ -1209,40 +786,16 @@ export default {
             perevozchik_id: perevozchik_id,
           })
           .then(response => {
-            if ((response.data.perevozchik[0].INN != '') && (response.data.perevozchik[0].INN != null)) {
-              //тут добавить строчку с нвоым параметром
+            if ((response.data.perevozchik[0].INN !== '') && (response.data.perevozchik[0].INN != null)) {
+              //тут добавить строчку с новым параметром
               this.perevozchikiList[key].INN = response.data.perevozchik[0].INN
             }
-            if ((response.data.perevozchik[0].kod_ATI != '') && (response.data.perevozchik[0].kod_ATI != null)) {
+            if ((response.data.perevozchik[0].kod_ATI !== '') && (response.data.perevozchik[0].kod_ATI != null)) {
               this.perevozchikiList[key].kod_ATI = response.data.perevozchik[0].kod_ATI
             } else {
               this.perevozchikiList[key].kod_ATI = ''
             }
           })
-    },
-
-    inputShow(inpVar) {
-
-      //если кликнули на адрес погрузки
-      if (inpVar == 'adresPogruzkiShowSpan') {
-        this.adresPogruzkiShowSpan = !this.adresPogruzkiShowSpan
-      }
-      //если кликнули на адрес выгрузки
-      if (inpVar == 'adresVygruzkiShowSpan') {
-        this.adresVygruzkiShowSpan = !this.adresVygruzkiShowSpan
-      }
-    },
-    //метод показа или не показа инпута поиска в родителе
-    showHideParent(inpData) {
-      if (inpData.type == 'adres_pogruzke') {
-        this.adresPogruzkiShowSpan = !this.adresPogruzkiShowSpan
-        this.adres_pogruzke_show = inpData.inputText
-      }
-      if (inpData.type == 'adres_vygruski') {
-        this.adresVygruzkiShowSpan = !this.adresVygruzkiShowSpan
-        this.adres_vygruski_show = inpData.inputText
-      }
-
     },
     addEmptyPerevozchik() {
       //     axios
@@ -1418,12 +971,12 @@ export default {
     //добавление пустой погрузки или выгрузки
     add_new_pogruzka_in_ts(data) {
       //если погрузка
-      if (data.pogr_or_vygr == 'pogruzka') {
+      if (data.pogr_or_vygr === 'pogruzka') {
         this.ad_pogruzki_arr_temp[data.key]['adres_pogruzki'] = data.inp_pog_id;
         this.ad_pogruzki_arr_temp[data.key]['adres_pogruzke_show'] = data.nazvanie;
       }
       //если выгрузка
-      if (data.pogr_or_vygr == 'vygruzka') {
+      if (data.pogr_or_vygr === 'vygruzka') {
         this.ad_vygruz_arr_temp[data.key]['adres_pogruzki'] = data.inp_pog_id;
         this.ad_vygruz_arr_temp[data.key]['adres_vygruzki_show'] = data.nazvanie;
       }
@@ -1454,24 +1007,24 @@ export default {
           );
     },
     hideButton(buttonName) {
-      if (buttonName == 'ocenka') {
+      if (buttonName === 'ocenka') {
         this.ocenka_show_button = false
-        if (this.spisokTSarr.length != 0) {
+        if (this.spisokTSarr.length !== 0) {
           this.utverzdenie_show_button = true
           this.v_rabote_show_button = true
         }
 
       }
-      if (buttonName == 'naznachenie_stavki') {
+      if (buttonName === 'naznachenie_stavki') {
         this.utverzdenie_show_button = false
         this.ocenka_show_button = true
-        if (this.spisokTSarr.length != 0) {
+        if (this.spisokTSarr.length !== 0) {
           this.v_rabote_show_button = true
         }
       }
-      if (buttonName == 'v_rabote') {
+      if (buttonName === 'v_rabote') {
         this.v_rabote_show_button = false
-        if (this.spisokTSarr.length != 0) {
+        if (this.spisokTSarr.length !== 0) {
           this.utverzdenie_show_button = true
         }
         this.ocenka_show_button = true
@@ -1541,7 +1094,9 @@ export default {
                     inp.push({
                       id: entry.id,
                       full_logist_name: entry.last_name + ' ' + entry.first_name + ' ' + entry.patronymic,
-
+                      value: entry.id,
+                      label: useFio(entry.last_name, entry.first_name, entry.patronymic),
+                      label_full: entry.last_name + ' ' + entry.first_name + ' ' + entry.patronymic
                     });
                   })
               )
@@ -1554,7 +1109,9 @@ export default {
                   data.perevozka_list.forEach(function (entry) {
                     inp.push({
                       id: entry.id,
-                      perevozka_name: entry.perevozka_name
+                      perevozka_name: entry.perevozka_name,
+                      value: entry.id,
+                      label: entry.perevozka_name
                     });
                   })
               )
@@ -1583,7 +1140,7 @@ export default {
     //работа из модального окна добавления грузоотправителя
     //метод выборки, адрес погрузки или адрес выгрузки поменяется динамически
     select_temp_var(pogr_or_vygr, key) {
-      if (pogr_or_vygr == 'manager') {
+      if (pogr_or_vygr === 'manager') {
         this.show_mod_edit(this.kompaniya_zakazchik_id)
       } else {
         this.newModal()
@@ -1599,7 +1156,7 @@ export default {
       this.select_temp_pogr_or_vygr_key = key
     },
     select_Manager(kontakty) {
-      if (this.select_temp_pogr_or_vygr == 'manager') {
+      if (this.select_temp_pogr_or_vygr === 'manager') {
         console.log(kontakty)
       }
 
@@ -1611,7 +1168,7 @@ export default {
       this.$refs.modalComponentforActionPerevozchik.newPerevozchik()
     },
     select_gruzootpravitel() {
-      if (this.select_temp_pogr_or_vygr == 'pogruzka') {
+      if (this.select_temp_pogr_or_vygr === 'pogruzka') {
         axios
             .post('/select_gruzootpravitel', {})
             .then(({data}) => (
@@ -1621,7 +1178,7 @@ export default {
                 )
             );
       }
-      if (this.select_temp_pogr_or_vygr == 'vygruzka') {
+      if (this.select_temp_pogr_or_vygr === 'vygruzka') {
         axios
             .post('/select_gruzootpravitel', {})
             .then(({data}) => (
@@ -1675,7 +1232,7 @@ export default {
             );
       }
       //если добавляем новую выгрузку
-      if (this.select_temp_pogr_or_vygr == 'TS_vygruzka_new') {
+      if (this.select_temp_pogr_or_vygr === 'TS_vygruzka_new') {
         axios
             .post('/select_gruzootpravitel', {})
             .then(({data}) => (
@@ -1725,23 +1282,25 @@ export default {
     openDB4() {
       this.openDP4 = true
     },
-    handleChange(e) {
-      var name = e.target.options[e.target.options.selectedIndex].text;
-      this.logist_name = name;
+    handleChange(label) {
+      this.logist_name = label;
       this.logist_show();
       this.update_order_logist()
-      if ((this.status == 'Черновик') && (name != 'Логист не выбран')) {
+      if ((this.status === 'Черновик') && (label !== 'Логист не выбран')) {
         this.status = 'На оценке'
       }
     },
+    logist_update() {
+      this.logist_list = !this.logist_list
+    },
     setStatusName(columnName) {
-      if (columnName == 'ocenka') {
+      if (columnName === 'ocenka') {
         this.status = 'На оценке'
       }
-      if (columnName == 'naznachenie_stavki') {
+      if (columnName === 'naznachenie_stavki') {
         this.status = 'На утверждении'
       }
-      if (columnName == 'v_rabote') {
+      if (columnName === 'v_rabote') {
         this.status = 'В работе'
       }
     },
@@ -1752,12 +1311,12 @@ export default {
       axios
           .post('/get_ts_list', {})
           .then(response => (
-                  this.ts_list_names.push(...response.data.ts)
+                  this.ts_list_names.push(...(response.data.ts || []))
               )
           );
     },
     update_unread_status() {
-      if (this.role == 2) {
+      if (this.role === 2) {
         axios
             .post('/update_unread_status', {
               logist_id: this.auth_user['id'],
@@ -1765,7 +1324,7 @@ export default {
               column_name: 'ocenka',
             })
       }
-      if (this.role == 1) {
+      if (this.role === 1) {
         axios
             .post('/update_unread_status', {
               logist_id: this.auth_user['id'],
@@ -1775,7 +1334,7 @@ export default {
       }
     },
     update_unread_status_v_rabote() {
-      if (this.role == 2) {
+      if (this.role === 2) {
         axios
             .post('/update_unread_status_v_rabote', {
               logist_id: this.auth_user['id'],
@@ -1785,7 +1344,6 @@ export default {
       }
     },
     update_order_logist() {
-
       axios
           .post('/update_order_logist', {
             logist: this.logist,
@@ -1819,13 +1377,13 @@ export default {
     },
     setMessage(columnName) {
       let message = ''
-      if (columnName == 'ocenka') {
+      if (columnName === 'ocenka') {
         message = 'Запрос отправлен на оценку'
       }
-      if (columnName == 'naznachenie_stavki') {
+      if (columnName === 'naznachenie_stavki') {
         message = 'Запрос отправлен на назначение ставки'
       }
-      if (columnName == 'v_rabote') {
+      if (columnName === 'v_rabote') {
         message = 'Запрос отправлен в работу'
       }
       return message;
@@ -1836,7 +1394,7 @@ export default {
     //метод применяемый для числовых значений с кореектировокой ввода
     updateOrderLocNumber(field, data) {
       data = this.setToNumberFormat(field)
-      if ((field == 'adres_pogruzke') || (field == 'adres_vygruski')) {
+      if ((field === 'adres_pogruzke') || (field === 'adres_vygruski')) {
         this.adresPogruzkiShowSpan = true
         this.adresVygruzkiShowSpan = true
       }
@@ -1846,10 +1404,17 @@ export default {
             field: field,
             data: data
           })
+          .then(response => {
+            this.toast("Данные обновлены", "success");
+          })
     },
     //метод для всех остальных значений кроме числовых
-    updateOrderLoc(field, data) {
-      if ((field == 'adres_pogruzke') || (field == 'adres_vygruski')) {
+    updateOrderLoc(field, data, label = '') {
+      if (label !== '') {
+        this[`${field}_name`] = label;
+      }
+
+      if ((field === 'adres_pogruzke') || (field === 'adres_vygruski')) {
         this.adresPogruzkiShowSpan = true
         this.adresVygruzkiShowSpan = true
       }
@@ -1858,6 +1423,9 @@ export default {
             id: this.order_id,
             field: field,
             data: data
+          })
+          .then(response => {
+            this.toast("Данные обновлены", "success");
           })
     },
     update_order() {
@@ -1918,12 +1486,13 @@ export default {
                       this.data_dostavki = data.data[0]['data_dostavki'],
                       this.komment_1 = data.data[0]['komment_1'],
                       this.logist = data.data[0]['logist'],
-                      this.logist_name = data.data[0]['logist_name'],
+                      this.logist_name = useFio(data.data[0]['logist_name']['last_name'], data.data[0]['logist_name']['first_name'], data.data[0]['logist_name']['patronymic']),
                       this.gruzomesta_big = data.data[0]['gruzomesta_big'],
                       this.rasstojanie = data.data[0]['rasstojanie'],
                       this.ob_ves = data.data[0]['ob_ves'],
                       this.ob_ob = data.data[0]['ob_ob'],
                       this.vid_perevozki = data.data[0]['vid_perevozki'],
+                      this.vid_perevozki_name = data.data[0]['vid_perevozki_name'],
                       this.status = data.data[0]['status'],
                       this.perevozchikId = data.data[0]['perevozchik'],
                       this.perevozchikName = data.data[0]['nazvanie'],
@@ -1959,7 +1528,7 @@ export default {
 
     },
     parentMethodFromAutoinputZakazchik(data) {
-      if (this.kompaniya_zakazchik_id != data.id) {
+      if (this.kompaniya_zakazchik_id !== data.id) {
         //обнуляем менеджера
         this.managerZakazchik_name = ''
         this.managerZakazchik_id = ''

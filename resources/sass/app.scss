@@ -7,24 +7,232 @@
 @tailwind utilities;
 
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
-// Variables
-@import 'variables';
+@import url('https://fonts.googleapis.com/css?family=Inter:300,400,600,700,800,900&display=swap');
 
 @import 'menu';
+
+:root {
+  // Body
+  --impala-body-bg: #E9ECEF;
+
+  --impala-color-primary: #269156;
+  --impala-color-primary-light: #4CA674;
+  --impala-color-gray-100: #f9f9f9;
+  --impala-color-gray-200: #f4f7f7;
+  --impala-color-gray-300: #e3eaea;
+  --impala-color-gray-400: #d3dddc;
+  --impala-color-gray-500: #708e8c;
+  --impala-color-gray-600: #3f5d5a;
+  --impala-color-gray-700: #2f4644;
+  --impala-color-gray-800: #202e2d;
+  --impala-color-gray-900: #101717;
+  --impala-color-red: #dc3545;
+  --impala-color-red-light: #f8285a;
+  --impala-color-green-edit: #c0e4d0;
+
+  // Typography
+  --impala-font-family: 'Inter', sans-serif;
+  --impala-font-size-base: 0.9rem;
+  --impala-line-height-base: 1.6;
+
+  --vs-option-hover-color: var(--impala-color-gray-100) !important;
+  --vs-option-selected-color: var(--impala-color-green-edit) !important;
+  --vs-multi-value-text-color: var(--impala-color-gray-800) !important;
+  --vs-multi-value-bg: #f4f4f5;
+}
+
+@import 'overrides';
 
 /*
 Reset
 */
 
-.btn-none {
+body {
+  background-color: var(--impala-body-bg);
+  font-family: var(--impala-font-family), sans-serif;
+}
+
+a, input, button, .impala-btn {
+  transition: .4s;
+}
+
+a {
+  text-decoration: none;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+// Box
+
+.impala-box {
+  border-radius: 6px;
+  background: #FFF;
+  /* card-box-shadow */
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.03);
+}
+
+.impala-box\:dropdow {
+  border-radius: 6px;
+  background: #FFF;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+.impala-box\:dashed {
+  border-radius: 6px;
+  border: 1px dashed var(--impala-color-gray-400);
+}
+
+// Typography
+
+.impala-page-title {
+  @apply text-[var(--impala-color-gray-800)] text-2xl font-semibold
+}
+
+.impala-block-title {
+  @apply text-[var(--impala-color-gray-800)] text-xl font-medium;
+  line-height: 34px;
+}
+
+// Buttons
+
+.impala-btn {
+  @apply px-4 py-2 rounded-md shadow justify-center items-center gap-2 inline-flex text-sm font-semibold cursor-pointer;
+}
+
+.impala-box .impala-btn {
+  @apply shadow-none;
+}
+
+.impala-btn-small {
+  @apply px-[13px] py-2 text-xs;
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.impala-btn-primary {
+  background-color: var(--impala-color-primary);
+  color: #ffffff;
+
+  &:hover {
+    background-color: var(--impala-color-primary-light);
+  }
+}
+
+.impala-btn-gray {
+  background-color: var(--impala-color-gray-200);
+  color: var(--impala-color-gray-600);
+}
+
+.impala-btn-none {
   background: transparent;
   margin: 0 !important;
   border: 0 !important;
   padding: 0 !important;
+  cursor: pointer;
 }
 
-body input, body textarea {
-  @apply shadow-sm border-gray-300 border-[1px] rounded-[4px] focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400
+.impala-add-link {
+  border-bottom: 2px dashed var(--impala-color-primary);
+  cursor: pointer;
 }
+
+input.impala-add-link {
+  padding: 0 !important;
+  width: auto;
+}
+
+.impala-add-link\:none {
+  @apply text-[var(--impala-color-gray-700)] text-base font-medium;
+}
+
+
+// Forms
+
+.impala-row-input {
+  @apply flex-col justify-start items-start gap-2.5 inline-flex w-full;
+}
+
+.impala-col-input {
+  @apply justify-start items-center gap-2.5 inline-flex;
+}
+
+.impala-label {
+  @apply text-sm font-normal self-stretch justify-between items-center flex;
+  color: var(--impala-color-gray-500);
+
+  i {
+    font-size: 18px;
+    color: var(--impala-color-gray-500);
+
+    &:hover {
+      color: var(--impala-color-primary);
+    }
+  }
+}
+
+.impala-input {
+  @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full;
+
+  &:focus, &:focus-visible, &:active {
+    box-shadow: 0 0 5px var(--impala-color-green-edit) !important;
+    outline-color: var(--impala-color-green-edit) !important;
+  }
+}
+
+.impala-input-red {
+  border: 1px dashed var(--impala-color-red);
+  color: var(--impala-color-red);
+}
+
+// Header
+
+.impala-logo {
+  height: 40px;
+}
+
+header {
+  @apply w-full px-[20px] bg-white;
+  color: var(--impala-color-gray-600);
+
+  a {
+    color: var(--impala-color-gray-600);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--impala-color-primary);
+    }
+  }
+
+  nav {
+    a {
+      @apply flex items-start justify-start px-4 py-2.5 rounded-md;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+  .impala-userbar {
+    @apply flex items-center justify-end;
+  }
+  i {
+    font-size: 24px;
+  }
+}
+
+
+.impala-subheader {
+  @apply px-5 py-4 bg-white border-t border-[var(--impala-color-gray-300)] justify-between items-center inline-flex w-full;
+
+  .vue-select {
+    .search-input {
+      display: none;
+    }
+  }
+}
+
+// Request

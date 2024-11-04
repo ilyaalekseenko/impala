@@ -1,89 +1,63 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center header_settings">
-            <a href="/" class="col-1">
-                <img class="logo_settings" :src="'/images/logo.png'" alt="">
-            </a>
-
-            <div class="col-7 top_menu_head_set">
-
-<!--                <div class="menu_block top_menu_words">-->
-<!--                    Заявки-->
-<!--                </div>-->
-<!--                <div class="col-5 top_menu_words align-self-center d-flex top_menu_1">-->
-                <span class=" top_menu_words  top_menu_words_settings" v-on:click="go_to_path('/gruzootpravitel')">
-                    Грузоотправитель/грузополучатель
-                </span>
-                <span class="top_menu_words  top_menu_words_settings" v-on:click="go_to_path('/perevozchiki')">
-                    Перевозчики
-                </span>
-                <span class="top_menu_words top_menu_words_settings " v-on:click="go_to_path('/stavki')">
-                    Ставки
-                </span>
-            </div>
-            <div class="col-3 row" >
-                <div v-if="show_search" class="col align-self-center row top_menu_right_words top_menu_2">
-                    <input class="col inp_search " type="text" placeholder="Поиск" name="search">
-                    <i class="col align-self-center fa fa-search search_set" style="font-size: 20px;"></i>
-                </div>
-                <div v-if="show_search" class="col align-self-center top_menu_3">
-                    <img :src="'/images/ava.jpg'" class="col  new_head_user_icon ">
-                </div>
-                <div v-if="show_search" class="col align-self-center  top_menu_user_name no_wrap  ">Константин Константинопольский</div>
-            </div>
-            <div class="col align-self-center d-flex">
-            <span class="gear_settings" v-on:click="go_to_path('/docs_setting')" v-show="checkRolePermissionMixin([1])">
-                <span class="iconify" data-icon="ci:settings-filled" style="color: #020e49;" data-width="32" data-height="32" ></span>
-            </span>
-                <span class="gear_settings" v-on:click="logout()">
-            <span class="iconify top_menu_icon_right" v-on:click="logout()" data-icon="majesticons:door-exit" style="color: #020e49;" data-width="32" data-height="32"></span>
-                </span>
-            </div>
-        </div>
+  <header class="inline-flex space-x-2.5 items-center justify-between py-4">
+    <a href="/">
+      <img :src="'/assets/img/logo.svg'" class="impala-logo" alt="Impala CRM">
+    </a>
+    <nav class="flex space-x-1.5 items-start justify-start">
+      <a href="#" v-on:click="go_to_path('/gruzootpravitel')">
+        Грузоотправитель/грузополучатель
+      </a>
+      <a href="#" v-on:click="go_to_path('/perevozchiki')">
+        Перевозчики
+      </a>
+      <a href="#" v-on:click="go_to_path('/stavki')">
+        Ставки
+      </a>
+    </nav>
+    <div class="impala-userbar gap-8">
+      <a href="#" v-on:click="go_to_path('/docs_setting')" v-show="checkRolePermissionMixin([1])"><i
+          class="iconsax-setting-2"></i></a>
+      <div class="inline-flex items-center justify-center gap-4">
+        <span class="text-base font-semibold" v-html="useFio(user.last_name, user.first_name, user.patronymic)"></span>
+        <a href="#" v-on:click="logout()"><i class="iconsax-logout-1"></i></a>
+      </div>
     </div>
+  </header>
 </template>
 
 <script>
+import {useFio} from "../composables/fio";
 
-    export default {
-        data() {
-            return {
-                show_search: false,
-                role: '',
-                permissions: ''
-
-            }
-        },
-        mounted() {
-   this.getRoleUser()
-        },
-
-        methods: {
-
-           getRoleUser()
-           {
-               axios
-                   .post('/getRoleUser',{
-                   })
-                   .then(({ data }) => (
-                           this.role=data.user.roles[0]['id'],
-                           this.permissions=data.user.role_perm.permissions
-                       )
-                   )
-           },
-            logout()
-            {
-                axios
-                    .post('/logout',{
-                    })
-                    .then(({ data }) => (
-                            window.location.href =('/login')
-                        )
-                    )
-
-            }
-
-        }
-
+export default {
+  props: ['user'],
+  data() {
+    return {
+      role: '',
+      permissions: ''
     }
+  },
+  mounted() {
+    this.getRoleUser()
+  },
+  methods: {
+    useFio,
+    getRoleUser() {
+      axios
+          .post('/getRoleUser', {})
+          .then(({data}) => (
+                  this.role = data.user.roles[0]['id'],
+                      this.permissions = data.user.role_perm.permissions
+              )
+          )
+    },
+    logout() {
+      axios
+          .post('/logout', {})
+          .then(({data}) => (
+                  window.location.href = ('/login')
+              )
+          )
+    }
+  }
+}
 </script>

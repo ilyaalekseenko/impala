@@ -2292,55 +2292,50 @@ console.log(filesData)
                 console.log('right_currentTS_In_Arr')
                 console.log(this.right_currentTS_In_Arr)
             },
-            add_new_adres_pogruzka(key,pogruzka_or_vygruzka)
-            {
-                    let objToPush2= {}
-                    objToPush2['adres_pogruzki'] = '',
-                    objToPush2['id_ts'] = this.right_current_TS,
-                    objToPush2['grade_id'] = this.order_id,
-                    objToPush2['pogruzka_or_vygruzka'] = pogruzka_or_vygruzka,
-                    objToPush2['time_ts'] = '',
-                    objToPush2['date_ts'] = '',
-                    objToPush2['id_pogruzka'] = ''
-                    objToPush2['show_DP_date'] = false
-                    objToPush2['show_DP_time'] = false
-                    objToPush2['doc_name_DOC'] =[];
-                    objToPush2['doc_name_FOTO'] =[];
-                if(pogruzka_or_vygruzka==2)
-                {
-                    objToPush2['doc_name_ACT'] =[];
-                }
+          add_new_adres_pogruzka(key, pogruzka_or_vygruzka) {
+            let objToPush2 = {}
+            objToPush2['adres_pogruzki'] = '',
+                objToPush2['id_ts'] = this.right_current_TS,
+                objToPush2['grade_id'] = this.order_id,
+                objToPush2['pogruzka_or_vygruzka'] = pogruzka_or_vygruzka,
+                objToPush2['time_ts'] = '',
+                objToPush2['date_ts'] = '',
+                objToPush2['id_pogruzka'] = ''
+            objToPush2['show_DP_date'] = false
+            objToPush2['show_DP_time'] = false
+            objToPush2['doc_name_DOC'] = [];
+            objToPush2['doc_name_FOTO'] = [];
+            if (pogruzka_or_vygruzka == 2) {
+              objToPush2['doc_name_ACT'] = [];
+            }
 
 
-                        if(pogruzka_or_vygruzka==1)
-                        {
-                            this.spisokTShead[key].adres_pogruzki_TS.push(objToPush2)
-                            axios
-                                .post('/add_new_adres_pogruzka',{
-                                    id_ts:this.right_current_TS,
-                                    grade_id:this.order_id,
-                                    pogruzka_or_vygruzka:pogruzka_or_vygruzka
-                                })
-                                .then(({ data }) => (
-                                    this.spisokTShead[key].adres_pogruzki_TS[this.spisokTShead[key].adres_pogruzki_TS.length-1].id_pogruzka=data.id_pogruzka
-                                ))
-                        }
-                        else
-                        {
-                            this.spisokTShead[key].adres_vygr_TS.push(objToPush2)
-                            axios
-                                .post('/add_new_adres_pogruzka',{
-                                    id_ts:this.right_current_TS,
-                                    grade_id:this.order_id,
-                                    pogruzka_or_vygruzka:pogruzka_or_vygruzka
-                                })
-                                .then(({ data }) => (
-                                    this.spisokTShead[key].adres_vygr_TS[this.spisokTShead[key].adres_vygr_TS.length-1].id_pogruzka=data.id_pogruzka
-                                ))
-                        }
+            if (pogruzka_or_vygruzka == 1) {
+              this.spisokTShead[key].adres_pogruzki_TS.push(objToPush2)
+              axios
+                  .post('/add_new_adres_pogruzka', {
+                    id_ts: this.right_current_TS,
+                    grade_id: this.order_id,
+                    pogruzka_or_vygruzka: pogruzka_or_vygruzka
+                  })
+                  .then(({data}) => (
+                      this.spisokTShead[key].adres_pogruzki_TS[this.spisokTShead[key].adres_pogruzki_TS.length - 1].id_pogruzka = data.id_pogruzka
+                  ))
+            } else {
+              this.spisokTShead[key].adres_vygr_TS.push(objToPush2)
+              axios
+                  .post('/add_new_adres_pogruzka', {
+                    id_ts: this.right_current_TS,
+                    grade_id: this.order_id,
+                    pogruzka_or_vygruzka: pogruzka_or_vygruzka
+                  })
+                  .then(({data}) => (
+                      this.spisokTShead[key].adres_vygr_TS[this.spisokTShead[key].adres_vygr_TS.length - 1].id_pogruzka = data.id_pogruzka
+                  ))
+            }
 
 
-            },
+          },
             add_summ (key)
             {
                 let objToPush1= {};
