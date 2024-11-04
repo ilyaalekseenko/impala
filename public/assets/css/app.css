@@ -568,9 +568,6 @@ video {
 .h-8{
   height: 2rem;
 }
-.h-\[17px\]{
-  height: 17px;
-}
 .h-auto{
   height: auto;
 }
@@ -622,6 +619,16 @@ video {
 .w-full{
   width: 100%;
 }
+.w-min{
+  width: -moz-min-content;
+  width: min-content;
+}
+.min-w-\[105px\]{
+  min-width: 105px;
+}
+.min-w-\[125px\]{
+  min-width: 125px;
+}
 .max-w-6xl{
   max-width: 72rem;
 }
@@ -651,9 +658,6 @@ video {
 }
 .grid-cols-2{
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.grid-rows-2{
-  grid-template-rows: repeat(2, minmax(0, 1fr));
 }
 .flex-col{
   flex-direction: column;
@@ -840,9 +844,6 @@ video {
 .align-baseline{
   vertical-align: baseline;
 }
-.font-\[\'Inter\'\]{
-  font-family: 'Inter';
-}
 .text-2xl{
   font-size: 1.5rem;
   line-height: 2rem;
@@ -865,18 +866,11 @@ video {
 .font-medium{
   font-weight: 500;
 }
-.font-normal{
-  font-weight: 400;
-}
 .font-semibold{
   font-weight: 600;
 }
 .leading-7{
   line-height: 1.75rem;
-}
-.text-\[\#2f4644\]{
-  --tw-text-opacity: 1;
-  color: rgb(47 70 68 / var(--tw-text-opacity));
 }
 .text-\[\#708e8c\]{
   --tw-text-opacity: 1;
@@ -1088,7 +1082,7 @@ body {
   font-family: var(--impala-font-family), sans-serif;
 }
 
-a, input, button, .impala-btn {
+a, input, button, .impala-btn, .impala-box, .impala-text-link {
   transition: 0.4s;
 }
 
@@ -1107,6 +1101,7 @@ a {
   background: #FFF;
   /* card-box-shadow */
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.03);
+  outline-color: transparent;
 }
 
 .impala-box\:dropdow {
@@ -1118,6 +1113,10 @@ a {
 .impala-box\:dashed {
   border-radius: 6px;
   border: 1px dashed var(--impala-color-gray-400);
+}
+
+.impala-outline {
+  outline: 4px solid var(--impala-color-green-edit);
 }
 
 .impala-page-title{
@@ -1180,9 +1179,20 @@ a {
   background-color: var(--impala-color-primary-light);
 }
 
+.impala-btn-red {
+  background-color: var(--impala-color-red);
+  color: #ffffff;
+}
+.impala-btn-red:hover {
+  background-color: var(--impala-color-red-light);
+}
+
 .impala-btn-gray {
   background-color: var(--impala-color-gray-200);
   color: var(--impala-color-gray-600);
+}
+.impala-btn-gray:hover {
+  background-color: var(--impala-color-gray-300);
 }
 
 .impala-btn-none {
@@ -1210,9 +1220,33 @@ input.impala-add-link {
   color: var(--impala-color-gray-700);
 }
 
+.impala-text-link{
+  display: inline-flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  color: var(--impala-color-gray-600);
+}
+.impala-text-link:hover {
+  color: var(--impala-color-gray-500);
+}
+.impala-text-link i {
+  font-size: 18px;
+}
+
+.impala-text-link\:red{
+  color: var(--impala-color-red);
+}
+.impala-text-link\:red:hover {
+  color: var(--impala-color-red-light);
+}
+
 .impala-row-input{
   display: inline-flex;
-  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -1235,6 +1269,7 @@ input.impala-add-link {
   line-height: 1.25rem;
   font-weight: 400;
   color: var(--impala-color-gray-500);
+  white-space: nowrap;
 }
 .impala-label i {
   font-size: 18px;
@@ -1247,6 +1282,7 @@ input.impala-add-link {
 .impala-input{
   display: inline-flex;
   width: 100%;
+  max-width: 100%;
   align-items: center;
   justify-content: flex-start;
   gap: 0.625rem;
@@ -1264,6 +1300,9 @@ input.impala-add-link {
 .impala-input:focus, .impala-input:focus-visible, .impala-input:active {
   box-shadow: 0 0 5px var(--impala-color-green-edit) !important;
   outline-color: var(--impala-color-green-edit) !important;
+}
+.impala-input:disabled {
+  border-style: dashed;
 }
 
 .impala-input-red {

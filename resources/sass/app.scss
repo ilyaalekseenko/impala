@@ -52,7 +52,7 @@ body {
   font-family: var(--impala-font-family), sans-serif;
 }
 
-a, input, button, .impala-btn {
+a, input, button, .impala-btn, .impala-box, .impala-text-link {
   transition: .4s;
 }
 
@@ -73,6 +73,7 @@ a {
   background: #FFF;
   /* card-box-shadow */
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.03);
+  outline-color: transparent;
 }
 
 .impala-box\:dropdow {
@@ -84,6 +85,10 @@ a {
 .impala-box\:dashed {
   border-radius: 6px;
   border: 1px dashed var(--impala-color-gray-400);
+}
+
+.impala-outline {
+  outline: 4px solid var(--impala-color-green-edit);
 }
 
 // Typography
@@ -124,9 +129,22 @@ a {
   }
 }
 
+.impala-btn-red {
+  background-color: var(--impala-color-red);
+  color: #ffffff;
+
+  &:hover {
+    background-color: var(--impala-color-red-light);
+  }
+}
+
 .impala-btn-gray {
   background-color: var(--impala-color-gray-200);
   color: var(--impala-color-gray-600);
+
+  &:hover {
+    background-color: var(--impala-color-gray-300);
+  }
 }
 
 .impala-btn-none {
@@ -151,11 +169,30 @@ input.impala-add-link {
   @apply text-[var(--impala-color-gray-700)] text-base font-medium;
 }
 
+.impala-text-link {
+  @apply justify-end items-center gap-2 inline-flex text-[var(--impala-color-gray-600)] text-xs font-semibold cursor-pointer;
+
+  &:hover {
+    color: var(--impala-color-gray-500);
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.impala-text-link\:red {
+  @apply text-[var(--impala-color-red)];
+
+  &:hover {
+    color: var(--impala-color-red-light);
+  }
+}
 
 // Forms
 
 .impala-row-input {
-  @apply flex-col justify-start items-start gap-2.5 inline-flex w-full;
+  @apply flex-col justify-start items-start gap-2.5 inline-flex;
 }
 
 .impala-col-input {
@@ -165,6 +202,7 @@ input.impala-add-link {
 .impala-label {
   @apply text-sm font-normal self-stretch justify-between items-center flex;
   color: var(--impala-color-gray-500);
+  white-space: nowrap;
 
   i {
     font-size: 18px;
@@ -177,11 +215,15 @@ input.impala-add-link {
 }
 
 .impala-input {
-  @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full;
+  @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full max-w-full;
 
   &:focus, &:focus-visible, &:active {
     box-shadow: 0 0 5px var(--impala-color-green-edit) !important;
     outline-color: var(--impala-color-green-edit) !important;
+  }
+
+  &:disabled {
+    border-style: dashed;
   }
 }
 

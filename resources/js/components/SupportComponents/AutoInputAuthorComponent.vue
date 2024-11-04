@@ -1,9 +1,8 @@
 <template>
-    <div class="gruz_auto_select_avtor">
 
-        <div class="input-container inp_show col-11" v-click-outside="focus_out_from_select">
+        <div class="w-full" v-click-outside="focus_out_from_select">
 <!--            <input id="inp1" type="text" class="auto_input_height showByClick" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <input id="inp1" type="text" class="auto_input_height showByClick" ref="auto_input" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <input id="inp1" type="text" class="impala-input" ref="auto_input" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
             <div class="dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index">
@@ -17,7 +16,6 @@
                </div>
 
            </div>
-       </div>
    </template>
 
    <script>
