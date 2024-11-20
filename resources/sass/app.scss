@@ -1,15 +1,16 @@
 /*
 
 */
+@use 'menu';
+@use 'overrides';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Inter:300,400,600,700,800,900&display=swap');
-
-@import 'menu';
 
 :root {
   // Body
@@ -40,8 +41,6 @@
   --vs-multi-value-text-color: var(--impala-color-gray-800) !important;
   --vs-multi-value-bg: #f4f4f5;
 }
-
-@import 'overrides';
 
 /*
 Reset

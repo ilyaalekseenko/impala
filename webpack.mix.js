@@ -14,10 +14,10 @@ const mix = require('laravel-mix');
 require('laravel-mix-tailwind');
 
 mix.js('resources/js/app.js', 'public/assets/js')
-    .vue()
+    .vue().version()
     /*.postCss("resources/css/tailwind.css", "public/css", [
         require("tailwindcss")
     ])*/
     /*.sass('resources/sass/bootstrap.scss', 'public/css').sourceMaps()*/
-    .styles([ 'resources/css/iconsax.css'], 'public/assets/css/iconsax.css')
-    .sass('resources/sass/app.scss', 'public/assets/css').tailwind();
+    .styles([ 'resources/css/iconsax.css'], 'public/assets/css/iconsax.css').version()
+    .sass('resources/sass/app.scss', 'public/assets/css').tailwind().version();

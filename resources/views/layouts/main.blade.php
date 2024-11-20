@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Impala-CRM</title>
     <link rel="icon" href="{{ asset('/favicon.svg') }}">
-    <link href="{{ asset('/assets/css/iconsax.css') }}" rel="stylesheet">
-    <link href="{{ asset('/assets/css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('/assets/css/iconsax.css') }}" rel="stylesheet">
+    <link href="{{ mix('/assets/css/app.css') }}" rel="stylesheet">
 
-    <script src="{{ asset('/assets/js/app.js') }}" defer></script>
+    <script src="{{ mix('/assets/js/app.js') }}" defer></script>
 </head>
 <body>
 <div id="app">
