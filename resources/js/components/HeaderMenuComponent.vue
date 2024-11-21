@@ -16,7 +16,7 @@
     </nav>
     <div class="impala-userbar gap-8">
       <a href="#" v-on:click="go_to_path('/docs_setting')" v-show="checkRolePermissionMixin([1])"><i
-          class="iconsax-setting-2"></i></a>
+          class="iconsax-setting-1"></i></a>
       <div class="inline-flex items-center justify-center gap-4">
         <span class="text-base font-semibold" v-html="useFio(user.last_name, user.first_name, user.patronymic)"></span>
         <a href="#" v-on:click="logout()"><i class="iconsax-logout-1"></i></a>

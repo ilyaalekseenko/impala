@@ -92,6 +92,10 @@ a {
 
 // Typography
 
+.impala-text-red {
+  color: var(--impala-color-red);
+}
+
 .impala-page-title {
   @apply text-[var(--impala-color-gray-800)] text-2xl font-semibold
 }
@@ -165,7 +169,11 @@ input.impala-add-link {
 }
 
 .impala-add-link\:none {
-  @apply text-[var(--impala-color-gray-700)] text-base font-medium;
+  @apply text-[var(--impala-color-gray-800)] text-base font-medium;
+}
+
+.impala-add-link\:none-red {
+  @apply text-[var(--impala-color-red)] text-base font-medium;
 }
 
 .impala-text-link {

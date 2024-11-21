@@ -850,6 +850,9 @@ video {
 .grid-cols-2{
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.flex-row{
+  flex-direction: row;
+}
 .flex-col{
   flex-direction: column;
 }
@@ -1186,6 +1189,10 @@ a {
   outline: 4px solid var(--impala-color-green-edit);
 }
 
+.impala-text-red {
+  color: var(--impala-color-red);
+}
+
 .impala-page-title{
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1284,7 +1291,14 @@ input.impala-add-link {
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 500;
-  color: var(--impala-color-gray-700);
+  color: var(--impala-color-gray-800);
+}
+
+.impala-add-link\:none-red{
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  color: var(--impala-color-red);
 }
 
 .impala-text-link{
