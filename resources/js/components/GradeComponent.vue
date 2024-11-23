@@ -170,18 +170,18 @@
         </div>
       </div>
       <div v-for="(elem, key) in spisokTShead" class="impala-box self-stretch flex-col justify-center items-start gap-0 flex" :class="elem.id_ts===right_current_TS && 'impala-outline'">
-        <div class="self-stretch p-4 justify-start items-center gap-4 inline-flex">
+        <div class="self-stretch p-4 justify-between items-center gap-4 inline-flex">
           <div class="w-8 h-8 p-2.5 bg-white rounded-[50px] border border-[#d3dddc] flex-col justify-center items-center gap-2.5 inline-flex">
             <div class="text-[#708e8c] text-sm font-semibold">{{key + 1}}</div>
           </div>
-          <div class="flex-row justify-start items-start gap-6 inline-flex grow">
+          <div class="flex-row justify-between items-start gap-6 inline-flex grow">
             <div class="impala-row-input self-stretch !gap-1.5 min-w-[175px]">
               <div class="impala-add-link:none !leading-none" v-html="(elem.vid_TSNazvanie === '' ||  elem.vid_TSNazvanie === null) ? '---' : elem.vid_TSNazvanie"></div>
               <div class="impala-label !leading-none">
                 кол-во мест {{(elem.kol_gruz_TS === '' ||  elem.kol_gruz_TS === null) ? '---' : elem.kol_gruz_TS}}
               </div>
             </div>
-            <div class="impala-row-input self-stretch !gap-1.5 grow">
+            <div class="impala-row-input self-stretch !gap-1.5 grow min-w-[375px]">
               <div class="impala-add-link:none !leading-none" v-html="(elem.perevozchik_TSNazvanie) ? elem.perevozchik_TSNazvanie :  '---'"></div>
               <div class="impala-label !leading-none">
                 перевозчик
@@ -199,7 +199,7 @@
                 выгрузка
               </div>
             </div>
-            <div class="impala-row-input self-stretch !gap-1.5">
+            <div class="impala-row-input self-stretch !gap-1.5  min-w-[125px]">
               <div class="impala-add-link:none !leading-none" v-html="((elem.stavka_summa) ? elem.stavka_summa :  '---') + ' ₽'"></div>
               <div class="impala-label !leading-none">
                 ставка
