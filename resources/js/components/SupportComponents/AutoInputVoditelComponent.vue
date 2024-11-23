@@ -1,19 +1,16 @@
 <template>
-    <div class="gruz_auto_select" v-my-click-outside="closeParentAutoInput">
-
-        <div class="input-container inp_show" >
-            <input type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
-            <div class="dropdown" v-if="showList" >
-                <ul class="select_list_gruzoot" ref="scrollContainer">
-                    <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
-                        {{ item.nazvanie }}
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <div class="impala-autoinput" v-click-outside="closeParentAutoInput">
+    <input type="text" class="impala-input auto_input_height" ref="auto_input" v-model="MainVarInInput"
+           @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
+    <div class="impala-box:dropdown" v-if="showList">
+      <ul class="select_list_gruzoot" ref="scrollContainer">
+        <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
+          {{ item.nazvanie }}
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
-
 
 <!--метод search back срабатывает при клике и ищет совпадения с тем что в инпуте-->
 <!--метод focus_out_from_select срабатывает при потере инпутом фокуса, так же срабатывает на лист-->

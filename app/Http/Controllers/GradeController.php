@@ -701,7 +701,7 @@ class GradeController extends Controller
                 $pogruzka['show_DP_date']=false;
                 $pogruzka['show_DP_time']=false;
 
-                if(($pogruzka['adres_pogruzki']=='')||($pogruzka['adres_pogruzki']==null))
+                if(empty($pogruzka['adres_pogruzki']))
                 {
                     $pogruzka['adres_pogruzki_show']='';
                 }

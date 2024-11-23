@@ -1,11 +1,11 @@
 <template>
-    <div class="w-full" v-my-click-outside="closeParentAutoInput">
+    <div class="impala-autoinput" v-my-click-outside="closeParentAutoInput">
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
             <input type="text" class="impala-input" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
-            <div class="dropdown" v-if="showList" >
+            <div class="impala-box:dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
-                      {{ item.forma_id }} {{ item.nazvanie }}
+                      <div class="impala-text-link:normal">{{ item.forma_id }} {{ item.nazvanie }}</div>
                     </li>
                 </ul>
             </div>

@@ -18,7 +18,7 @@
                                 <div class="col-2"></div>
                                 <div class="col-8 head_font no_padding_right_imp">
                                     <auto-input-stavki-tip-t-s-component
-                                                                 class="select_width_grade"
+
                                                                  tip="tipTS"
                                                                  @childReturnMethod="parentMethodStavki"
                                                                  @childReturnMethod1="clearInput1"

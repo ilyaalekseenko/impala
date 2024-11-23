@@ -102,7 +102,7 @@
             <div class="impala-label">
               Адрес погрузки
               <span class="impala-btn-none" v-on:click="adresPogruzkiShowSpanChange"><i
-                  class="iconsax-edit"></i></span>
+                  class="iconsax-edit-1"></i></span>
             </div>
             <template v-if="adresPogruzkiShowSpan">
               <div class="impala-add-link" v-if="(adres_pogruzke==='')||(adres_pogruzke==null)" v-on:click="inputShow('adresPogruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
@@ -160,7 +160,7 @@
             <div class="impala-label">
               Адрес выгрузки
               <span class="impala-btn-none" v-on:click="adresVygruzkiShowSpanChange"><i
-                  class="iconsax-edit"></i></span>
+                  class="iconsax-edit-1"></i></span>
             </div>
             <template v-if="adresVygruzkiShowSpan">
               <div class="impala-add-link" v-if="(adres_vygruski==='')||(adres_vygruski==null)" v-on:click="inputShow('adresVygruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
@@ -183,7 +183,7 @@
                  v-on:click="zakazchikShowInpChange()"
                  v-html="kompaniya_zakazchik_name==='' ? 'Выбрать заказчика' : kompaniya_zakazchik_name ">
             </div>
-            <auto-input-zakazchik-component v-else class="select_width_grade"
+            <auto-input-zakazchik-component v-else
                                             :order_id="order_id"
                                             :vidTsFromParent="kompaniya_zakazchik_name"
                                             @childReturnMethod="parentMethodFromAutoinputZakazchik"
@@ -201,7 +201,7 @@
                  v-if="managerZakazchikShowInp" v-on:click="managerShowInpChange()"
                  v-html="managerZakazchik_name==='' ? 'Выбрать менеджера' : managerZakazchik_name">
             </div>
-            <auto-input-manager-component v-else class="select_width_grade"
+            <auto-input-manager-component v-else
                                           :order_id="order_id"
                                           :vidTsFromParent="managerZakazchik_name"
                                           :zakazchikId="kompaniya_zakazchik_id"
@@ -233,7 +233,7 @@
         <div class="justify-start items-start gap-6 flex">
           <div class="impala-col-input">
             <div class="impala-label">Общий бюджет</div>
-            <div class="impala-block-title">{{ ob_budjet }} р</div>
+            <div class="impala-block-title">{{ ob_budjet }} ₽</div>
           </div>
         </div>
         <div class="justify-end items-start gap-6 flex">
@@ -264,8 +264,7 @@
           </div>
           <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
             <div v-if="add_ts!==key" v-on:click="editTs(key)" class="impala-btn impala-btn-small impala-btn-gray">
-              <i
-                  class="iconsax-edit"></i>
+              <i class="iconsax-edit-1"></i>
               Редактировать
             </div>
 
@@ -333,7 +332,7 @@
                       <div class="impala-label">
                         Адрес погрузки
                         <VMenu>
-                          <button class="iconsax-more"></button>
+                          <button class="iconsax-menu-meatballs"></button>
 
                           <template #popper>
                             <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
@@ -348,8 +347,7 @@
                           </template>
                         </VMenu>
                       </div>
-                      <auto-input-author-component class="cr_ord_inp_n_1"
-                                                   inp_type='add_pogruzka_edit'
+                      <auto-input-author-component inp_type='add_pogruzka_edit'
                                                    :adres_pogruzke_show="flag_pogruz"
                                                    :adres_pogruzke_show_edit="ad_pogruzki_arr_temp[key]['adres_pogruzke_show']"
                                                    :order_id="order_id"
@@ -377,7 +375,7 @@
                     <div class="impala-label">
                       Адрес выгрузки
                       <VMenu>
-                        <button class="iconsax-more"></button>
+                        <button class="iconsax-menu-meatballs"></button>
 
                         <template #popper>
                           <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
@@ -392,8 +390,7 @@
                         </template>
                       </VMenu>
                     </div>
-                      <auto-input-author-component class="cr_ord_inp_n_1"
-                                                   inp_type='add_vygruzka_edit'
+                      <auto-input-author-component inp_type='add_vygruzka_edit'
                                                    :adres_pogruzke_show="flag_pogruz"
                                                    :adres_pogruzke_show_edit="ad_vygruz_arr_temp[key]['adres_vygruzki_show']"
                                                    :order_id="order_id"
@@ -453,16 +450,16 @@
                   <div class="impala-row-input grow shrink basis-0 ">
                     <div class="impala-label">Перевозчик:
                       <VMenu>
-                        <button class="iconsax-more"></button>
+                        <button class="iconsax-menu-meatballs"></button>
 
                         <template #popper>
                           <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
                             <div class="impala-text-link " v-on:click="newPerevozchik(keyPerevozchik)"><i
-                                class="iconsax-add-square"></i> Добавить
+                                class="iconsax-add-square"></i> Добавить нового
                             </div>
                             <div class="impala-text-link " v-if="onePerevozchik.perevozchik_id!==''"
                                  v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"><i
-                                class="iconsax-edit"></i> Редактировать
+                                class="iconsax-edit-1"></i> Редактировать
                             </div>
                             <div class="impala-text-link impala-text-link:red"
                                  v-on:click="deletePerevozchikFromOrder(onePerevozchik.id,keyPerevozchik)"><i
@@ -473,7 +470,6 @@
                       </VMenu>
                     </div>
                       <auto-input-perevozka-component
-                          class="select_width_grade col-7 per_bot"
                           :order_id="order_id"
                           :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
                           :elem1="keyPerevozchik"

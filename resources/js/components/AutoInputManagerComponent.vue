@@ -1,10 +1,10 @@
 <template>
     <div class="gruz_auto_select" v-my-click-outside="closeParentAutoInput">
 
-        <div class="input-container inp_show" >
+        <div class="impala-autoinput" >
 <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <input type="text" class="auto_input_height impala-input" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
-            <div class="dropdown" v-if="showList" >
+            <input type="text" class="auto_input_height impala-input" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>
+            <div class="impala-box:dropdown" v-if="showList" >
                 <ul class="select_list_gruzoot" ref="scrollContainer">
                     <li v-for="(item, index) in filteredList" :key="index" @click="select(item)">
                         {{ item.nazvanie }}

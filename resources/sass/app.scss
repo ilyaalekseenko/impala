@@ -51,7 +51,7 @@ body {
   font-family: var(--impala-font-family), sans-serif;
 }
 
-a, input, button, .impala-btn, .impala-box, .impala-text-link {
+a, input, button, .impala-btn, .impala-box, .impala-text-link, .impala-text-link\:normal, .impala-add-link {
   transition: .4s;
 }
 
@@ -75,7 +75,15 @@ a {
   outline-color: transparent;
 }
 
-.impala-box\:dropdow {
+.impala-box\:link {
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.15);
+  }
+}
+
+.impala-box\:dropdown {
   border-radius: 6px;
   background: #FFF;
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.15);
@@ -92,9 +100,28 @@ a {
 
 // Typography
 
+.impala-text-primary {
+  color: var(--impala-color-primary);
+}
+
 .impala-text-red {
   color: var(--impala-color-red);
 }
+
+
+.impala-text-gray-500 {
+  color: var(--impala-color-gray-500);
+}
+
+.impala-text-gray-600 {
+  color: var(--impala-color-gray-600);
+}
+
+.impala-text-gray-700 {
+  color: var(--impala-color-gray-700);
+}
+
+
 
 .impala-page-title {
   @apply text-[var(--impala-color-gray-800)] text-2xl font-semibold
@@ -161,6 +188,10 @@ a {
 .impala-add-link {
   border-bottom: 2px dashed var(--impala-color-primary);
   cursor: pointer;
+
+  &:hover {
+    color: var(--impala-color-primary);
+  }
 }
 
 input.impala-add-link {
@@ -188,6 +219,18 @@ input.impala-add-link {
   }
 }
 
+.impala-text-link\:normal {
+  @apply gap-2 inline-flex text-[var(--impala-color-gray-700)] text-base cursor-pointer;
+
+  &:hover {
+    color: var(--impala-color-primary);
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+
 .impala-text-link\:red {
   @apply text-[var(--impala-color-red)];
 
@@ -206,7 +249,7 @@ input.impala-add-link {
   @apply justify-start items-center gap-2.5 inline-flex;
 }
 
-.impala-label {
+.impala-label, .impala-label\:base {
   @apply text-sm font-normal self-stretch justify-between items-center flex;
   color: var(--impala-color-gray-500);
   white-space: nowrap;
@@ -221,22 +264,147 @@ input.impala-add-link {
   }
 }
 
+.impala-label\:base {
+  @apply text-base font-bold impala-text-gray-500 uppercase leading-none !important;
+}
+
 .impala-input {
   @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full max-w-full;
 
   &:focus, &:focus-visible, &:active {
-    box-shadow: 0 0 5px var(--impala-color-green-edit) !important;
-    outline-color: var(--impala-color-green-edit) !important;
+    box-shadow: 0 0 0 2px var(--impala-color-green-edit) !important;
+    border-color: var(--impala-color-green-edit);
+    outline: 0 !important;
   }
 
   &:disabled {
     border-style: dashed;
   }
+
+  &:disabled, &:read-only {
+    border-style: dashed;
+    box-shadow: none !important;
+  }
 }
 
 .impala-input-red {
-  border: 1px dashed var(--impala-color-red);
+  border: 1px dashed var(--impala-color-red) !important;
   color: var(--impala-color-red);
+}
+
+input[type="checkbox"], input[type="radio"] {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+input[type="checkbox"] + label, input[type="radio"] + label {
+  @apply text-sm font-normal self-stretch items-start flex;
+  color: var(--impala-color-gray-500);
+
+  user-select: none;
+  line-height: 18px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+input.error[type="checkbox"] + label, input.error[type="radio"] + label {
+  padding-right: 28px;
+}
+
+input[type="checkbox"] + label::before, input[type="radio"] + label::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid var(--impala-color-gray-400);
+  border-radius: 3px;
+  margin-right: 5px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: relative;
+  top: 0;
+}
+
+input[type="radio"] + label::before {
+  border-radius: 50%;
+}
+
+/*input[type="radio"] + label::before {
+    background-size: 80% 80%;
+}*/
+
+input[type="checkbox"]:not(:disabled):active + label::before,
+input[type="radio"]:not(:disabled):active + label::before {
+  background-color: var(--impala-color-gray-400);
+  border-color: var(--impala-color-gray-400);
+}
+
+input[type="checkbox"]:checked + label::before,
+input[type="radio"]:checked + label::before {
+  border-color: var(--impala-color-primary);
+  background-color: var(--impala-color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.2188 0.445312C10.3438 0.320313 10.4766 0.320313 10.6172 0.445312L11.2734 1.125C11.4141 1.25 11.4141 1.38281 11.2734 1.52344L4.24219 8.55469C4.11719 8.67969 3.98438 8.67969 3.84375 8.55469L0.726562 5.41406C0.585938 5.28906 0.585938 5.15625 0.726562 5.01562L1.38281 4.35938C1.52344 4.21875 1.65625 4.21875 1.78125 4.35938L4.05469 6.63281L10.2188 0.445312Z' fill='%23E5E5E5'/%3E%3C/svg%3E ");
+}
+
+/*input[type="radio"]:checked + label::before {
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!-- Generator: Adobe Illustrator 25.4.1, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' id='Слой_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 12 12' style='enable-background:new 0 0 12 12;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bfill:%23FFFFFF;%7D%0A%3C/style%3E%3Ccircle class='st0' cx='6' cy='6' r='6'/%3E%3C/svg%3E");
+    background-position: 2px 2px;
+    background-size: 10px;
+}*/
+
+input[type="range"]:disabled,
+input[type="checkbox"]:disabled + label, input[type="radio"]:disabled + label {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+input[type="checkbox"] ~ label.error, input[type="radio"] ~ label.error {
+  display: inline-block;
+  margin: 0 0 0 10px;
+  top: -4px;
+  right: 0;
+  position: absolute;
+}
+
+input[type="checkbox"]:disabled ~ label, input[type="radio"]:disabled ~ label {
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1)
+}
+
+.impala-autoinput {
+  width: 100%;
+  position: relative;
+
+  .impala-input:read-only {
+    border-style: solid;
+  }
+
+  .impala-input:focus, .impala-input:focus-visible, .impala-input:active {
+    box-shadow: 0 0 0 2px var(--impala-color-green-edit) !important;
+    border-color: var(--impala-color-green-edit);
+    outline: 0 !important;
+  }
+
+  .impala-box\:dropdown {
+    width: 100%;
+    position: absolute;
+    top: auto;
+    left: auto;
+    right: auto;
+    overflow: hidden;
+    z-index: 20;
+
+    li {
+      @apply p-2;
+    }
+
+    li + li {
+      @apply border-t border-[#e3eaea];
+    }
+  }
 }
 
 // Header

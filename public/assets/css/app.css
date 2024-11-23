@@ -1,5 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
 @import url(https://fonts.googleapis.com/css?family=Inter:300,400,600,700,800,900&display=swap);
+@charset "UTF-8";
 /*
 
 */
@@ -122,6 +123,10 @@ aside {
 .vue-select.open .menu .menu-option {
   flex: 0 1 100% !important;
   white-space: nowrap;
+}
+
+.vc-btn {
+  color: var(--impala-color-primary) !important;
 }
 
 *, ::before, ::after{
@@ -678,6 +683,12 @@ video {
 .top-0{
   top: 0px;
 }
+.col-span-2{
+  grid-column: span 2 / span 2;
+}
+.col-span-3{
+  grid-column: span 3 / span 3;
+}
 .m-0{
   margin: 0px;
 }
@@ -820,6 +831,18 @@ video {
 .min-w-\[125px\]{
   min-width: 125px;
 }
+.min-w-\[135px\]{
+  min-width: 135px;
+}
+.min-w-\[175px\]{
+  min-width: 175px;
+}
+.min-w-\[45px\]{
+  min-width: 45px;
+}
+.min-w-\[95px\]{
+  min-width: 95px;
+}
 .max-w-6xl{
   max-width: 72rem;
 }
@@ -844,11 +867,20 @@ video {
 .basis-0{
   flex-basis: 0px;
 }
+.cursor-pointer{
+  cursor: pointer;
+}
 .grid-cols-1{
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 .grid-cols-2{
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-3{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.grid-cols-4{
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .flex-row{
   flex-direction: row;
@@ -861,6 +893,9 @@ video {
 }
 .items-start{
   align-items: flex-start;
+}
+.items-end{
+  align-items: flex-end;
 }
 .items-center{
   align-items: center;
@@ -877,8 +912,14 @@ video {
 .justify-between{
   justify-content: space-between;
 }
+.\!gap-1\.5{
+  gap: 0.375rem !important;
+}
 .gap-0{
   gap: 0px;
+}
+.gap-1{
+  gap: 0.25rem;
 }
 .gap-2{
   gap: 0.5rem;
@@ -1020,6 +1061,9 @@ video {
 .pl-4{
   padding-left: 1rem;
 }
+.pt-6{
+  padding-top: 1.5rem;
+}
 .pt-8{
   padding-top: 2rem;
 }
@@ -1059,6 +1103,12 @@ video {
 }
 .font-semibold{
   font-weight: 600;
+}
+.uppercase{
+  text-transform: uppercase;
+}
+.\!leading-none{
+  line-height: 1 !important;
 }
 .leading-7{
   line-height: 1.75rem;
@@ -1152,7 +1202,7 @@ body {
   font-family: var(--impala-font-family), sans-serif;
 }
 
-a, input, button, .impala-btn, .impala-box, .impala-text-link {
+a, input, button, .impala-btn, .impala-box, .impala-text-link, .impala-text-link\:normal, .impala-add-link {
   transition: 0.4s;
 }
 
@@ -1174,7 +1224,14 @@ a {
   outline-color: transparent;
 }
 
-.impala-box\:dropdow {
+.impala-box\:link {
+  cursor: pointer;
+}
+.impala-box\:link:hover {
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.15);
+}
+
+.impala-box\:dropdown {
   border-radius: 6px;
   background: #FFF;
   box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.15);
@@ -1189,8 +1246,24 @@ a {
   outline: 4px solid var(--impala-color-green-edit);
 }
 
+.impala-text-primary {
+  color: var(--impala-color-primary);
+}
+
 .impala-text-red {
   color: var(--impala-color-red);
+}
+
+.impala-text-gray-500 {
+  color: var(--impala-color-gray-500);
+}
+
+.impala-text-gray-600 {
+  color: var(--impala-color-gray-600);
+}
+
+.impala-text-gray-700 {
+  color: var(--impala-color-gray-700);
 }
 
 .impala-page-title{
@@ -1281,6 +1354,9 @@ a {
   border-bottom: 2px dashed var(--impala-color-primary);
   cursor: pointer;
 }
+.impala-add-link:hover {
+  color: var(--impala-color-primary);
+}
 
 input.impala-add-link {
   padding: 0 !important;
@@ -1319,6 +1395,21 @@ input.impala-add-link {
   font-size: 18px;
 }
 
+.impala-text-link\:normal{
+  display: inline-flex;
+  cursor: pointer;
+  gap: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--impala-color-gray-700);
+}
+.impala-text-link\:normal:hover {
+  color: var(--impala-color-primary);
+}
+.impala-text-link\:normal i {
+  font-size: 18px;
+}
+
 .impala-text-link\:red{
   color: var(--impala-color-red);
 }
@@ -1341,7 +1432,7 @@ input.impala-add-link {
   gap: 0.625rem;
 }
 
-.impala-label{
+.impala-label, .impala-label\:base{
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1352,12 +1443,21 @@ input.impala-add-link {
   color: var(--impala-color-gray-500);
   white-space: nowrap;
 }
-.impala-label i {
+.impala-label i, .impala-label\:base i {
   font-size: 18px;
   color: var(--impala-color-gray-500);
 }
-.impala-label i:hover {
+.impala-label i:hover, .impala-label\:base i:hover {
   color: var(--impala-color-primary);
+}
+
+.impala-label\:base{
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  color: var(--impala-color-gray-500) !important;
 }
 
 .impala-input{
@@ -1379,16 +1479,143 @@ input.impala-add-link {
   font-weight: 400;
 }
 .impala-input:focus, .impala-input:focus-visible, .impala-input:active {
-  box-shadow: 0 0 5px var(--impala-color-green-edit) !important;
-  outline-color: var(--impala-color-green-edit) !important;
+  box-shadow: 0 0 0 2px var(--impala-color-green-edit) !important;
+  border-color: var(--impala-color-green-edit);
+  outline: 0 !important;
 }
 .impala-input:disabled {
   border-style: dashed;
 }
+.impala-input:-moz-read-only {
+  border-style: dashed;
+  box-shadow: none !important;
+}
+.impala-input:disabled, .impala-input:read-only {
+  border-style: dashed;
+  box-shadow: none !important;
+}
 
 .impala-input-red {
-  border: 1px dashed var(--impala-color-red);
+  border: 1px dashed var(--impala-color-red) !important;
   color: var(--impala-color-red);
+}
+
+input[type=checkbox], input[type=radio] {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+input[type=checkbox] + label, input[type=radio] + label{
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  color: var(--impala-color-gray-500);
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  line-height: 18px;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+input.error[type=checkbox] + label, input.error[type=radio] + label {
+  padding-right: 28px;
+}
+
+input[type=checkbox] + label::before, input[type=radio] + label::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid var(--impala-color-gray-400);
+  border-radius: 3px;
+  margin-right: 5px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: relative;
+  top: 0;
+}
+
+input[type=radio] + label::before {
+  border-radius: 50%;
+}
+
+/*input[type="radio"] + label::before {
+    background-size: 80% 80%;
+}*/
+input[type=checkbox]:not(:disabled):active + label::before,
+input[type=radio]:not(:disabled):active + label::before {
+  background-color: var(--impala-color-gray-400);
+  border-color: var(--impala-color-gray-400);
+}
+
+input[type=checkbox]:checked + label::before,
+input[type=radio]:checked + label::before {
+  border-color: var(--impala-color-primary);
+  background-color: var(--impala-color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.2188 0.445312C10.3438 0.320313 10.4766 0.320313 10.6172 0.445312L11.2734 1.125C11.4141 1.25 11.4141 1.38281 11.2734 1.52344L4.24219 8.55469C4.11719 8.67969 3.98438 8.67969 3.84375 8.55469L0.726562 5.41406C0.585938 5.28906 0.585938 5.15625 0.726562 5.01562L1.38281 4.35938C1.52344 4.21875 1.65625 4.21875 1.78125 4.35938L4.05469 6.63281L10.2188 0.445312Z' fill='%23E5E5E5'/%3E%3C/svg%3E ");
+}
+
+/*input[type="radio"]:checked + label::before {
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!-- Generator: Adobe Illustrator 25.4.1, SVG Export Plug-In . SVG Version: 6.00 Build 0) --%3E%3Csvg version='1.1' id='Слой_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 12 12' style='enable-background:new 0 0 12 12;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bfill:%23FFFFFF;%7D%0A%3C/style%3E%3Ccircle class='st0' cx='6' cy='6' r='6'/%3E%3C/svg%3E");
+    background-position: 2px 2px;
+    background-size: 10px;
+}*/
+input[type=range]:disabled,
+input[type=checkbox]:disabled + label, input[type=radio]:disabled + label {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+input[type=checkbox] ~ label.error, input[type=radio] ~ label.error {
+  display: inline-block;
+  margin: 0 0 0 10px;
+  top: -4px;
+  right: 0;
+  position: absolute;
+}
+
+input[type=checkbox]:disabled ~ label, input[type=radio]:disabled ~ label {
+  filter: grayscale(1);
+}
+
+.impala-autoinput {
+  width: 100%;
+  position: relative;
+}
+.impala-autoinput .impala-input:-moz-read-only {
+  border-style: solid;
+}
+.impala-autoinput .impala-input:read-only {
+  border-style: solid;
+}
+.impala-autoinput .impala-input:focus, .impala-autoinput .impala-input:focus-visible, .impala-autoinput .impala-input:active {
+  box-shadow: 0 0 0 2px var(--impala-color-green-edit) !important;
+  border-color: var(--impala-color-green-edit);
+  outline: 0 !important;
+}
+.impala-autoinput .impala-box\:dropdown {
+  width: 100%;
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: auto;
+  overflow: hidden;
+  z-index: 20;
+}
+.impala-autoinput .impala-box\:dropdown li{
+  padding: 0.5rem;
+}
+.impala-autoinput .impala-box\:dropdown li + li{
+  border-top-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(227 234 234 / var(--tw-border-opacity, 1));
 }
 
 .impala-logo {

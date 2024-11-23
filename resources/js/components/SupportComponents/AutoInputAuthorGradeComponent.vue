@@ -1,23 +1,22 @@
 <template>
-    <div class="gruz_auto_select_avtor">
-
-        <div class="input-container inp_show col-11" v-click-outside="focus_out_from_select">
-            <input id="inp1" type="text" class="auto_input_height showByClick" ref="auto_input" v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
-            <div class="dropdown" v-if="showList" >
-                <ul class="select_list_gruzoot" ref="scrollContainer">
-                    <li v-for="(item, index) in filteredList" :key="index">
-                        <div v-if="index==0 || item.avtor !== filteredList[index - 1].avtor" class="avtor_gruz row">
-                            <div class="col-9">{{ item.avtor }}</div>
-                               <div class="col-2" v-on:click="show_mod_edit(item.gruzootpravitel_id)"> <iconify-icon icon="typcn:plus" style="color: blue" width="30" height="30"></iconify-icon></div>
-                           </div>
-                           <div class="nazvanie_gruz"  @click="select(item)"> {{ item.nazvanie }}</div>
-                       </li>
-                   </ul>
-               </div>
-
-           </div>
-       </div>
-   </template>
+  <div class="impala-autoinput" v-click-outside="focus_out_from_select">
+    <input id="inp1" type="text" class="impala-input auto_input_height showByClick" ref="auto_input"
+           v-model="adres_pogruzke_show_local" @input="searchInpNew()" @click="clickSearchInp()"/>
+    <div class="impala-box:dropdown" v-if="showList">
+      <ul class="select_list_gruzoot" ref="scrollContainer">
+        <li v-for="(item, index) in filteredList" :key="index" class="flex flex-col gap-1">
+          <div v-if="index===0 || item.avtor !== filteredList[index - 1].avtor" class="flex gap-2 items-center justify-between">
+            <div class="grow text-sm font-bold impala-text-gray-500 uppercase">{{ item.avtor }}</div>
+            <span class="impala-btn-none" v-on:click="show_mod_edit(item.gruzootpravitel_id)" v-tooltip="'Добавить новый адрес к перевозчику'">
+              <i class="iconsax-add-circle impala-text-primary text-lg cursor-pointer"></i>
+            </span>
+          </div>
+          <div class="impala-text-link:normal" @click="select(item)"><i class="iconsax-location impala-text-gray-500"></i> {{ (item.nazvanie) ? item.nazvanie : 'Не заполнено' }}</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
 
    <script>
        export default {

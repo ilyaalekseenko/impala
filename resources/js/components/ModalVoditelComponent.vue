@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-4 ">
                   <div class="col create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                  <auto-input-perevozka-modal-component v-if="pogruzkaShowInp" class="select_width_grade"
+                  <auto-input-perevozka-modal-component v-if="pogruzkaShowInp"
                                                         :vidTsFromParent="kompaniyaNazvanie"
                                                         @childReturnMethod="parentMethodFromAutoinputPerevozka"
                   ></auto-input-perevozka-modal-component>

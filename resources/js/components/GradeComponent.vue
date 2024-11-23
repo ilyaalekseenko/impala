@@ -1,658 +1,723 @@
 <template>
-    <div class="container">
-        <modal-perevozchiki-component
-            ref="modalComponentforAction"
-            vid="grade"
-            :gradeAddPerevozchik='gradeAddPerevozchik'
-        ></modal-perevozchiki-component>
-        <modal-voditel-component
-            ref="modalComponentforActionVoditel"
-            vid="grade"
-            :gradeAddVoditel='gradeAddVoditel'
-        ></modal-voditel-component>
-        <modal-t-s-component
-            ref="modalComponentforActionTS"
-            vid="grade"
-            :gradeAddTSModal='gradeAddTSModal'
-        ></modal-t-s-component>
-        <modal-p-p-component
-            ref="modalComponentforActionPP"
-            vid="grade"
-            :gradeAddPPModal='gradeAddPPModal'
-        ></modal-p-p-component>
-        <modal-author-component   ref="modalComponentforActionAuthor"
-                                  edit_flag=true
-                                  :chahgeFrontNames='chahgeFrontNames'
-                                  vid="GruzzotpravitelComponent"
-        ></modal-author-component>
+  <modal-perevozchiki-component
+      ref="modalComponentforAction"
+      vid="grade"
+      :gradeAddPerevozchik='gradeAddPerevozchik'
+  ></modal-perevozchiki-component>
+  <modal-voditel-component
+      ref="modalComponentforActionVoditel"
+      vid="grade"
+      :gradeAddVoditel='gradeAddVoditel'
+  ></modal-voditel-component>
+  <modal-t-s-component
+      ref="modalComponentforActionTS"
+      vid="grade"
+      :gradeAddTSModal='gradeAddTSModal'
+  ></modal-t-s-component>
+  <modal-p-p-component
+      ref="modalComponentforActionPP"
+      vid="grade"
+      :gradeAddPPModal='gradeAddPPModal'
+  ></modal-p-p-component>
+  <modal-author-component   ref="modalComponentforActionAuthor"
+                            edit_flag=true
+                            :chahgeFrontNames='chahgeFrontNames'
+                            vid="GruzzotpravitelComponent"
+  ></modal-author-component>
 
-        <div class="row main_grade_div">
-            <div class="col-12 row grade_head_row " >
-                <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
-                <input hidden="true" type="file" ref="filesmult" multiple v-on:change="handleMultFilesUpload()" />
+  <modal-pogruzka-component
+      :get_gruzootpravitel_list='get_gruzootpravitel_list'
+      :select_gruzootpravitel='select_gruzootpravitel'
+      allNew=true
+      vid="GradeComponent"
+  ></modal-pogruzka-component>
 
-                <div  class="col-6 orders_create_title">
-                    Заявка: В работе > №{{ nomer_zayavki }}
-                </div>
-                <div  class="col-6 row justify-content-end trio_but">
-                    <div class="col add_ts_button2 text-center" v-on:click="save_TS()">Сохранить</div>
-                    <div class="col add_ts_button2 text-center" v-on:click="toProverka()">На проверку</div>
-                    <div class="col add_ts_button3 text-center" v-on:click="deleteTs()">Отменить</div>
-                </div>
-            </div>
-            <div class="col-12 row grade_underline"></div>
-            <div class="col-12 row">
-<!--               маленькая левая колонка-->
-                <div class="col-2 grade_left_column">
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-6 grade_left_column_text_first">Номер запроса:</div>
-                        <div class="col-6 grade_left_column_text_sec linkStyle" v-on:click="gotoCreateOrder()">{{ nomer_zayavki }}</div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-6 grade_left_column_text_first">Дата внесения:</div>
-                        <div class="col-6 grade_left_column_text_sec">{{ data_vneseniya }}</div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-12 grade_left_column_text_first">Адрес погрузки 1:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ adres_pogruzke }}</div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-12 grade_left_column_text_first">Адрес выгрузки 1:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ adres_vygruski }}</div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-12 grade_left_column_text_first">Количество грузомест:</div>
-                        <div class="col-12 grade_left_column_text_sec"><span>Вывезли {{ gruzomesta_big }}</span><span class="grade_red_text">Осталось {{ ostalos }}</span></div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-12 grade_left_column_text_first">Расстояние, км:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ rasstojanie }} км</div>
-                    </div>
-                    <div class="offset-1 col-11 row ">
-                    <hr noshade class="col-10  hr_line d-flex justify-content-center align-items-center">
-                    <iconify-icon class="col-2 arrow_gray_grade d-flex justify-content-center align-items-center" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                    </div>
+  <input hidden="true" type="file" id="files" ref="files"  v-on:change="handleFilesUpload()"/>
+  <input hidden="true" type="file" ref="filesmult" multiple v-on:change="handleMultFilesUpload()" />
 
-                    <div class="offset-1 col-11 row grade_left_column_text_main no_margin_top" >
-                        <div class="col-12 grade_left_column_text_first">Список ТС:</div>
-
-                       <span v-for="(elem,key) in spisokTSarr" class="show_arrow_flag" v-on:click="add_to_right_column(key)">
-                        <div  class="col-12 row spisok_ts_grade_left myDIV">
-                            <div class="col-1 no_padding_right no_padding_left" >
-                                <iconify-icon  class="truck_grade no_padding_right no_padding_left" icon="carbon:delivery-truck" width="20" height="20"></iconify-icon>
-                            </div>
-                        <div class="col-8 grade_left_column_text_sec">{{ elem.vid_TSNazvanie }},{{elem.kol_TS_TS}}ТС,{{ elem.stavka_TS }} руб</div>
-                            <span class="col-2 hide">
-                                <div class="hide">
-                                <iconify-icon  class="" icon="ant-design:arrow-right-outlined" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                </div>
-                            </span>
-                        </div>
-                        <div class="offset-1 col-11 row grade_left_underline"></div>
-                        </span>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main" v-show="checkRolePermission([1])">
-                        <div class="col-12 grade_left_column_text_first">Заказчик:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ kompaniya_zakazchik }} </div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main">
-                        <div class="col-12 grade_left_column_text_first">Общий бюджет:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ ob_budzet_left }} р.</div>
-                    </div>
-                    <div class="offset-1 col-11 row grade_left_underline"></div>
-                    <div class="offset-1 col-11 row grade_left_column_text_main" v-show="checkRolePermission([1])">
-                        <div class="col-12 grade_left_column_text_first">Цена контракта:</div>
-                        <div class="col-12 grade_left_column_text_sec">{{ cena_kontrakta }} р.</div>
-                    </div>
-                </div>
-<!--конец маленькой левой колонки-->
-
-
-                <div class="col-10">
-<!--                    модалочка-->
-                    <modal-pogruzka-component
-                        :get_gruzootpravitel_list='get_gruzootpravitel_list'
-                        :select_gruzootpravitel='select_gruzootpravitel'
-                        allNew=true
-                        vid="GradeComponent"
-                    ></modal-pogruzka-component>
-<!--                    конец модалочки-->
-
-
-
-<!--                    начало правой строки основного вида-->
-                    <div class="col-12 row">
-                        <div  class="col-6 grade_create_title">
-                            Список ТС:
-                        </div>
-                        <div v-if="right_current_TS!==''" class="col-6 row justify-content-end trio_but">
-                            <div class="col add_ts_button5 text-center" v-on:click="get_finall_doc_pdf('1')">ТН</div>
-                            <input hidden="true" type="file" id="files_doc" ref="files_doc"  v-on:change="handleFilesUploadDoc()"/>
-
-                            <div class="col add_ts_button5 add_ts_button5_1 text-center justify-content-center" v-on:click="get_finall_doc_pdf('2')">Доверенность</div>
-                           </div>
-                       </div>
-
-                       <div class="col-12 back_grade_right">
-                           <div class="container no_padding_left no_padding_right">
-                       <div class="col-12 row">
-                           <div class="col-2 grade_header_col">
-                               Вид ТС
-                           </div>
-                           <div class="col-2 grade_header_col">
-                               Перевозчик
-                           </div>
-
-                           <div class="col-2 grade_header_col">
-                               Дата и время погрузки
-                           </div>
-                           <div class="col-2 grade_header_col">
-                               Дата и время выгрузки
-                           </div>
-                           <div class="col-2 grade_header_col">
-                               Ставка
-                           </div>
-                       </div>
-                       </div>
-   <!--                        перебор в шапке-->
-                        <div class="col-12 row create_ord_underline_1"></div>
-                        <span v-for="(elem,key) in spisokTShead" class="ts_grade_margin">
-                        <div class="container  no_padding_left no_padding_right " v-on:click="click_on_right_col(elem,key)" v-bind:class="{ ts_podsvet: elem.id_ts===right_current_TS }">
-                             <div class="col-12 row no_padding_left no_padding_right">
-                            <div class="col-2 grade_header_col">
-                                <iconify-icon class="truck_grade no_padding_right no_padding_left" icon="carbon:delivery-truck" width="20" height="20"></iconify-icon>
-                                <span class=" grade_right_col_text">{{ elem.kol_gruz_TS }} мест</span>
-                            </div>
-
-                            <div class="col-2 grade_header_col">
-                                {{ elem.perevozchik_TSNazvanie }}
-                            </div>
-
-                            <div class="col-2 grade_header_col">
-                               <span v-if="elem.adres_pogruzki_TS && elem.adres_pogruzki_TS[0] && elem.adres_pogruzki_TS[0].date_ts">{{ elem.adres_pogruzki_TS[0].date_ts }}</span>
-                            </div>
-                            <div class="col-2 grade_header_col">
-                               <span v-if="elem.adres_vygr_TS && elem.adres_vygr_TS[0] && elem.adres_vygr_TS[0].date_ts">{{ elem.adres_vygr_TS[0].date_ts }}</span>
-                            </div>
-                            <div class="col-2 grade_header_col">
-                                {{elem.stavka_summa}}р .
-                                <button type="button" class="btn btn-danger btn_del_in_grade" v-on:click="deleteTSFromRightColumn(elem,key)">-</button>
-                            </div>
-                        </div>
-                       </div>
-                        <div class="col-12 row create_ord_underline_1"></div>
-
-
-                        <!--                        правая колонка низ начало-->
-
-                        <div v-for="(elem1,key) in spisokTShead" v-if="(right_col_down_show)&&(elem.id_ts==right_current_TS)" class="no_margin_left no_margin_right no_padding_left no_padding_right ">
-                            <div class="col-12 row"    v-if="elem1.id_ts==right_current_TS">
-                                <div class="col-3">
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Данные о перевозчике</div>
-                                    <div  class="create_orders_date_title_1 lit_marg_grade">Тип ТС:</div>
-                                           <auto-input-global-component class="select_width_grade"
-                                                                        :order_id="order_id"
-                                                                        :vidTsFromParent="elem1.vid_TSNazvanie"
-                                                                        :elem1="elem1"
-                                                                        @childReturnMethod="parentMethodFromAutoinputVidts"
-                                                                        ref="AutoSelectComponent_vid_TS"
-                                           ></auto-input-global-component>
-
-                                    <div  class="create_orders_date_title_1 lit_marg_grade_auto">Перевозчик:
-                            <span class="col add_button_grade no_wrap_text" v-on:click="newPerevozchik()">Добавить</span>
-                                        <span
-                                            v-if="elem1.perevozchik_TSNazvanie!==''"
-                                            v-on:click="show_mod_edit(elem1.perevozchik)">
-                                            <span
-                                                class="iconify edit_icon"
-                                                data-icon="akar-icons:edit"
-                                                style="color: #a6a6a6;"
-                                                data-width="20" data-height="20"
-                                            ></span>
-                                        </span>
-                                    </div>
-                            <div class="cr_ord_inp_n_1" v-if="!pogruzkaShowInp" v-on:click="pogruzkaShowInpChange()">{{ elem1.perevozchik_TSNazvanie }}</div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!pogruzkaShowInp&&elem1.perevozchik_TSNazvanie==''" v-on:click="pogruzkaShowInpChange()">Выбрать перевозчика</div>
-
-                                    <auto-input-perevozka-component v-if="pogruzkaShowInp" class="select_width_grade"
-                                                                 :order_id="order_id"
-                                                                 :vidTsFromParent="elem1.perevozchik_TSNazvanie"
-                                                                 :elem1="elem1"
-                                                                 @childReturnMethod="parentMethodFromAutoinputPerevozka"
-                                                                 @childCloseAutoInput="closeParentAutoInput"
-                                                                 ref="AutoSelectComponent_vid_TS"
-                                    ></auto-input-perevozka-component>
-
-                                    <div  class="create_orders_date_title_1 lit_marg_grade_auto">Водитель:
-                                    <span class="col add_button_grade no_wrap_text" v-on:click="newVoditel()">Добавить</span>
-                                      <span
-                                          v-if="elem1.voditel_TSNazvanie!==''"
-                                          v-on:click="editVoditel(elem1.voditel)">
-                                            <span
-                                                class="iconify edit_icon"
-                                                data-icon="akar-icons:edit"
-                                                style="color: #a6a6a6;"
-                                                data-width="20" data-height="20"
-                                            ></span>
-                                        </span>
-                                    </div>
-                            <div class="cr_ord_inp_n_1" v-if="!voditelShowInp" v-on:click="voditelShowInpChange()">{{ elem1.voditel_TSNazvanie }}</div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!voditelShowInp&&elem1.voditel_TSNazvanie==''" v-on:click="voditelShowInpChange()">Выбрать водителя</div>
-                                    <auto-input-voditel-component v-if="voditelShowInp" class="select_width_grade"
-                                                                    :order_id="order_id"
-                                                                    :vidTsFromParent="elem1.voditel_TSNazvanie"
-                                                                    :elem1="elem1"
-                                                                    :kompaniya="elem1.perevozchik"
-                                                                    @childReturnMethod="parentMethodFromAutoinputVoditel"
-                                                                    @childCloseAutoInput="closeParentAutoInput"
-                                                                  ref="AutoSelectComponent_vid_TS"
-                                    ></auto-input-voditel-component>
-
-                                    <div class="col-6 min_ts">
-                            <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ТС:
-                            <span class="col add_button_grade no_wrap_text" v-on:click="newTSModal()">Добавить</span>
-                              <span
-                                  v-if="elem1.TS_TSNazvanie!==''"
-                                  v-on:click="editTS(elem1.nomer_TS)">
-                                            <span
-                                                class="iconify edit_icon"
-                                                data-icon="akar-icons:edit"
-                                                style="color: #a6a6a6;"
-                                                data-width="20" data-height="20"
-                                            ></span>
-                              </span>
-                            </div>
-                            <div class="cr_ord_inp_n_1" v-if="!TSShowInp" v-on:click="TSShowInpChange()">{{ elem1.TS_TSNazvanie }}</div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!TSShowInp&&elem1.TS_TSNazvanie==''" v-on:click="TSShowInpChange()">Выбрать номер ТС</div>
-                                    <auto-input-t-s-component
-                                                                  v-if="TSShowInp" class="select_width_grade"
-                                                                  :order_id="order_id"
-                                                                  :vidTsFromParent="elem1.TS_TSNazvanie"
-                                                                  :elem1="elem1"
-                                                                  :kompaniya="elem1.perevozchik"
-                                                                  @childReturnMethod="parentMethodFromAutoinputTSModal"
-                                                                  @childCloseAutoInput="closeParentAutoInput"
-                                                                  ref="AutoSelectComponent_vid_TS"
-                                    ></auto-input-t-s-component>
-                                         </div>
-                                    <div class="col-6 min_ts">
-                                        <div  class="create_orders_date_title_1 lit_marg_grade_auto">Номер ПП:
-                                         <span class="col add_button_grade no_wrap_text" v-on:click="newPPModal()">Добавить</span>
-                                            <span
-                                                v-if="elem1.PP_Nazvanie!==''"
-                                                v-on:click="editPP(elem1.nomer_PP)">
-                                            <span
-                                                class="iconify edit_icon"
-                                                data-icon="akar-icons:edit"
-                                                style="color: #a6a6a6;"
-                                                data-width="20" data-height="20"
-                                            ></span>
-                                        </span>
-                                        </div>
-                            <div class="cr_ord_inp_n_1" v-if="!PPShowInp" v-on:click="PPShowInpChange()">{{ elem1.PP_Nazvanie }}</div>
-                            <div class="cr_ord_inp_n_1 add_button_grade_perevozka" v-if="!PPShowInp&&elem1.PP_Nazvanie==''" v-on:click="PPShowInpChange()">Выбрать номер ПП</div>
-                                    <auto-input-p-p-component v-if="PPShowInp" class="select_width_grade"
-                                                              :order_id="order_id"
-                                                              :vidTsFromParent="elem1.PP_Nazvanie"
-                                                              :elem1="elem1"
-                                                              :kompaniya="elem1.perevozchik"
-                                                              @childReturnMethod="parentMethodFromAutoinputPP"
-                                                              @childCloseAutoInput="closeParentAutoInput"
-                                                              ref="AutoSelectComponent_vid_TS"
-                                    ></auto-input-p-p-component>
-                                    </div>
-
-                                        <div class="col-12 grade_bold_dark grade_marg_bot">Информация о грузе</div>
-                                        <div class="col-6 little_title_grade_margin">
-                                            <div class="little_title_grade ">
-                                                Кол-во грузомест
-                                            </div>
-                                            <input @blur="update_one_data_number(elem1,'kol_gruz_TS',elem1.kol_gruz_TS)" class="border_input" v-model="elem1.kol_gruz_TS"  />
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="little_title_grade">
-                                                Расстояние, км
-                                            </div>
-                                            <input @blur="update_one_data_number(elem1,'rasstojanie_TS',elem1.rasstojanie_TS)" class="border_input" v-model="elem1.rasstojanie_TS"  />
-                                        </div>
-                                </div>
-
-<!--                                вторая колонка-->
-                                <div class="col-3">
-<!--                                        {{ adres_pogr }}-->
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата погрузки</div>
-                                    <span v-on:click="add_new_adres_pogruzka(key,1)" class="col add_button_grade no_wrap_text">Новый</span>
-                                    <span v-for="(adres_pogr,key1) in elem1.adres_pogruzki_TS" :key="adres_pogr.id_pogruzka">
-                                    <div class="col-12 row">
-                                        <div class="col-8 little_title_grade pogr_marg_grade">
-                                            Адрес погрузки {{ key1 + 1 }}
-                                        </div>
-                                        <div class="col-4 row">
-                                            <span class="col add_button_grade no_wrap_text" v-on:click="select_temp_var(key,'pogruzka',key1,elem1,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
-                                        </div>
-                                    </div>
-                              <auto-input-author-grade-component  class="cr_ord_inp_n_1"
-                                                            inp_type='adres_pogruzke'
-                                                            :adres_pogruzke_show="flag_pogruz"
-                                                            :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
-                                                            :order_id="order_id"
-                                                            :id_ts="elem1['id_ts']"
-                                                            :firstClick="localFirstClick"
-                                                            v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                            :key_in_arr="key1"
-                                                            :changePogrVygrAllShow="changePogrVygrAllShow"
-                                                            @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
-                                                            ref="AutoSelectComponent_grade_pogruzka"
-                              ></auto-input-author-grade-component>
-                                                                            <div class="col-12 row">
-                                                                                <div class="col-6 date_width">
-                                                                                    <div class="little_title_grade">Дата</div>
-
-                                        <!--                        ДАТА ЗАГРУЗКИ-->
-                        <input @click="openDPpogr(adres_pogr.id_pogruzka,1,1)" class="cr_ord_inp_n_2 border_input" v-model="adres_pogr.date_ts"  />
-                        <date-picker v-model:value="adres_pogr.date_ts" valueType="format" type="date"
-                        format="DD.MM.YYYY" v-model:open=adres_pogr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"></date-picker>
-
-                                        </div>
-
-                                    </div>
-                                    <div class="col-12 row doc_add_row_1">
-                                        <div class="col-6 add_button_grade no_wrap_text">{{ adres_pogr.doc_name }}
-                                            <input hidden="true" v-model="adres_pogr.doc_name" >
-                                            <span v-if="adres_pogr.doc_name" v-on:click="delete_file_grade(adres_pogr.id_pogruzka,1)">
-                                            <iconify-icon   icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-<!--                                    <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>-->
-
-<!--                                    кнопки загрузки документов-->
-
-                                <div class="col-12">
-                                   <div class="col-12 row">
-                                   <div class="col-6">
-                                        <div class="little_title_grade col-12">Документы</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_DOC" class="add_button_grade  col-12">
-                                                    {{ docInfo.name_doc }}
-                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)">
-                                                    <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                                </span>
-                                             </div>
-                                        <div class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,8)">Загрузить</div>
-                                   </div>
-
-                                    <div class="col-6">
-                                        <div class="little_title_grade">Фото груза</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_FOTO" class="add_button_grade">
-                                                    {{ docInfo.name_doc }}
-                                                <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
-                                             </div>
-                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,9)">Загрузить</div>
-                                   </div>
-
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Файлы</div>
-                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_pogruzka_vygr_files('pogr',adres_pogr.id_pogruzka)">Скачать всё</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                                                                <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)">-</button>
- </span>
-
-<!--                                    конец кнопок загрузки документов-->
-
-                                </div>
-
-<!--                                третья колонка-->
-                                <div class="col-3">
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Адрес и дата выгрузки</div>
-                                    <span v-on:click="add_new_adres_pogruzka(key,2)" class="col add_button_grade no_wrap_text">Новый</span>
-                                    <span v-for="(adres_vygr,key2) in elem1.adres_vygr_TS" :key="adres_vygr.id_pogruzka">
-                                        <div class="col-12 row">
-                                        <div class="col-8 little_title_grade pogr_marg_grade">
-                                            Адрес выгрузки {{ key2 + 1 }}
-                                        </div>
-                                        <div class="col-4 row">
-                                            <span class="col add_button_grade no_wrap_text" v-on:click="select_temp_var(key,'vygruzka',key2,elem1,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')">Добавить</span>
-                                        </div>
-                                    </div>
-                                    <auto-input-author-grade-component  class="cr_ord_inp_n_1"
-                                                                        inp_type='adres_vygruski'
-                                                                        :adres_pogruzke_show="flag_pogruz"
-                                                                        :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"
-                                                                        :order_id="order_id"
-                                                                        :id_ts="elem1['id_ts']"
-                                                                        :firstClick="localFirstClick"
-                                                                        v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                                        :key_in_arr="key2"
-                                                                        :changePogrVygrAllShow="changePogrVygrAllShow"
-                                                                        @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
-                                                                        ref="AutoSelectComponent_grade_vygruzka"
-                                    ></auto-input-author-grade-component>
-<!--                                         <auto-input-component class="cr_ord_inp_n_1"-->
-<!--                                                               inp_type='grade_vygruzka'-->
-<!--                                                               :adres_pogruzke_show="flag_pogruz"-->
-<!--                                                               :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"-->
-<!--                                                               :order_id="order_id"-->
-<!--                                                               :id_ts="elem1['id_ts']"-->
-<!--                                                               v-bind:gruzootpravitel_arr="gruzootpravitel_arr"-->
-<!--                                                               :key_in_arr="key2"-->
-<!--                                                               @add_pogruzka_new="update_one_gruzzootpravitel_from_select"-->
-<!--                                                               ref="AutoSelectComponent_grade_vygruzka"-->
-<!--                                         ></auto-input-component>-->
-
-
-                                        <div class="col-12 row">
-                                        <div class="col-6 date_width">
-                                            <div class="little_title_grade">Дата</div>
-
-                                            <input @click="openDPpogr(adres_vygr.id_pogruzka,1,2)" class="cr_ord_inp_n_2 border_input" v-model="adres_vygr.date_ts"  />
-                        <date-picker v-model:value="adres_vygr.date_ts" valueType="format" type="date"
-                                     format="DD.MM.YYYY" v-model:open=adres_vygr.show_DP_date @change="update_one_data_pogruzka(elem1,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"></date-picker>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-12 row doc_add_row_1">
-                                        <div class="col-3 add_button_grade no_wrap_text">{{ adres_vygr.doc_name }}
-                                    <span v-if="adres_vygr.doc_name" v-on:click="delete_file_grade(adres_vygr.id_pogruzka,2)">
-                                            <iconify-icon   icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                            </span>                                        </div>
-                                    </div>
-                                     <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-<!--                                    <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>-->
-
-
-
-                                    <div class="col-12">
-                                   <div class="col-12 row">
-                                   <div class="col-6">
-                                        <div class="little_title_grade col-12">Документы</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_DOC" class="add_button_grade col-12">
-                                                    {{ docInfo.name_doc }}
-                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)">
-                                                     <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                                 </span>
-                                             </div>
-                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,10)">Загрузить</div>
-                                   </div>
-
-                                    <div class="col-6">
-                                        <div class="little_title_grade">Фото груза</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_FOTO" class="add_button_grade">
-                                                    {{ docInfo.name_doc }}
-                                                 <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
-
-                                             </div>
-                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,11)">Загрузить</div>
-                                   </div>
-
-                                   <div class="col-6">
-                                        <div class="little_title_grade">Акт</div>
-                                             <div v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_ACT" class="add_button_grade">
-                                                    {{ docInfo.name_doc }}
-                                                 <span v-if="docInfo.name_doc!=''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"> <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon></span>
-                                             </div>
-                                        <div  class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,12)">Загрузить</div>
-                                   </div>
-
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Файлы</div>
-                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_pogruzka_vygr_files('vygr',adres_vygr.id_pogruzka)">Скачать всё</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                        <button type="button" class="btn btn-danger btn_del_in_grade grade_columns" v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)">-</button>
- </span>
-                                    <div class="col-12 row grade_underline"></div>
-                                    <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'checked2')" v-model="elem1.checked2">
-                                    <span class="head_font_grade">На терминале</span>
-                                    <div v-if="elem1.checked2" class="col-12 row">
-                                        <div class="col-12 little_title_grade">
-                                            Терминал
-                                        </div>
-                                        <div class="col-12 row">
-                                            <span class="col add_button_grade no_wrap_text">Новый</span>
-                                            <span class="col add_button_grade no_wrap_text">Добавить</span>
-                                        </div>
-                                    </div>
-                                    <select v-if="elem1.checked2" @blur="update_one_data(elem1,'terminal_TS')" class="col border_input grade_adr" v-model="elem1.terminal_TS">
-                                        <option v-for="(elem2) in termList" v-bind:value=elem2.id  class="sel_cust">{{ elem2.name }}</option>
-                                    </select>
-
-                                </div>
-<!--                                четвёртая колонка-->
-                                <div class="col-3">
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Ставка</div>
-                                     <div class="col-12 row">
-                                    <div class="col-8">
-                                        <div class="little_title_grade">Сумма</div>
-                                        <input @keypress="onlyNumber" @blur="update_one_data_number(elem1,'stavka_summa',elem1.stavka_summa)" class="border_input inp_date" v-model="elem1.stavka_summa"/>
-                                        <span class="no_wrap"><input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'NDS_check')" v-model="elem1.NDS_check">
-                                           НДС
-                                        </span>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="little_title_grade">Предоплата,%</div>
-                                        <input @blur="update_one_data_number(elem1,'predoplata',elem1.predoplata)" class="border_input inp_time" v-model="elem1.predoplata"  />
-                                    </div>
-                                     </div>
-                                    <div class="col-12 not_paid_marg">
-                                        <span class="not_paid">Не оплачено:</span>
-                                        <span class="grade_bold_dark_1">{{ elem1.ne_oplacheno }}р.</span>
-                                    </div>
-                                    <div class="col-12 little_title_grade">Оплата:</div>
-                                    <div class="col add_button_grade no_wrap_text" v-on:click="add_summ(key)">Добавить сумму</div>
-
-                                    <div class="col-12 row" v-for="(sum,key2) in elem1.summa_list">
-                                    <div class="col little_title_grade_1">Сумма {{ key2 +1 }}</div>
-                                    <div class="col  no_wrap_text" ><span v-on:click="deleteSumm(sum.id,key,key2)" class="add_button_grade">Удалить сумму</span></div>
-                                     <div class="col-12">
-                                        <input @keypress="onlyNumber" @input="checkSumma(elem1,sum.id_summa,sum.summa,key2)" @blur="update_one_data_summa(elem1,sum.id_summa,'summa',sum.summa)"
-                                               class="border_input add_summ_grade_inp" v-model="sum.summa"/>
-                                            <input @click="openDPsumma(key2)"
-                                                   class=" border_input add_summ_grade_inp_1" v-model="sum.data"  />
-                                         <date-picker v-model:value="sum.data" valueType="format" type="date"
-                                                        format="DD.MM.YYYY" v-model:open=sum.show_DP_date @change="update_one_data_summa(elem1,sum.id_summa,'data',sum.data)">
-                                         </date-picker>
-                                     </div>
-                                    </div>
-
-                                    <div class="col-12 grade_bold_dark grade_marg_bot grade_marg_bot">Договор-запрос:</div>
-                                   <div class="col-12 row">
-                                    <div class="col-6">
-                                    <div class="little_title_grade">Подписанная</div>
-                                        <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                        <span v-if="elem1.podpisannaya_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,3)">{{ elem1.podpisannaya_doc_name }}
-                                            <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                        </span>
-                                        <div v-if="!elem1.podpisannaya_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,3)">Загрузить</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                        <div class="little_title_grade">Счёт</div>
-                                        <div class="col-12 add_button_grade">
-                                            <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem1.schet_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,4)">{{ elem1.schet_doc_name }}
-                                            <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                        </span>
-                                            <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,4)">Загрузить</div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Счёт фактура или УПД</div>
-                                            <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-                                            <span v-if="elem1.faktura_doc_name" class="add_button_grade " v-on:click="delete_file_grade(0,5)">{{ elem1.faktura_doc_name }}
-                                            <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                        </span>
-                                            <div v-else class="col add_ts_button6 text-center" v-on:click="addFiles(0,5)">Загрузить</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="little_title_grade">Файлы</div>
-                                            <div class="col add_ts_button9_grade text-center" v-on:click="download_all_doc_grade()">Скачать всё</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 row">
-                                        <div class="col-12">
-                                            <div class="little_title_grade col-12">Оригиналы</div>
-                                                <input type="checkbox" id="checkbox" @blur="update_one_data(elem1,'predoplata')" v-model="elem1.TN_check">
-                                                <span class="TH_grade">ТН</span>
-                                            <span v-if="elem1.TN_doc_name" class="add_button_grade no_wrap_text" v-on:click="delete_file_grade(0,6)">{{ elem1.TN_doc_name }}
-                                            <iconify-icon  icon="ci:off-close" style="color: #c4c4c4;" width="20" height="20"></iconify-icon>
-                                            </span>
-                                            <input  hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
-
-                                            <div v-if="!elem1.TN_doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(0,6)">Загрузить</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <!--                                конец четвёртой колонки -->
-                        </div>
-                        <!--                    правая колонка низ конец-->
-                        </span>
-                    </div>
-                </div>
-                <!--конец правой колонки-->
-
-
-
-                </div>
-
-            <!--                    нижняя строка-->
-
-            <!--                    конец нижней строки-->
-
-        </div>
-        <div class="offset-1 col-10 row down_streak_grade">
-            <div class="down_grade_text col-5">
-<!--                Общий бюджет: {{ ob_budzet_down }} рубля-->
-                Общий бюджет: {{ ob_budzet_left }} рубля
-            </div>
-            <div class="down_grade_text col-4">
-                Оплачено: {{ oplacheno }} рублей
-            </div>
-            <div class="down_grade_text col-3">
-                Долг: {{ dolg }} рублей
-            </div>
-        </div>
-        <iframe style="display:none;" name="hiddenIframe" id="hiddenIframe"></iframe>
+  <div class="impala-subheader">
+    <div class="impala-page-title inline-flex gap-2">
+      <span>Заявка: {{ nomer_zayavki }}</span>
     </div>
+
+    <div class="impala-col-input">
+
+    </div>
+
+    <div class="justify-start items-center gap-8 inline-flex">
+      <div class="impala-col-input">
+        <div class="impala-label">Номер запроса:</div>
+        <div>
+          <div class="impala-add-link" v-on:click="gotoCreateOrder()" v-html="nomer_zayavki"></div>
+        </div>
+      </div>
+      <div class="impala-col-input">
+        <div class="impala-label">Дата внесения:</div>
+        <div>
+          <div class="impala-add-link:none" v-html="(data_vneseniya === '' ||  data_vneseniya === null) ? '---' : data_vneseniya"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="impala-request__wrap p-5 justify-between items-start gap-6 flex">
+    <aside class="w-[475px] m-0 flex-col justify-start items-start gap-6 flex grow-0 shrink-0">
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Основная информация</div>
+        <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
+          <div class="impala-row-input self-stretch">
+            <div class="impala-label">
+              Адрес погрузки
+            </div>
+            <div v-html="adres_pogruzke" class="impala-add-link:none"></div>
+          </div>
+          <div class="impala-row-input">
+            <div class="impala-label">
+              Дата погрузки
+            </div>
+            <div v-html="data_pogruzki" class="impala-add-link:none"></div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Грузомест (Всего/Осталось)
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 w-full">
+                <div v-html="gruzomesta_big" class="impala-add-link:none"></div>
+                <div v-html="ostalos" class="impala-add-link:none-red"></div>
+              </div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Расстояние, км
+              </div>
+              <div v-html="rasstojanie" class="impala-add-link:none"></div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Общий вес, кг
+              </div>
+              <div v-html="ob_ves" class="impala-add-link:none"></div>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">
+                Общий объём, м3
+              </div>
+              <div v-html="ob_ob" class="impala-add-link:none"></div>
+            </div>
+          </div>
+
+          <div class="impala-row-input self-stretch">
+            <div class="impala-label">
+              Адрес выгрузки
+            </div>
+            <div v-html="adres_vygruski" class="impala-add-link:none"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Список ТС из запроса</div>
+        <div class="impala-box impala-box:link w-full p-4 flex-row justify-between items-center gap-6 flex" v-for="(elem, key) in spisokTSarr" v-on:click="add_to_right_column(key)">
+          <div class="flex items-center gap-4 impala-text-gray-700 grow">
+            <i class="iconsax-truck text-2xl"></i> {{ elem.vid_TSNazvanie }}
+          </div>
+          <div class="flex gap-2.5 items-center impala-text-gray-500">
+            <div class="flex min-w-[45px]" v-html="((elem.kol_TS_TS) ? elem.kol_TS_TS : '--') + ' ТС'"></div> <div class="flex min-w-[95px]" v-html="((elem.stavka_TS) ? elem.stavka_TS : '-------') + ' ₽'"></div>
+          </div>
+          <i class="iconsax-chevron-square-right text-2xl impala-text-primary"></i>
+        </div>
+      </div>
+      <div class="flex-col justify-center items-start gap-4 flex w-full">
+        <div class="impala-block-title">Информация о клиенте</div>
+        <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
+          <div class="impala-row-input self-stretch" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Компания заказчик
+            </div>
+            <div class="impala-add-link:none" v-html="(kompaniya_zakazchik === '' ||  kompaniya_zakazchik === null) ? '---' : kompaniya_zakazchik"></div>
+          </div>
+          <div class="impala-row-input self-stretch" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Менеджер заказчика
+            </div>
+            <div class="impala-add-link:none" v-html="(menedzer_zakazchik === '' ||  menedzer_zakazchik === null) ? '---' : menedzer_zakazchik"></div>
+          </div>
+          <div class="impala-row-input" v-show="checkRolePermission([1])">
+            <div class="impala-label">
+              Бюджет контракта
+            </div>
+            <div class="impala-add-link:none" v-html="(cena_kontrakta === '' ||  cena_kontrakta === null) ? '---' : cena_kontrakta"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="flex-col justify-center items-start gap-4 flex grow">
+      <div class="self-stretch justify-between items-center flex">
+        <div class="impala-block-title">Список ТС</div>
+        <div class="justify-start items-start gap-6 flex">
+          <div class="impala-col-input">
+            <div class="impala-label">Общий бюджет</div>
+            <div class="impala-block-title">{{ ob_budzet_left }} ₽</div>
+          </div>
+          <div class="impala-col-input">
+            <div class="impala-label">Оплачено</div>
+            <div class="impala-block-title">{{ oplacheno }} ₽</div>
+          </div>
+          <div class="impala-col-input">
+            <div class="impala-label">Долг</div>
+            <div class="impala-block-title">{{ dolg }} ₽</div>
+          </div>
+        </div>
+      </div>
+      <div v-for="(elem, key) in spisokTShead" class="impala-box self-stretch flex-col justify-center items-start gap-0 flex" :class="elem.id_ts===right_current_TS && 'impala-outline'">
+        <div class="self-stretch p-4 justify-start items-center gap-4 inline-flex">
+          <div class="w-8 h-8 p-2.5 bg-white rounded-[50px] border border-[#d3dddc] flex-col justify-center items-center gap-2.5 inline-flex">
+            <div class="text-[#708e8c] text-sm font-semibold">{{key + 1}}</div>
+          </div>
+          <div class="flex-row justify-start items-start gap-6 inline-flex grow">
+            <div class="impala-row-input self-stretch !gap-1.5 min-w-[175px]">
+              <div class="impala-add-link:none !leading-none" v-html="(elem.vid_TSNazvanie === '' ||  elem.vid_TSNazvanie === null) ? '---' : elem.vid_TSNazvanie"></div>
+              <div class="impala-label !leading-none">
+                кол-во мест {{(elem.kol_gruz_TS === '' ||  elem.kol_gruz_TS === null) ? '---' : elem.kol_gruz_TS}}
+              </div>
+            </div>
+            <div class="impala-row-input self-stretch !gap-1.5 grow">
+              <div class="impala-add-link:none !leading-none" v-html="(elem.perevozchik_TSNazvanie) ? elem.perevozchik_TSNazvanie :  '---'"></div>
+              <div class="impala-label !leading-none">
+                перевозчик
+              </div>
+            </div>
+            <div class="impala-row-input self-stretch !gap-1.5 min-w-[135px]">
+              <div class="impala-add-link:none !leading-none" v-html="(elem.adres_pogruzki_TS && elem.adres_pogruzki_TS[0] && elem.adres_pogruzki_TS[0].date_ts) ? elem.adres_pogruzki_TS[0].date_ts :  '---'"></div>
+              <div class="impala-label !leading-none">
+                погрузка
+              </div>
+            </div>
+            <div class="impala-row-input self-stretch !gap-1.5 min-w-[135px]">
+              <div class="impala-add-link:none !leading-none" v-html="(elem.adres_vygr_TS && elem.adres_vygr_TS.slice(-1)[0] && elem.adres_vygr_TS.slice(-1)[0].date_ts) ? elem.adres_vygr_TS.slice(-1)[0].date_ts :  '---'"></div>
+              <div class="impala-label !leading-none">
+                выгрузка
+              </div>
+            </div>
+            <div class="impala-row-input self-stretch !gap-1.5">
+              <div class="impala-add-link:none !leading-none" v-html="((elem.stavka_summa) ? elem.stavka_summa :  '---') + ' ₽'"></div>
+              <div class="impala-label !leading-none">
+                ставка
+              </div>
+            </div>
+          </div>
+          <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
+              <div v-on:click="click_on_right_col(elem,key)" class="impala-btn impala-btn-small impala-btn-gray" v-html="elem.id_ts===right_current_TS ? 'Свернуть' : 'Подробнее'"></div>
+          </div>
+        </div>
+        <div v-if="elem.id_ts===right_current_TS" class="self-stretch p-4 border-t border-[#e3eaea] justify-between items-start gap-4 inline-flex">
+          <div class="grow shrink basis-0 flex-col justify-start items-start gap-6 inline-flex">
+            <div class="grow shrink basis-0 flex-row justify-between items-end gap-6 inline-flex">
+              <div class="self-stretch justify-between items-center inline-flex gap-4 grow">
+                <div class="impala-row-input">
+                  <div class="impala-label">Тип ТС</div>
+                  <auto-input-global-component
+                      :order_id="order_id"
+                      :vidTsFromParent="elem.vid_TSNazvanie"
+                      :elem1="elem"
+                      @childReturnMethod="parentMethodFromAutoinputVidts"
+                      ref="AutoSelectComponent_vid_TS"
+                  ></auto-input-global-component>
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">Грузомест</div>
+                  <input class="impala-input" v-model="elem.kol_gruz_TS" @input="update_one_data_number(elem,'kol_gruz_TS', elem.kol_gruz_TS)" />
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">Расстояние, км</div>
+                  <input class="impala-input" v-model="elem.rasstojanie_TS" @input="update_one_data_number(elem,'rasstojanie_TS', elem.rasstojanie_TS)" />
+                </div>
+              </div>
+              <div class="self-stretch justify-end items-end inline-flex gap-4 w-6/12">
+                <!--              <div class="impala-btn impala-btn-small impala-btn-gray"><i class="iconsax-document-download"></i> Текстовый формат</div>
+                              <div class="impala-btn impala-btn-small impala-btn-gray"><i class="iconsax-document-download"></i> Заявка</div>-->
+                <div><input hidden="true" type="file" id="files_doc" ref="files_doc"
+                            v-on:change="handleFilesUploadDoc()"/>
+                  <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="get_finall_doc_pdf('1')"><i
+                      class="iconsax-document-download"></i> Транспортная накладная
+                  </div>
+                </div>
+                <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="get_finall_doc_pdf('2')"><i
+                    class="iconsax-document-download"></i> Доверенность
+                </div>
+              </div>
+            </div>
+            <div class="impala-box:dashed self-stretch p-2 justify-start items-start gap-4 inline-flex w-full">
+              <div class="impala-row-input grow shrink basis-0 ">
+                <div class="impala-label">Перевозчик:
+                  <VMenu>
+                    <button class="iconsax-menu-meatballs"></button>
+
+                    <template #popper>
+                      <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                        <div class="impala-text-link " v-on:click="newPerevozchik()"><i
+                            class="iconsax-add-square"></i> Добавить нового
+                        </div>
+                        <div class="impala-text-link " v-if="elem.perevozchik_TSNazvanie!=='' || elem.perevozchik_TSNazvanie!==null"
+                             v-on:click="show_mod_edit(elem.perevozchik)"><i
+                            class="iconsax-edit-1"></i> Редактировать
+                        </div>
+                      </div>
+                    </template>
+                  </VMenu>
+                </div>
+                <auto-input-perevozka-component
+                    :order_id="order_id"
+                    :vidTsFromParent="elem.perevozchik_TSNazvanie"
+                    :elem1="elem"
+                    @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                    @childCloseAutoInput="closeParentAutoInput"
+                    ref="AutoSelectComponent_vid_TS"
+                ></auto-input-perevozka-component>
+              </div>
+              <div class="impala-row-input grow shrink basis-0">
+                <div class="impala-label">Водитель:
+                  <VMenu>
+                    <button class="iconsax-menu-meatballs"></button>
+
+                    <template #popper>
+                      <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                        <div class="impala-text-link " v-on:click="newVoditel()"><i
+                            class="iconsax-add-square"></i> Добавить
+                        </div>
+                        <div class="impala-text-link " v-if="elem.voditel_TSNazvanie!==''"
+                             v-on:click="editVoditel(elem.voditel)"><i
+                            class="iconsax-edit-1"></i> Редактировать
+                        </div>
+                      </div>
+                    </template>
+                  </VMenu>
+                </div>
+                <auto-input-voditel-component
+                    :order_id="order_id"
+                    :vidTsFromParent="elem.voditel_TSNazvanie"
+                    :elem1="elem"
+                    :kompaniya="elem.perevozchik"
+                    @childReturnMethod="parentMethodFromAutoinputVoditel"
+                    @childCloseAutoInput="closeParentAutoInput"
+                    ref="AutoSelectComponent_vid_TS"
+                ></auto-input-voditel-component>
+              </div>
+              <div class="impala-row-input w-min min-w-[125px]">
+                <div class="impala-label">Номер ТС:
+                  <VMenu>
+                    <button class="iconsax-menu-meatballs"></button>
+
+                    <template #popper>
+                      <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                        <div class="impala-text-link " v-on:click="newTSModal()"><i
+                            class="iconsax-add-square"></i> Добавить
+                        </div>
+                        <div class="impala-text-link " v-if="elem.TS_TSNazvanie!==''"
+                             v-on:click="editTS(elem.nomer_TS)"><i
+                            class="iconsax-edit-1"></i> Редактировать
+                        </div>
+                      </div>
+                    </template>
+                  </VMenu>
+                </div>
+                <auto-input-t-s-component
+
+                    :order_id="order_id"
+                    :vidTsFromParent="elem.TS_TSNazvanie"
+                    :elem1="elem"
+                    :kompaniya="elem.perevozchik"
+                    @childReturnMethod="parentMethodFromAutoinputTSModal"
+                    @childCloseAutoInput="closeParentAutoInput"
+                    ref="AutoSelectComponent_vid_TS"
+                ></auto-input-t-s-component>
+              </div>
+              <div class="impala-row-input w-min min-w-[125px]">
+                <div class="impala-label">Номер ПП:
+                  <VMenu>
+                    <button class="iconsax-menu-meatballs"></button>
+                    <template #popper>
+                      <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                        <div class="impala-text-link" v-on:click="newPPModal()"><i
+                            class="iconsax-add-square"></i> Добавить
+                        </div>
+                        <div class="impala-text-link" v-if="elem.PP_Nazvanie!==''"
+                             v-on:click="editPP(elem.nomer_PP)"><i
+                            class="iconsax-edit-1"></i> Редактировать
+                        </div>
+                      </div>
+                    </template>
+                  </VMenu>
+                </div>
+                <auto-input-p-p-component
+                    :order_id="order_id"
+                    :vidTsFromParent="elem.PP_Nazvanie"
+                    :elem1="elem"
+                    :kompaniya="elem.perevozchik"
+                    @childReturnMethod="parentMethodFromAutoinputPP"
+                    @childCloseAutoInput="closeParentAutoInput"
+                    ref="AutoSelectComponent_vid_TS"
+                ></auto-input-p-p-component>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6 w-full">
+              <div class="self-stretch flex-col justify-start items-start gap-4 flex">
+                <template v-if="elem.adres_pogruzki_TS.length > 0">
+                  <div v-for="(adres_pogr, key1) in elem.adres_pogruzki_TS" :key="adres_pogr.id_pogruzka" class="self-stretch flex flex-col gap-4 pl-4 border-l-4 border-[#fff4de]">
+                    <div class="impala-row-input w-full">
+                      <div class="impala-label:base">
+                        #{{ key1 + 1 }} Адрес погрузки
+                        <VMenu>
+                          <button class="iconsax-menu-meatballs"></button>
+
+                          <template #popper>
+                            <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                              <div class="impala-text-link " v-on:click="select_temp_var(key,'pogruzka',key1,elem,adres_pogr.id_pogruzka,1,adres_pogr.adres_pogruzki,'adres_pogruzki')"><i
+                                  class="iconsax-add-square"></i> Добавить новый адрес
+                              </div>
+                              <div class="impala-text-link impala-text-link:red"
+                                   v-on:click="deletePogVygInTS(adres_pogr.id_pogruzka,1,1,key)"><i
+                                  class="iconsax-trash"></i> Удалить
+                              </div>
+                            </div>
+                          </template>
+                        </VMenu>
+                      </div>
+                      <auto-input-author-grade-component inp_type='adres_pogruzke'
+                                                         :adres_pogruzke_show="flag_pogruz"
+                                                         :adres_pogruzke_show_edit="adres_pogr.adres_pogruzki_show"
+                                                         :order_id="order_id"
+                                                         :id_ts="elem['id_ts']"
+                                                         :firstClick="localFirstClick"
+                                                         v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                         :key_in_arr="key1"
+                                                         :changePogrVygrAllShow="changePogrVygrAllShow"
+                                                         @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                         ref="AutoSelectComponent_grade_pogruzka"
+                      ></auto-input-author-grade-component>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Дата и время погрузки
+                      </div>
+                      <date-picker type="datetime" valueType="format" v-model:value="adres_pogr.date_ts"
+                                   format="DD.MM.YYYY H:mm" @change="update_one_data_pogruzka(elem,adres_pogr.id_pogruzka,1,adres_pogr.date_ts,'date_ts')"
+                                   :editable="false"></date-picker>
+                    </div>
+                    <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
+                    <!-- <div v-if="!adres_pogr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_pogr.id_pogruzka,1)">Добавить файл</div>-->
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Фото груза
+                        <span class="impala-btn-none" v-on:click="addFiles(adres_pogr.id_pogruzka,9)"
+                              v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                      </div>
+                      <div v-if="adres_pogr.doc_name_FOTO.length > 0" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                        <template v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_FOTO">
+                          <div class="flex gap-2">
+                            <span class="">{{ docInfo.name_doc }}</span>
+                            <span v-if="docInfo.name_doc!==''"
+                                  v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,9,keyCreatedDocsInfo,docInfo.id)"
+                                  class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Документы
+                        <span class="impala-btn-none" v-on:click="addFiles(adres_pogr.id_pogruzka,8)"
+                              v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                      </div>
+                      <div v-if="adres_pogr.doc_name_DOC.length > 0" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                        <template v-for="(docInfo,keyCreatedDocsInfo) in adres_pogr.doc_name_DOC">
+                          <div class="flex gap-2">
+                            <span class="">{{ docInfo.name_doc }}</span>
+                            <span v-if="docInfo.name_doc!==''"
+                                  v-on:click="deleteFileInMultGrade(adres_pogr.id_pogruzka,8,keyCreatedDocsInfo,docInfo.id)"
+                                  class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="impala-btn impala-btn-small impala-btn-gray"
+                           v-on:click="download_pogruzka_vygr_files('pogr',adres_pogr.id_pogruzka)"><i
+                          class="iconsax-document-download"></i> Скачать все файлы
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <div class="px-2">
+                  <div class="impala-add-link" v-on:click="add_new_adres_pogruzka(key,1)">Добавить адрес погрузки</div>
+                </div>
+              </div>
+              <div class="self-stretch flex-col justify-start items-start gap-4 flex">
+                <template v-if="elem.adres_vygr_TS.length > 0">
+                  <div v-for="(adres_vygr, key2) in elem.adres_vygr_TS" :key="adres_vygr.id_pogruzka" class="self-stretch flex flex-col gap-4 pl-4 border-l-4 border-[#c9f7f5]">
+                    <div class="impala-row-input w-full">
+                      <div class="impala-label:base">
+                        #{{ key2 + 1 }} Адрес выгрузки
+                        <VMenu>
+                          <button class="iconsax-menu-meatballs"></button>
+
+                          <template #popper>
+                            <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                              <div class="impala-text-link " v-on:click="select_temp_var(key,'vygruzka',key2,elem,adres_vygr.id_pogruzka,2,adres_vygr.adres_pogruzki,'adres_pogruzki')"><i
+                                  class="iconsax-add-square"></i> Добавить новый адрес
+                              </div>
+                              <div class="impala-text-link impala-text-link:red"
+                                   v-on:click="deletePogVygInTS(adres_vygr.id_pogruzka,1,2,key)"><i
+                                  class="iconsax-trash"></i> Удалить
+                              </div>
+                            </div>
+                          </template>
+                        </VMenu>
+                      </div>
+                      <auto-input-author-grade-component  inp_type='adres_vygruski'
+                                                          :adres_pogruzke_show="flag_pogruz"
+                                                          :adres_pogruzke_show_edit="adres_vygr.adres_vygruzki_show"
+                                                          :order_id="order_id"
+                                                          :id_ts="elem['id_ts']"
+                                                          :firstClick="localFirstClick"
+                                                          v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                          :key_in_arr="key2"
+                                                          :changePogrVygrAllShow="changePogrVygrAllShow"
+                                                          @add_pogruzka_new="update_one_gruzzootpravitel_from_select"
+                                                          ref="AutoSelectComponent_grade_vygruzka"
+                      ></auto-input-author-grade-component>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Дата и время выгрузки
+                      </div>
+                      <date-picker type="datetime" valueType="format" v-model:value="adres_vygr.date_ts"
+                                   format="DD.MM.YYYY H:mm" @change="update_one_data_pogruzka(elem,adres_vygr.id_pogruzka,2,adres_vygr.date_ts,'date_ts')"
+                                   :editable="false"></date-picker>
+                    </div>
+                    <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()" />
+                    <!-- <div v-if="!adres_vygr.doc_name" class="col add_ts_button6 text-center" v-on:click="addFiles(adres_vygr.id_pogruzka,2)">Добавить файл</div>-->
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Фото груза
+                        <span class="impala-btn-none" v-on:click="addFiles(adres_vygr.id_pogruzka,11)"
+                              v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                      </div>
+                      <div v-if="adres_vygr.doc_name_FOTO.length > 0" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                        <template v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_FOTO">
+                          <div class="flex gap-2">
+                            <span class="">{{ docInfo.name_doc }}</span>
+                            <span v-if="docInfo.name_doc!==''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,11,keyCreatedDocsInfo,docInfo.id)"
+                                  class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Документы
+                        <span class="impala-btn-none" v-on:click="addFiles(adres_vygr.id_pogruzka,10)"
+                              v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                      </div>
+                      <div v-if="adres_vygr.doc_name_DOC.length > 0" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                        <template v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_DOC">
+                          <div class="flex gap-2">
+                            <span class="">{{ docInfo.name_doc }}</span>
+                            <span v-if="docInfo.name_doc!==''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,10,keyCreatedDocsInfo,docInfo.id)"
+                                  class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">
+                        Акт
+                        <span class="impala-btn-none" v-on:click="addFiles(adres_vygr.id_pogruzka,12)"
+                              v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                      </div>
+                      <div v-if="adres_vygr.doc_name_ACT.length > 0" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                        <template v-for="(docInfo,keyCreatedDocsInfo) in adres_vygr.doc_name_ACT">
+                          <div class="flex gap-2">
+                            <span class="">{{ docInfo.name_doc }}</span>
+                            <span v-if="docInfo.name_doc!==''" v-on:click="deleteFileInMultGrade(adres_vygr.id_pogruzka,12,keyCreatedDocsInfo,docInfo.id)"
+                                  class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="impala-btn impala-btn-small impala-btn-gray"
+                           v-on:click="download_pogruzka_vygr_files('vygr',adres_vygr.id_pogruzka)"><i
+                          class="iconsax-document-download"></i> Скачать все файлы
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <div class="px-2">
+                  <div class="impala-add-link" v-on:click="add_new_adres_pogruzka(key,2)">Добавить адрес выгрузки</div>
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-6 w-full border-t border-[#e3eaea] pt-6">
+              <div class="self-stretch flex-col justify-start items-start gap-6 flex">
+                <div class="impala-label:base">
+                  Ставка
+                </div>
+                <div class="impala-row-input w-full">
+                  <div class="grid grid-cols-4 gap-4">
+                    <div class="col-span-3 impala-row-input">
+                      <div class="impala-label">Сумма</div>
+                      <div class="flex gap-4 items-center">
+                        <input @keypress="onlyNumber"
+                               @input="update_one_data_number(elem,'stavka_summa',elem.stavka_summa)"
+                               class="impala-input" v-model="elem.stavka_summa"/>
+                        <span>
+                          <input type="checkbox" :id="'checkbox-'+ key +'-NDS_check'" @change="update_one_data(elem,'NDS_check')" v-model="elem.NDS_check">
+                          <label :for="'checkbox-'+ key +'-NDS_check'">НДС</label>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="impala-row-input">
+                      <div class="impala-label">Предоплата, %</div>
+                      <input @input="update_one_data_number(elem,'predoplata',elem.predoplata)"
+                             class="impala-input" v-model="elem.predoplata"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-4">
+                  <div class="impala-row-input w-full" v-for="(sum,key2) in elem.summa_list">
+                    <div class="impala-label">#{{ key2 + 1 }} сумма</div>
+                    <div class="flex gap-4 items-center">
+                      <div class="col-span-2">
+                        <input @keypress="onlyNumber" @input="checkSumma(elem,sum.id_summa,sum.summa,key2)" @blur="update_one_data_summa(elem,sum.id_summa,'summa',sum.summa)"
+                               class="impala-input" v-model="sum.summa"/>
+                      </div>
+                      <div>
+                        <date-picker v-model:value="sum.data" valueType="format" type="date"
+                                     format="DD.MM.YYYY" @change="update_one_data_summa(elem,sum.id_summa,'data',sum.data)">
+                        </date-picker>
+                      </div>
+                      <div>
+                        <span v-on:click="deleteSumm(sum.id,key, key2)"
+                              class="impala-text-link impala-text-link:red" v-tooltip="'Удалить сумму'"><i class="iconsax-trash"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex">
+                    <div class="impala-add-link" v-on:click="add_summ(key)">Добавить сумму</div>
+                  </div>
+                </div>
+
+                <div class="flex gap-4 items-center">
+                  <span class="impala-label:base">Не оплачено:</span>
+                  <span class="impala-text-red">{{ elem.ne_oplacheno }}р.</span>
+                </div>
+              </div>
+              <div class="self-stretch flex-col justify-start items-start gap-6 flex">
+                <div class="impala-label:base">
+                  Договор-запрос
+                </div>
+                <div class="impala-row-input w-full">
+                  <div class="impala-label">
+                    Подписанная
+                    <span v-if="!elem.podpisannaya_doc_name" class="impala-btn-none" v-on:click="addFiles(0,3)"
+                          v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                  </div>
+                  <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()"/>
+                  <div v-if="elem.podpisannaya_doc_name" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                    <div class="flex gap-2">
+                      <span class="">{{ elem.podpisannaya_doc_name }}</span>
+                      <span v-on:click="delete_file_grade(0,3)"
+                            class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="impala-row-input w-full">
+                  <div class="impala-label">
+                    Счёт
+                    <span v-if="!elem.schet_doc_name" class="impala-btn-none" v-on:click="addFiles(0,4)"
+                          v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                  </div>
+                  <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()"/>
+                  <div v-if="elem.schet_doc_name" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                    <div class="flex gap-2">
+                      <span class="">{{ elem.schet_doc_name }}</span>
+                      <span v-on:click="delete_file_grade(0,4)"
+                            class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="impala-row-input w-full">
+                  <div class="impala-label">
+                    Счёт фактура или УПД
+                    <span v-if="!elem.faktura_doc_name" class="impala-btn-none" v-on:click="addFiles(0,5)"
+                          v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                  </div>
+                  <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()"/>
+                  <div v-if="elem.faktura_doc_name" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                    <div class="flex gap-2">
+                      <span class="">{{ elem.faktura_doc_name }}</span>
+                      <span v-on:click="delete_file_grade(0,5)"
+                            class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="impala-row-input w-full">
+                  <div class="impala-label">
+                    Оригинал Транспортной накладной
+                    <span v-if="!elem.TN_doc_name" class="impala-btn-none" v-on:click="addFiles(0,6)"
+                          v-tooltip="'Загрузить'"><i class="iconsax-document-upload"></i></span>
+                  </div>
+                  <input hidden="true" type="file" :ref="files" v-on:change="handleFilesUpload()"/>
+<!--                  <div>
+                    <input type="checkbox" :id="'checkbox-'+ key +'-TN_check'" @blur="update_one_data(elem,'predoplata')" v-model="elem.TN_check">
+                    <label :for="'checkbox-'+ key +'-TN_check'">ТН</label>
+                  </div>-->
+                  <div v-if="elem.TN_doc_name" class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+                    <div class="flex gap-2">
+                      <span class="">{{ elem.TN_doc_name }}</span>
+                      <span v-on:click="delete_file_grade(0,6)"
+                            class="impala-text-link impala-text-link:red"> <i class="iconsax-trash"></i></span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="impala-btn impala-btn-small impala-btn-gray"
+                       v-on:click="download_all_doc_grade()"><i
+                      class="iconsax-document-download"></i> Скачать все файлы
+                  </div>
+                </div>
+              </div>
+              <div class="self-stretch flex-col justify-between gap-6 flex">
+                <div>
+                  <div class="flex">
+                    <input type="checkbox" :id="'checkbox-'+ key +'-checked2'" @blur="update_one_data(elem,'checked2')" v-model="elem.checked2">
+                    <label :for="'checkbox-'+ key +'-checked2'"><span class="impala-label:base">На терминале</span></label>
+                  </div>
+                  <template v-if="elem.checked2" >
+                    <div class="impala-row-input w-full">
+                      <div class="impala-label">
+                        Терминал
+                      </div>
+
+                        <select @blur="update_one_data(elem,'terminal_TS')" class="col border_input grade_adr" v-model="elem.terminal_TS">
+                          <option v-for="(elem2) in termList" v-bind:value=elem2.id  class="sel_cust">{{ elem2.name }}</option>
+                        </select>
+                      </div>
+                  </template>
+                </div>
+
+                <div class="flex justify-end">
+                  <div class="impala-btn impala-btn-small impala-btn-red" v-on:click="deleteTSFromRightColumn(elem,key)">Удалить ТС</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -1195,6 +1260,8 @@
                         pogr_or_vygr:pogr_or_vygr,
                         inp_pog_id:inp_pog_id,
                         name:name,
+                    }).then(response => {
+                      this.toast("Данные обновлены", "success");
                     })
             },
             //обновим данные на фронте в списке грузоотправителей после работы с селектом НЕ РАБОТАЕТ ИЗ МОДАЛКИ ДОБАВЛЕНИЯ ГРУЗООТПРАВИТЕЛЯ
@@ -1217,15 +1284,17 @@
             },
             update_unread_status_v_rabote()
             {
-                if(this.role==2)
-                {
-                    axios
-                        .post('/update_unread_status_v_rabote',{
-                            logist_id:this.auth_user['id'],
-                            id:this.order_id,
-                            column_name:'v_rabote',
-                        })
-                }
+              if (this.role == 2) {
+                axios
+                    .post('/update_unread_status_v_rabote', {
+                      logist_id: this.auth_user['id'],
+                      id: this.order_id,
+                      column_name: 'v_rabote',
+                    })
+                    .then(response => {
+                      this.toast("Статус обновлён", "success");
+                    })
+              }
             },
 
               deleteTs()
@@ -1244,23 +1313,22 @@
                 window.location.href = ('/create_orders/'+this.order_id)
 
             },
-         async   deleteTSFromRightColumn(elem,key)
-            {
-                const result = await this.confirmMethodMixin();
-                if (result) {
+          async deleteTSFromRightColumn(elem, key) {
+            const result = await this.confirmMethodMixin();
+            if (result) {
 
-                    this.deleteFlag=true;
-                this.spisokTShead.splice(key,1)
-                axios
-                    .post('/deleteTSFromRightColumn',{
-                        TS:elem,
-                        grade_id:this.order_id
-                    })
-                    .then(response => {
-                        console.log('удалено')
-                    })
-                }
-            },
+              this.deleteFlag = true;
+              this.spisokTShead.splice(key, 1)
+              axios
+                  .post('/deleteTSFromRightColumn', {
+                    TS: elem,
+                    grade_id: this.order_id
+                  })
+                  .then(response => {
+                    this.toast("Успешно удалено", "success");
+                  })
+            }
+          },
             select_temp_var(key,pogr_vygr,key1,p1,p2,p3,p4,p5)
             {
                 //key - номер в массиве spisokTShead
@@ -1969,6 +2037,9 @@ console.log(filesData)
                         name:name,
                         grade_id:this.order_id
                     })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
+                    })
             },
             update_one_data_pogruzka(elem,id_pogr,pogr_or_vygr,data_to_up,name)
             {
@@ -1980,6 +2051,9 @@ console.log(filesData)
                         data_to_up:data_to_up,
                         name:name,
                         grade_id:this.order_id
+                    })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
                     })
             },
             update_one_data(elem,name)
@@ -1996,6 +2070,9 @@ console.log(filesData)
                         elem:elem,
                         name:name,
                         grade_id:this.order_id
+                    })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
                     })
             },
             get_final_grades_data(spisokTShead)
@@ -2060,6 +2137,9 @@ console.log(filesData)
                     .post('/add_pogruzka_grade',{
                         arr_to_DB:arr_to_DB,
                     })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
+                    })
             },
             update_final_grade()
             {
@@ -2089,11 +2169,14 @@ console.log(filesData)
                         checked2:this.spisokTShead[in_arr_numb].checked2,
                         terminal_TS:this.spisokTShead[in_arr_numb].terminal_TS,
                     })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
+                    })
             },
             add_to_right_column(key)
             {
                 //определяем id ts
-                if(this.spisokTShead.length==0)
+                if(this.spisokTShead.length===0)
                     {
                         this.right_current_TS=this.spisokTShead.length;
                     }
@@ -2161,11 +2244,11 @@ console.log(filesData)
 
                 //Сохраняем ТС на фронте
                 let arr_lengt_TS=0
-                if(this.spisokTShead.length!=0)
+                if(this.spisokTShead.length!==0)
                 {
                     arr_lengt_TS=this.spisokTShead.length-1;
                 }
-                if(this.spisokTSarr[key].adres_pogruzki_TS.length==0)
+                if(this.spisokTSarr[key].adres_pogruzki_TS.length===0)
                 {
                     let objToPush2= {};
                     objToPush2['adres_pogruzki'] =' ';
@@ -2252,7 +2335,7 @@ console.log(filesData)
                   this.save_start_summa();
 
 
-                if(this.right_col_down_show==true)
+                if(this.right_col_down_show===true)
                 {
                     this.right_col_down_show=false;
                 }
@@ -2269,23 +2352,23 @@ console.log(filesData)
                 }
                 else
                 {
-
-                    if(!this.deleteFlag)
-                    {
+/*                    if(!this.deleteFlag)
+                    {*/
                         //переменная для id_ts текущего ТС в правой колонке
                         this.right_current_TS=elem.id_ts
                         //переменная обозначающая место текущего ТС в массиве правой колонки
                         this.right_currentTS_In_Arr=key
-                        if(this.right_col_down_show==true)
+                        if(this.right_col_down_show===true)
                         {
                             this.right_col_down_show=false;
                         }
                         this.right_col_down_show=true;
-                    }
+/*                    }
                     else
-                    {
+                    {*/
                         this.deleteFlag=false
-                    }
+/*                        this.right_current_TS=elem.id_ts
+                    }*/
                 }
                 console.log('TS')
                 console.log(this.right_current_TS)
@@ -2632,6 +2715,9 @@ console.log(filesData)
                         elem:elem,
                         name:name,
                         grade_id:this.order_id
+                    })
+                    .then(response => {
+                      this.toast("Данные обновлены", "success");
                     })
             },
 

@@ -1,23 +1,21 @@
 <template>
-    <div class="gruz_auto_select" v-my-click-outside="focus_out_from_select">
-
-        <div class="input-container inp_show" >
-<!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <div @click="clickSearchInp()" class="cust_pointer">Тип ТС</div>
-            <span class="div-container">
+  <div class="impala-autoinput" v-click-outside="focus_out_from_select">
+    <!--            <textarea type="text" class="auto_input_height" ref="auto_input" :style="{ height: inputHeight + 'px' }" v-model="MainVarInInput" @blur="focus_out_from_select()" @input="searchInpNew()" @click="clickSearchInp()"/>-->
+    <div @click="clickSearchInp()" class="cust_pointer">Тип ТС</div>
+    <span class="div-container">
                 <div @click="clickSearchInp()" ref="auto_input">{{ MainVarInInput }}</div>
-                <div v-if="MainVarInInput"  class="cross_stavki_hov" v-on:click="returnDataToParent1('tipTS')"><iconify-icon icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
+                <div v-if="MainVarInInput" class="cross_stavki_hov" v-on:click="returnDataToParent1('tipTS')"><iconify-icon
+                    icon="akar-icons:cross" width="24" height="24"></iconify-icon></div>
             </span>
-            <!--            <input readonly type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
-            <div class="dropdown dropdown_TS" v-if="showList" >
-                <ul class="select_list_gruzoot" ref="scrollContainer">
-                    <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
-                        {{ item.nazvanie }}
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <!--            <input readonly type="text" class="auto_input_height" ref="auto_input" v-model="MainVarInInput" @blur="focus_out_from_select" @input="searchInpNew()" @click="clickSearchInp()"/>-->
+    <div class="impala-box:dropdown" v-if="showList">
+      <ul class="select_list_gruzoot" ref="scrollContainer">
+        <li v-for="(item, index) in filteredList" :key="index" @click.capture="select(item)">
+          {{ item.nazvanie }}
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 
 
