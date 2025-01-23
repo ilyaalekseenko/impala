@@ -175,6 +175,7 @@ class GruzootpravitelController extends Controller
             'adres_pogruzke' =>0,
         ], 200);
     }
+
     public function save_gruzootpravitel(Request $request_back, CreateGruzootpravitelRequest $request)
     {
         $current_gruzootpravitel_id = $request_back->input('current_gruzootpravitel_id');
@@ -196,38 +197,35 @@ class GruzootpravitelController extends Controller
 
         //если новое модальное окно
 
-             if($current_gruzootpravitel_id=='')
-             {
+        if ($current_gruzootpravitel_id == '') {
 
-                 //сохраняем нового грузоотправителя
-              $gruzootpravitelId=$this->gruzootpravitelService->saveNewGruzootpravitel(request('forma'),request('nazvanie'),request('data_registracii'),request('INN'),request('OGRN'),request('telefon'),
-                     request('email'),request('generalnii_direktor'),request('telefon_gen_dir'),request('YR_adres'),request('pochtovyi_adres'),request('kontakty'),request('adresa'),request('bank_arr')
-                     ,request('doc_files')
-                 );
-                 return response()->json([
-                     'status' => 'success',
-                     'message' =>'Успешно сохранено',
-                     'id' => $gruzootpravitelId
-                 ], 200);
-             }
-             //если редактируем уже существуюющие модальное окно
-             else
-             {
+            //сохраняем нового грузоотправителя
+            $gruzootpravitelId = $this->gruzootpravitelService->saveNewGruzootpravitel(request('forma'), request('nazvanie'), request('data_registracii'), request('INN'), request('OGRN'), request('telefon'),
+                request('email'), request('generalnii_direktor'), request('telefon_gen_dir'), request('YR_adres'), request('pochtovyi_adres'), request('kontakty'), request('adresa'), request('bank_arr')
+                , request('doc_files')
+            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Успешно сохранено',
+                'id' => $gruzootpravitelId
+            ], 200);
+        } //если редактируем уже существующее модальное окно
+        else {
 
-                 //обновим грузоотправителя
-                 $this->gruzootpravitelService->updateGruzootpravitel($current_gruzootpravitel_id,request('forma'),request('nazvanie'),request('data_registracii'),request('INN'),request('OGRN'),request('telefon'),
-                     request('email'),request('generalnii_direktor'),request('telefon_gen_dir'),request('YR_adres'),request('pochtovyi_adres'),request('kontakty'),request('adresa'),request('bank_arr')
-                     ,request('doc_files')
-                 );
-                 //обновим адреса
-                 $this->gruzootpravitelAdresService->updateAdresa($current_gruzootpravitel_id,request('adresa'),request('forma'),request('nazvanie'));
+            //обновим грузоотправителя
+            $this->gruzootpravitelService->updateGruzootpravitel($current_gruzootpravitel_id, request('forma'), request('nazvanie'), request('data_registracii'), request('INN'), request('OGRN'), request('telefon'),
+                request('email'), request('generalnii_direktor'), request('telefon_gen_dir'), request('YR_adres'), request('pochtovyi_adres'), request('kontakty'), request('adresa'), request('bank_arr')
+                , request('doc_files')
+            );
+            //обновим адреса
+            $this->gruzootpravitelAdresService->updateAdresa($current_gruzootpravitel_id, request('adresa'), request('forma'), request('nazvanie'));
 
-                 return response()->json([
-                     'status' => 'success',
-                     'message' =>'Успешно сохранено',
-                     'id' => ''
-                 ], 200);
-             }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Успешно сохранено',
+                'id' => ''
+            ], 200);
+        }
 
     }
     //пока не используется этот метод

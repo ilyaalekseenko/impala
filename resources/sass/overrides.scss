@@ -10,7 +10,7 @@
   width: 170px !important;
 }
 
-.mx-time-column .mx-time-item.active {
+.mx-time-column .mx-time-item.active, .mx-table-date .today {
   color: var(--impala-color-primary) !important;
 }
 

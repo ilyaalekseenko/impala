@@ -3,12 +3,12 @@
       v-slot="{ params, close }"
       v-bind="$attrs"
       class="flex justify-center items-center"
-      content-class="relative flex flex-col max-h-full mx-4 p-4 border dark:border-gray-800 rounded bg-white dark:bg-gray-900"
+      content-class="relative flex flex-col max-h-full m-5 top-5 bottom-5 impala-box"
   >
     <span class="mr-8 text-2xl font-bold">
       <slot name="title"></slot>
     </span>
-    <div class="w-full overflow-y-auto">
+    <div class="w-full overflow-y-scroll">
       <slot :params="params"></slot>
     </div>
   </vue-final-modal>

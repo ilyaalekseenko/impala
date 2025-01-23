@@ -1,18 +1,10 @@
 <template>
   <modal-pogruzka-component
-      :get_gruzootpravitel_list='get_gruzootpravitel_list'
-      :select_gruzootpravitel='select_gruzootpravitel'
-      :select_Manager='select_Manager'
-      allNew=true
+      :chahgeFrontNames="chahgeFrontNames"
       edit_flag=true
       vid="CreateOrdersComponent"
       ref="modalComponentforAction"
   ></modal-pogruzka-component>
-  <modal-author-component ref="modalComponentforActionAuthor"
-                          edit_flag=true
-                          :chahgeFrontNames='chahgeFrontNames'
-                          vid="GruzzotpravitelComponent"
-  ></modal-author-component>
   <modal-perevozchiki-component
       ref="modalComponentforActionPerevozchik"
       vid="CreateOrdersComponent"
@@ -22,8 +14,10 @@
   <div class="impala-subheader">
     <div class="impala-page-title inline-flex gap-2"><span>Запрос номер:</span>
       <div>
-        <div class="impala-add-link" v-if="nomerZaprosaShowInp" v-on:click="nomerZaprosaShowInpChange()" v-html="new_nomer_zayavki"></div>
-        <input class="impala-input" v-else @change="updateOrderNomerZaprosa()" v-click-outside="nomerZaprosaShowInpChange" v-model="new_nomer_zayavki" />
+        <div class="impala-add-link" v-if="nomerZaprosaShowInp" v-on:click="nomerZaprosaShowInpChange()"
+             v-html="new_nomer_zayavki"></div>
+        <input class="impala-input" v-else @change="updateOrderNomerZaprosa()"
+               v-click-outside="nomerZaprosaShowInpChange" v-model="new_nomer_zayavki"/>
       </div>
     </div>
 
@@ -46,7 +40,8 @@
       <div class="impala-col-input">
         <div class="impala-label">Вид перевозки:</div>
         <div>
-          <div class="impala-add-link" v-if="vidPerevozkiShowInp" v-on:click="vidPerevozkiShowInpChange()" v-html="vid_perevozki_name"></div>
+          <div class="impala-add-link" v-if="vidPerevozkiShowInp" v-on:click="vidPerevozkiShowInpChange()"
+               v-html="vid_perevozki_name"></div>
           <VueSelect
               v-else
               :placeholder="'Вид перевозки'"
@@ -62,7 +57,8 @@
       <div class="impala-col-input">
         <div class="impala-label">Дата внесения:</div>
         <div>
-          <div class="impala-add-link" v-if="dataVneseniyaShowInp" v-on:click="dataVneseniyaShowInpChange()" v-html="(data_vneseniya === '' ||  data_vneseniya === null) ? 'Выбрать дату и время' : data_vneseniya"></div>
+          <div class="impala-add-link" v-if="dataVneseniyaShowInp" v-on:click="dataVneseniyaShowInpChange()"
+               v-html="(data_vneseniya === '' ||  data_vneseniya === null) ? 'Выбрать дату и время' : data_vneseniya"></div>
           <date-picker v-else ref="datepicker0" v-model:value="data_vneseniya" type="datetime" valueType="format"
                        format="DD.MM.YYYY H:mm" @change="updateOrderLoc('data_vneseniya',data_vneseniya)"
                        @close="dataVneseniyaShowInpChange()" :editable="false"></date-picker>
@@ -85,10 +81,11 @@
       </div>
       <div class="impala-col-input">
         <div class="impala-label">Рассчитать до:</div>
-          <div class="impala-add-link" v-if="rasschitatDoShowInp" v-on:click="rasschitatDoShowInpChange()" v-html="(rasschitat_do === '' ||  rasschitat_do === null) ? 'Выбрать дату и время' : rasschitat_do"></div>
-          <date-picker v-else ref="datepicker1" v-model:value="rasschitat_do" type="datetime" valueType="format"
-                       format="DD.MM.YYYY H:mm" @change="updateOrderLoc('rasschitat_do', rasschitat_do);"
-                       @close="rasschitatDoShowInpChange()" :editable="false"></date-picker>
+        <div class="impala-add-link" v-if="rasschitatDoShowInp" v-on:click="rasschitatDoShowInpChange()"
+             v-html="(rasschitat_do === '' ||  rasschitat_do === null) ? 'Выбрать дату и время' : rasschitat_do"></div>
+        <date-picker v-else ref="datepicker1" v-model:value="rasschitat_do" type="datetime" valueType="format"
+                     format="DD.MM.YYYY H:mm" @change="updateOrderLoc('rasschitat_do', rasschitat_do);"
+                     @close="rasschitatDoShowInpChange()" :editable="false"></date-picker>
       </div>
     </div>
   </div>
@@ -105,20 +102,23 @@
                   class="iconsax-edit-1"></i></span>
             </div>
             <template v-if="adresPogruzkiShowSpan">
-              <div class="impala-add-link" v-if="(adres_pogruzke==='')||(adres_pogruzke==null)" v-on:click="inputShow('adresPogruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
+              <div class="impala-add-link" v-if="(adres_pogruzke==='')||(adres_pogruzke==null)"
+                   v-on:click="adresPogruzkiShowSpanChange" v-html="'Выбрать адрес'"></div>
               <div v-else v-html="adres_pogruzke" class="impala-add-link:none"></div>
             </template>
-            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_pogruzke', adres_pogruzke)" v-model="adres_pogruzke" rows="3"  name="adres_pogruzke" v-click-outside="adresPogruzkiShowSpanChange"></textarea>
+            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_pogruzke', adres_pogruzke)"
+                      v-model="adres_pogruzke" rows="3" name="adres_pogruzke"
+                      v-click-outside="adresPogruzkiShowSpanChange"></textarea>
           </div>
           <div class="impala-row-input">
             <div class="impala-label">
               Дата погрузки
             </div>
-              <div class="impala-add-link" v-if="dataPogruzkiShowInp" v-on:click="dataPogruzkiShowInpChange()"
-                   v-html="(data_pogruzki === '' || data_pogruzki === null) ? 'Выбрать дату' : data_pogruzki"></div>
-              <date-picker v-else ref="datepicker2" type="date" valueType="format" v-model:value="data_pogruzki"
-                           format="DD.MM.YYYY" @change="updateOrderLoc('data_pogruzki', data_pogruzki)"
-                           @close="dataPogruzkiShowInpChange()" :editable="false"></date-picker>
+            <div class="impala-add-link" v-if="dataPogruzkiShowInp" v-on:click="dataPogruzkiShowInpChange()"
+                 v-html="(data_pogruzki === '' || data_pogruzki === null) ? 'Выбрать дату' : data_pogruzki"></div>
+            <date-picker v-else ref="datepicker2" type="date" valueType="format" v-model:value="data_pogruzki"
+                         format="DD.MM.YYYY" @change="updateOrderLoc('data_pogruzki', data_pogruzki)"
+                         @close="dataPogruzkiShowInpChange()" :editable="false"></date-picker>
           </div>
 
           <div class="grid grid-cols-2 gap-6">
@@ -137,22 +137,22 @@
               <div class="impala-label">
                 Расстояние, км
               </div>
-                <input @change="updateOrderLocNumber('rasstojanie',rasstojanie)" class="impala-input"
-                       v-model="rasstojanie"/>
+              <input @change="updateOrderLocNumber('rasstojanie',rasstojanie)" class="impala-input"
+                     v-model="rasstojanie"/>
             </div>
             <div class="impala-row-input">
               <div class="impala-label">
                 Общий вес, кг
               </div>
-                <input @change="updateOrderLocNumber('ob_ves',ob_ves)" class="impala-input"
-                       v-model="ob_ves"/>
+              <input @change="updateOrderLocNumber('ob_ves',ob_ves)" class="impala-input"
+                     v-model="ob_ves"/>
             </div>
             <div class="impala-row-input">
               <div class="impala-label">
                 Общий объём, м3
               </div>
-                <input @change="updateOrderLocNumber('ob_ob',ob_ob)" class="impala-input"
-                       v-model="ob_ob"/>
+              <input @change="updateOrderLocNumber('ob_ob',ob_ob)" class="impala-input"
+                     v-model="ob_ob"/>
             </div>
           </div>
 
@@ -163,10 +163,13 @@
                   class="iconsax-edit-1"></i></span>
             </div>
             <template v-if="adresVygruzkiShowSpan">
-              <div class="impala-add-link" v-if="(adres_vygruski==='')||(adres_vygruski==null)" v-on:click="inputShow('adresVygruzkiShowSpan')" v-html="'Выбрать адрес'"></div>
+              <div class="impala-add-link" v-if="(adres_vygruski==='')||(adres_vygruski==null)"
+                   v-on:click="adresVygruzkiShowSpanChange" v-html="'Выбрать адрес'"></div>
               <div v-else v-html="adres_vygruski" class="impala-add-link:none"></div>
             </template>
-            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_vygruski', adres_vygruski)" v-model="adres_vygruski" rows="3" name="adres_vygruski" v-click-outside="adresVygruzkiShowSpanChange"></textarea>
+            <textarea v-else class="impala-input" @change="updateOrderLoc('adres_vygruski', adres_vygruski)"
+                      v-model="adres_vygruski" rows="3" name="adres_vygruski"
+                      v-click-outside="adresVygruzkiShowSpanChange"></textarea>
           </div>
         </div>
       </div>
@@ -222,7 +225,8 @@
       <div class="flex-col justify-center items-start gap-4 flex w-full">
         <div class="impala-block-title">Комментарий</div>
         <div class="impala-box w-full p-4 flex-col justify-start items-start gap-6 flex">
-          <textarea class="impala-input" @change="updateOrderLoc('komment_1',komment_1)" v-model="komment_1" rows="3" name="text"></textarea>
+          <textarea class="impala-input" @change="updateOrderLoc('komment_1',komment_1)" v-model="komment_1" rows="3"
+                    name="text"></textarea>
         </div>
       </div>
     </aside>
@@ -243,15 +247,21 @@
         </div>
       </div>
 
-      <div v-for="(elem, key) in spisokTSarr" class="impala-box self-stretch flex-col justify-center items-start gap-0 flex" :class="add_ts===key && 'impala-outline'">
+      <div v-for="(elem, key) in spisokTSarr"
+           class="impala-box self-stretch flex-col justify-center items-start gap-0 flex"
+           :class="add_ts===key && 'impala-outline'">
         <div class="self-stretch p-4 border-b border-[#e3eaea] justify-start items-center gap-4 inline-flex">
-          <div class="w-8 h-8 p-2.5 bg-white rounded-[50px] border border-[#d3dddc] flex-col justify-center items-center gap-2.5 inline-flex">
-            <div class=" text-[#708e8c] text-sm font-semibold">{{key + 1}}</div>
+          <div
+              class="w-8 h-8 p-2.5 bg-white rounded-[50px] border border-[#d3dddc] flex-col justify-center items-center gap-2.5 inline-flex">
+            <div class=" text-[#708e8c] text-sm font-semibold">{{ key + 1 }}</div>
           </div>
           <div class="flex-col justify-start items-start gap-[5px] inline-flex">
             <div class="justify-center items-center gap-2.5 inline-flex">
               <template v-if="add_ts!==key" v-for="(one_ts,key1) in ts_list_names">
-                <div v-if="!!one_ts && one_ts['id']===elem.vid_TS" class="impala-add-link:none">{{ one_ts.ts_name }}</div>
+                <div v-if="!!one_ts && one_ts['id']===elem.vid_TS" class="impala-add-link:none">{{
+                    one_ts.ts_name
+                  }}
+                </div>
               </template>
               <auto-input-global-component v-else class="select_width"
                                            :vidTsFromParent="vidTsNazavanie"
@@ -269,9 +279,9 @@
             </div>
 
             <template v-else>
-                <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="save_TS()">Сохранить</div>
-                <div class="impala-btn impala-btn-small impala-btn-red" v-on:click="deleteTs()">Удалить</div>
-                <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="cancel_TS()">Отмена</div>
+              <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="save_TS()">Сохранить</div>
+              <div class="impala-btn impala-btn-small impala-btn-red" v-on:click="deleteTs()">Удалить</div>
+              <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="cancel_TS()">Отмена</div>
             </template>
           </div>
         </div>
@@ -280,84 +290,101 @@
             <div class="self-stretch justify-between items-center inline-flex gap-4">
               <div class="impala-row-input">
                 <div class="impala-label">Расстояние, км</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.rasstojanie_TS) ? elem.rasstojanie_TS : '---'"></div>
-                  <input v-else class="impala-input" v-model="rasstojanie_TS" @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS', rasstojanie_TS)" />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.rasstojanie_TS) ? elem.rasstojanie_TS : '---'"></div>
+                <input v-else class="impala-input" v-model="rasstojanie_TS"
+                       @input="updateStavkaPerevozchikRasstojanie('rasstojanie_TS', rasstojanie_TS)"/>
               </div>
               <div class="impala-row-input">
                 <div class="impala-label">Грузомест</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.kol_gruz_TS) ? elem.kol_gruz_TS : '---'"></div>
-                  <input v-else class="impala-input" v-model="kol_gruz_TS" @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)" />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.kol_gruz_TS) ? elem.kol_gruz_TS : '---'"></div>
+                <input v-else class="impala-input" v-model="kol_gruz_TS"
+                       @blur="updateNumberToFormat('kol_gruz_TS',kol_gruz_TS)"/>
               </div>
               <div class="impala-row-input">
                 <div class="impala-label">Кол-во ТС</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.kol_TS_TS) ? elem.kol_TS_TS : '---'"></div>
-                  <input v-else class="impala-input" v-model="kol_TS_TS" @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)" />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.kol_TS_TS) ? elem.kol_TS_TS : '---'"></div>
+                <input v-else class="impala-input" v-model="kol_TS_TS"
+                       @blur="updateNumberToFormat('kol_TS_TS',kol_TS_TS)"/>
               </div>
               <div class="impala-row-input">
                 <div class="impala-label">Ставка</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.stavka_TS) ? elem.stavka_TS + ' ₽' : '---'"></div>
-                  <input v-else class="impala-input" v-model="stavka_TS" @input="updateStavkaBezNDS" />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.stavka_TS) ? elem.stavka_TS + ' ₽' : '---'"></div>
+                <input v-else class="impala-input" v-model="stavka_TS" @input="updateStavkaBezNDS"/>
               </div>
               <div class="impala-row-input">
                 <div class="impala-label">Ставка без НДС</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.stavka_TS_bez_NDS) ? elem.stavka_TS_bez_NDS + ' ₽' : '---'"></div>
-                  <input v-else class="impala-input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.stavka_TS_bez_NDS) ? elem.stavka_TS_bez_NDS + ' ₽' : '---'"></div>
+                <input v-else class="impala-input" v-model="stavka_TS_bez_NDS" @input="updateStavka"/>
               </div>
               <div class="impala-row-input">
                 <div class="impala-label">Ставка за км</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.stavka_TS_za_km) ? elem.stavka_TS_za_km + ' ₽' : '---'"></div>
-                  <input v-else class="impala-input" v-model="elem.stavka_TS_za_km" disabled />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.stavka_TS_za_km) ? elem.stavka_TS_za_km + ' ₽' : '---'"></div>
+                <input v-else class="impala-input" v-model="elem.stavka_TS_za_km" disabled/>
               </div>
               <div class="impala-row-input" v-show="checkRolePermission([1])">
                 <div class="impala-label">Ставка КП</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.stavka_kp_TS) ? elem.stavka_kp_TS + ' ₽' : '---'"></div>
-                  <input v-else class="impala-input" v-model="stavka_kp_TS" @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)" />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.stavka_kp_TS) ? elem.stavka_kp_TS + ' ₽' : '---'"></div>
+                <input v-else class="impala-input" v-model="stavka_kp_TS"
+                       @blur="updateNumberToFormat('stavka_kp_TS',stavka_kp_TS)"/>
               </div>
               <div class="impala-row-input" v-show="checkRolePermission([1])">
                 <div class="impala-label">Маржа</div>
-                  <div v-if="add_ts!==key" class="impala-add-link:none" v-html="(elem.marja_TS) ? elem.marja_TS + ' ₽' : '---'"></div>
-                  <input v-else class="impala-input" v-model="elem.marja_TS" disabled />
+                <div v-if="add_ts!==key" class="impala-add-link:none"
+                     v-html="(elem.marja_TS) ? elem.marja_TS + ' ₽' : '---'"></div>
+                <input v-else class="impala-input" v-model="elem.marja_TS" disabled/>
               </div>
             </div>
-            <div v-if="elem.adres_pogruzki_TS.length !== 0 || elem.adres_vygr_TS.length !== 0 || add_ts===key" class="grid grid-cols-2 gap-6 w-full">
-              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex" v-if="elem.adres_pogruzki_TS.length !== 0 || add_ts===key">
-                <div v-if="add_ts!==key" v-for="(elem1, key1) in elem.adres_pogruzki_TS" class="self-stretch impala-row-input pl-4 border-l-4 border-[#fff4de]">
+            <div v-if="elem.adres_pogruzki_TS.length !== 0 || elem.adres_vygr_TS.length !== 0 || add_ts===key"
+                 class="grid grid-cols-2 gap-6 w-full">
+              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex"
+                   v-if="elem.adres_pogruzki_TS.length !== 0 || add_ts===key">
+                <div v-if="add_ts!==key" v-for="(elem1, key1) in elem.adres_pogruzki_TS"
+                     class="self-stretch impala-row-input pl-4 border-l-4 border-[#fff4de]">
                   <div class="impala-label">#{{ key1 + 1 }} Адрес погрузки</div>
                   <div class="impala-add-link:none">
                     {{ elem1.adres_pogruzke_show }}
                   </div>
                 </div>
                 <template v-else>
-                    <div v-for="(elem, key) in ad_pogruzki_arr_temp" class="self-stretch impala-row-input pl-4 border-l-4 border-[#fff4de]">
-                      <div class="impala-label">
-                        Адрес погрузки
-                        <VMenu>
-                          <button class="iconsax-menu-meatballs"></button>
+                  <div v-for="(elem, key) in ad_pogruzki_arr_temp"
+                       class="self-stretch impala-row-input pl-4 border-l-4 border-[#fff4de]">
+                    <div class="impala-label">
+                      Адрес погрузки
+                      <VMenu>
+                        <button class="iconsax-menu-meatballs"></button>
 
-                          <template #popper>
-                            <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
-                              <div class="impala-text-link " v-on:click="select_temp_var('TS_pogruzka',key)"><i
-                                  class="iconsax-add-square"></i> Добавить новый адрес
-                              </div>
-                              <div class="impala-text-link impala-text-link:red"
-                                   v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')"><i
-                                  class="iconsax-trash"></i> Удалить
-                              </div>
+                        <template #popper>
+                          <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
+                            <div class="impala-text-link " v-on:click="select_temp_var('TS_pogruzka',key)"><i
+                                class="iconsax-add-square"></i> Добавить нового грузоотправителя/грузополучателя
                             </div>
-                          </template>
-                        </VMenu>
-                      </div>
-                      <auto-input-author-component inp_type='add_pogruzka_edit'
-                                                   :adres_pogruzke_show="flag_pogruz"
-                                                   :adres_pogruzke_show_edit="ad_pogruzki_arr_temp[key]['adres_pogruzke_show']"
-                                                   :order_id="order_id"
-                                                   v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                   :key_in_arr="key"
-                                                   @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                   ref="AutoSelectComponent_pogruzka_edit"
-                                                   :changePogrVygrAllShow="changePogrVygrAllShow"
-                      ></auto-input-author-component>
+                            <div class="impala-text-link impala-text-link:red"
+                                 v-on:click="delete_adres(ad_pogruzki_arr_temp,key,'AutoSelectComponent_pogruzka_edit','adres_pogruzke_show')">
+                              <i
+                                  class="iconsax-trash"></i> Удалить
+                            </div>
+                          </div>
+                        </template>
+                      </VMenu>
                     </div>
+                    <auto-input-author-component inp_type='add_pogruzka_edit'
+                                                 :adres_pogruzke_show="flag_pogruz"
+                                                 :adres_pogruzke_show_edit="ad_pogruzki_arr_temp[key]['adres_pogruzke_show']"
+                                                 :order_id="order_id"
+                                                 v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                 :key_in_arr="key"
+                                                 @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                 ref="AutoSelectComponent_pogruzka_edit"
+                                                 :changePogrVygrAllShow="changePogrVygrAllShow"
+                    ></auto-input-author-component>
+                  </div>
 
                   <div class="px-2">
                     <div class="impala-add-link" v-on:click="add_empty_adres_pogr()">Добавить адрес погрузки</div>
@@ -365,13 +392,16 @@
 
                 </template>
               </div>
-              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex" v-if="elem.adres_vygr_TS.length !== 0 || add_ts===key">
-                <div v-if="add_ts!==key" v-for="(elem1, key1) in elem.adres_vygr_TS" class="self-stretch impala-row-input pl-4 border-l-4 border-[#c9f7f5]">
+              <div class="self-stretch flex-col justify-start items-start gap-2.5 flex"
+                   v-if="elem.adres_vygr_TS.length !== 0 || add_ts===key">
+                <div v-if="add_ts!==key" v-for="(elem1, key1) in elem.adres_vygr_TS"
+                     class="self-stretch impala-row-input pl-4 border-l-4 border-[#c9f7f5]">
                   <div class="impala-label">#{{ key1 + 1 }} Адрес выгрузки</div>
                   <div class="impala-add-link:none">{{ elem1.adres_vygruzki_show }}</div>
                 </div>
                 <template v-else>
-                  <div v-for="(elem,key) in ad_vygruz_arr_temp" class="self-stretch impala-row-input pl-4 border-l-4 border-[#c9f7f5]">
+                  <div v-for="(elem,key) in ad_vygruz_arr_temp"
+                       class="self-stretch impala-row-input pl-4 border-l-4 border-[#c9f7f5]">
                     <div class="impala-label">
                       Адрес выгрузки
                       <VMenu>
@@ -380,26 +410,27 @@
                         <template #popper>
                           <div class="p-2 flex-col justify-center items-start gap-2.5 inline-flex">
                             <div class="impala-text-link " v-on:click="select_temp_var('TS_vygruzka',key)"><i
-                                class="iconsax-add-square"></i> Добавить новый адрес
+                                class="iconsax-add-square"></i> Добавить нового грузоотправителя/грузополучателя
                             </div>
                             <div class="impala-text-link impala-text-link:red"
-                                 v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')"><i
-                                class="iconsax-trash"></i> Удалить
+                                 v-on:click="delete_adres(ad_vygruz_arr_temp,key,'AutoSelectComponent_vygruzka_edit','adres_vygruzki_show')">
+                              <i
+                                  class="iconsax-trash"></i> Удалить
                             </div>
                           </div>
                         </template>
                       </VMenu>
                     </div>
-                      <auto-input-author-component inp_type='add_vygruzka_edit'
-                                                   :adres_pogruzke_show="flag_pogruz"
-                                                   :adres_pogruzke_show_edit="ad_vygruz_arr_temp[key]['adres_vygruzki_show']"
-                                                   :order_id="order_id"
-                                                   v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
-                                                   :key_in_arr="key"
-                                                   @add_pogruzka_new="add_new_pogruzka_in_ts"
-                                                   ref="AutoSelectComponent_vygruzka_edit"
-                                                   :changePogrVygrAllShow="changePogrVygrAllShow"
-                      ></auto-input-author-component>
+                    <auto-input-author-component inp_type='add_vygruzka_edit'
+                                                 :adres_pogruzke_show="flag_pogruz"
+                                                 :adres_pogruzke_show_edit="ad_vygruz_arr_temp[key]['adres_vygruzki_show']"
+                                                 :order_id="order_id"
+                                                 v-bind:gruzootpravitel_arr="gruzootpravitel_arr"
+                                                 :key_in_arr="key"
+                                                 @add_pogruzka_new="add_new_pogruzka_in_ts"
+                                                 ref="AutoSelectComponent_vygruzka_edit"
+                                                 :changePogrVygrAllShow="changePogrVygrAllShow"
+                    ></auto-input-author-component>
                   </div>
                   <div class="px-2">
                     <div class="impala-add-link" v-on:click="add_empty_adres_vygruz()">Добавить адрес выгрузки</div>
@@ -407,40 +438,53 @@
                 </template>
               </div>
             </div>
-            <div v-if="elem.perevozchikiList.length !== 0 || add_ts===key" class="self-stretch flex-col justify-start items-start gap-2.5 flex">
-              <div v-if="add_ts!==key" v-for="(perevozchik, perevozchikKey) in elem.perevozchikiList" class="impala-box:dashed self-stretch p-2 justify-start items-start gap-4 inline-flex">
+            <div v-if="elem.perevozchikiList.length !== 0 || add_ts===key"
+                 class="self-stretch flex-col justify-start items-start gap-2.5 flex">
+              <div v-if="add_ts!==key" v-for="(perevozchik, perevozchikKey) in elem.perevozchikiList"
+                   class="impala-box:dashed self-stretch p-2 justify-start items-start gap-4 inline-flex">
                 <div class="impala-row-input flex-1">
                   <div class="impala-label">Перевозчик:</div>
-                    <div v-if="perevozchik['contacts'].length === 0" class="impala-add-link:none">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</div>
-                    <VMenu v-else>
-                      <button class="impala-add-link">{{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}</button>
+                  <div v-if="perevozchik['contacts'].length === 0" class="impala-add-link:none">
+                    {{ perevozchik.perevozka.forma_id }} {{ perevozchik.perevozka.nazvanie }}
+                  </div>
+                  <VMenu v-else>
+                    <button class="impala-add-link">{{ perevozchik.perevozka.forma_id }}
+                      {{ perevozchik.perevozka.nazvanie }}
+                    </button>
 
-                      <template #popper v-if="!!perevozchik['contacts']">
-                        <div class="p-2" v-for="(onePopUpPerevozchik, key1Perevozchik) in perevozchik['contacts']" :key="key1Perevozchik">
-                          {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }} {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
-                        </div>
-                      </template>
-                    </VMenu>
+                    <template #popper v-if="!!perevozchik['contacts']">
+                      <div class="p-2" v-for="(onePopUpPerevozchik, key1Perevozchik) in perevozchik['contacts']"
+                           :key="key1Perevozchik">
+                        {{ onePopUpPerevozchik['FIO'] }} {{ onePopUpPerevozchik['dolznost'] }}
+                        {{ onePopUpPerevozchik['telefon'] }} {{ onePopUpPerevozchik['email'] }}
+                      </div>
+                    </template>
+                  </VMenu>
                 </div>
                 <div class="impala-row-input flex-[0_1_fit-content]">
                   <div class="impala-label">ИНН</div>
-                    <div class="impala-add-link:none" v-html="perevozchik.perevozka.INN ? perevozchik.perevozka.INN : '---'"></div>
+                  <div class="impala-add-link:none"
+                       v-html="perevozchik.perevozka.INN ? perevozchik.perevozka.INN : '---'"></div>
                 </div>
                 <div class="impala-row-input flex-[0_1_fit-content]">
                   <div class="impala-label">Код АТИ</div>
-                    <div class="impala-add-link:none" v-html="perevozchik.perevozka.kod_ATI ? perevozchik.perevozka.kod_ATI : '---'"></div>
+                  <div class="impala-add-link:none"
+                       v-html="perevozchik.perevozka.kod_ATI ? perevozchik.perevozka.kod_ATI : '---'"></div>
                 </div>
                 <div class="impala-row-input flex-[0_1_fit-content]">
                   <div class="impala-label">Ставка с НДС</div>
-                    <div class="impala-add-link:none" v-html="perevozchik.stavka_NDS ? perevozchik.stavka_NDS : '---'"></div>
+                  <div class="impala-add-link:none"
+                       v-html="perevozchik.stavka_NDS ? perevozchik.stavka_NDS : '---'"></div>
                 </div>
                 <div class="impala-row-input flex-[0_1_fit-content]">
                   <div class="impala-label">Ставка без НДС</div>
-                    <div class="impala-add-link:none" v-html="perevozchik.stavka_bez_NDS ? perevozchik.stavka_bez_NDS : '---'"></div>
+                  <div class="impala-add-link:none"
+                       v-html="perevozchik.stavka_bez_NDS ? perevozchik.stavka_bez_NDS : '---'"></div>
                 </div>
                 <div class="impala-row-input flex-[0_1_fit-content]">
                   <div class="impala-label">Ставка за км</div>
-                    <div class="impala-add-link:none" v-html="perevozchik.stavka_za_km ? perevozchik.stavka_za_km : '---'"></div>
+                  <div class="impala-add-link:none"
+                       v-html="perevozchik.stavka_za_km ? perevozchik.stavka_za_km : '---'"></div>
                 </div>
               </div>
               <template v-else>
@@ -457,7 +501,7 @@
                             <div class="impala-text-link " v-on:click="newPerevozchik(keyPerevozchik)"><i
                                 class="iconsax-add-square"></i> Добавить нового
                             </div>
-                            <div class="impala-text-link " v-if="onePerevozchik.perevozchik_id!==''"
+                            <div class="impala-text-link " v-if="onePerevozchik.perevozchik_id"
                                  v-on:click="show_mod_edit_perevozchik(onePerevozchik.perevozchik_id,keyPerevozchik)"><i
                                 class="iconsax-edit-1"></i> Редактировать
                             </div>
@@ -469,36 +513,36 @@
                         </template>
                       </VMenu>
                     </div>
-                      <auto-input-perevozka-component
-                          :order_id="order_id"
-                          :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
-                          :elem1="keyPerevozchik"
-                          @childReturnMethod="parentMethodFromAutoinputPerevozka"
-                          @childCloseAutoInput="closeParentAutoInputPogruzka"
-                          ref="AutoSelectComponent_vid_TS"
-                      ></auto-input-perevozka-component>
+                    <auto-input-perevozka-component
+                        :order_id="order_id"
+                        :vidTsFromParent="onePerevozchik.perevozka.nazvanie"
+                        :elem1="keyPerevozchik"
+                        @childReturnMethod="parentMethodFromAutoinputPerevozka"
+                        @childCloseAutoInput="closeParentAutoInputPogruzka"
+                        ref="AutoSelectComponent_vid_TS"
+                    ></auto-input-perevozka-component>
                   </div>
                   <div class="impala-row-input w-min min-w-[125px]">
                     <div class="impala-label">ИНН:</div>
-                      <input class="impala-input" v-model="onePerevozchik.perevozka.INN" disabled />
+                    <input class="impala-input" v-model="onePerevozchik.perevozka.INN" disabled/>
                   </div>
                   <div class="impala-row-input w-min min-w-[125px]">
                     <div class="impala-label">Код АТИ:</div>
-                      <input class="impala-input" v-model="onePerevozchik.perevozka.kod_ATI" disabled />
+                    <input class="impala-input" v-model="onePerevozchik.perevozka.kod_ATI" disabled/>
                   </div>
                   <div class="impala-row-input w-min">
                     <div class="impala-label">Ставка с НДС:</div>
-                      <input class="impala-input" v-model="onePerevozchik.stavka_NDS"
-                             @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>
+                    <input class="impala-input" v-model="onePerevozchik.stavka_NDS"
+                           @input="updateStavkaPerevozchik('stavka_NDS',keyPerevozchik)"/>
                   </div>
                   <div class="impala-row-input w-min">
                     <div class="impala-label">Ставка без НДС:</div>
-                      <input class="impala-input" v-model="onePerevozchik.stavka_bez_NDS"
-                             @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
+                    <input class="impala-input" v-model="onePerevozchik.stavka_bez_NDS"
+                           @input="updateStavkaPerevozchik('stavka_bez_NDS',keyPerevozchik)"/>
                   </div>
                   <div class="impala-row-input w-min">
                     <div class="impala-label">Ставка за км:</div>
-                      <input class="impala-input" v-model="onePerevozchik.stavka_za_km" disabled />
+                    <input class="impala-input" v-model="onePerevozchik.stavka_za_km" disabled/>
                   </div>
                 </div>
                 <div class="px-2">
@@ -608,7 +652,7 @@ export default {
       order_header_text: '',
       role: '',
       permissions: [],
-      logist_list_full: [{ value: 0, label: "Логист не выбран"}],
+      logist_list_full: [{value: 0, label: "Логист не выбран"}],
       utverzdenie_show_button: false,
       v_rabote_show_button: false,
       ocenka_show_button: false,
@@ -998,7 +1042,6 @@ export default {
               }
             }
 
-
             //  this.perevozchikiList[key].contacts=response.data.perevozchik[0].contacts
           })
     },
@@ -1011,14 +1054,11 @@ export default {
       //делаем запрос
       //обновляем
 
-
       for (var i = 0; i < this.spisokTSarr.length; i++) {
         for (var j = 0; j < this.spisokTSarr[i]['adres_pogruzki_TS'].length; j++) {
-
           findAdresa.push(this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzki']);
         }
         for (var j = 0; j < this.spisokTSarr[i]['adres_vygr_TS'].length; j++) {
-
           findAdresa.push(this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_pogruzki']);
         }
       }
@@ -1039,6 +1079,7 @@ export default {
         this.adres_pogruzke_show = nazv
       } else {
         this.adres_pogruzke_show = ''
+        this.adres_pogruzki = '' // Если название пустое, очищаем id адреса
       }
       //установим мордашку у адреса выгрузки
       nazv = this.issetFrontNames(gruzColect, this.adres_vygruski)
@@ -1046,7 +1087,7 @@ export default {
         this.adres_vygruski_show = nazv
       } else {
         this.adres_vygruski_show = ''
-
+        this.adres_pogruzki = '' // Если название пустое, очищаем id адреса
       }
 
       for (var i = 0; i < this.spisokTSarr.length; i++) {
@@ -1056,7 +1097,7 @@ export default {
             this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzke_show'] = nazv
           } else {
             this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzke_show'] = ''
-
+            this.spisokTSarr[i]['adres_pogruzki_TS'][j]['adres_pogruzki'] = '' // Если название пустое, очищаем id адреса
           }
         }
         for (var j = 0; j < this.spisokTSarr[i]['adres_vygr_TS'].length; j++) {
@@ -1065,11 +1106,10 @@ export default {
             this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_vygruzki_show'] = nazv
           } else {
             this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_vygruzki_show'] = ''
-
+            this.spisokTSarr[i]['adres_vygr_TS'][j]['adres_pogruzki'] = '' // Если название пустое, очищаем id адреса
           }
         }
       }
-
     },
     issetFrontNames(gruzColect, targetId) {
       const foundObject = gruzColect.find(obj => obj.id == targetId);
@@ -1081,7 +1121,8 @@ export default {
       }
     },
     changePogrVygrAllShow(id) {
-      this.$refs.modalComponentforActionAuthor.get_modal_edit_data(id)
+      this.$refs.modalComponentforAction.setNewModalStatusFalse()
+      this.$refs.modalComponentforAction.get_modal_edit_data(id)
     },
     //добавление пустой погрузки или выгрузки
     add_new_pogruzka_in_ts(data) {
@@ -1897,7 +1938,7 @@ export default {
     // временный метод закрытия Редактирования
     cancel_TS() {
       this.checkboxPogrVygr = false,
-      this.id_ts = '';
+          this.id_ts = '';
       this.vid_TS = '';
       this.stavka_TS = '';
       this.stavka_TS_bez_NDS = '';
@@ -1954,11 +1995,11 @@ export default {
       this.ob_ob_TS = this.spisokTSarr[key]['ob_ob_TS'];
 
       this.ad_vygruz_arr_temp = this.spisokTSarr[key]['adres_vygr_TS'];
-     /* if (this.spisokTSarr[key]['adres_vygr_TS'].length === 0) {
-        let objToPush1 = {};
-        objToPush1['adres_pogruzki'] = '';
-        this.ad_vygruz_arr_temp.push(objToPush1);
-      }*/
+      /* if (this.spisokTSarr[key]['adres_vygr_TS'].length === 0) {
+         let objToPush1 = {};
+         objToPush1['adres_pogruzki'] = '';
+         this.ad_vygruz_arr_temp.push(objToPush1);
+       }*/
 
       this.kommentari_TS = this.spisokTSarr[key]['kommentari_TS'];
       this.checked2 = this.spisokTSarr[key]['checked2'];

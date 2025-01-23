@@ -54,9 +54,6 @@ app.component('modal-pogruzka-component', ModalPogruzkaComponent);
 import ModalZakazchikComponent from './components/ModalZakazchikComponent.vue';
 app.component('modal-zakazchik-component', ModalZakazchikComponent);
 
-import ModalAuthorComponent from './components/ModalAuthorComponent.vue';
-app.component('modal-author-component', ModalAuthorComponent);
-
 import ModalPerevozchikiComponent from './components/ModalPerevozchikiComponent.vue';
 app.component('modal-perevozchiki-component', ModalPerevozchikiComponent);
 

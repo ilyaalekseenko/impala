@@ -2,199 +2,228 @@
   <v-tailwind-modal v-model="showPogruzka"
                     @click-outside='cancel_modal'
   >
-    <div class="container mx-auto">
-      <div class="flex flex-wrap -mx-2 /* mod_borders_top not found */ /* mod_new_cargo not found */ /* header_grade_mod_bot not found */">
-        <div class="w-8/12 px-2" v-if="flagNewModal">Новый грузоотправитель/грузополучатель:</div>
-        <div class="w-8/12 px-2" v-if="!flagNewModal">Редактирование грузоотправителя/грузополучателя:</div>
-        <div class="w-4/12 px-2 flex flex-wrap -mx-2 flex justify-end">
-          <div class="flex /* add_ts_button8 not found */ text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
-          <div class="flex /* add_ts_button8 not found */ text-center" v-on:click="cancel_modal()">Отменить</div>
-        </div>
-
-        <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent" class=""></alert-error-list-component>
-
+    <div class="w-full p-4 border-b border-[#e3eaea] justify-start items-center gap-4 flex">
+      <div class="impala-block-title"
+           v-html="flagNewModal ? 'Новый грузоотправитель/грузополучатель' : 'Редактирование грузоотправителя/грузополучателя'"></div>
+      <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
+        <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="save_gruzootpravitel()">Сохранить</div>
+        <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="cancel_modal()">Отменить</div>
       </div>
+    </div>
 
-      <div class="/* no_padding_right not found */ /* no_padding_left not found */ flex flex-wrap -mx-2 /* mod_borders_bottom not found */">
-        <!--                        начало левой колонки модалка-->
-        <div class="w-6/12 px-2">
-          <div class="container mx-auto px-4">
-            <div class="w-full px-2 flex flex-wrap -mx-2">
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Форма</div>
-                <input class="impala-input w-full" v-model="forma">
-                <!--                                        <select v-model="forma" class="col-12 create_orders_date_title_int_1 grade_marg_bot">-->
-                <!--                                            <option v-for="(forma_one) in forma_list" v-bind:value=forma_one.id  class="sel_cust">{{ forma_one.forma_name }}</option>-->
-                <!--                                        </select>-->
-              </div>
-              <div class="w-5/12 px-2 /* grade_naz not found */">
-                <div class="/* create_orders_date_title_1 not found */ /* lit_marg_grade not found */ w-full px-2">Название</div>
-                <input class="impala-input w-full" v-model="nazvanie">
-              </div>
-              <div class="w-3/12 px-2 /* date_width_col not found */ /* no_padding_left_form not found */ /* grade_marg_bot not found */">
-                <div class="/* create_orders_date_title_1 not found */ /* lit_marg_grade not found */ w-full px-2 /* no_wrap_text not found */">Дата регистрации</div>
-                <input class="impala-input /* date_width not found */ w-full" @click="openDB0" v-model="data_registracii">
-                <date-picker ref="datepicker0" v-model:value="data_registracii" valuetype="format" format="DD.MM.YYYY" v-model:open="openDP" class=""></date-picker>
+    <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent" class=""></alert-error-list-component>
 
-              </div>
+    <div class="w-full p-4 justify-between items-start gap-4 flex">
+      <div class="grid grid-cols-1 gap-6 w-full">
+        <div class="w-full flex-col justify-start items-start gap-6 flex">
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input w-[66px]">
+              <div class="impala-label">Форма</div>
+              <input class="impala-input" v-model="forma">
+            </div>
+            <div class="impala-row-input grow min-w-[320px]">
+              <div class="impala-label">Название</div>
+              <input class="impala-input" v-model="nazvanie">
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Дата регистрации</div>
+              <date-picker ref="datepicker0" v-model:value="data_registracii" type="date" valueType="format"
+                           format="DD.MM.YY"
+                           v-model:open="openDP" :editable="false"></date-picker>
+            </div>
+            <div class="impala-row-input w-[125px]">
+              <div class="impala-label">ИНН {{ founded }}</div>
+              <input @input="get_INN_api()" class="impala-input" v-model="INN">
+            </div>
+            <div class="impala-row-input w-[155px]">
+              <div class="impala-label">ОГРН (если есть)</div>
+              <input class="impala-input" v-model="OGRN">
+            </div>
+            <div class="impala-row-input w-[240px]">
+              <div class="impala-label">Телефон</div>
+              <phone-component :initialphonenumber="telefon" typenumber="mainNumber"
+                               :setphonenumber="setPhoneNumber"></phone-component>
+            </div>
+            <div class="impala-row-input w-[245px]">
+              <div class="impala-label">E-mail</div>
+              <input class="impala-input" v-model="email">
             </div>
           </div>
-          <div class="container mx-auto px-4">
-            <div class="w-full px-2 flex flex-wrap -mx-2">
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */ /* grade_marg_top not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Для автозаполнения введите ИНН {{
-                    founded
-                  }}
-                </div>
-                <input @blur="get_INN_api()" class="w-full impala-input" v-model="INN">
-              </div>
-              <div class="w-2/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */ /* no_wrap_text not found */">ОГРН(если есть)</div>
-                <input class="w-full impala-input" v-model="OGRN">
-              </div>
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Телефон</div>
-                <phone-component class="/* phone_row not found */" :initialphonenumber="telefon" typenumber="mainNumber" :setphonenumber="setPhoneNumber"></phone-component>
-              </div>
-              <div class="w-2/12 px-2 /* no_padding_left_form not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">email</div>
-                <input class="w-full impala-input" v-model="email">
-              </div>
-            </div>
-          </div>
-          <div class="w-full px-2 flex flex-wrap -mx-2">
-            <div class="w-6/12 px-2">
-              <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Генеральный
-                директор
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input grow min-w-[320px]">
+              <div class="impala-label">
+                Генеральный директор
               </div>
               <input class="w-full impala-input" v-model="generalnii_direktor">
             </div>
-            <div class="/* offset-1 not found */ w-4/12 px-2">
-              <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Телефон</div>
-              <phone-component class="/* phone_row not found */" :initialphonenumber="telefon_gen_dir" typenumber="genDir" :setphonenumber="setPhoneNumber"></phone-component>
+            <div class="impala-row-input w-[240px]">
+              <div class="impala-label">
+                Телефон директора
+              </div>
+              <phone-component :initialphonenumber="telefon_gen_dir"
+                               typenumber="genDir" :setphonenumber="setPhoneNumber"></phone-component>
             </div>
           </div>
-          <div class="w-full px-2 /* grade_title_lit not found */ /* cont_header not found */">Контакты:</div>
-          <div class="container mx-auto px-4">
-            <div class="w-full px-2 flex flex-wrap -mx-2" v-for="(oplata,key) in kontakty">
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Должность</div>
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <div class="impala-row-input">
+              <div class="impala-label">Юридический
+                адрес:
+              </div>
+              <textarea class="w-full impala-input" v-model="yridicheskii_adres" rows="2"></textarea>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Почтовый
+                адрес:
+              </div>
+              <textarea class="w-full impala-input" v-model="pochtovyi_adres" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div class="impala-label:base">Контакты:</div>
+          <div v-if="kontakty.length > 0" class="self-stretch flex flex-col gap-4">
+            <div class="impala-box:dashed self-stretch p-2 justify-between items-center gap-4 inline-flex"
+                 v-for="(oplata, key) in kontakty">
+              <div class="impala-row-input">
+                <div class="impala-label">Должность</div>
                 <input class="w-full impala-input" v-model="kontakty[key].dolznost">
               </div>
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">ФИО</div>
+              <div class="impala-row-input grow min-w-[320px]">
+                <div class="impala-label">ФИО</div>
                 <input class="w-full impala-input" v-model="kontakty[key].FIO">
               </div>
-              <div class="w-3/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Телефон</div>
-                <phone-component class="/* phone_row not found */" :initialphonenumber="kontakty[key].telefon" :rowkey="key" typenumber="kontakty" :setphonenumber="setPhoneNumber"></phone-component>
+              <div class="impala-row-input w-[240px]">
+                <div class="impala-label">Телефон</div>
+                <phone-component :initialphonenumber="kontakty[key].telefon"
+                                 :rowkey="key" typenumber="kontakty" :setphonenumber="setPhoneNumber"></phone-component>
               </div>
-              <div class="w-2/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">email</div>
+              <div class="impala-row-input">
+                <div class="impala-label">E-mail</div>
                 <input class="w-full impala-input" v-model="kontakty[key].email">
               </div>
-              <button type="button" class="w-1/12 px-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm bg-red-500 hover:bg-red-700 text-white /* btn_del_in_ord1 not found */" v-on:click="delete_adres_pogr(key)">-
-              </button>
+              <div class="impala-row-input">
+                <div class="impala-label">&nbsp;</div>
+                <span v-on:click="delete_adres_pogr(key)"
+                      class="impala-text-link impala-text-link:red" v-tooltip="'Удалить контакт'"><i
+                    class="iconsax-trash"></i></span>
+              </div>
             </div>
           </div>
-          <div class="w-full px-2"><span v-on:click="dobavit_kontank()" class="/* add_cont_grade not found */">Добавить контакт</span></div>
-
-          <div class="w-full px-2 /* grade_title_lit not found */ /* cont_header not found */">Адреса:</div>
-          <div class="container mx-auto px-4">
-            <div class="w-full px-2 flex flex-wrap -mx-2" v-for="(oneAdres,key) in adresa">
-              <div class="w-4/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Название</div>
-                <input class="w-full impala-input" v-model="adresa[key].nazvanie">
-              </div>
-              <div class="w-4/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Адрес</div>
+          <div v-on:click="dobavit_kontank()" class="impala-add-link">Добавить контакт</div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div class="impala-label:base">Адреса:</div>
+          <div v-if="adresa.length > 0" class="self-stretch flex flex-col gap-4">
+            <div class="self-stretch flex flex-col gap-4 pl-4 border-l-4 border-[#fff4de]"
+                 v-for="(oneAdres,key) in adresa">
+              <div class="impala-row-input grow">
+                <div class="impala-label">
+                  #{{ key + 1 }} Адрес
+                </div>
                 <input class="w-full impala-input" v-model="adresa[key].adres">
               </div>
-              <div class="w-4/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">ФИО</div>
-                <input class="w-full impala-input" v-model="adresa[key].FIO">
+              <div class="self-stretch justify-between items-center flex gap-4">
+                <div class="impala-row-input">
+                  <div class="impala-label">
+                    Название
+                  </div>
+                  <input class="w-full impala-input" v-model="adresa[key].nazvanie">
+                </div>
+                <div class="impala-row-input grow min-w-[320px]">
+                  <div class="impala-label">ФИО</div>
+                  <input class="w-full impala-input" v-model="adresa[key].FIO">
+                </div>
+                <div class="impala-row-input w-[240px]">
+                  <div class="impala-label">
+                    Телефон
+                  </div>
+                  <phone-component class="/* phone_row not found */" :initialphonenumber="adresa[key].telefon"
+                                   :rowkey="key" typenumber="adresa" :setphonenumber="setPhoneNumber"></phone-component>
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">
+                    E-mail
+                  </div>
+                  <input class="w-full impala-input" v-model="adresa[key].email">
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">&nbsp;</div>
+                  <span v-on:click="delete_one_adres(key)"
+                        class="impala-text-link impala-text-link:red" v-tooltip="'Удалить адрес'"><i
+                      class="iconsax-trash"></i></span>
+                </div>
               </div>
-              <div class="w-4/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">телефон</div>
-                <phone-component class="/* phone_row not found */" :initialphonenumber="adresa[key].telefon" :rowkey="key" typenumber="adresa" :setphonenumber="setPhoneNumber"></phone-component>
-              </div>
-              <div class="w-2/12 px-2 /* no_padding_left_form not found */ /* inn_mar_r not found */ /* grade_marg_bot not found */">
-                <div class="w-full px-2 /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">email</div>
-                <input class="w-full impala-input" v-model="adresa[key].email">
-              </div>
-              <button type="button" class="w-1/12 px-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm bg-red-500 hover:bg-red-700 text-white /* btn_del_in_ord1 not found */" v-on:click="delete_one_adres(key)">-
-              </button>
             </div>
           </div>
-          <div class="w-full px-2"><span v-on:click="dobavit_adres()" class="/* add_cont_grade not found */">Добавить адрес</span></div>
-
-
+          <div v-on:click="dobavit_adres()" class="impala-add-link">Добавить адрес</div>
         </div>
-        <!--                        конец левой колонки модалка-->
-        <!--                        начало правой колонки модалка-->
-        <div class="w-6/12 px-2">
-          <div class="w-full px-2 /* grade_marg_bot not found */">
-            <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Юридический адрес:</div>
-            <input class="w-full impala-input" v-model="yridicheskii_adres">
-          </div>
-          <div class="w-full px-2 /* grade_marg_bot not found */">
-            <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Почтовый адрес:</div>
-            <input class="w-full impala-input" v-model="pochtovyi_adres">
-          </div>
-          <div class="w-full px-2 /* grade_title_lit not found */ /* cont_header not found */">Банковские реквизиты:</div>
-          <span v-for="(bank,key) in bank_arr" class="">
-              <div class="w-full px-2 flex flex-wrap -mx-2">
-                  <div class="w-6/12 px-2 /* grade_marg_bot not found */">
-                      <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">БИК банка:</div>
-                      <input class="w-full impala-input" v-model="bank_arr[key].BIK" @blur="get_BIK_BANK_api(key)">
-                  </div>
-                  <div class="w-6/12 px-2 /* bank_grade_marg not found */ /* grade_marg_bot not found */">
-                      <span class="/* bank_grade not found */">Банк:</span>
-                      <span class="/* bank_grade_1 not found */">{{ bank_arr[key].bank }}</span>
-                  </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div v-if="bank_arr.length > 0" class="self-stretch flex flex-col gap-4">
+            <div v-for="(bank,key) in bank_arr" class="self-stretch justify-between items-center gap-4 flex-col inline-flex">
+              <div class="impala-label:base">Банковские реквизиты #{{key+1}}</div>
+              <div class="self-stretch justify-between items-center gap-4 inline-flex">
+                <div class="impala-row-input w-[125px]">
+                  <div class="impala-label">БИК банка:</div>
+                  <input class="w-full impala-input" v-model="bank_arr[key].BIK" @blur="get_BIK_BANK_api(key)">
+                </div>
+                <div class="impala-row-input grow min-w-[320px]">
+                  <div class="impala-label">Банк:</div>
+                  <input class="impala-input" disabled v-model="bank_arr[key].bank">
+                </div>
+                <div class="impala-row-input w-[220px]">
+                  <div class="impala-label">Расчётный счёт:</div>
+                  <input class="w-full impala-input" v-model="bank_arr[key].raschetnyi">
+                </div>
+                <div class="impala-row-input w-[220px]">
+                  <div class="impala-label">Корсчёт:</div>
+                  <input class="impala-input" disabled v-model="bank_arr[key].korschet">
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">&nbsp;</div>
+                  <span v-on:click="delete_bank(key)"
+                        class="impala-text-link impala-text-link:red" v-tooltip="'Удалить реквизиты'"><i
+                      class="iconsax-trash"></i></span>
+                </div>
               </div>
-              <div class="w-full px-2 flex flex-wrap -mx-2">
-                  <div class="w-6/12 px-2 /* grade_marg_bot not found */">
-                      <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Расчётный счёт:</div>
-                      <input class="w-full impala-input /* grade_marg_bot not found */" v-model="bank_arr[key].raschetnyi">
-                      <div class="flex /* create_orders_date_title_1 not found */ /* lit_marg_grade not found */">Корсчёт:</div>
-                      <div class="w-full px-2">
-                          {{ bank_arr[key].korschet }}
-                      </div>
-                  <button type="button" class="w-1/12 px-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm bg-red-500 hover:bg-red-700 text-white /* btn_del_in_ord1 not found */" v-on:click="delete_bank(key)">-</button>
-                  </div>
-                  <div class="w-6/12 px-2 /* grade_marg_bot not found */">
-                      <span class="/* bank_grade not found */">Комментарий:</span>
-                      <textarea class="/* comm_settings not found */" v-model="bank_arr[key].kommentarii" rows="6" name="text"></textarea>
-                  </div>
-              </div>
-                  </span>
-          <div class="w-full px-2"><span v-on:click="dobavit_bank()" class="/* add_cont_grade not found */">Добавить банковские реквизиты</span></div>
-          <div class="w-full px-2 flex flex-wrap -mx-2 /* modal_underline_right not found */"></div>
-
-          <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()" class="">
-          <div class="w-full px-2 /* grade_title_lit not found */ /* cont_header_1 not found */">Файлы:</div>
-          <div class="/* cont_header_2 not found */" v-for="(loc_file,key) in doc_files">
-
-            <div class="w-full px-2 flex flex-wrap -mx-2" v-if="loc_file.file_name">
-              <div class="w-full px-2 /* lit_marg_grade not found */ /* add_button_grade_modal not found */ /* no_wrap_text not found */"><span v-on:click="show_inp_doc(key)" class="">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
-                <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20" v-if="loc_file.file_name" height="20" v-on:click="delete_one_file_modal(key)" class=""></iconify-icon>
-              </div>
-            </div>
-
-            <div class="w-full px-2 flex flex-wrap -mx-2">
-              <div class="w-6/12 px-2" v-if="loc_file.show_inp">
-                <input v-click-outside="focus_out_from_inp" class="w-full px-2 /* lit_marg_grade not found */ impala-input" v-model="loc_file.file_name">
-              </div>
-              <div class="w-6/12 px-2">
-                <span class="/* choose_file_grade not found */" v-on:click="addFiles(key)">Загрузить файл</span>
-                <span class="/* excel_set not found */" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
-                      <span class="/* iconify not found */" data-icon="material-symbols:sim-card-download-outline-rounded" style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                      </span>
+              <div class="impala-row-input w-full">
+                <div class="impala-label">Комментарий:</div>
+                <textarea class="impala-input" v-model="bank_arr[key].kommentarii" rows="2"
+                          name="text"></textarea>
               </div>
             </div>
           </div>
-          <div class="w-full px-2 /* add_cont_grade not found */ /* cont_header_2 not found */" v-on:click="dobavit_doc()">Добавить документ</div>
+          <div v-on:click="dobavit_bank()" class="impala-add-link">Добавить банковские реквизиты</div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <input hidden="hidden" type="file" id="files" ref="files" v-on:change="handleFilesUpload()">
+          <div class="impala-label:base">Файлы:</div>
+          <template v-if="doc_files.length > 0">
+            <div class="self-stretch flex gap-4">
+              <div v-for="(loc_file,key) in doc_files" class="impala-row-input w-[220px]">
+                <div class="impala-label">#{{ key + 1 }} Файл:
+                  <span class="impala-btn-none" v-if="loc_file.file_name===''" v-on:click="addFiles(key)"
+                        v-tooltip="'Загрузить файл'"><i class="iconsax-document-upload"></i></span>
+                </div>
+                <div v-if="loc_file.file_name!==''"
+                     class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+
+                  <div class="flex gap-2">
+                    <span class="">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
+
+                    <span v-if="loc_file.file_name" v-on:click="download_modal_file(key)" v-tooltip="'Скачать файл'"><i
+                        class="iconsax-document-download"></i></span>
+                    <span v-if="loc_file.file_name!==''"
+                          v-on:click="delete_one_file_modal(key)"
+                          class="impala-text-link impala-text-link:red" v-tooltip="'Удалить файл'"> <i
+                        class="iconsax-trash"></i></span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </template>
+          <div v-on:click="dobavit_doc()" class="impala-add-link">Добавить документ</div>
+
         </div>
       </div>
     </div>
@@ -212,7 +241,7 @@ export default {
     'gruzootpravitel_id',
     'get_gruzootpravitel_list',
     'select_gruzootpravitel',
-    'select_Manager',
+    'chahgeFrontNames',
     'change_one_gruzzotpravitel',
     'addRowGruzoot',
     'allNew',
@@ -229,7 +258,6 @@ export default {
     // this.get_BIK_BANK_api();
     //  this.get_forma_list(this.forma_list);
     //  console.log(this.edit_flag)
-
   },
   created() {
     // if(this.edit_flag)
@@ -276,16 +304,16 @@ export default {
   },
   methods: {
     setPhoneNumber(newPhoneNumber, type, key) {
-      if (type == 'mainNumber') {
+      if (type === 'mainNumber') {
         this.telefon = newPhoneNumber
       }
-      if (type == 'genDir') {
+      if (type === 'genDir') {
         this.telefon_gen_dir = newPhoneNumber
       }
-      if (type == 'kontakty') {
+      if (type === 'kontakty') {
         this.kontakty[key].telefon = newPhoneNumber
       }
-      if (type == 'adresa') {
+      if (type === 'adresa') {
         this.adresa[key].telefon = newPhoneNumber
       }
 
@@ -673,6 +701,7 @@ export default {
             doc_files: this.doc_files
           })
           .then(response => {
+            console.log(response)
             if (this.get_gruzootpravitel_list) {
               this.get_gruzootpravitel_list()
               //метод автообновления в виде
@@ -682,26 +711,32 @@ export default {
             if ((this.flagNewModal) || (this.allNew)) {
               console.log('новая погрузка')
               //если добавляем новую из вида грузоотправителя
-              if (this.vid == "GruzzotpravitelComponent") {
+              if (this.vid === "GruzzotpravitelComponent") {
                 //тут получить новый id перевозчика!
                 this.addRowGruzoot(response.data.id, this.nazvanie, this.yridicheskii_adres, this.kontakty, this.forma)
                 // this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id,this.nazvanie,this.yridicheskii_adres,this.kontakty,this.forma)
               }
-              if (this.vid == "GradeComponent") {
+              if (this.vid === "GradeComponent") {
                 // this.select_gruzootpravitel()
               }
             }
             //если редактируем погрузку
             else {
-
+              //this.chahgeFrontNames(this.current_gruzootpravitel_id, this.nazvanie, this.forma, this.adresa)
               //если редактируем из вида грузоотправителя
-              if (this.vid == "GruzzotpravitelComponent") {
+              if (this.vid === "GruzzotpravitelComponent") {
                 this.change_one_gruzzotpravitel(this.current_gruzootpravitel_id, this.nazvanie, this.yridicheskii_adres, this.kontakty, this.forma)
-              }
+              } else {
+              //если редактируем погрузку
+              //if ((this.vid === "CreateOrdersComponent"))) {
+                console.log('if ((this.vid === "CreateOrdersComponent") || (this.vid === "GradeComponent")) {');
+                console.log(this.current_gruzootpravitel_id);
+                console.log(this.nazvanie);
+                console.log(this.forma);
+                console.log(this.adresa);
 
-            }
-            if (this.vid == "CreateOrdersComponent") {
-              this.select_Manager(this.kontakty)
+                this.chahgeFrontNames(this.current_gruzootpravitel_id, this.nazvanie, this.forma, this.adresa);
+              }
             }
             this.flagNewModal = false
             this.hideModal()

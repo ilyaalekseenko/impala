@@ -2,209 +2,191 @@
   <v-tailwind-modal v-model="showPerevozchiki"
                     @click-outside='cancel_modal'
   >
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-          <div class="col-8">{{ headerName }}:</div>
-          <div class="col-4 row d-flex justify-content-end">
-            <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
-            <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
+    <div class="w-full p-4 border-b border-[#e3eaea] justify-start items-center gap-4 flex">
+      <div class="impala-block-title"
+           v-html="headerName"></div>
+      <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
+        <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="save_gruzootpravitel()">Сохранить</div>
+        <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="cancel_modal()">Отменить</div>
+      </div>
+    </div>
+
+    <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
+
+    <div class="w-full p-4 justify-between items-start gap-4 flex">
+      <div class="grid grid-cols-1 gap-6 w-full">
+        <div class="w-full flex-col justify-start items-start gap-6 flex">
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input w-[66px]">
+              <div class="impala-label">Форма</div>
+              <input class="impala-input" v-model="forma">
+            </div>
+            <div class="impala-row-input grow min-w-[320px]">
+              <div class="impala-label">Название</div>
+              <input class="impala-input" v-model="nazvanie">
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Дата регистрации</div>
+              <date-picker ref="datepicker0" v-model:value="data_registracii" type="date" valueType="format"
+                           format="DD.MM.YY"
+                           v-model:open="openDP" :editable="false"></date-picker>
+            </div>
+            <div class="impala-row-input w-[125px]">
+              <div class="impala-label">ИНН {{ founded }}</div>
+              <input @input="get_INN_api()" class="impala-input" v-model="INN">
+            </div>
+            <div class="impala-row-input w-[155px]">
+              <div class="impala-label">ОГРН (если есть)</div>
+              <input class="impala-input" v-model="OGRN">
+            </div>
+            <div class="impala-row-input w-[240px]">
+              <div class="impala-label">Телефон</div>
+              <phone-component :initialphonenumber="telefon" typenumber="mainNumber"
+                               :setphonenumber="setPhoneNumber"></phone-component>
+            </div>
+            <div class="impala-row-input w-[245px]">
+              <div class="impala-label">E-mail</div>
+              <input class="impala-input" v-model="email">
+            </div>
           </div>
-          <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input grow min-w-[320px]">
+              <div class="impala-label">
+                Генеральный директор
+              </div>
+              <input class="w-full impala-input" v-model="generalnii_direktor">
+            </div>
+            <div class="impala-row-input w-[240px]">
+              <div class="impala-label">
+                Телефон директора
+              </div>
+              <phone-component :initialphonenumber="telefon_gen_dir"
+                               typenumber="genDir" :setphonenumber="setPhoneNumber"></phone-component>
+            </div>
+            <div class="impala-row-input w-[245px]">
+              <div class="impala-label">E-mail директора</div>
+              <input class="w-full impala-input"
+                     v-model="email_gen_dir"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 w-full">
+            <div class="impala-row-input">
+              <div class="impala-label">Юридический
+                адрес:
+              </div>
+              <textarea class="w-full impala-input" v-model="yridicheskii_adres" rows="2"></textarea>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Почтовый
+                адрес:
+              </div>
+              <textarea class="w-full impala-input" v-model="pochtovyi_adres" rows="2"></textarea>
+            </div>
+          </div>
         </div>
-        <div class="col-12 no_padding_right no_padding_left row mod_borders_bottom">
-          <!--                        начало левой колонки модалка-->
-          <div class="col-6">
-            <div class="container-fluid perevoz_m_bottom">
-              <div class="col-12 row">
-                <div class="col-3 no_padding_left_form ">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">Форма</div>
-                  <input class="border_input col-12"
-                         v-model="forma"/>
-                </div>
-                <div class="col-5 grade_naz ">
-                  <div class="create_orders_date_title_1 lit_marg_grade col-12">Название</div>
-                  <input class="border_input col-12"
-                         v-model="nazvanie"/>
-                </div>
-                <div class="col-3 date_width_col no_padding_left_form ">
-                  <div class="create_orders_date_title_1 lit_marg_grade col-12 no_wrap_text">Дата регистрации</div>
-                  <input class="border_input date_width col-12" @click="openDB0"
-                         v-model="data_registracii"/>
-                  <date-picker ref="datepicker0" v-model:value="data_registracii" valueType="format" format="DD.MM.YYYY"
-                               v-model:open="openDP"></date-picker>
-                </div>
-                <div class="col-5 grade_naz no_padding_left_form ">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                  <phone-component class="phone_row" :initialPhoneNumber="telefon" typeNumber="mainNumber"
-                                   :setPhoneNumber="setPhoneNumber"></phone-component>
-                </div>
-                <div class="col-3 grade_naz ">
-                  <div class="create_orders_date_title_1 lit_marg_grade col-12">Город базирования</div>
-                  <input class="border_input col-12"
-                         v-model="gorod_bazirovania"/>
-                </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div class="impala-label:base">Контакты:</div>
+          <div v-if="kontakty.length > 0" class="self-stretch flex flex-col gap-4">
+            <div class="impala-box:dashed self-stretch p-2 justify-between items-center gap-4 inline-flex"
+                 v-for="(oplata, key) in kontakty">
+              <div class="impala-row-input">
+                <div class="impala-label">Должность</div>
+                <input class="w-full impala-input" v-model="kontakty[key].dolznost">
+              </div>
+              <div class="impala-row-input grow min-w-[320px]">
+                <div class="impala-label">ФИО</div>
+                <input class="w-full impala-input" v-model="kontakty[key].FIO">
+              </div>
+              <div class="impala-row-input w-[240px]">
+                <div class="impala-label">Телефон</div>
+                <phone-component :initialphonenumber="kontakty[key].telefon"
+                                 :rowkey="key" typenumber="kontakty" :setphonenumber="setPhoneNumber"></phone-component>
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">E-mail</div>
+                <input class="w-full impala-input" v-model="kontakty[key].email">
+              </div>
+              <div class="impala-row-input">
+                <div class="impala-label">&nbsp;</div>
+                <span v-on:click="delete_adres_pogr(key)"
+                      class="impala-text-link impala-text-link:red" v-tooltip="'Удалить контакт'"><i
+                    class="iconsax-trash"></i></span>
               </div>
             </div>
-            <div class="container-fluid ">
-              <div class="col-12 row">
-                <div class="col-3 inn_width no_padding_left_form grade_marg_bot grade_marg_top">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade ">Для автозаполнения введите ИНН
-                    {{ founded }}
+          </div>
+          <div v-on:click="dobavit_kontank()" class="impala-add-link">Добавить контакт</div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div v-if="bank_arr.length > 0" class="self-stretch flex flex-col gap-4">
+            <div v-for="(bank,key) in bank_arr" class="self-stretch justify-between items-center gap-4 flex-col inline-flex">
+              <div class="impala-label:base">Банковские реквизиты #{{key+1}}</div>
+              <div class="self-stretch justify-between items-center gap-4 inline-flex">
+                <div class="impala-row-input w-[125px]">
+                  <div class="impala-label">БИК банка:</div>
+                  <input class="w-full impala-input" v-model="bank_arr[key].BIK" @blur="get_BIK_BANK_api(key)">
+                </div>
+                <div class="impala-row-input grow min-w-[320px]">
+                  <div class="impala-label">Банк:</div>
+                  <input class="impala-input" disabled v-model="bank_arr[key].bank">
+                </div>
+                <div class="impala-row-input w-[220px]">
+                  <div class="impala-label">Расчётный счёт:</div>
+                  <input class="w-full impala-input" v-model="bank_arr[key].raschetnyi">
+                </div>
+                <div class="impala-row-input w-[220px]">
+                  <div class="impala-label">Корсчёт:</div>
+                  <input class="impala-input" disabled v-model="bank_arr[key].korschet">
+                </div>
+                <div class="impala-row-input">
+                  <div class="impala-label">&nbsp;</div>
+                  <span v-on:click="delete_bank(key)"
+                        class="impala-text-link impala-text-link:red" v-tooltip="'Удалить реквизиты'"><i
+                      class="iconsax-trash"></i></span>
+                </div>
+              </div>
+              <div class="impala-row-input w-full">
+                <div class="impala-label">Комментарий:</div>
+                <textarea class="impala-input" v-model="bank_arr[key].kommentarii" rows="2"
+                          name="text"></textarea>
+              </div>
+            </div>
+          </div>
+          <div v-on:click="dobavit_bank()" class="impala-add-link">Добавить банковские реквизиты</div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <input hidden="hidden" type="file" id="files" ref="files" v-on:change="handleFilesUpload()">
+          <div class="impala-label:base">Файлы:</div>
+          <template v-if="doc_files.length > 0">
+            <div class="self-stretch flex gap-4">
+              <div v-for="(loc_file,key) in doc_files" class="impala-row-input w-[220px]">
+                <div class="impala-label">#{{ key + 1 }} Файл:
+                  <span class="impala-btn-none" v-if="loc_file.file_name===''" v-on:click="addFiles(key)"
+                        v-tooltip="'Загрузить файл'"><i class="iconsax-document-upload"></i></span>
+                </div>
+                <div v-if="loc_file.file_name!==''"
+                     class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+
+                  <div class="flex gap-2">
+                    <span class="">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
+
+                    <span v-if="loc_file.file_name" v-on:click="download_modal_file(key)" v-tooltip="'Скачать файл'"><i
+                        class="iconsax-document-download"></i></span>
+                    <span v-if="loc_file.file_name!==''"
+                          v-on:click="delete_one_file_modal(key)"
+                          class="impala-text-link impala-text-link:red" v-tooltip="'Удалить файл'"> <i
+                        class="iconsax-trash"></i></span>
                   </div>
-                  <input @blur="get_INN_api()" class="col-12 border_input inn_width "
-                         v-model="INN"/>
-                </div>
-                <div class="col-3 no_padding_left_form">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade no_wrap_text ">Код АТИ</div>
-                  <input class="col-12 border_input "
-                         v-model="kod_ATI"/>
-                </div>
-                <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade no_wrap_text ">ОГРН(если есть)</div>
-                  <input class="col-12 border_input inn_width"
-                         v-model="OGRN"/>
-                </div>
-                <div class="col-2 inn_width no_padding_left_form grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
-                  <input class="col-12 border_input inn_width"
-                         v-model="email"/>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 row">
-              <div class="col-5">
-                <div class="col-12 create_orders_date_title_1 lit_marg_grade">Генеральный
-                  директор
-                </div>
-                <input class="col-12 border_input "
-                       v-model="generalnii_direktor"/>
-              </div>
-              <div class=" col-4">
-                <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                <phone-component class="phone_row" :initialPhoneNumber="telefon_gen_dir" typeNumber="genDir"
-                                 :setPhoneNumber="setPhoneNumber"></phone-component>
-              </div>
-              <div class="col-2 inn_width grade_marg_bot">
-                <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
-                <input class="col-12 border_input inn_width"
-                       v-model="email_gen_dir"/>
-              </div>
-            </div>
 
-            <div class="col-12 grade_title_lit cont_header">Контакты:</div>
-            <div class="container-fluid ">
-              <div class="col-12 row" v-for="(oplata,key) in kontakty">
-                <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">Должность</div>
-                  <input class="col-12 border_input inn_width"
-                         v-model="kontakty[key].dolznost"/>
                 </div>
-                <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">ФИО</div>
-                  <input class="col-12 border_input inn_width"
-                         v-model="kontakty[key].FIO"/>
-                </div>
-                <div class="col-3 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">Телефон</div>
-                  <phone-component class="phone_row" :initialPhoneNumber="kontakty[key].telefon" :rowKey="key"
-                                   typeNumber="kontakty" :setPhoneNumber="setPhoneNumber"></phone-component>
-                </div>
-                <div class="col-2 inn_width no_padding_left_form inn_mar_r grade_marg_bot">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">email</div>
-                  <input class="col-12 border_input inn_width"
-                         v-model="kontakty[key].email"/>
-                </div>
-                <button type="button" class="col-1 btn btn-danger btn_del_in_ord1" v-on:click="delete_adres_pogr(key)">
-                  -
-                </button>
               </div>
             </div>
-            <div class="col-12"><span v-on:click="dobavit_kontank()" class="add_cont_grade">Добавить контакт</span>
-            </div>
-          </div>
-          <!--                        конец левой колонки модалка-->
-          <!--                        начало правой колонки модалка-->
-          <div class="col-6">
-            <div class="col-12 grade_marg_bot">
-              <div class="col create_orders_date_title_1 lit_marg_grade ">Юридический адрес:</div>
-              <input class="col-12 border_input"
-                     v-model="yridicheskii_adres"/>
-            </div>
-            <div class="col-12 grade_marg_bot">
-              <div class="col create_orders_date_title_1 lit_marg_grade">Почтовый адрес:</div>
-              <input class="col-12 border_input"
-                     v-model="pochtovyi_adres"/>
-            </div>
-            <div class="col-12 grade_title_lit cont_header">Банковские реквизиты:</div>
-            <span v-for="(bank,key) in bank_arr">
-                            <div class="col-12 row">
-                                <div class="col-6 grade_marg_bot">
-                                    <div class="col create_orders_date_title_1 lit_marg_grade">БИК банка:</div>
-                                    <input class="col-12 border_input"
-                                           v-model="bank_arr[key].BIK"
-                                           @blur="get_BIK_BANK_api(key)"
-                                    />
-                                </div>
-                                <div class="col-6 bank_grade_marg grade_marg_bot">
-                                    <span class="bank_grade ">Банк:</span>
-                                    <span class="bank_grade_1 ">{{ bank_arr[key].bank }}</span>
-                                </div>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-6 grade_marg_bot">
-                                    <div class="col create_orders_date_title_1 lit_marg_grade">Расчётный счёт:</div>
-                                    <input class="col-12 border_input grade_marg_bot"
-                                           v-model="bank_arr[key].raschetnyi"/>
-                                    <div class="col create_orders_date_title_1 lit_marg_grade">Корсчёт:</div>
-                                    <div class="col-12 ">
-                                        {{ bank_arr[key].korschet }}
-                                    </div>
-                                <button type="button" class="col-1 btn btn-danger btn_del_in_ord1"
-                                        v-on:click="delete_bank(key)">-</button>
-                                </div>
-                                <div class="col-6 grade_marg_bot">
-                                    <span class="bank_grade ">Комментарий:</span>
-                                    <textarea class="comm_settings" v-model="bank_arr[key].kommentarii"
-                                              rows="6" name="text"></textarea>
-                                </div>
-                            </div>
-                                </span>
-            <div class="col-12 "><span v-on:click="dobavit_bank()"
-                                       class="add_cont_grade">Добавить банковские реквизиты</span></div>
-            <div class="col-12 row modal_underline_right"></div>
+          </template>
+          <div v-on:click="dobavit_doc()" class="impala-add-link">Добавить документ</div>
 
-            <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
-            <div class="col-12 grade_title_lit cont_header_1">Файлы:</div>
-            <div class="cont_header_2" v-for="(loc_file,key) in doc_files">
-              <div class="col-12 row" v-if="loc_file.file_name">
-                <div class="col-12 lit_marg_grade add_button_grade_modal no_wrap_text"><span
-                    v-on:click="show_inp_doc(key)">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
-                  <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20"
-                                v-if="loc_file.file_name" height="20"
-                                v-on:click="delete_one_file_modal(key)"></iconify-icon>
-                </div>
-              </div>
-              <div class="col-12 row">
-                <div class="col-6" v-if="loc_file.show_inp">
-                  <input v-click-outside="focus_out_from_inp" class="col-12 lit_marg_grade border_input"
-                         v-model="loc_file.file_name"/>
-                </div>
-                <div class="col-6">
-                  <span class="choose_file_grade " v-on:click="addFiles(key)">Загрузить файл</span>
-                  <span class="excel_set" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
-                                <span class="iconify" data-icon="material-symbols:sim-card-download-outline-rounded"
-                                      style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                </span>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 add_cont_grade cont_header_2" v-on:click="dobavit_doc()">Добавить документ</div>
-            <div class="komment_block">
-              <div>Комментарий</div>
-              <textarea class="comm_settings_1" v-model="kommentariy" rows="6" name="text"></textarea>
-            </div>
-          </div>
+        </div>
+        <div class="w-full flex-col justify-start items-start gap-4 flex">
+          <div class="impala-label:base">Комментарий</div>
+          <textarea class="impala-input" v-model="kommentariy" rows="6" name="text"></textarea>
         </div>
       </div>
     </div>

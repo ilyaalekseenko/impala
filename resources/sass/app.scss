@@ -268,12 +268,12 @@ input.impala-add-link {
   @apply text-base font-bold impala-text-gray-500 uppercase leading-none !important;
 }
 
-.impala-input {
-  @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full max-w-full;
+.impala-input, .mx-input {
+  @apply px-[13px] py-2 rounded-md border border-[var(--impala-color-gray-400)] justify-start items-center gap-2.5 inline-flex text-base font-normal w-full max-w-full h-auto shadow-none !important;
 
-  &:focus, &:focus-visible, &:active {
+  &:focus:not(.impala-input-focused), &:focus-visible:not(.impala-input-focused), &:active:not(.impala-input-focused), &.impala-input-focused {
     box-shadow: 0 0 0 2px var(--impala-color-green-edit) !important;
-    border-color: var(--impala-color-green-edit);
+    border-color: var(--impala-color-green-edit) !important;
     outline: 0 !important;
   }
 
@@ -281,8 +281,17 @@ input.impala-add-link {
     border-style: dashed;
   }
 
-  &:disabled, &:read-only {
+  &:disabled:not(.mx-input):not(.impala-input-phone), &:read-only:not(.mx-input):not(.impala-input-phone) {
     border-style: dashed;
+    box-shadow: none !important;
+  }
+}
+
+.impala-input-phone {
+  input, select {
+    background: transparent;
+    border: none;
+    outline: none !important;
     box-shadow: none !important;
   }
 }

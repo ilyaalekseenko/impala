@@ -1,10 +1,10 @@
 <template>
-  <div class="">
-    <select class="selPhone" v-model="currentCountry" @change="handleCountryChange">
+  <div class="impala-input impala-input-phone" :class="{ 'impala-input-focused': isFocus }" @focusout="handleFocus(false)">
+    <select class="selPhone" v-model="currentCountry" @change="handleCountryChange" @focus="handleFocus(true)">
       <option v-for="country in maskArr" :key="country.value" :value="country.value">{{ country.label }}</option>
     </select>
     <input class="phoneInputV" type="text" v-maska="currentMask" v-model="phoneNumber" :placeholder="currentPlaceholder"
-           ref="phoneInput" @blur="handleBlur">
+           ref="phoneInput" @input="handleInput" @focus="handleFocus(true)">
   </div>
 </template>
 
@@ -26,7 +26,6 @@ export default {
   },
   data() {
     return {
-
       currentCountry: 'ru',
       currentMask: '+7 (###) ###-##-##',
       currentPlaceholder: '+7 (###) ###-##-##',
@@ -37,7 +36,8 @@ export default {
         // Добавьте другие страны в массив по желанию
       ],
       phoneNumber: this.initialPhoneNumber,
-      startFlag: true
+      startFlag: true,
+      isFocus: false,
     }
   },
   watch: {
@@ -55,7 +55,7 @@ export default {
       // if(this.startFlag)
       // {
       this.startFlag = false
-      if ((newPhoneNumber == null) || (newPhoneNumber == '')) {
+      if ((newPhoneNumber == null) || (newPhoneNumber === '')) {
         this.currentMask = this.maskArr[0]['mask']
         this.currentPlaceholder = this.maskArr[0]['placeholder']
         this.currentCountry = this.maskArr[0]['value']
@@ -86,7 +86,7 @@ export default {
     },
     setMaskMount(newPhoneNumber) {
       this.startFlag = false
-      if ((newPhoneNumber == null) || (newPhoneNumber == '')) {
+      if ((newPhoneNumber == null) || (newPhoneNumber === '')) {
         this.currentMask = this.maskArr[0]['mask']
         this.currentPlaceholder = this.maskArr[0]['placeholder']
         this.currentCountry = this.maskArr[0]['value']
@@ -115,7 +115,7 @@ export default {
         }
       }
     },
-    handleBlur() {
+    handleInput() {
       this.maskArr.forEach(country => {
         if (country.value === this.currentCountry) {
           this.setPhoneNumber(this.phoneNumber, this.typeNumber, this.rowKey)
@@ -128,10 +128,13 @@ export default {
           this.phoneNumber = '';
           this.currentMask = country.mask
           this.currentPlaceholder = country.placeholder
-          this.$refs.phoneInput.focus();
+          //this.$refs.phoneInput.focus();
         }
       });
     },
+    handleFocus(focus = false) {
+      this.isFocus = focus;
+    }
   },
 }
 </script>
