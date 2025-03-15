@@ -266,7 +266,7 @@
               </div>
             </div>
             <div class="impala-box:dashed self-stretch p-2 justify-start items-start gap-4 inline-flex w-full">
-              <div class="impala-row-input grow shrink basis-0 ">
+              <div class="impala-row-input grow shrink basis-0">
                 <div class="impala-label">Перевозчик:
                   <VMenu>
                     <button class="iconsax-menu-meatballs"></button>

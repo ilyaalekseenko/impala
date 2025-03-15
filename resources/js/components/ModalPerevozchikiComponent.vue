@@ -182,7 +182,6 @@
             </div>
           </template>
           <div v-on:click="dobavit_doc()" class="impala-add-link">Добавить документ</div>
-
         </div>
         <div class="w-full flex-col justify-start items-start gap-4 flex">
           <div class="impala-label:base">Комментарий</div>

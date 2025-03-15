@@ -2,129 +2,110 @@
   <v-tailwind-modal v-model="showVoditelMod"
                     @click-outside='cancel_modal'
   >
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-12 mod_borders_top mod_new_cargo row header_grade_mod_bot">
-          <div class="col-8">{{ headerNazvanie }}:</div>
-          <div class="col-4 row d-flex justify-content-end">
-            <div class="col add_ts_button8 text-center" v-on:click="save_gruzootpravitel()">Сохранить</div>
-            <div class="col add_ts_button8 text-center" v-on:click="cancel_modal()">Отменить</div>
+
+    <div class="w-full p-4 border-b border-[#e3eaea] justify-start items-center gap-4 flex">
+      <div class="impala-block-title"
+           v-html="headerNazvanie"></div>
+      <div class="grow shrink basis-0 justify-end items-center gap-4 flex">
+        <div class="impala-btn impala-btn-small impala-btn-primary" v-on:click="save_gruzootpravitel()">Сохранить</div>
+        <div class="impala-btn impala-btn-small impala-btn-gray" v-on:click="cancel_modal()">Отменить</div>
+      </div>
+    </div>
+
+    <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
+
+    <div class="w-full p-4 justify-between items-start gap-4 flex">
+      <div class="grid grid-cols-2 gap-6 w-full">
+        <div class="w-full flex-col justify-start items-start gap-6 flex">
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input grow min-w-[320px]">
+              <div class="impala-label">ФИО</div>
+              <input class="impala-input" v-model="FIO">
+            </div>
+            <div class="impala-row-input w-[240px]">
+              <div class="impala-label">
+                Телефон
+              </div>
+              <phone-component :initialPhoneNumber="telefon" typeNumber="mainNumber"
+                               :setPhoneNumber="setPhoneNumber"></phone-component>
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Дата рождения</div>
+              <date-picker ref="datepicker0" v-model:value="dataRozdeniya" type="date" valueType="format"
+                           format="DD.MM.YY"
+                           v-model:open="openDP" :editable="false"></date-picker>
+            </div>
           </div>
-          <alert-error-list-component :alert_list="alert_list" ref="AlertListComponent"></alert-error-list-component>
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input">
+              <div class="impala-label">Номер вод.удостоверения</div>
+              <input class="impala-input" v-model="nomer_vod_ud">
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Кем выдано</div>
+              <input class="impala-input" v-model="kemVydan">
+            </div>
+            <div class="impala-row-input">
+              <div class="impala-label">Когда выдан</div>
+              <date-picker ref="datepicker0" v-model:value="kogdaVydan" type="date" valueType="format"
+                           format="DD.MM.YY"
+                           v-model:open="openDP1" :editable="false"></date-picker>
+            </div>
+          </div>
         </div>
-        <div class="col-12 no_padding_right no_padding_left row mod_borders_bottom">
-          <!--                        начало левой колонки модалка-->
-          <div class="col-6">
-            <div class="container-fluid perevoz_m_bottom">
-              <div class="col-12 row">
-                <div class="col-3 no_padding_left_form vod_fio">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">ФИО:</div>
-                  <input class="border_input col-12 "
-                         v-model="FIO"/>
-                </div>
-                <div class="col-5 vod_telefon vod_mar">
-                  <div class="create_orders_date_title_1 lit_marg_grade col-12">Телефон:</div>
-                  <phone-component class="phone_row" :initialPhoneNumber="telefon" typeNumber="mainNumber"
-                                   :setPhoneNumber="setPhoneNumber"></phone-component>
-                </div>
-                <div class="col-3 date_width_col no_padding_left_form ">
-                  <div class="create_orders_date_title_1 lit_marg_grade col-12 no_wrap_text">Дата рождения:</div>
-                  <input class="border_input date_width col-12" @click="openDB0"
-                         v-model="dataRozdeniya"/>
-                  <date-picker ref="datepicker0" v-model:value="dataRozdeniya" valueType="format" format="DD.MM.YYYY"
-                               v-model:open="openDP"></date-picker>
-                </div>
-              </div>
-              <div class="col-12 row">
-                <div class="col-3 no_padding_left_form vod_fio">
-                  <div class="col-12 create_orders_date_title_1 lit_marg_grade">Номер вод.удостоверения:</div>
-                  <input class="border_input col-12 "
-                         v-model="nomer_vod_ud"/>
-                </div>
-                <div class="col-5 vod_mar">
-                  <div class="col create_orders_date_title_1 lit_marg_grade ">Кем выдано:</div>
-                  <input class="col-12 border_input"
-                         v-model="kemVydan"/>
-                </div>
-                <div class="col-3 no_padding_left_form">
-                  <div class="col create_orders_date_title_1 lit_marg_grade">Когда выдан:</div>
-                  <input class="col-12 border_input" @click="openDB1"
-                         v-model="kogdaVydan"/>
-                  <date-picker ref="datepicker0" v-model:value="kogdaVydan" valueType="format" format="DD.MM.YYYY"
-                               v-model:open="openDP1"></date-picker>
-                </div>
-              </div>
-            </div>
-
-          </div>
-          <!--                        конец левой колонки модалка-->
-          <!--                        начало правой колонки модалка-->
-          <div class="col-6">
-            <div class="container-fluid perevoz_m_bottom">
-              <div class="col-12 grade_naz no_padding_left_form vod_passport vod_mar">
-                <div class="col-12 create_orders_date_title_1 lit_marg_grade">Серия и номер паспорта:</div>
-                <input class="border_input" type="text" v-model="seriyaPassporta"/>
-              </div>
-              <div class="col-12 row">
-
-                <div class="col-5 ">
-                  <div class="col create_orders_date_title_1 lit_marg_grade">Прописка:</div>
-                  <input class="col-12 border_input"
-                         v-model="propiska"/>
-                </div>
-                <div class="col-4 ">
-                  <div class="col create_orders_date_title_1 lit_marg_grade">Перевозчик:</div>
-                  <auto-input-perevozka-modal-component v-if="pogruzkaShowInp"
-                                                        :vidTsFromParent="kompaniyaNazvanie"
-                                                        @childReturnMethod="parentMethodFromAutoinputPerevozka"
-                  ></auto-input-perevozka-modal-component>
-
-                </div>
-              </div>
+        <div class="w-full flex-col justify-start items-start gap-6 flex">
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input">
+              <div class="impala-label">Серия и номер паспорта</div>
+              <input class="impala-input" v-model="seriyaPassporta">
             </div>
           </div>
-
-
-          <!--                    строка загрузки файлов-->
-          <div class="col-12 grade_title_lit cont_header_vod">Загрузка файлов:</div>
-          <input hidden="true" type="file" id="files" ref="files" v-on:change="handleFilesUpload()"/>
-          <div class="container-fluid ">
-            <div class="col-12 row">
-              <div v-for="(loc_file,key) in doc_files"
-                   class="col-4 row inn_width no_padding_left_form inn_mar_r grade_marg_bot doc_vod_block">
-                <div class="col-12 row create_orders_date_title_1 lit_marg_grade ">Название документа:</div>
-                <div class="col-12 row" v-if="loc_file.file_name">
-                  <div class="col-12 lit_marg_grade add_button_grade_modal no_wrap_text"><span
-                      v-on:click="show_inp_doc(key)">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
-                    <iconify-icon icon="ci:off-close" style="color: #c4c4c4;" width="20"
-                                  v-if="loc_file.file_name" height="20"
-                                  v-on:click="delete_one_file_modal(key)"></iconify-icon>
-                  </div>
-                </div>
-                <div class="col-12 row">
-                  <div class="col-6" v-if="loc_file.show_inp">
-                    <input v-click-outside="focus_out_from_inp" class="col-12 lit_marg_grade border_input"
-                           v-model="loc_file.file_name"/>
-                    <span class="iconify" data-icon="fa-regular:list-alt" style="color: #4d4d4d;" data-width="24"
-                          data-height="24"></span>
-                  </div>
-                  <div class="col-6">
-                    <span class="choose_file_grade " v-on:click="addFiles(key)">Загрузить файл</span>
-                    <span class="excel_set" v-if="loc_file.file_name" v-on:click="download_modal_file(key)">
-                                              <span class="iconify"
-                                                    data-icon="material-symbols:sim-card-download-outline-rounded"
-                                                    style="color: #4d4d4d;" data-width="24" data-height="24"></span>
-                                              </span>
-                  </div>
-                </div>
-              </div>
-              <div class="col-2 add_vod_button1 text-center" v-on:click="dobavit_doc()">Добавить</div>
+          <div class="self-stretch justify-between items-center inline-flex gap-4">
+            <div class="impala-row-input">
+              <div class="impala-label">Прописка</div>
+              <input class="impala-input" v-model="propiska">
+            </div>
+            <div class="impala-row-input grow shrink basis-0">
+              <div class="impala-label">Перевозчик</div>
+              <auto-input-perevozka-modal-component v-if="pogruzkaShowInp"
+                                                    :vidTsFromParent="kompaniyaNazvanie"
+                                                    @childReturnMethod="parentMethodFromAutoinputPerevozka"
+              ></auto-input-perevozka-modal-component>
             </div>
           </div>
-          <!--                        конец строки загрузки файлов-->
-
         </div>
       </div>
+    </div>
+
+    <div class="w-full p-4 flex-col justify-start items-start gap-4 flex">
+      <input hidden="hidden" type="file" id="files" ref="files" v-on:change="handleFilesUpload()">
+      <div class="impala-label:base">Файлы:</div>
+      <template v-if="doc_files.length > 0">
+        <div class="self-stretch flex gap-4">
+          <div v-for="(loc_file,key) in doc_files" class="impala-row-input w-[220px]">
+            <div class="impala-label">#{{ key + 1 }} Файл:
+              <span class="impala-btn-none" v-if="loc_file.file_name===''" v-on:click="addFiles(key)"
+                    v-tooltip="'Загрузить файл'"><i class="iconsax-document-upload"></i></span>
+            </div>
+            <div v-if="loc_file.file_name!==''"
+                 class="impala-box:dashed flex flex-col gap-2 self-stretch p-2">
+
+              <div class="flex gap-2">
+                <span class="">{{ loc_file.file_name }}.{{ loc_file.ext }}</span>
+
+                <span v-if="loc_file.file_name" v-on:click="download_modal_file(key)" v-tooltip="'Скачать файл'"><i
+                    class="iconsax-document-download"></i></span>
+                <span v-if="loc_file.file_name!==''"
+                      v-on:click="delete_one_file_modal(key)"
+                      class="impala-text-link impala-text-link:red" v-tooltip="'Удалить файл'"> <i
+                    class="iconsax-trash"></i></span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </template>
+      <div v-on:click="dobavit_doc()" class="impala-add-link">Добавить документ</div>
     </div>
   </v-tailwind-modal>
 </template>

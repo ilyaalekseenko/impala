@@ -239,7 +239,7 @@ aside {
 
 /*
 
-! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com*/
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/
 
 /*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
@@ -677,6 +677,9 @@ video {
 .relative{
   position: relative;
 }
+.bottom-5{
+  bottom: 1.25rem;
+}
 .right-0{
   right: 0px;
 }
@@ -685,9 +688,6 @@ video {
 }
 .top-5{
   top: 1.25rem;
-}
-.bottom-5{
-  bottom: 1.25rem;
 }
 .col-span-2{
   grid-column: span 2 / span 2;
@@ -700,13 +700,6 @@ video {
 }
 .m-5{
   margin: 1.25rem;
-}
-.m-8{
-  margin: 2rem;
-}
-.-mx-2{
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
 }
 .mx-auto{
   margin-left: auto;
@@ -902,9 +895,6 @@ video {
 .flex-col{
   flex-direction: column;
 }
-.flex-wrap{
-  flex-wrap: wrap;
-}
 .items-start{
   align-items: flex-start;
 }
@@ -971,9 +961,6 @@ video {
 }
 .overflow-scroll{
   overflow: scroll;
-}
-.overflow-y-auto{
-  overflow-y: auto;
 }
 .overflow-y-scroll{
   overflow-y: scroll;
