@@ -48,6 +48,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['fullname'];
+
+//    public function getFullnameAttribute()
+//    {
+//        $parts = array_filter([$this->first_name, $this->patronymic, $this->last_name]);
+//        return implode(' ', $parts);
+//    }
+
+    public function getFullnameAttribute()
+    {
+        $initials = '';
+
+        if (!empty($this->first_name)) {
+            $initials .= mb_substr($this->first_name, 0, 1) . '.';
+        }
+
+        if (!empty($this->patronymic)) {
+            $initials .= mb_substr($this->patronymic, 0, 1) . '.';
+        }
+
+        // Собираем результат
+        return trim(trim($this->last_name) . ($initials ? ' ' . $initials : ''));
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class,'users_roles');
@@ -98,4 +122,5 @@ class User extends Authenticatable
         $user=User::find(Auth::id())->roles;
         return $user[0]['slug'];
     }
+
 }

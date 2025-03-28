@@ -192,6 +192,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/getPerevozchikData', [App\Http\Controllers\OrdersController::class, 'getPerevozchikData'])->name('getPerevozchikData');
     Route::post('/deletePerevozchikFromOrder', [App\Http\Controllers\OrdersController::class, 'deletePerevozchikFromOrder'])->name('deletePerevozchikFromOrder');
 
+    Route::get('/orders', [App\Http\Controllers\OrdersController::class, 'getOrders']);
+
     // Maintenance
     Route::group(['prefix' => 'clear'], function () {
         Route::get('/', function () {

@@ -42,6 +42,9 @@ app.component('header-menu-component', HeaderMenuComponent);
 import OrdersComponent from './components/OrdersComponent.vue';
 app.component('orders-component', OrdersComponent);
 
+import OrdersListComponent from './components/OrdersListComponent.vue';
+app.component('orders-list-component', OrdersListComponent);
+
 import CreateOrdersComponent from './components/CreateOrdersComponent.vue';
 app.component('create-orders-component', CreateOrdersComponent);
 
@@ -165,6 +168,26 @@ app.component('nomenklatura-component', NomenklaturaComponent);
 import MainLoadingComponent from './components/Loading/MainLoadingComponent.vue';
 app.component('main-loading-component', MainLoadingComponent);
 
+import DataTableComponent from './components/DataTableComponent.vue';
+app.component('data-table-component', DataTableComponent);
+
+import DataTable from 'datatables.net-vue3';
+import DataTablesLib from 'datatables.net-dt';
+import russianLangDataTables from 'datatables.net-plugins/i18n/ru.mjs';
+DataTablesLib.defaults.language = russianLangDataTables;
+DataTablesLib.defaults.layout = {
+    topStart: null,
+    topEnd: null,
+    //topEnd: ['search', 'buttons'],
+    bottomStart: 'info',
+    bottomEnd: ['pageLength', 'paging']
+}
+import DataTablesButtons from 'datatables.net-buttons';
+import DataTablesSelect from 'datatables.net-select';
+DataTable.use(DataTablesLib);
+DataTable.use(DataTablesButtons);
+DataTable.use(DataTablesSelect);
+app.component('DataTable', DataTable);
 
 //import 'bootstrap/dist/css/bootstrap.min.css'
 

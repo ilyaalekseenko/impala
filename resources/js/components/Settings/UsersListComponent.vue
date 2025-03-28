@@ -68,7 +68,7 @@
                     </td>
                     <td>
                         <span @click="edit_user(user.id)">
-                        <span class="iconify edit_icon" data-icon="akar-icons:edit" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
+                        <span class="iconsax-edit-1" style="color: #a6a6a6;" data-width="20" data-height="20"></span>
                        </span>
                     </td>
                 </tr>

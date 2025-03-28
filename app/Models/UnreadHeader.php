@@ -42,46 +42,46 @@ class UnreadHeader extends Model
         );
     }
 
-    public function getUnreadHeadersLogistModel($logistID,$logistOradmin)
+    public function getUnreadHeadersLogistModel($logistID, $logistOradmin)
     {
-        $counterArr=['ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
+        $counterArr = ['ocenka' => 0, 'naznachenie_stavki' => 0, 'v_rabote' => 0, 'kontrol' => 0, 'zavershen' => 0, 'archive' => 0, 'ids' => []];
 
-        if($logistOradmin=='logist')
-        {
-            $unreadOrders=UnreadHeader::where('logist_id',$logistID)->get();
-            foreach ($unreadOrders as $oneHeader)
-        {
-            if($oneHeader['column_name']=="ocenka")
-            {
-                $counterArr['ocenka']++;
-            }
-            if($oneHeader['column_name']=="naznachenie_stavki")
-            {
-                $counterArr['naznachenieStavki']++;
-            }
-            if($oneHeader['column_name']=="v_rabote")
-            {
-                $counterArr['vRabote']++;
-            }
-            if($oneHeader['column_name']=="kontrol")
-            {
-                $counterArr['kontrol']++;
-            }
-            if($oneHeader['column_name']=="zavershen")
-            {
-                $counterArr['zavershen']++;
+        if ($logistOradmin == 'logist') {
+            $unreadOrders = UnreadHeader::where('logist_id', $logistID)->get();
+            foreach ($unreadOrders as $oneHeader) {
+                if ($oneHeader['column_name'] == "ocenka") {
+                    $counterArr['ocenka']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
+                if ($oneHeader['column_name'] == "naznachenie_stavki") {
+                    $counterArr['naznachenie_stavki']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
+                if ($oneHeader['column_name'] == "v_rabote") {
+                    $counterArr['v_rabote']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
+                if ($oneHeader['column_name'] == "kontrol") {
+                    $counterArr['kontrol']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
+                if ($oneHeader['column_name'] == "zavershen") {
+                    $counterArr['zavershen']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
+                if ($oneHeader['column_name'] == "archive") {
+                    $counterArr['archive']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
+                }
             }
         }
-        }
-        if($logistOradmin=='admin')
-        {
-            $unreadOrders=UnreadHeader::where('column_name','naznachenie_stavki')->get();
+        if ($logistOradmin == 'admin') {
+            $unreadOrders = UnreadHeader::where('column_name', 'naznachenie_stavki')->get();
 
-            foreach ($unreadOrders as $oneHeader)
-            {
-                if($oneHeader['column_name']=="naznachenie_stavki")
-                {
-                    $counterArr['naznachenieStavki']++;
+            foreach ($unreadOrders as $oneHeader) {
+                if ($oneHeader['column_name'] == "naznachenie_stavki") {
+                    $counterArr['naznachenie_stavki']++;
+                    $counterArr['ids'][] = $oneHeader['order_id'];
                 }
 
             }
@@ -90,7 +90,7 @@ class UnreadHeader extends Model
     }
     public function getUnreadHeadersAdminModel($logistID)
     {
-        $counterArr=['ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
+        $counterArr=['ocenka'=>0,'naznachenie_stavki'=>0,'v_rabote'=>0,'kontrol'=>0,'zavershen'=>0,'archive'=>0];
 
 
             $unreadOrders=UnreadHeader::all();
@@ -102,11 +102,11 @@ class UnreadHeader extends Model
                 }
                 if($oneHeader['column_name']=="naznachenie_stavki")
                 {
-                    $counterArr['naznachenieStavki']++;
+                    $counterArr['naznachenie_stavki']++;
                 }
                 if($oneHeader['column_name']=="v_rabote")
                 {
-                    $counterArr['vRabote']++;
+                    $counterArr['v_rabote']++;
                 }
                 if($oneHeader['column_name']=="kontrol")
                 {
@@ -115,6 +115,10 @@ class UnreadHeader extends Model
                 if($oneHeader['column_name']=="zavershen")
                 {
                     $counterArr['zavershen']++;
+                }
+                if($oneHeader['column_name']=="archive")
+                {
+                    $counterArr['archive']++;
                 }
             }
 

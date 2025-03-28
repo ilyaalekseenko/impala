@@ -29,7 +29,8 @@
         "psr/simple-cache": "^2.0",
         "pusher/pusher-php-server": "^7.2",
         "silverslice/excel-template": "^0.1.0",
-        "tecnickcom/tcpdf": "^6.7.5"
+        "tecnickcom/tcpdf": "^6.7.5",
+        "yajra/laravel-datatables": "11"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^v3.13.5",

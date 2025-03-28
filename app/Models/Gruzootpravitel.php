@@ -11,6 +11,12 @@ class Gruzootpravitel extends Model
 
     protected $guarded = false;
 
+    protected $appends = ['fullname'];
+    public function getFullnameAttribute()
+    {
+        return $this->forma_id . ' ' . $this->nazvanie;
+    }
+
     public function adresas()
     {
         return $this->hasMany(GruzootpravitelAdresa::class, 'gruzootpravitel_id');
@@ -79,4 +85,5 @@ class Gruzootpravitel extends Model
       $GO=Gruzootpravitel::where('id', $id) ->get();
       return $GO[0]['forma_id'].' '.$GO[0]['nazvanie'].', ИНН '.$GO[0]['INN'].', '.$GO[0]['YR_adres'].' '.$GO[0]['telefon'];
     }
+
 }

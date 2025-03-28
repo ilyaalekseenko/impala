@@ -44,6 +44,8 @@ class Orders extends Authenticatable
         'kontrol',
         'zavershen',
         'perevozchik',
+        'ocenka',
+        'archive'
     ];
 
     /**
@@ -64,6 +66,55 @@ class Orders extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = ['status'];
+
+    public function getStatusAttribute() {
+        if (!empty($this->kontrol)) {
+            return [
+                'label' => 'На контроле',
+                'short' => 'Контроль',
+                'slug' => 'kontrol'
+            ];
+        }
+        if (!empty($this->naznachenie_stavki)) {
+            return [
+                'label' => 'Назначение ставки',
+                'short' => 'Ставка',
+                'slug' => 'naznachenie_stavki'
+            ];
+        }
+        if (!empty($this->v_rabote)) {
+            return [
+                'label' => 'В работе',
+                'short' => 'Работа',
+                'slug' => 'v_rabote'
+            ];
+        }
+        if (!empty($this->ocenka)) {
+            return [
+                'label' => 'На оценке',
+                'short' => 'Оценка',
+                'slug' => 'ocenka'
+            ];
+        }
+        if (!empty($this->archive)) {
+            return [
+                'label' => 'В архиве',
+                'short' => 'Архив',
+                'slug' => 'archive'
+            ];
+        }
+        if (($this->naznachenie_stavki == null) && ($this->v_rabote == null) && ($this->ocenka == null) && ($this->logist == null)) {
+            return [
+                'label' => 'Черновик',
+                'short' => 'Черновик',
+                'slug' => 'draft'
+            ];
+        }
+
+        return null;
+    }
 
     public function ts()
     {
@@ -160,6 +211,7 @@ class Orders extends Authenticatable
             'naznachenie_stavki' =>null,
             'kontrol' =>null,
             'zavershen' =>null,
+            'archive' =>null,
         ]);
     }
     public function getOneColumnByOrderId($orderId,$columnName)
@@ -170,7 +222,7 @@ class Orders extends Authenticatable
 
     public function allHeadersCountModel($logistId,$logistOradmin)
     {
-        $counterArr=['all'=>0,'ocenka'=>0,'naznachenieStavki'=>0,'vRabote'=>0,'kontrol'=>0,'zavershen'=>0];
+        $counterArr=['all'=>0,'ocenka'=>0,'naznachenie_stavki'=>0,'v_rabote'=>0,'kontrol'=>0,'zavershen'=>0,'archive'=>0];
         if($logistOradmin=='logist')
         {
             $Orders=Orders::where('logist',$logistId)->get();
@@ -192,11 +244,11 @@ class Orders extends Authenticatable
             }
             if($oneHeader['naznachenie_stavki']==1)
             {
-                $counterArr['naznachenieStavki']++;
+                $counterArr['naznachenie_stavki']++;
             }
             if($oneHeader['v_rabote']==1)
             {
-                $counterArr['vRabote']++;
+                $counterArr['v_rabote']++;
             }
             if($oneHeader['kontrol']==1)
             {
@@ -205,6 +257,10 @@ class Orders extends Authenticatable
             if($oneHeader['zavershen']==1)
             {
                 $counterArr['zavershen']++;
+            }
+            if($oneHeader['archive']==1)
+            {
+                $counterArr['archive']++;
             }
         }
         return $counterArr;
@@ -303,5 +359,19 @@ class Orders extends Authenticatable
     {
         $order = Orders::where('id', $id)->first();
         return $order->nomenklatura;
+    }
+
+    public function logistician()
+    {
+        return $this->belongsTo(User::class, 'logist');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Gruzootpravitel::class, 'kompaniya_zakazchik');
+    }
+    public function transportation()
+    {
+        return $this->belongsTo(VidPerevozka::class, 'vid_perevozki');
     }
 }

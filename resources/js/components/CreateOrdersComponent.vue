@@ -15,7 +15,7 @@
     <div class="impala-page-title inline-flex gap-2"><span>Запрос номер:</span>
       <div>
         <div class="impala-add-link" v-if="nomerZaprosaShowInp" v-on:click="nomerZaprosaShowInpChange()"
-             v-html="new_nomer_zayavki"></div>
+             v-html="new_nomer_zayavki ? new_nomer_zayavki : 'Не заполнено'"></div>
         <input class="impala-input" v-else @change="updateOrderNomerZaprosa()"
                v-click-outside="nomerZaprosaShowInpChange" v-model="new_nomer_zayavki"/>
       </div>
@@ -28,7 +28,8 @@
             v-else
             :placeholder="'Статус запроса'"
             @option-selected="(option) => setColumn(option.value)"
-            :options="[{ label: 'Оценка', value: 'ocenka', disabled: !ocenka_show_button },{ label: 'Утверждение', value: 'naznachenie_stavki', disabled: !utverzdenie_show_button },{ label: 'В работе', value: 'v_rabote', disabled: !v_rabote_show_button }]"
+            v-model="status"
+            :options="[{ label: 'Оценка', value: 'ocenka' },{ label: 'Утверждение', value: 'naznachenie_stavki' }, { label: 'В работе', value: 'v_rabote' }, { label: 'В архив', value: 'archive' }]"
             :isClearable="false"
             :isSearchable="false"
             v-click-outside="statusShowInpChange"
@@ -41,7 +42,7 @@
         <div class="impala-label">Вид перевозки:</div>
         <div>
           <div class="impala-add-link" v-if="vidPerevozkiShowInp" v-on:click="vidPerevozkiShowInpChange()"
-               v-html="vid_perevozki_name"></div>
+               v-html="vid_perevozki_name ? vid_perevozki_name : 'Не выбрано'"></div>
           <VueSelect
               v-else
               :placeholder="'Вид перевозки'"
@@ -1510,19 +1511,20 @@ export default {
       // ))
     },
     setColumn(columnName) {
+      console.log(columnName)
       axios
           .post('/orderChangeColumn', {
             columnName: columnName,
             id: this.order_id
           })
           .then(response => {
-            if ((this.role == 2) && (columnName == 'naznachenie_stavki')) {
+            if ((this.role === 2) && (columnName === 'naznachenie_stavki')) {
               //редиректим логиста на главную перед этим говорим  отобразить оценку
               localStorage.setItem('logist_ut_flag', '1')
               window.location.href = ('/')
             }
             //если утвердил админ
-            if (this.role == 1) {
+            if (this.role === 1) {
               this.hideButton(columnName)
               let message = this.setMessage(columnName)
               alert(message)
@@ -1542,6 +1544,10 @@ export default {
       if (columnName === 'v_rabote') {
         message = 'Запрос отправлен в работу'
       }
+      if (columnName === 'archive') {
+        message = 'Запрос отправлен в архив'
+      }
+
       return message;
     },
     newModal() {
@@ -1649,7 +1655,7 @@ export default {
                       this.ob_ob = data.data[0]['ob_ob'],
                       this.vid_perevozki = data.data[0]['vid_perevozki'],
                       this.vid_perevozki_name = data.data[0]['vid_perevozki_name'],
-                      this.status = data.data[0]['status'],
+                      this.status = data.data[0]['status'].label,
                       this.perevozchikId = data.data[0]['perevozchik'],
                       this.perevozchikName = data.data[0]['nazvanie'],
                       data.data[0].oplata.forEach(function (entry) {
@@ -1761,7 +1767,7 @@ export default {
         this.utverzdenie_show_button = true
       }
 
-      if (this.role == 1) {
+      if (this.role === 1) {
         if (this.status !== 'На оценке') {
           this.ocenka_show_button = true
         }

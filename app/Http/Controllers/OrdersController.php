@@ -62,6 +62,7 @@ use Carbon\Carbon;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrdersController extends Controller
 {
@@ -1240,6 +1241,67 @@ class OrdersController extends Controller
 
     }
 
+    public function getOrders(Request $request)
+    {
+        $orders = Orders::query()->select(['*'])
+            ->with('customer')
+            ->with('logistician')
+            ->with('transportation')
+            ->orderBy('id', 'DESC');
+
+        if ($request->has('all')) {
+            $orders->where('archive', '=', null);
+        }
+        if ($request->has('ocenka')) {
+            $orders->where('ocenka', '=', 1);
+        }
+        if ($request->has('naznachenie_stavki')) {
+            $orders->where('naznachenie_stavki', '=', 1);
+        }
+        if ($request->has('v_rabote')) {
+            $orders->where('v_rabote', '=', 1);
+        }
+        if ($request->has('kontrol')) {
+            $orders->where('kontrol', '=', 1);
+        }
+        if ($request->has('zavershen')) {
+            $orders->where('zavershen', '=', 1);
+        }
+        if ($request->has('archive')) {
+            $orders->where('archive', '=', 1);
+        }
+
+        $orders = $orders->get();
+
+        if ($request->ajax()) {
+            return DataTables::of($orders)
+                ->addColumn('data_vneseniya', function ($order) {
+                    return Carbon::parse($order->data_vneseniya)->format('d.m.Y');
+                })
+                ->addColumn('checkbox', function ($order) {
+                    return '<input type="checkbox" name="id[]" value="' . $order->id . '" id="impala-order-' . $order->id . '"><label :for="impala-order-' . $order->id . '"></label>';
+                })
+                ->rawColumns(['checkbox'])
+                ->addColumn('status_label', function ($order) {
+                    return !empty($order->status['label']) ? $order->status['label'] : '---';
+                })
+                ->addColumn('transportation', function ($order) {
+                    return $order->transportation ? $order->transportation->perevozka_name : 'Не указано';
+                })
+                ->addColumn('customer', function ($order) {
+                    return $order->customer ? $order->customer->fullname : 'Не указано';
+                })
+                ->addColumn('logistician', function ($order) {
+                    return $order->logistician ? $order->logistician->fullname : 'Не указано';
+                })
+                ->make(true);
+        }
+
+        return response()->json($orders);
+
+        //return view('admin.users.index');
+    }
+
     public function get_orders_list_new(Request $request)
     {
         $offset =  $request->input('offset');
@@ -1583,22 +1645,29 @@ class OrdersController extends Controller
 //            'res1'=>$old_imp['id']
         ], 201);
     }
+
     public function deleteOrders(Request $request)
     {
-        $orders_id =  $request->input('orders_id');
+        $orders_id = $request->input('orders_id');
+
+        if (empty($orders_id)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ошибка удаления',
+            ], 201);
+        }
 
         //переберём все заявки на удаление
-        foreach($orders_id as $oneOrderId)
-        {
-        //удаляем объединённый файл
-        $this->docService->delDoc(public_path() . "/united/". $oneOrderId.".xlsx");
-        //удаляем готовый расчёт
-        $gotRasch=$this->order_mod->getOneColumnByOrderId($oneOrderId,'gotovyi_raschet');
-        $this->docService->delDoc(public_path() . "/images/orders_xlsx/".$oneOrderId.'_got__'.$gotRasch);
-        //удаляем все файлы из grade
-        $this->docService->deleteAllGradeDoc($oneOrderId);
-        //удаляем в orders_perevozchiki
-        $this->orderService->deleteOrdersPerevozchikiByOrderId($oneOrderId);
+        foreach ($orders_id as $oneOrderId) {
+            //удаляем объединённый файл
+            $this->docService->delDoc(public_path() . "/united/" . $oneOrderId . ".xlsx");
+            //удаляем готовый расчёт
+            $gotRasch = $this->order_mod->getOneColumnByOrderId($oneOrderId, 'gotovyi_raschet');
+            $this->docService->delDoc(public_path() . "/images/orders_xlsx/" . $oneOrderId . '_got__' . $gotRasch);
+            //удаляем все файлы из grade
+            $this->docService->deleteAllGradeDoc($oneOrderId);
+            //удаляем в orders_perevozchiki
+            $this->orderService->deleteOrdersPerevozchikiByOrderId($oneOrderId);
         }
         //удаляем все заявки по id
         $this->order_mod->whereInDeleteInModel(request('orders_id'));

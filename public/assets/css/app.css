@@ -129,6 +129,89 @@ aside {
   color: var(--impala-color-primary) !important;
 }
 
+div.dt-container{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--impala-color-gray-600);
+}
+
+div.dt-container.dt-empty-footer tbody > tr:last-child > * {
+  border-bottom: 0 !important;
+}
+
+div.dt-processing > div:last-child > div {
+  background-color: var(--impala-color-primary) !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button{
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  border: 0 !important;
+  border-radius: 3px !important;
+}
+
+.datatable div.dt-container .dt-paging .dt-paging-button.current, .datatable div.dt-container .dt-paging .dt-paging-button.current:hover {
+  border: 0 !important;
+  background: var(--impala-color-primary) !important;
+  color: #fff !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button:hover {
+  border: 0 !important;
+  background: var(--impala-color-primary-light) !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button.disabled:hover {
+  background-color: transparent !important;
+}
+
+table.dataTable.impala-datatable {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+table.dataTable.impala-datatable > tbody > tr.selected > * {
+  box-shadow: none;
+  color: inherit;
+}
+
+table.dataTable.impala-datatable > tbody > tr:nth-child(2n+1) > * {
+  background-color: #fff !important;
+}
+
+table.dataTable.impala-datatable > thead > tr > *,
+table.dataTable.impala-datatable > tbody > tr:nth-child(2n) > * {
+  background-color: var(--impala-color-gray-100) !important;
+}
+
+table.dataTable.impala-datatable > thead > tr > th, table.dataTable.impala-datatable > thead > tr > td{
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: var(--impala-color-gray-800);
+  border-bottom: var(--impala-color-gray-400);
+}
+
+table.dataTable.impala-datatable > tbody > tr > td{
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--impala-color-gray-800);
+}
+
+table.dataTable.impala-datatable > tbody > tr.unread > td{
+  font-weight: 700 !important;
+}
+
 *, ::before, ::after{
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -714,6 +797,9 @@ video {
 .mb-3{
   margin-bottom: 0.75rem;
 }
+.me-2{
+  margin-inline-end: 0.5rem;
+}
 .me-auto{
   margin-inline-end: auto;
 }
@@ -1275,6 +1361,9 @@ a {
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.impala-btn i {
+  font-size: 18px;
+}
 
 .impala-box .impala-btn{
   --tw-shadow: 0 0 #0000;
@@ -1310,12 +1399,28 @@ a {
   background-color: var(--impala-color-red-light);
 }
 
+.impala-btn-orange {
+  background-color: #FFA800;
+  color: #ffffff;
+}
+.impala-btn-orange:hover {
+  background-color: #FFB933;
+}
+
 .impala-btn-gray {
   background-color: var(--impala-color-gray-200);
   color: var(--impala-color-gray-600);
 }
 .impala-btn-gray:hover {
   background-color: var(--impala-color-gray-300);
+}
+
+.impala-btn-white {
+  background-color: white;
+  color: var(--impala-color-gray-600);
+}
+.impala-btn-white:hover {
+  background-color: var(--impala-color-gray-200);
 }
 
 .impala-btn-none {
@@ -1391,6 +1496,96 @@ input.impala-add-link {
 }
 .impala-text-link\:red:hover {
   color: var(--impala-color-red-light);
+}
+
+.impala-badge-red{
+  padding-left: 0.375rem !important;
+  padding-right: 0.375rem !important;
+  background: var(--impala-color-red) !important;
+  color: #ffffff;
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.impala-badge{
+  padding-left: 0.375rem;
+  padding-right: 0.375rem;
+  --impala-badge-background: #fff;
+  --impala-badge-color: var(--impala-color-gray-600);
+  background-color: var(--impala-badge-background);
+  color: var(--impala-badge-color);
+  min-width: 24px;
+  height: 24px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.impala-badge-all {
+  --impala-badge-background: #FFF6E6;
+  --impala-badge-color: #FFA800;
+}
+
+.impala-badge-ocenka {
+  --impala-badge-background: #CCEDFB;
+  --impala-badge-color: #00A6ED;
+}
+
+.impala-badge-naznachenie_stavki {
+  --impala-badge-background: #CDF7EC;
+  --impala-badge-color: #06D6A0;
+}
+
+.impala-badge-v_rabote {
+  --impala-badge-background: #E9D4F7;
+  --impala-badge-color: #7209B7;
+}
+
+.impala-badge-kontrol {
+  --impala-badge-background: #FBE6EA;
+  --impala-badge-color: #D90429;
+}
+
+.impala-badge-zavershen {
+  --impala-badge-background: #C5F0D8;
+  --impala-badge-color: #269156;
+}
+
+.impala-badge-archive {
+  --impala-badge-background: #E4EAEA;
+  --impala-badge-color: #757575;
+}
+
+.impala-badge-draft {
+  --impala-badge-background: #ffffff;
+  --impala-badge-color: #757575;
+}
+
+[data-filter-key].active {
+  background-color: var(--impala-badge-color);
+  color: #ffffff;
+}
+[data-filter-key].active .impala-badge {
+  background-color: #ffffff;
+  color: var(--impala-badge-color);
+}
+
+[data-filter-key] {
+  position: relative;
 }
 
 .impala-row-input{
@@ -1543,7 +1738,9 @@ input[type=radio]:not(:disabled):active + label::before {
 }
 
 input[type=checkbox]:checked + label::before,
-input[type=radio]:checked + label::before {
+input[type=radio]:checked + label::before,
+.selected input[type=checkbox] + label::before,
+.selected input[type=radio] + label::before {
   border-color: var(--impala-color-primary);
   background-color: var(--impala-color-primary);
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='9' viewBox='0 0 12 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.2188 0.445312C10.3438 0.320313 10.4766 0.320313 10.6172 0.445312L11.2734 1.125C11.4141 1.25 11.4141 1.38281 11.2734 1.52344L4.24219 8.55469C4.11719 8.67969 3.98438 8.67969 3.84375 8.55469L0.726562 5.41406C0.585938 5.28906 0.585938 5.15625 0.726562 5.01562L1.38281 4.35938C1.52344 4.21875 1.65625 4.21875 1.78125 4.35938L4.05469 6.63281L10.2188 0.445312Z' fill='%23E5E5E5'/%3E%3C/svg%3E ");
